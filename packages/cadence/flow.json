@@ -1,0 +1,82 @@
+{
+	"emulators": {
+		"default": {
+			"port": 3569,
+			"serviceAccount": "emulator-account"
+		}
+	},
+	"contracts": {
+		"FungibleToken": {
+			"source": "./contracts/core/FungibleToken.cdc",
+			"aliases": {
+				"emulator": "0xee82856bf20e2aa6"
+			}
+		},
+		"FlowToken": {
+			"source": "./contracts/core/FlowToken.cdc",
+			"aliases": {
+				"emulator": "0x0ae53cb6e3f42a79"
+			}
+		},
+		"NonFungibleToken": "./contracts/core/NonFungibleToken.cdc",
+		"MetadataViews": "./contracts/core/MetadataViews.cdc",
+		"ExampleNFT": "./contracts/core/ExampleNFT.cdc",
+		"ZayVerifierV2": "./contracts/core/ZayVerifierv2.cdc",
+		"MyMultiSig": "./contracts/MyMultiSig.cdc",
+		"DAOTreasury": "./contracts/DAOTreasury.cdc",
+		"TreasuryActions": "./contracts/TreasuryActions.cdc"
+	},
+	"networks": {
+		"emulator": "127.0.0.1:3569",
+		"mainnet": "access.mainnet.nodes.onflow.org:9000",
+		"testnet": "access.devnet.nodes.onflow.org:9000"
+	},
+	"accounts": {
+		"emulator-account": {
+			"address": "f8d6e0586b0a20c7",
+			"key": "59092d0231bce1e19f6c2f1fb99d7a27deee3b4ab34fa47db5bfdecd9860f308"
+		},
+		"emulator-recipient": {
+			"address": "01cf0e2f2f715450",
+			"key": "7bac14b66096f682a704b9d98d1fb66ae883b10acdec7caa252257ece87479d4"
+		},
+		"emulator-signer1": {
+			"address": "179b6b1cb6755e31",
+			"key": "64e847c1c615c0d6e928f80c641a5974ead26293ac2a8623d6756c935be13630"
+		},
+		"emulator-signer2": {
+			"address": "f3fcd2c1a78f5eee",
+			"key": "d774eb699bc67d07c8be7cbcee1acfa14e5139ac271ca697b25a081a19335efd"
+		},
+		"emulator-signer3": {
+			"address": "e03daebed8ca0615",
+			"key": "843d964aefbc2b6311363551187b8241466ec02e8bc4ba5e000a8b2c02fca69f"
+		},
+		"emulator-signer4": {
+			"address": "045a1763c93006ca",
+			"key": "843d964aefbc2b6311363551187b8241466ec02e8bc4ba5e000a8b2c02fca69f"
+		},
+		"emulator-treasuryOwner": {
+			"address": "120e725050340cab",
+			"key": "843d964aefbc2b6311363551187b8241466ec02e8bc4ba5e000a8b2c02fca69f"
+		}
+	},
+	"deployments": {
+		"emulator": {
+			"emulator-account": [
+				"NonFungibleToken",
+				"MetadataViews",
+				"ExampleNFT",
+				"MyMultiSig",
+				"DAOTreasury",
+				"TreasuryActions"
+			],
+			"emulator-recipient": [],
+			"emulator-signer1": [],
+			"emulator-signer2": [],
+			"emulator-signer3": [],
+			"emulator-signer4": [],
+			"emulator-treasuryOwner": []
+		}
+	}
+}

@@ -1,0 +1,143 @@
+@charset "utf-8"
+
+$navWidth: 260px
+
+// Set your brand colors
+$bodyBg: #11191f
+$bodyColor: #bbc6ce
+
+// Update Bulma's global variables
+$grey-dark: $bodyColor
+$grey-darker: $bodyColor
+$grey-light: $bodyColor
+$link: white
+
+// sets a max width of 960px on .container
+$widescreen-enabled: false
+$fullhd-enabled: false
+
+// Update some of Bulma's component variables
+$body-background-color: $bodyBg
+$control-border-width: 1px
+$input-border-width: 1px
+$input-focus-border-color: transparent
+$input-border-color: black
+$input-shadow: none
+$button-background-color: transparent
+$button-border-color: black
+$button-active-border-color: black
+$button-hover-border-color: black
+$button-focus-border-color: black
+$button-color: black
+$title-size: 2.5rem
+$input-color: black
+
+
+// Import only what you need from Bulma
+@import '~bulma/sass/utilities/_all.sass'
+@import '~bulma/sass/base/_all.sass'
+@import '~bulma/sass/grid/_all.sass'
+@import '~bulma/sass/elements/button.sass'
+@import '~bulma/sass/elements/container.sass'
+@import '~bulma/sass/elements/progress.sass'
+@import '~bulma/sass/elements/title.sass'
+@import '~bulma/sass/components/navbar.sass'
+@import '~bulma/sass/components/dropdown.sass'
+@import '~bulma/sass/form/_all.sass'
+@import '~bulma/sass/layout/section.sass'
+@import '~bulma/sass/helpers/color.sass'
+@import '~bulma/sass/helpers/spacing.sass'
+@import '~bulma/sass/helpers/visibility.sass'
+@import '~bulma/sass/helpers/typography.sass'
+@import '~bulma/sass/helpers/flexbox.sass'
+
+*
+  box-sizing: border-box
+
+// main app containers
+html
+	overflow-y: auto
+	height: 100%
+body
+	height: 100%
+  margin: 0
+  font-family: "Helvetica Neue", sans-serif
+  -webkit-font-smoothing: antialiased
+  -moz-osx-font-smoothing: grayscale
+.sidebar
+	position: fixed
+	width: $navWidth
+	background: linear-gradient(180deg, #162C4E 0%, #000C1E 100%)
+.body
+	width: calc(100% - #{$navWidth})
+	min-height: 100vh
+	position: relative
+	left: $navWidth
+// custom utility css
+code
+	color: $bodyBg
+.screen-height
+	height: 100vh
+.full-height
+	height: 100%
+.has-background-white-rounded
+	background-color: white
+	border-top-left-radius: 30px
+.has-background-blue-light
+	background-color:#1F3C66
+.has-background-blue-dark
+	background: #1B2738
+.is-size-6
+	font-size: .9rem !important
+.rounded-sm
+	border-radius: 8px
+.rounded-lg
+	border-radius: 20px
+.rounded-full
+	border-radius: 50%
+.flex-1
+	flex: 1 0 0
+.flex-2
+	flex: 2 0 0
+.pointer
+	cursor: pointer
+.is-disabled
+	pointer-events: none
+	svg 
+		opacity: 0.5
+hr
+	background-color: grey
+	margin: 0
+	height: 1px
+label
+	user-select: none
+.border
+	border: 1px solid black
+	&-light
+		border: 1px solid $grey-light
+		&-top
+			border-top: 1px solid $grey-light
+		&-right
+			border-right: 1px solid $grey-light
+.button.is-link,
+.button:hover.is-link
+	color: white
+	background-color: #0C14D0
+.progress-bit
+	width: 3px
+	border-radius: 4px
+.opacity-5
+	opacity: 50%
+input
+	font-size: 1rem
+input,
+input:focus
+	border-width: 1px
+input:focus-visible
+	outline: none
+.dropdown-item
+	padding: 1rem
+	line-height: 1em
+	height: auto
+.button
+	height: auto
