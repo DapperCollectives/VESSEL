@@ -19,16 +19,16 @@ const SafeLinks = () => (
         We’ll get you onboarded after you we import your data
       </p>
       <div className="is-flex">
-        <button className="button py-4 px-6 pointer flex-1 mr-2">
-          <NavLink className="has-text-black" to="/load-safe">
+        <NavLink className="has-text-black" to="/load-safe">
+          <button className="button py-4 px-6 pointer flex-1 mr-2">
             Load safe
-          </NavLink>
-        </button>
-        <button className="button py-4 px-6 pointer flex-1 is-link">
-          <NavLink to="/create-safe">
+          </button>
+        </NavLink>
+        <NavLink to="/create-safe">
+          <button className="button py-4 px-6 pointer flex-1 is-link">
             <Plus className="mr-2" /> Create new safe
-          </NavLink>
-        </button>
+          </button>
+        </NavLink>
       </div>
     </div>
   </section>

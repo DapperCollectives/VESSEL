@@ -112,3 +112,45 @@ export const Minus = ({ width = "48", height = "48", className = "" }) => (
     <path stroke="currentColor" d="M16 24h16" />
   </svg>
 );
+
+export const ArrowDown = ({ width = "12", height = "12", className = "" }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={width}
+    height={height}
+    className={className}
+    fill="none"
+    viewBox="0 0 12 12"
+  >
+    <path stroke="currentColor" d="M1 11h10V1M11 11L1 1" />
+  </svg>
+);
+
+export const ArrowUp = ({ width = "12", height = "12", className = "" }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={width}
+    height={height}
+    className={className}
+    fill="none"
+    viewBox="0 0 12 12"
+  >
+    <path stroke="currentColor" d="M11 11V1H1M11 1L1 11"></path>
+  </svg>
+);
+
+export const Search = ({ width = "17", height = "17", className = "" }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={width}
+    height={height}
+    className={className}
+    fill="none"
+    viewBox="0 0 17 17"
+  >
+    <g stroke="currentColor">
+      <path d="M11 11l5 5" />
+      <rect width="13" height="13" x="0.5" y="0.5" fill="#fff" rx="6.5" />
+    </g>
+  </svg>
+);

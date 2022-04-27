@@ -2,7 +2,7 @@ import "./App.sass";
 import React from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { Web3Provider } from "./contexts";
-import { Home, CreateSafe } from "./pages";
+import { Home, Safe, CreateSafe } from "./pages";
 import { Logo, Navigation, Transactions } from "./components";
 
 const Wrapper = ({ children }) => <div className="App">{children}</div>;
@@ -18,10 +18,13 @@ const Body = () => (
     <Transactions />
     <Switch>
       <Route exact path="/">
-        <Home key="home" />
+        <Home />
       </Route>
       <Route exact path="/create-safe">
-        <CreateSafe key="create-safe" />
+        <CreateSafe />
+      </Route>
+      <Route path={["/safe/:address/:tab", "/safe/:address"]}>
+        <Safe />
       </Route>
     </Switch>
   </div>
