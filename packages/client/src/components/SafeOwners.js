@@ -1,7 +1,7 @@
 import React from "react";
 import { Trash } from "./Svg";
 
-function SafeOwners({ addr, safeOwners, setSafeOwners }) {
+function SafeOwners({ address, safeOwners, setSafeOwners }) {
   const onOwnerNameChange = (value, idx) => {
     const newOwners = safeOwners.slice(0);
     newOwners[idx].name = value;
@@ -10,19 +10,19 @@ function SafeOwners({ addr, safeOwners, setSafeOwners }) {
 
   const onOwnerAddressChange = (value, idx) => {
     const newOwners = safeOwners.slice(0);
-    newOwners[idx].addr = value;
+    newOwners[idx].address = value;
     setSafeOwners([...newOwners]);
   };
 
   let safeOwnerCpts = [
-    <div className="column is-flex is-full" key={addr}>
+    <div className="column is-flex is-full" key={address}>
       <div className="flex-1 is-flex is-flex-direction-column pr-5">
         <label className="has-text-grey mb-2">Owner Name</label>
         <input
           className="p-4 rounded-sm"
           type="text"
           placeholder="Add a local owner name"
-          value={safeOwners.find((so) => so.addr === addr)?.name}
+          value={safeOwners.find((so) => so.address === address)?.name}
           onChange={(e) => onOwnerNameChange(e.target.value, 0)}
         />
       </div>
@@ -32,7 +32,7 @@ function SafeOwners({ addr, safeOwners, setSafeOwners }) {
           className="p-4 rounded-sm"
           type="text"
           placeholder="Enter user's FLOW address"
-          value={addr}
+          value={address}
           disabled
         />
       </div>
@@ -61,7 +61,7 @@ function SafeOwners({ addr, safeOwners, setSafeOwners }) {
                 className="p-4 rounded-sm flex-1"
                 type="text"
                 placeholder="Enter user's FLOW address"
-                value={so?.addr}
+                value={so?.address}
                 onChange={(e) => onOwnerAddressChange(e.target.value, idx + 1)}
               />
               <button
@@ -92,7 +92,7 @@ function SafeOwners({ addr, safeOwners, setSafeOwners }) {
         <button
           className="button column is-full p-4"
           onClick={() => {
-            setSafeOwners(safeOwners.concat({ name: "", addr: "" }));
+            setSafeOwners(safeOwners.concat({ name: "", address: "" }));
           }}
         >
           Add another owner
