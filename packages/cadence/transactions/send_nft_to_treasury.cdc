@@ -1,13 +1,15 @@
 import NonFungibleToken from "../contracts/core/NonFungibleToken.cdc"
 import ExampleNFT from "../contracts/core/ExampleNFT.cdc"
+import DAOTreasury from "../contracts/DAOTreasury.cdc"
+import MyMultiSig from "../contracts/MyMultiSig.cdc"
 
 // This transaction is for transferring and NFT from
 // one account to another
-transaction(recipient: Address, withdrawID: UInt64) {
+transaction(treasuryAddr: Address, withdrawID: UInt64) {
 
     prepare(signer: AuthAccount) {
         // get the recipients public account object
-        let recipient = getAccount(recipient)
+        // let recipient = getAccount(treasuryAddr)
 
         // borrow a reference to the signer's NFT collection
         let collectionRef = signer
@@ -22,12 +24,15 @@ transaction(recipient: Address, withdrawID: UInt64) {
 
         // withdraw the NFT from the owner's collection
         let nft <- collectionRef.withdraw(withdrawID: withdrawID)
+        let collection <- ExampleNFT.createEmptyCollection()
+        collection.deposit(token: <- nft)
+
         // TODO: put NFT into collection to pass to treasury?
         // How do we deal w/ collections?
 
         // Deposit the NFT in the treasury's collection
-        treasury.depositCollection(collection: <-nft)
+        treasury.depositCollection(collection: <-collection)
 
-        depositRef.deposit(token: <-nft)
+        // depositRef.deposit(token: <-nft)
     }
 }
