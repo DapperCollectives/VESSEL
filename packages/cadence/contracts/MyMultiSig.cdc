@@ -8,7 +8,7 @@ pub contract MyMultiSig {
     //
 
     pub resource interface MultiSign {
-        pub let multiSignManager: @Manager
+        access(contract) let multiSignManager: @Manager
     }
 
     //

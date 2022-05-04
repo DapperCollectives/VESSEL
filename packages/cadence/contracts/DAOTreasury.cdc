@@ -24,7 +24,7 @@ pub contract DAOTreasury {
   }
 
   pub resource Treasury: MyMultiSig.MultiSign, TreasuryPublic {
-    pub let multiSignManager: @MyMultiSig.Manager
+    access(contract) let multiSignManager: @MyMultiSig.Manager
     access(account) var vaults: @{String: FungibleToken.Vault}
     access(account) var collections: @{String: NonFungibleToken.Collection}
 

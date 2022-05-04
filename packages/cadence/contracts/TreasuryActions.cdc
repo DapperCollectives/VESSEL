@@ -10,7 +10,7 @@ pub contract TreasuryActions {
   // Transfers `amount` tokens from the treasury to `recipientVault`
   pub struct TransferToken: MyMultiSig.Action {
     pub let intent: String
-    pub let recipientVault: Capability<&{FungibleToken.Receiver}>
+    access(self) let recipientVault: Capability<&{FungibleToken.Receiver}>
     pub let amount: UFix64
 
     pub fun execute(_ params: {String: AnyStruct}) {
@@ -36,7 +36,7 @@ pub contract TreasuryActions {
   // Transfers an NFT from the treasury to `recipientCollection`
   pub struct TransferNFT: MyMultiSig.Action {
     pub let intent: String
-    pub let recipientCollection: Capability<&{NonFungibleToken.CollectionPublic}>
+    access(self) let recipientCollection: Capability<&{NonFungibleToken.CollectionPublic}>
     pub let withdrawID: UInt64
 
     pub fun execute(_ params: {String: AnyStruct}) {
@@ -113,7 +113,7 @@ pub contract TreasuryActions {
 
   pub struct Test: MyMultiSig.Action {
     pub let intent: String
-    pub let cap: Capability<&FungibleToken.Vault>
+    access(self) let cap: Capability<&FungibleToken.Vault>
 
     pub fun execute(_ params: {String: AnyStruct}) {
       let tokens <- self.cap.borrow()!.withdraw(amount: 10.0)
