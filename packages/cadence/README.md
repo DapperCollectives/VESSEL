@@ -25,3 +25,15 @@ node deploy
 ```bash
 go test main_test.go
 ```
+
+## Build & Run Emulator with Accounts & Contracts pre-initialized from Dockerfile
+
+```bash
+make build-vessel-emulator
+```
+
+```bash
+make run-vessel-emulator
+```
+
+## Run VESSEL Test Suite from Dockerfile

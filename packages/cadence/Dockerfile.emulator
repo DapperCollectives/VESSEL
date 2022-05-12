@@ -1,0 +1,19 @@
+FROM golang:1.17.7 as build-test
+
+WORKDIR /VESSEL
+# Install go packages
+COPY ./go.mod ./
+COPY ./go.sum ./
+COPY ./*.go ./
+# RUN go mod tidy
+RUN go mod download
+COPY Makefile Makefile
+COPY flow.json flow.json
+COPY contracts contracts
+COPY scripts scripts
+COPY transactions transactions
+
+# Build executable
+# RUN GOARCH=amd64 GOOS=linux go build -o /bin/run-test main_test.go
+
+CMD ["make", "test"]
