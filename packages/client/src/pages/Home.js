@@ -1,5 +1,4 @@
 import React from "react";
-import { isEmpty } from "lodash";
 import { NavLink } from "react-router-dom";
 import { WalletPrompt } from "../components";
 import { Plus } from "../components/Svg";
@@ -19,33 +18,24 @@ const SafeLinks = () => (
         We’ll get you onboarded after you we import your data
       </p>
       <div className="is-flex">
-        <button className="button py-4 px-6 pointer flex-1 mr-2">
-          <NavLink className="has-text-black" to="/load-safe">
+        <NavLink className="has-text-black" to="/load-safe">
+          <button className="button py-4 px-6 pointer flex-1 mr-2">
             Load safe
-          </NavLink>
-        </button>
-        <button className="button py-4 px-6 pointer flex-1 is-link">
-          <NavLink to="/create-safe">
+          </button>
+        </NavLink>
+        <NavLink to="/create-safe">
+          <button className="button py-4 px-6 pointer flex-1 is-link">
             <Plus className="mr-2" /> Create new safe
-          </NavLink>
-        </button>
+          </button>
+        </NavLink>
       </div>
     </div>
   </section>
 );
 
 function Home({ web3 }) {
-  const { loadingSafes, safes, user } = web3;
-  let SafeCpt = null;
-  console.log(loadingSafes, safes);
-  const loggedIn = user?.loggedIn;
-  if (!loadingSafes && isEmpty(safes) && loggedIn) {
-    SafeCpt = <SafeLinks />;
-  } else if (!loggedIn) {
-    SafeCpt = <WalletPrompt />;
-  }
-
-  return SafeCpt;
+  const loggedIn = web3?.user?.loggedIn;
+  return loggedIn ? <SafeLinks /> : <WalletPrompt />;
 }
 
 export default Web3Consumer(Home);

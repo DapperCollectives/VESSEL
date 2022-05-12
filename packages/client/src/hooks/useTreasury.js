@@ -1,75 +1,122 @@
-import { useState, useEffect } from "react";
+import { useEffect, useReducer } from "react";
 import { mutate, query, tx } from "@onflow/fcl";
-import { shortenAddr } from "../utils";
 
+import reducer from "../reducers";
 import { INITIALIZE_TREASURY } from "../flow/initializeTreasury.tx";
 import { GET_SIGNERS, GET_THRESHOLD } from "../flow/checkTreasuries.tx";
 
-export default function useTreasury(addr) {
-  const [loading, setLoading] = useState("Loading Treasuries...");
-  const [treasuries, setTreasuries] = useState([]);
-  const [creatingTreasury, setCreatingTreasury] = useState(false);
-  const [createdTreasury, setCreatedTreasury] = useState(false);
-  const [submittedTransaction, setSubmittedTransaction] = useState(false);
+const storageKey = "vessel-treasuries";
+const initialState = {
+  loading: "Loading Treasuries",
+  creatingTreasury: false,
+  createdTreasury: false,
+  submittedTransaction: false,
+  treasuries: {},
+};
+
+const doQuery = async (cadence, address) => {
+  const queryResp = await query({
+    cadence,
+    args: (arg, t) => [arg(address, t.Address)],
+  }).catch(console.error);
+
+  return queryResp;
+};
+
+const doCreateTreasury = async (signerAddresses, threshold) => {
+  return await mutate({
+    cadence: INITIALIZE_TREASURY,
+    args: (arg, t) => [
+      arg(signerAddresses, t.Array(t.Address)),
+      arg(threshold, t.UInt64),
+    ],
+    limit: 55,
+  });
+};
+
+const getSigners = async (address) => {
+  return await doQuery(GET_SIGNERS, address);
+};
+
+const getThreshold = async (address) => {
+  return await doQuery(GET_THRESHOLD, address);
+};
+
+export default function useTreasury(address) {
+  const [state, dispatch] = useReducer(reducer, [], (initial) => ({
+    ...initial,
+    ...initialState,
+    treasuries: JSON.parse(localStorage.getItem(storageKey)) || {},
+  }));
 
   useEffect(() => {
-    if (!addr) return;
-    const getSigners = async () => {
-      const signers = await query({
-        cadence: GET_SIGNERS,
-        args: (arg, t) => [arg(addr, t.Address)],
-      }).catch(console.error);
-
-      if (signers) {
-        const threshold = await query({
-          cadence: GET_THRESHOLD,
-          args: (arg, t) => [arg(addr, t.Address)],
-        }).catch(console.error);
-
-        setTreasuries([
-          {
-            name: `${shortenAddr(addr)}'s Safe`,
-            signers: Object.keys(signers),
-            threshold,
-            addr,
-          },
-        ]);
+    if (!address) {
+      if (state.loading) {
+        dispatch({ type: "SET_LOADING", payload: false });
       }
-      setLoading("");
+      return;
+    }
+    const checkTreasuries = async () => {
+      const signers = await getSigners(address);
+      if (signers) {
+        const threshold = await getThreshold(address);
+        dispatch({
+          type: "SET_TREASURY",
+          payload: {
+            [address]: {
+              signers,
+              threshold,
+            },
+          },
+        });
+      } else {
+        dispatch({ type: "SET_LOADING", payload: false });
+      }
     };
-    getSigners();
-  }, [addr]);
+    checkTreasuries();
+  }, [state.loading, address]);
 
-  const initializeTreasury = async (initialSigners, initialThreshold) => {
-    setCreatingTreasury(true);
-    let res = await mutate({
-      cadence: INITIALIZE_TREASURY,
-      args: (arg, t) => [
-        arg(initialSigners, t.Array(t.Address)),
-        arg(initialThreshold, t.UInt64),
-      ],
-      limit: 55,
-    });
-    setSubmittedTransaction(true);
+  useEffect(() => {
+    localStorage.setItem(storageKey, JSON.stringify(state.treasuries));
+  }, [state.treasuries]);
+
+  const createTreasury = async (treasuryData) => {
+    dispatch({ type: "SET_CREATING_TREASURY" });
+    const { safeOwners, threshold } = treasuryData;
+    const signerAddresses = safeOwners.map((is) => is.address);
+    const res = await doCreateTreasury(signerAddresses, threshold);
+    if (res) {
+      dispatch({ type: "SUBMITTED_TREASURY_TRANSACTION" });
+    }
     await tx(res).onceSealed();
-    setTreasuries([
-      {
-        name: `${shortenAddr(addr)}'s Safe`,
-        signers: initialSigners,
-        threshold: initialThreshold,
-        addr,
-      },
-    ]);
-    setCreatedTreasury(true);
+    setTreasury(address, treasuryData);
+    dispatch({ type: "TREASURY_TRANSACTION_SUCCESS" });
     return res;
   };
 
+  const setTreasury = (_address, treasuryData) => {
+    dispatch({
+      type: "SET_TREASURY",
+      payload: {
+        [_address]: treasuryData,
+      },
+    });
+  };
+
+  const fetchTreasury = async (_address) => {
+    const signers = await getSigners(_address);
+    if (signers) {
+      const threshold = await getThreshold(_address);
+      return { threshold, signers };
+    }
+
+    return null;
+  };
+
   return {
-    loading,
-    creatingTreasury,
-    createdTreasury,
-    submittedTransaction,
-    initializeTreasury,
-    treasuries,
+    ...state,
+    createTreasury,
+    fetchTreasury,
+    setTreasury,
   };
 }

@@ -30,3 +30,14 @@ export const shortenAddr = (addr) => {
   const secondChunk = addr.slice(addr.length - 4, addr.length);
   return `${firstChunk}...${secondChunk}`;
 };
+
+// rudimentary address check before actually querying with bad inputs
+export const isAddr = (addr) => {
+  // remove special chars
+  addr = addr.replace(/[^a-z0-9]/gi, "");
+  console.log("new addr", addr);
+  // remove 0x prefix if exists
+  const noPrefix = addr.startsWith("0x") ? addr.replace("0x", "") : addr;
+  // result should be 16 chars long
+  return noPrefix.length === 16;
+};

@@ -1,8 +1,8 @@
 import "./App.sass";
 import React from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import { Web3Provider } from "./contexts";
-import { Home, CreateSafe } from "./pages";
+import { Web3Provider, ModalProvider } from "./contexts";
+import { Home, Safe, LoadSafe, CreateSafe } from "./pages";
 import { Logo, Navigation, Transactions } from "./components";
 
 const Wrapper = ({ children }) => <div className="App">{children}</div>;
@@ -18,10 +18,16 @@ const Body = () => (
     <Transactions />
     <Switch>
       <Route exact path="/">
-        <Home key="home" />
+        <Home />
+      </Route>
+      <Route exact path="/load-safe">
+        <LoadSafe />
       </Route>
       <Route exact path="/create-safe">
-        <CreateSafe key="create-safe" />
+        <CreateSafe />
+      </Route>
+      <Route path={["/safe/:address/:tab", "/safe/:address"]}>
+        <Safe />
       </Route>
     </Switch>
   </div>
@@ -30,15 +36,17 @@ const Body = () => (
 function App() {
   return (
     <Web3Provider network={process.env.REACT_APP_FLOW_ENV}>
-      <Router>
-        <Wrapper>
-          <Sidebar>
-            <Logo className="mb-6 px-4" />
-            <Navigation />
-          </Sidebar>
-          <Body />
-        </Wrapper>
-      </Router>
+      <ModalProvider>
+        <Router>
+          <Wrapper>
+            <Sidebar>
+              <Logo className="mb-6 px-4" />
+              <Navigation />
+            </Sidebar>
+            <Body />
+          </Wrapper>
+        </Router>
+      </ModalProvider>
     </Web3Provider>
   );
 }

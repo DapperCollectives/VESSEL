@@ -10,11 +10,11 @@ import {
 import { Web3Consumer } from "../contexts/Web3";
 
 const AuthorizeTreasury = ({
-  addr,
+  address,
   safeName,
   safeType,
   safeOwners,
-  initializeTreasury,
+  createTreasury,
   creatingTreasury,
   createdTreasury,
   signersAmount,
@@ -24,7 +24,7 @@ const AuthorizeTreasury = ({
     const ownerNames = safeOwners.every((so) => so?.name?.trim().length);
     const ownerAddrs = safeOwners
       .slice(1)
-      .every((so) => so?.addr?.trim().length);
+      .every((so) => so?.address?.trim().length);
     if (ownerNames && ownerAddrs) {
       isAuthorizeReady = true;
     }
@@ -36,10 +36,12 @@ const AuthorizeTreasury = ({
   ];
 
   const onAuthorize = async () => {
-    const ownerAddrs = [addr].concat(
-      safeOwners.slice(1).map((so) => so?.addr?.trim())
-    );
-    await initializeTreasury(ownerAddrs, signersAmount);
+    await createTreasury({
+      name: safeName,
+      type: safeType,
+      safeOwners,
+      threshold: signersAmount,
+    });
   };
 
   let stepMessage = "Create a new safe";
@@ -76,7 +78,7 @@ const AuthorizeTreasury = ({
         )}
         {createdTreasury && (
           <div className="is-flex is-align-items-center">
-            <NavLink to={`/safe/${addr}`}>
+            <NavLink to={`/safe/${address}`}>
               <button className="button is-link p-4 mr-2">Go to safe</button>
             </NavLink>
           </div>
@@ -90,17 +92,17 @@ function CreateSafe({ web3 }) {
   const [safeType, setSafeType] = useState("Social");
   const [safeName, setSafeName] = useState("");
   const [signersAmount, setSignersAmount] = useState(1);
-  const addr = web3?.user?.addr;
-  const [safeOwners, setSafeOwners] = useState([{ name: "", addr }]);
   const {
+    address,
     loadingTreasuries,
     creatingTreasury,
     createdTreasury,
     submittedTransaction,
-    initializeTreasury,
+    createTreasury,
   } = web3;
+  const [safeOwners, setSafeOwners] = useState([{ name: "", address }]);
 
-  if (!addr) {
+  if (!address) {
     return <WalletPrompt />;
   }
 
@@ -202,7 +204,7 @@ function CreateSafe({ web3 }) {
         setSafeName={setSafeName}
       />
       <SafeOwners
-        addr={addr}
+        address={address}
         safeOwners={safeOwners}
         setSafeOwners={setSafeOwners}
       />
@@ -217,12 +219,12 @@ function CreateSafe({ web3 }) {
   return (
     <section className="section is-flex is-flex-direction-column is-align-items-center has-text-black">
       <AuthorizeTreasury
-        addr={addr}
+        address={address}
         safeName={safeName}
         safeType={safeType}
         safeOwners={safeOwners}
         signersAmount={signersAmount}
-        initializeTreasury={initializeTreasury}
+        createTreasury={createTreasury}
         creatingTreasury={creatingTreasury}
         createdTreasury={createdTreasury}
       />

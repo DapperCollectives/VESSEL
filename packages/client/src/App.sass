@@ -43,6 +43,7 @@ $input-color: black
 @import '~bulma/sass/elements/title.sass'
 @import '~bulma/sass/components/navbar.sass'
 @import '~bulma/sass/components/dropdown.sass'
+@import '~bulma/sass/components/modal.sass'
 @import '~bulma/sass/form/_all.sass'
 @import '~bulma/sass/layout/section.sass'
 @import '~bulma/sass/helpers/color.sass'
@@ -56,88 +57,100 @@ $input-color: black
 
 // main app containers
 html
-	overflow-y: auto
-	height: 100%
+  overflow-y: auto
+  height: 100%
 body
-	height: 100%
+  height: 100%
   margin: 0
   font-family: "Helvetica Neue", sans-serif
   -webkit-font-smoothing: antialiased
   -moz-osx-font-smoothing: grayscale
 .sidebar
-	position: fixed
-	width: $navWidth
-	background: linear-gradient(180deg, #162C4E 0%, #000C1E 100%)
+  position: fixed
+  width: $navWidth
+  background: linear-gradient(180deg, #162C4E 0%, #000C1E 100%)
 .body
-	width: calc(100% - #{$navWidth})
-	min-height: 100vh
-	position: relative
-	left: $navWidth
+  width: calc(100% - #{$navWidth})
+  min-height: 100vh
+  position: relative
+  left: $navWidth
 // custom utility css
 code
-	color: $bodyBg
+  color: $bodyBg
 .screen-height
-	height: 100vh
+  height: 100vh
 .full-height
-	height: 100%
+  height: 100%
+.has-text-red
+  color: red
 .has-background-white-rounded
-	background-color: white
-	border-top-left-radius: 30px
+  background-color: white
+  border-top-left-radius: 30px
 .has-background-blue-light
-	background-color:#1F3C66
+  background-color:#1F3C66
+.has-safe-gradient
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), linear-gradient(265.24deg, rgba(209, 224, 227, 0.7) 0%, rgba(128, 175, 216, 0.7) 25.29%, rgba(137, 133, 197, 0.7) 51.56%, rgba(96, 56, 148, 0.7) 74.48%, rgba(19, 24, 67, 0.7) 100%)
+.has-shadow
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.05)
 .has-background-blue-dark
-	background: #1B2738
+  background: #1B2738
+.is-size-4
+  font-size: 1.8rem !important
 .is-size-6
-	font-size: .9rem !important
+  font-size: .9rem !important
 .rounded-sm
-	border-radius: 8px
+  border-radius: 8px
 .rounded-lg
-	border-radius: 20px
+  border-radius: 20px
 .rounded-full
-	border-radius: 50%
+  border-radius: 50%
 .flex-1
-	flex: 1 0 0
+  flex: 1 0 0
 .flex-2
-	flex: 2 0 0
+  flex: 2 0 0
 .pointer
-	cursor: pointer
+  cursor: pointer
 .is-disabled
-	pointer-events: none
-	svg 
-		opacity: 0.5
+  pointer-events: none
+  svg 
+    opacity: 0.5
 hr
-	background-color: grey
-	margin: 0
-	height: 1px
+  background-color: grey
+  margin: 0
+  height: 1px
 label
-	user-select: none
+  user-select: none
 .border
-	border: 1px solid black
-	&-light
-		border: 1px solid $grey-light
-		&-top
-			border-top: 1px solid $grey-light
-		&-right
-			border-right: 1px solid $grey-light
+  border: 1px solid black
+  &-none
+    border: none
+  &-light
+    border: 1px solid $grey-light
+    &-top
+      border-top: 1px solid $grey-light
+    &-bottom
+      border-bottom: 1px solid $grey-light
+    &-right
+      border-right: 1px solid $grey-light
 .button.is-link,
 .button:hover.is-link
-	color: white
-	background-color: #0C14D0
+  color: white
+  background-color: #0C14D0
 .progress-bit
-	width: 3px
-	border-radius: 4px
+  width: 3px
+  border-radius: 4px
 .opacity-5
-	opacity: 50%
+  opacity: 50%
 input
-	font-size: 1rem
+  font-size: 1rem
 input,
 input:focus
-	border-width: 1px
+  border-width: 1px
 input:focus-visible
-	outline: none
+  outline: none
 .dropdown-item
-	padding: 1rem
-	line-height: 1em
-	height: auto
+  padding: 1rem
+  line-height: 1em
+  height: auto
 .button
-	height: auto
+  height: auto

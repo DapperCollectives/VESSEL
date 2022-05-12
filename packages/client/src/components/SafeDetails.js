@@ -30,7 +30,7 @@ const SafeDetails = ({ safeType, setSafeType, safeName, setSafeName }) => (
       </div>
       <div className="flex-1 is-flex is-flex-direction-column">
         <label className="has-text-grey mb-2">
-          Safe type<span className="has-text-red-500">*</span>
+          Safe type<span className="has-text-red">*</span>
         </label>
         <Dropdown value={safeType} values={safeTypes} setValue={setSafeType} />
       </div>
