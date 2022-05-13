@@ -1,5 +1,4 @@
 import React from "react";
-import { isEmpty } from "lodash";
 import { NavLink } from "react-router-dom";
 import { WalletPrompt } from "../components";
 import { Plus } from "../components/Svg";
@@ -35,17 +34,8 @@ const SafeLinks = () => (
 );
 
 function Home({ web3 }) {
-  const { loadingSafes, safes, user } = web3;
-  let SafeCpt = null;
-  console.log(loadingSafes, safes);
-  const loggedIn = user?.loggedIn;
-  if (!loadingSafes && isEmpty(safes) && loggedIn) {
-    SafeCpt = <SafeLinks />;
-  } else if (!loggedIn) {
-    SafeCpt = <WalletPrompt />;
-  }
-
-  return SafeCpt;
+  const loggedIn = web3?.user?.loggedIn;
+  return loggedIn ? <SafeLinks /> : <WalletPrompt />;
 }
 
 export default Web3Consumer(Home);

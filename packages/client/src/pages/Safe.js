@@ -1,19 +1,157 @@
-import React from "react";
+import React, { useState } from "react";
 import { useParams, NavLink } from "react-router-dom";
-import { shortenAddr } from "../utils";
+import QRCode from "react-qr-code";
+import { shortenAddr, isAddr } from "../utils";
 import {
   SafeHome,
   SafeTransactions,
   SafeAssets,
   SafeContacts,
   SafeSettings,
+  Dropdown,
 } from "../components";
 import { ArrowDown, ArrowUp } from "../components/Svg";
-import { Web3Consumer } from "../contexts/Web3";
+import { Web3Consumer, useModalContext } from "../contexts";
+
+const ReceiveTokens = ({ name, address }) => {
+  const modalContext = useModalContext();
+
+  return (
+    <div className="p-5 has-text-black has-text-centered">
+      <div>
+        <h2 className="is-size-4">Receive</h2>
+        <div>
+          <span className="border-light-right mr-2 pr-2 has-text-grey">
+            To: {name}
+          </span>
+          <span className="is-underlined">{shortenAddr(address)}</span>
+        </div>
+      </div>
+      <div className="border-light-top mt-5 pt-6">
+        <QRCode value={`https://flowscan.org/account/${address}`} />
+        <div className="is-underlined mt-5">Copy Safe Address</div>
+      </div>
+      <div className="is-flex is-align-items-center mt-6">
+        <button
+          className="button flex-1 p-4 mr-2"
+          onClick={() => modalContext.closeModal()}
+        >
+          Cancel
+        </button>
+      </div>
+    </div>
+  );
+};
+
+const SendTokens = ({ name, address, web3 }) => {
+  const [step, setStep] = useState(0);
+  const [amount, setAmount] = useState(0);
+  const [recipient, setRecipient] = useState("");
+  const assetTypes = [`FLOW Qty: ${web3?.user?.balance ?? 0}`];
+  const [asset, setAsset] = useState(assetTypes[0]);
+
+  const continueReady = amount > 0 && isAddr(recipient);
+  const btnText = continueReady ? "Sign & Deploy" : "Next";
+  const titleText = continueReady ? "Confirm Transaction" : "Send";
+
+  const btnClasses = [
+    "button p-4 flex-1",
+    continueReady ? "is-link" : "is-light is-disabled",
+  ];
+
+  const onSubmit = () => {
+    if (step === 0) {
+      return setStep(1);
+    }
+    if (step === 1) {
+      // submit tx
+    }
+  };
+
+  return (
+    <div className="p-5 has-text-black">
+      <h2 className="is-size-4">{titleText}</h2>
+      <div>
+        <span className="border-light-right mr-2 pr-2 has-text-grey">
+          From {name}
+        </span>
+        <span className="is-underlined">{shortenAddr(address)}</span>
+      </div>
+      <div className="border-light-top mt-4 pt-5">
+        <div className="flex-1 is-flex is-flex-direction-column mb-4">
+          <label className="has-text-grey mb-2">Asset</label>
+          {step === 0 ? (
+            <Dropdown
+              style={{ height: 48 }}
+              value={asset}
+              values={assetTypes}
+              setValue={setAsset}
+            />
+          ) : (
+            <span>{asset.substring(0, 4)}</span>
+          )}
+        </div>
+        <label className="has-text-grey">
+          Amount{step === 0 && <span className="has-text-red"> *</span>}
+        </label>
+        {step === 0 ? (
+          <input
+            type="number"
+            className="is-size-2 border-none column is-full p-0 mb-4"
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
+          />
+        ) : (
+          <span className="is-size-2 column is-full p-0 mb-4">{amount}</span>
+        )}
+        {step === 0 ? (
+          <>
+            <label className="has-text-grey mb-2">
+              Address{step === 0 && <span className="has-text-red"> *</span>}
+            </label>
+            <input
+              style={{ height: 48 }}
+              className="border-light rounded-sm column is-full p-2 mt-2"
+              type="text"
+              value={recipient}
+              onChange={(e) => setRecipient(e.target.value)}
+            />
+          </>
+        ) : (
+          <div className="border-light-top is-flex is-justify-content-space-between py-5">
+            <span className="has-text-grey">Sending to</span>
+            <span>{shortenAddr(recipient)}</span>
+          </div>
+        )}
+        {step === 1 && (
+          <div className="border-light-top is-flex is-justify-content-space-between py-5">
+            <span className="has-text-grey">Network fee</span>
+            <span>$0</span>
+          </div>
+        )}
+        {step === 1 && (
+          <div className="border-light-top is-flex is-justify-content-space-between py-5">
+            <span>Total</span>
+            <span>{amount}</span>
+          </div>
+        )}
+        <div className="is-flex is-align-items-center mt-6">
+          <button className="button flex-1 p-4 mr-2" onClick={() => setStep(0)}>
+            Cancel
+          </button>
+          <button className={btnClasses.join(" ")} onClick={onSubmit}>
+            {btnText}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 function Safe({ web3 }) {
   const params = useParams();
   const { address, tab } = params;
+  const modalContext = useModalContext();
 
   const safeData = web3?.treasuries?.[address];
   if (!safeData) {
@@ -44,7 +182,7 @@ function Safe({ web3 }) {
     const baseUrl = `/safe/${address}`;
     const to = btn === "home" ? baseUrl : `${baseUrl}/${btn}`;
     return (
-      <NavLink to={to}>
+      <NavLink to={to} key={`btn-${i}`}>
         <button className={classes.join(" ")} key={i}>
           {btn}
         </button>
@@ -66,6 +204,25 @@ function Safe({ web3 }) {
 
   const BodyComponent = tabMap[currentTab];
 
+  const onSend = () => {
+    modalContext.openModal(
+      React.createElement(SendTokens, {
+        name: safeData.name,
+        address,
+        web3,
+      })
+    );
+  };
+
+  const onReceive = () => {
+    modalContext.openModal(
+      React.createElement(ReceiveTokens, {
+        name: safeData.name,
+        address,
+      })
+    );
+  };
+
   return (
     <section className="section is-flex is-flex-direction-column has-text-black">
       <div className="column is-full p-0 is-flex is-flex-direction-column mb-5">
@@ -76,10 +233,16 @@ function Safe({ web3 }) {
         <div className="is-flex">{ButtonCpts}</div>
         <div className="is-flex flex-1 is-justify-content-end">
           <div className="w-auto">
-            <button className="button py-4 px-5 pointer mr-2">
+            <button
+              className="button py-4 px-5 pointer mr-2"
+              onClick={onReceive}
+            >
               Receive <ArrowDown className="ml-2" />
             </button>
-            <button className="button py-4 px-5 pointer is-link">
+            <button
+              className="button py-4 px-5 pointer is-link"
+              onClick={onSend}
+            >
               Send <ArrowUp className="ml-2 has-text-white" />
             </button>
           </div>

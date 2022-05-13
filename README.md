@@ -44,6 +44,8 @@ make vessel-emulator
 
 #### Client
 
+First, make sure you have a `.env` file in the same location and shape as `packages/client/.env.example`. Then, to start the client:
+
 ```bash
 yarn start
 ```

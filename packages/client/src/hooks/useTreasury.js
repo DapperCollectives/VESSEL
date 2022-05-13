@@ -89,18 +89,34 @@ export default function useTreasury(address) {
       dispatch({ type: "SUBMITTED_TREASURY_TRANSACTION" });
     }
     await tx(res).onceSealed();
+    setTreasury(address, treasuryData);
+    dispatch({ type: "TREASURY_TRANSACTION_SUCCESS" });
+    return res;
+  };
+
+  const setTreasury = (_address, treasuryData) => {
     dispatch({
       type: "SET_TREASURY",
       payload: {
-        [address]: treasuryData,
+        [_address]: treasuryData,
       },
     });
-    dispatch({ type: "TREASURY_TRANSACTION_SUCCESS" });
-    return res;
+  };
+
+  const fetchTreasury = async (_address) => {
+    const signers = await getSigners(_address);
+    if (signers) {
+      const threshold = await getThreshold(_address);
+      return { threshold, signers };
+    }
+
+    return null;
   };
 
   return {
     ...state,
     createTreasury,
+    fetchTreasury,
+    setTreasury,
   };
 }

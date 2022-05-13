@@ -7,6 +7,7 @@ function IntentList({ intents = [] }) {
       <div
         className="column is-full p-0 is-flex is-justify-content-center is-align-items-center has-text-grey"
         style={{ minHeight: 175 }}
+        key="no-transactions"
       >
         No pending transactions
       </div>
