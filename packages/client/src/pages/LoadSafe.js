@@ -107,7 +107,9 @@ function LoadSafe({ web3 }) {
       safeOwnerCpts.push(
         <div className="column is-flex is-full" key={so.address}>
           <div className="flex-1 is-flex is-flex-direction-column pr-5">
-            <label className="has-text-grey mb-2">Owner Name</label>
+            <label className="has-text-grey mb-2">
+              Owner Name<span className="has-text-red">*</span>
+            </label>
             <input
               className="p-4 rounded-sm"
               type="text"
@@ -166,7 +168,7 @@ function LoadSafe({ web3 }) {
           <input
             className="p-4 rounded-sm"
             type="text"
-            placeholder="Choose a local name for your safe"
+            placeholder="16-character safe address"
             value={safeAddress}
             onChange={onAddressChange}
           />
