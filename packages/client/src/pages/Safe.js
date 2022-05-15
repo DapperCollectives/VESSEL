@@ -12,9 +12,11 @@ import {
 } from "../components";
 import { ArrowDown, ArrowUp } from "../components/Svg";
 import { Web3Consumer, useModalContext } from "../contexts";
+import useClipboard from "../hooks/useClipboard";
 
 const ReceiveTokens = ({ name, address }) => {
   const modalContext = useModalContext();
+  const clipboard = useClipboard();
 
   return (
     <div className="p-5 has-text-black has-text-centered">
@@ -29,7 +31,12 @@ const ReceiveTokens = ({ name, address }) => {
       </div>
       <div className="border-light-top mt-5 pt-6">
         <QRCode value={`https://flowscan.org/account/${address}`} />
-        <div className="is-underlined mt-5">Copy Safe Address</div>
+        <div
+          className="is-underlined mt-5 pointer"
+          onClick={() => clipboard.copy(address)}
+        >
+          {clipboard.didCopy ? "Copied" : "Copy Safe Address"}
+        </div>
       </div>
       <div className="is-flex is-align-items-center mt-6">
         <button
@@ -152,6 +159,7 @@ function Safe({ web3 }) {
   const params = useParams();
   const { address, tab } = params;
   const modalContext = useModalContext();
+  const clipboard = useClipboard();
 
   const safeData = web3?.treasuries?.[address];
   if (!safeData) {
@@ -227,7 +235,17 @@ function Safe({ web3 }) {
     <section className="section is-flex is-flex-direction-column has-text-black">
       <div className="column is-full p-0 is-flex is-flex-direction-column mb-5">
         <h2 className="is-size-4 mb-2">{safeData.name}</h2>
-        <p className="has-text-grey">Safe address {shortenAddr(address)}</p>
+        <p>
+          <span className="has-text-grey">
+            Safe address {shortenAddr(address)}
+          </span>
+          <span
+            className="is-underlined ml-2 pointer"
+            onClick={() => clipboard.copy(address)}
+          >
+            {clipboard.didCopy ? "Copied" : "Copy address"}
+          </span>
+        </p>
       </div>
       <div className="column is-full p-0 is-flex is-align-items-center">
         <div className="is-flex">{ButtonCpts}</div>
