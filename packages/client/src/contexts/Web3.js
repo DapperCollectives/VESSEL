@@ -71,6 +71,8 @@ export default function Web3Provider({
     createdTreasury,
     submittedTransaction,
     createTreasury,
+    fetchTreasury,
+    setTreasury,
   } = useTreasury(user?.addr);
 
   // for Nextjs Builds, return null until "window" is available
@@ -97,6 +99,8 @@ export default function Web3Provider({
     createdTreasury,
     submittedTransaction,
     createTreasury,
+    fetchTreasury,
+    setTreasury,
     ...props,
   };
 

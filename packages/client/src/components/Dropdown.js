@@ -34,7 +34,7 @@ const TooltipWrapper = ({ isOpen, children }) => {
   );
 };
 
-const Dropdown = ({ value, values, setValue }) => {
+const Dropdown = ({ value, values, setValue, style }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const openCloseDrowdown = () => {
@@ -57,6 +57,7 @@ const Dropdown = ({ value, values, setValue }) => {
       onBlur={closeOnBlur}
       aria-haspopup="true"
       aria-controls="dropdown-menu"
+      style={style}
     >
       <div className="dropdown-trigger columns m-0 is-flex-grow-1">
         <button

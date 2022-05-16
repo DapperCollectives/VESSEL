@@ -85,7 +85,7 @@ const ModalProvider = ({ children }) => {
             onClick={handleClickOnBackground}
           ></div>
           <div
-            className={`modal-content ${
+            className={`modal-content rounded-sm ${
               modalConfig.backgroundColor
                 ? modalConfig.backgroundColor
                 : " has-background-white"
