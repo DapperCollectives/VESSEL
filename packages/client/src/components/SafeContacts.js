@@ -1,7 +1,10 @@
 import React from "react";
 import { Person } from "./Svg";
+import useClipboard from "../hooks/useClipboard";
 
 function SafeContacts({ safeOwners = [] }) {
+  const clipboard = useClipboard();
+
   return (
     <>
       <div className="column p-0 mt-5 is-flex is-full">
@@ -22,7 +25,12 @@ function SafeContacts({ safeOwners = [] }) {
             <div className="flex-2">{so.address}</div>
             <div className="is-underlined">
               <span className="mr-5">Edit</span>
-              <span className="mr-5">Copy Address</span>
+              <span
+                className="mr-5 pointer"
+                onClick={() => clipboard.copy(so.address)}
+              >
+                {clipboard.didCopy ? "Copied" : "Copy Address"}
+              </span>
               <span>Send</span>
             </div>
           </div>

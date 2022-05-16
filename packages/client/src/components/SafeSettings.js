@@ -1,4 +1,5 @@
 import React from "react";
+import useClipboard from "../hooks/useClipboard";
 
 const SignatureBar = ({ threshold, safeOwners }) => (
   <div className="is-flex column p-0 is-full">
@@ -16,6 +17,8 @@ const SignatureBar = ({ threshold, safeOwners }) => (
 );
 
 function SafeSettings({ address, name, threshold, safeOwners }) {
+  const clipboard = useClipboard();
+
   return (
     <>
       <div className="column p-0 mt-5 is-flex is-full">
@@ -73,7 +76,12 @@ function SafeSettings({ address, name, threshold, safeOwners }) {
             </div>
             <div className="flex-1">{so.address}</div>
             <div>
-              <span className="is-underlined mr-5">Copy Address</span>
+              <span
+                className="is-underlined mr-5 pointer"
+                onClick={() => clipboard.copy(so.address)}
+              >
+                {clipboard.didCopy ? "Copied" : "Copy Address"}
+              </span>
               <span className="is-underlined">Edit</span>
             </div>
           </div>
