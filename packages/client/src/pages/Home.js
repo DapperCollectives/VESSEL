@@ -15,7 +15,7 @@ const SafeLinks = () => (
         Create or load a Safe to get started
       </h1>
       <p className="subtitle has-text-grey">
-        We’ll get you onboarded after you we import your data
+        We’ll get you onboarded after we import your data
       </p>
       <div className="is-flex">
         <NavLink className="has-text-black" to="/load-safe">
