@@ -35,13 +35,19 @@ function SafeOwners({
       </div>
       <div className="flex-1 is-flex is-flex-direction-column">
         <label className="has-text-grey mb-2">Owner Address</label>
-        <input
-          className="p-4 rounded-sm"
-          type="text"
-          placeholder="Enter user's FLOW address"
-          value={address}
-          disabled
-        />
+        <div style={{ position: "relative" }}>
+          <input
+            className="p-4 rounded-sm"
+            style={{ width: "100%" }}
+            type="text"
+            placeholder="Enter user's FLOW address"
+            value={address}
+            disabled
+          />
+          <div style={{ position: "absolute", right: 17, top: 14 }}>
+            <Check />
+          </div>
+        </div>
       </div>
     </div>,
   ];

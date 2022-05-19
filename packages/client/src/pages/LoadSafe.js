@@ -7,11 +7,20 @@ import { Web3Consumer } from "../contexts/Web3";
 import { Check, Person } from "../components/Svg";
 import { ProgressBar } from "../components";
 
-const SafeHeader = ({ safeOwners, safeName, onContinue = () => {} }) => {
+const SafeHeader = ({
+  safeName,
+  safeOwners,
+  safeOwnersValidByAddress,
+  onContinue = () => {},
+}) => {
   let continueReady = false;
   if (safeName.trim().length && !isEmpty(safeOwners)) {
-    const ownerNames = safeOwners.every((so) => so?.name?.trim().length);
-    if (ownerNames) {
+    const everyOwnerHasName = safeOwners.every((so) => so?.name?.trim().length);
+    const everyOwnerHasValidAddress = Object.values(
+      safeOwnersValidByAddress
+    ).every((isValid) => isValid);
+
+    if (everyOwnerHasName && everyOwnerHasValidAddress) {
       continueReady = true;
     }
   }
@@ -174,6 +183,7 @@ function LoadSafe({ web3 }) {
       <SafeHeader
         safeName={safeName}
         safeOwners={safeOwners}
+        safeOwnersValidByAddress={safeOwnersValidByAddress}
         onContinue={onSetTreasury}
       />
       <div className="column mt-5 is-flex is-full">
