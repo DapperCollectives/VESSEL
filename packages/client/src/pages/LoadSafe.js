@@ -54,8 +54,7 @@ function LoadSafe({ web3 }) {
   const [threshold, setThreshold] = useState(0);
   const [safeOwners, setSafeOwners] = useState([]);
   const [safeOwnersValidByAddress, setSafeOwnersValidByAddress] = useState({});
-  const { fetchTreasury, setTreasury, checkTreasuryOwnerAddress, address } =
-    web3;
+  const { injectedProvider, fetchTreasury, setTreasury, address } = web3;
 
   if (!address) {
     return <WalletPrompt />;
@@ -68,8 +67,12 @@ function LoadSafe({ web3 }) {
       const isAddress = isAddr(so.address);
 
       if (isAddress) {
-        newSafeOwnersValidByAddress[so.address] =
-          await checkTreasuryOwnerAddress(so.address);
+        try {
+          await injectedProvider.account(so.address);
+          newSafeOwnersValidByAddress[so.address] = true;
+        } catch (err) {
+          newSafeOwnersValidByAddress[so.address] = false;
+        }
       } else {
         newSafeOwnersValidByAddress[so.address] = false;
       }
@@ -153,13 +156,7 @@ function LoadSafe({ web3 }) {
                 disabled
               />
               {safeOwnersValidByAddress[so.address] && (
-                <div
-                  style={{
-                    position: "absolute",
-                    right: 17,
-                    top: 14,
-                  }}
-                >
+                <div style={{ position: "absolute", right: 17, top: 14 }}>
                   <Check />
                 </div>
               )}

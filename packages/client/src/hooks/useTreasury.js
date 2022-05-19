@@ -4,7 +4,6 @@ import { mutate, query, tx } from "@onflow/fcl";
 import reducer from "../reducers";
 import { INITIALIZE_TREASURY } from "../flow/initializeTreasury.tx";
 import { GET_SIGNERS, GET_THRESHOLD } from "../flow/checkTreasuries.tx";
-import { CHECK_TREASURY_OWNER_ADDRESS } from "../flow/checkTreasuryOwners.tx";
 
 const storageKey = "vessel-treasuries";
 const initialState = {
@@ -114,15 +113,10 @@ export default function useTreasury(address) {
     return null;
   };
 
-  const checkTreasuryOwnerAddress = async (address) => {
-    return await doQuery(CHECK_TREASURY_OWNER_ADDRESS, address);
-  };
-
   return {
     ...state,
     createTreasury,
     fetchTreasury,
     setTreasury,
-    checkTreasuryOwnerAddress,
   };
 }

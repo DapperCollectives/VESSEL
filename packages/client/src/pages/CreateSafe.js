@@ -8,6 +8,7 @@ import {
   SignatureRequirements,
 } from "../components";
 import { Web3Consumer } from "../contexts/Web3";
+import { isAddr } from "../utils";
 
 const AuthorizeTreasury = ({
   address,
@@ -93,6 +94,7 @@ function CreateSafe({ web3 }) {
   const [safeName, setSafeName] = useState("");
   const [signersAmount, setSignersAmount] = useState(1);
   const {
+    injectedProvider,
     address,
     loadingTreasuries,
     creatingTreasury,
@@ -101,6 +103,33 @@ function CreateSafe({ web3 }) {
     createTreasury,
   } = web3;
   const [safeOwners, setSafeOwners] = useState([{ name: "", address }]);
+  const [safeOwnersValidByAddress, setSafeOwnersValidByAddress] = useState({});
+
+  const checkSafeOwnerAddressesValidity = async (newSafeOwners) => {
+    const newSafeOwnersValidByAddress = {};
+
+    for (const so of newSafeOwners) {
+      const isAddress = isAddr(so.address);
+
+      if (isAddress) {
+        try {
+          await injectedProvider.account(so.address);
+          newSafeOwnersValidByAddress[so.address] = true;
+        } catch (err) {
+          newSafeOwnersValidByAddress[so.address] = false;
+        }
+      } else {
+        newSafeOwnersValidByAddress[so.address] = false;
+      }
+    }
+
+    setSafeOwnersValidByAddress(newSafeOwnersValidByAddress);
+  };
+
+  const onSafeOwnersChange = (newSafeOwners) => {
+    setSafeOwners(newSafeOwners);
+    checkSafeOwnerAddressesValidity(newSafeOwners);
+  };
 
   if (!address) {
     return <WalletPrompt />;
@@ -206,7 +235,8 @@ function CreateSafe({ web3 }) {
       <SafeOwners
         address={address}
         safeOwners={safeOwners}
-        setSafeOwners={setSafeOwners}
+        safeOwnersValidByAddress={safeOwnersValidByAddress}
+        setSafeOwners={onSafeOwnersChange}
       />
       <SignatureRequirements
         safeOwners={safeOwners}
