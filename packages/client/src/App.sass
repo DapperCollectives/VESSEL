@@ -3,7 +3,7 @@
 $navWidth: 260px
 
 // Set your brand colors
-$bodyBg: #11191f
+$bodyBg: #162c4e
 $bodyColor: #bbc6ce
 
 // Update Bulma's global variables
@@ -68,7 +68,7 @@ body
 .sidebar
   position: fixed
   width: $navWidth
-  background: linear-gradient(180deg, #162C4E 0%, #000C1E 100%)
+  background: linear-gradient(180deg, $bodyBg 0%, #000C1E 100%)
 .body
   width: calc(100% - #{$navWidth})
   min-height: 100vh
@@ -112,7 +112,7 @@ code
   cursor: pointer
 .is-disabled
   pointer-events: none
-  svg 
+  svg
     opacity: 0.5
 hr
   background-color: grey
