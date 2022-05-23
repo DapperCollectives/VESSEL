@@ -8,7 +8,7 @@ import {
   SignatureRequirements,
 } from "../components";
 import { Web3Consumer } from "../contexts/Web3";
-import { isAddr } from "../utils";
+import { useAddressValidation } from "../hooks";
 
 const AuthorizeTreasury = ({
   address,
@@ -106,23 +106,15 @@ function CreateSafe({ web3 }) {
   } = web3;
   const [safeOwners, setSafeOwners] = useState([{ name: "", address }]);
   const [safeOwnersValidByAddress, setSafeOwnersValidByAddress] = useState({});
+  const { isAddressValid } = useAddressValidation(injectedProvider);
 
   const checkSafeOwnerAddressesValidity = async (newSafeOwners) => {
     const newSafeOwnersValidByAddress = {};
 
     for (const so of newSafeOwners) {
-      const isAddress = isAddr(so.address);
-
-      if (isAddress) {
-        try {
-          await injectedProvider.account(so.address);
-          newSafeOwnersValidByAddress[so.address] = true;
-        } catch (err) {
-          newSafeOwnersValidByAddress[so.address] = false;
-        }
-      } else {
-        newSafeOwnersValidByAddress[so.address] = false;
-      }
+      newSafeOwnersValidByAddress[so.address] = await isAddressValid(
+        so.address
+      );
     }
 
     setSafeOwnersValidByAddress(newSafeOwnersValidByAddress);

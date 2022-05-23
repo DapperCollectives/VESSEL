@@ -6,6 +6,7 @@ import { isAddr } from "../utils";
 import { Web3Consumer } from "../contexts/Web3";
 import { Check, Person } from "../components/Svg";
 import { ProgressBar } from "../components";
+import { useAddressValidation } from "../hooks";
 
 const SafeHeader = ({
   safeName,
@@ -64,6 +65,7 @@ function LoadSafe({ web3 }) {
   const [safeOwners, setSafeOwners] = useState([]);
   const [safeOwnersValidByAddress, setSafeOwnersValidByAddress] = useState({});
   const { injectedProvider, fetchTreasury, setTreasury, address } = web3;
+  const { isAddressValid } = useAddressValidation(injectedProvider);
 
   if (!address) {
     return <WalletPrompt />;
@@ -73,18 +75,9 @@ function LoadSafe({ web3 }) {
     const newSafeOwnersValidByAddress = {};
 
     for (const so of newSafeOwners) {
-      const isAddress = isAddr(so.address);
-
-      if (isAddress) {
-        try {
-          await injectedProvider.account(so.address);
-          newSafeOwnersValidByAddress[so.address] = true;
-        } catch (err) {
-          newSafeOwnersValidByAddress[so.address] = false;
-        }
-      } else {
-        newSafeOwnersValidByAddress[so.address] = false;
-      }
+      newSafeOwnersValidByAddress[so.address] = await isAddressValid(
+        so.address
+      );
     }
 
     setSafeOwnersValidByAddress(newSafeOwnersValidByAddress);
@@ -157,8 +150,7 @@ function LoadSafe({ web3 }) {
             <label className="has-text-grey mb-2">Owner Address</label>
             <div style={{ position: "relative" }}>
               <input
-                className="p-4 rounded-sm"
-                style={{ width: "100%" }}
+                className="p-4 rounded-sm column is-full"
                 type="text"
                 placeholder="Enter user's FLOW address"
                 value={so.address}
@@ -211,8 +203,7 @@ function LoadSafe({ web3 }) {
           </label>
           <div style={{ position: "relative" }}>
             <input
-              className="p-4 rounded-sm"
-              style={{ width: "100%" }}
+              className="p-4 rounded-sm column is-full"
               type="text"
               placeholder="16-character safe address"
               value={safeAddress}
