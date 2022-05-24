@@ -1,5 +1,5 @@
 import React from "react";
-import useClipboard from "../hooks/useClipboard";
+import { useClipboard } from "../hooks";
 
 const SignatureBar = ({ threshold, safeOwners }) => (
   <div className="is-flex column p-0 is-full">

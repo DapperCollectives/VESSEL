@@ -12,7 +12,7 @@ import {
 } from "../components";
 import { ArrowDown, ArrowUp } from "../components/Svg";
 import { Web3Consumer, useModalContext } from "../contexts";
-import useClipboard from "../hooks/useClipboard";
+import { useClipboard } from "../hooks";
 
 const ReceiveTokens = ({ name, address }) => {
   const modalContext = useModalContext();

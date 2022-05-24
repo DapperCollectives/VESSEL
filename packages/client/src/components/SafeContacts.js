@@ -1,6 +1,6 @@
 import React from "react";
 import { Person } from "./Svg";
-import useClipboard from "../hooks/useClipboard";
+import { useClipboard } from "../hooks";
 
 function SafeContacts({ safeOwners = [] }) {
   const clipboard = useClipboard();

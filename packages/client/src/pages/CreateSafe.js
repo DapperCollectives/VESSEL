@@ -8,12 +8,14 @@ import {
   SignatureRequirements,
 } from "../components";
 import { Web3Consumer } from "../contexts/Web3";
+import { useAddressValidation } from "../hooks";
 
 const AuthorizeTreasury = ({
   address,
   safeName,
   safeType,
   safeOwners,
+  safeOwnersValidByAddress,
   createTreasury,
   creatingTreasury,
   createdTreasury,
@@ -21,11 +23,12 @@ const AuthorizeTreasury = ({
 }) => {
   let isAuthorizeReady = false;
   if (safeName.trim().length && safeType) {
-    const ownerNames = safeOwners.every((so) => so?.name?.trim().length);
-    const ownerAddrs = safeOwners
-      .slice(1)
-      .every((so) => so?.address?.trim().length);
-    if (ownerNames && ownerAddrs) {
+    const everyOwnerHasName = safeOwners.every((so) => so?.name?.trim().length);
+    const everyOwnerHasValidAddress = Object.values(
+      safeOwnersValidByAddress
+    ).every((isValid) => isValid);
+
+    if (everyOwnerHasName && everyOwnerHasValidAddress) {
       isAuthorizeReady = true;
     }
   }
@@ -93,6 +96,7 @@ function CreateSafe({ web3 }) {
   const [safeName, setSafeName] = useState("");
   const [signersAmount, setSignersAmount] = useState(1);
   const {
+    injectedProvider,
     address,
     loadingTreasuries,
     creatingTreasury,
@@ -101,6 +105,26 @@ function CreateSafe({ web3 }) {
     createTreasury,
   } = web3;
   const [safeOwners, setSafeOwners] = useState([{ name: "", address }]);
+  const [safeOwnersValidByAddress, setSafeOwnersValidByAddress] = useState({});
+  const { isAddressValid } = useAddressValidation(injectedProvider);
+
+  const checkSafeOwnerAddressesValidity = async (newSafeOwners) => {
+    const newSafeOwnersValidByAddress = {};
+
+    for (const so of newSafeOwners) {
+      newSafeOwnersValidByAddress[so.address] = await isAddressValid(
+        so.address
+      );
+    }
+
+    setSafeOwnersValidByAddress(newSafeOwnersValidByAddress);
+  };
+
+  const onSafeOwnersChange = (newSafeOwners) => {
+    setSafeOwners(newSafeOwners);
+    // skip first safe owner since it's the connected user and won't have an address
+    checkSafeOwnerAddressesValidity(newSafeOwners.slice(1));
+  };
 
   if (!address) {
     return <WalletPrompt />;
@@ -206,7 +230,8 @@ function CreateSafe({ web3 }) {
       <SafeOwners
         address={address}
         safeOwners={safeOwners}
-        setSafeOwners={setSafeOwners}
+        safeOwnersValidByAddress={safeOwnersValidByAddress}
+        setSafeOwners={onSafeOwnersChange}
       />
       <SignatureRequirements
         safeOwners={safeOwners}
@@ -223,6 +248,7 @@ function CreateSafe({ web3 }) {
         safeName={safeName}
         safeType={safeType}
         safeOwners={safeOwners}
+        safeOwnersValidByAddress={safeOwnersValidByAddress}
         signersAmount={signersAmount}
         createTreasury={createTreasury}
         creatingTreasury={creatingTreasury}

@@ -6,12 +6,22 @@ import { isAddr } from "../utils";
 import { Web3Consumer } from "../contexts/Web3";
 import { Check, Person } from "../components/Svg";
 import { ProgressBar } from "../components";
+import { useAddressValidation } from "../hooks";
 
-const SafeHeader = ({ safeOwners, safeName, onContinue = () => {} }) => {
+const SafeHeader = ({
+  safeName,
+  safeOwners,
+  safeOwnersValidByAddress,
+  onContinue = () => {},
+}) => {
   let continueReady = false;
   if (safeName.trim().length && !isEmpty(safeOwners)) {
-    const ownerNames = safeOwners.every((so) => so?.name?.trim().length);
-    if (ownerNames) {
+    const everyOwnerHasName = safeOwners.every((so) => so?.name?.trim().length);
+    const everyOwnerHasValidAddress = Object.values(
+      safeOwnersValidByAddress
+    ).every((isValid) => isValid);
+
+    if (everyOwnerHasName && everyOwnerHasValidAddress) {
       continueReady = true;
     }
   }
@@ -21,8 +31,8 @@ const SafeHeader = ({ safeOwners, safeName, onContinue = () => {} }) => {
     continueReady ? "is-link" : "is-light is-disabled",
   ];
 
-  let stepMessage = "Load an existing safe";
-  let stepSubtitle =
+  const stepMessage = "Load an existing safe";
+  const stepSubtitle =
     "P.S. Your connected wallet does not have to be the owner of this Safe";
 
   const stepBtnText = "Add Safe";
@@ -53,24 +63,42 @@ function LoadSafe({ web3 }) {
   const [safeName, setSafeName] = useState("");
   const [threshold, setThreshold] = useState(0);
   const [safeOwners, setSafeOwners] = useState([]);
-  const { fetchTreasury, setTreasury, address } = web3;
+  const [safeOwnersValidByAddress, setSafeOwnersValidByAddress] = useState({});
+  const { injectedProvider, fetchTreasury, setTreasury, address } = web3;
+  const { isAddressValid } = useAddressValidation(injectedProvider);
 
   if (!address) {
     return <WalletPrompt />;
   }
+
+  const checkSafeOwnerAddressesValidity = async (newSafeOwners) => {
+    const newSafeOwnersValidByAddress = {};
+
+    for (const so of newSafeOwners) {
+      newSafeOwnersValidByAddress[so.address] = await isAddressValid(
+        so.address
+      );
+    }
+
+    setSafeOwnersValidByAddress(newSafeOwnersValidByAddress);
+  };
 
   const onAddressChange = async (e) => {
     setSafeAddress(e.target.value);
     const maybeValid = isAddr(e.target.value);
     if (maybeValid) {
       const treasury = await fetchTreasury(e.target.value);
-      setSafeOwners(
-        Object.keys(treasury?.signers ?? {}).map((signerAddr) => ({
+      const newSafeOwners = Object.keys(treasury?.signers ?? {}).map(
+        (signerAddr) => ({
           name: "",
           address: signerAddr,
-        }))
+        })
       );
-      setThreshold(treasury.threshold);
+
+      setSafeOwners(newSafeOwners);
+      checkSafeOwnerAddressesValidity(newSafeOwners);
+
+      setThreshold(treasury?.threshold ?? 0);
     } else {
       setSafeOwners([]);
       setThreshold(0);
@@ -120,13 +148,20 @@ function LoadSafe({ web3 }) {
           </div>
           <div className="flex-1 is-flex is-flex-direction-column">
             <label className="has-text-grey mb-2">Owner Address</label>
-            <input
-              className="p-4 rounded-sm"
-              type="text"
-              placeholder="Enter user's FLOW address"
-              value={so.address}
-              disabled
-            />
+            <div style={{ position: "relative" }}>
+              <input
+                className="p-4 rounded-sm column is-full"
+                type="text"
+                placeholder="Enter user's FLOW address"
+                value={so.address}
+                disabled
+              />
+              {safeOwnersValidByAddress[so.address] && (
+                <div style={{ position: "absolute", right: 17, top: 14 }}>
+                  <Check />
+                </div>
+              )}
+            </div>
           </div>
         </div>
       );
@@ -140,6 +175,7 @@ function LoadSafe({ web3 }) {
       <SafeHeader
         safeName={safeName}
         safeOwners={safeOwners}
+        safeOwnersValidByAddress={safeOwnersValidByAddress}
         onContinue={onSetTreasury}
       />
       <div className="column mt-5 is-flex is-full">
@@ -165,18 +201,20 @@ function LoadSafe({ web3 }) {
           <label className="has-text-grey mb-2">
             Safe Address<span className="has-text-red">*</span>
           </label>
-          <input
-            className="p-4 rounded-sm"
-            type="text"
-            placeholder="16-character safe address"
-            value={safeAddress}
-            onChange={onAddressChange}
-          />
-          {!isEmpty(safeOwners) && (
-            <div style={{ position: "absolute", right: 17, top: 47 }}>
-              <Check />
-            </div>
-          )}
+          <div style={{ position: "relative" }}>
+            <input
+              className="p-4 rounded-sm column is-full"
+              type="text"
+              placeholder="16-character safe address"
+              value={safeAddress}
+              onChange={onAddressChange}
+            />
+            {!isEmpty(safeOwners) && (
+              <div style={{ position: "absolute", right: 17, top: 14 }}>
+                <Check />
+              </div>
+            )}
+          </div>
         </div>
       </div>
       <div className="column is-flex is-full">
