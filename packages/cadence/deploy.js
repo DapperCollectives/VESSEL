@@ -32,8 +32,9 @@ const deployContracts = () => {
     const deployedContracts = {};
     const contractNames = Object.keys(flowJson.contracts);
     contractNames.forEach((cn) => {
-      const cnAddress = flowJson.contracts[cn]?.aliases?.emulator ?? address;
-      deployedContracts[`0x${cn}`] = `0x${cnAddress}`;
+      const cnAddress =
+        flowJson.contracts[cn]?.aliases?.emulator ?? `0x${address}`;
+      deployedContracts[`0x${cn}`] = cnAddress;
     });
     fs.writeFileSync(
       "../client/src/contracts.json",
