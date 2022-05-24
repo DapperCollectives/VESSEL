@@ -1,23 +1,39 @@
 const fs = require("fs");
+const path = require("path");
 const { exec } = require("child_process");
 
 // emulator, testnet, mainnet
 const NETWORK = "emulator";
 
-const deployContracts = (address, contractNames) => {
-  exec(`flow project deploy --network=${NETWORK}`, (error, stdout, stderr) => {
-    if (error) {
-      console.log(`error: ${error.message}`);
-      return;
+const addAccounts = () => {
+  exec(
+    `flow accounts create -f ${path.resolve(__dirname, "flow.json")}`,
+    (error, stdout, stderr) => {
+      if (error?.message || stderr) {
+        console.log(`error: ${error.message}`);
+        return;
+      }
+      console.log(stdout);
     }
-    if (stderr) {
-      console.log(`stderr: ${stderr}`);
+  );
+};
+
+const deployContracts = () => {
+  const flowJson = require("./flow.json");
+  const accountName = Object.keys(flowJson.accounts)[0];
+  const { address } = flowJson.accounts[accountName];
+
+  exec(`flow project deploy --network=${NETWORK}`, (error, stdout, stderr) => {
+    if (error?.message || stderr) {
+      console.log(`error: ${error.message}`);
       return;
     }
 
     const deployedContracts = {};
+    const contractNames = Object.keys(flowJson.contracts);
     contractNames.forEach((cn) => {
-      deployedContracts[`0x${cn}`] = `0x${address}`;
+      const cnAddress = flowJson.contracts[cn]?.aliases?.emulator ?? address;
+      deployedContracts[`0x${cn}`] = `0x${cnAddress}`;
     });
     fs.writeFileSync(
       "../client/src/contracts.json",
@@ -25,50 +41,26 @@ const deployContracts = (address, contractNames) => {
     );
 
     console.log(stdout);
-  });
-};
-
-const getContractNames = (dir) => {
-  const contractNames = [];
-  let dirent;
-  while ((dirent = dir.readSync()) !== null) {
-    if (dirent.name.includes(".cdc")) {
-      const contractName = dirent.name.replace(".cdc", "");
-      contractNames.push(contractName);
+    // create accounts if using emulator
+    if (NETWORK === "emulator") {
+      addAccounts();
     }
-  }
-  dir.closeSync();
-
-  return contractNames;
-};
-
-const addContracts = () => {
-  const flowJson = require("./flow.json");
-  const accountName = Object.keys(flowJson.accounts)[0];
-  const { address } = flowJson.accounts[accountName];
-
-  const dir = fs.opendirSync("./contracts");
-  const contractNames = getContractNames(dir);
-  deployContracts(address, contractNames);
+  });
 };
 
 const deploy = () => {
   if (fs.existsSync("./flow.json")) {
-    addContracts();
+    deployContracts();
   } else {
     console.log("No existing flow file found, creating new one...");
     exec("flow init", (error, _, stderr) => {
-      if (error) {
+      if (error?.message || stderr) {
         console.log(`error: ${error.message}`);
-        return;
-      }
-      if (stderr) {
-        console.log(`stderr: ${stderr}`);
         return;
       }
 
       console.log("Initialized flow.json ...");
-      addContracts();
+      deployContracts();
     });
   }
 };
