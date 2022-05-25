@@ -9,22 +9,49 @@
 		"FungibleToken": {
 			"source": "./contracts/core/FungibleToken.cdc",
 			"aliases": {
-				"emulator": "0xee82856bf20e2aa6"
+				"emulator": "0xee82856bf20e2aa6",
+				"testnet": "0x9a0766d93b6608b7"
 			}
 		},
 		"FlowToken": {
 			"source": "./contracts/core/FlowToken.cdc",
 			"aliases": {
-				"emulator": "0x0ae53cb6e3f42a79"
+				"emulator": "0x0ae53cb6e3f42a79",
+				"testnet": "0x7e60df042a9c0868"
 			}
 		},
-		"NonFungibleToken": "./contracts/core/NonFungibleToken.cdc",
-		"MetadataViews": "./contracts/core/MetadataViews.cdc",
+		"NonFungibleToken": {
+			"source": "./contracts/core/NonFungibleToken.cdc",
+			"aliases": {
+				"testnet": "0x631e88ae7f1d7c20"
+			}
+		},
+		"MetadataViews": {
+			"source": "./contracts/core/MetadataViews.cdc",
+			"aliases": {
+				"testnet": "0x631e88ae7f1d7c20"
+			}
+		},
 		"ExampleNFT": "./contracts/core/ExampleNFT.cdc",
 		"ZayVerifierV2": "./contracts/core/ZayVerifierv2.cdc",
-		"MyMultiSig": "./contracts/MyMultiSig.cdc",
-		"DAOTreasury": "./contracts/DAOTreasury.cdc",
-		"TreasuryActions": "./contracts/TreasuryActions.cdc"
+		"MyMultiSig": {
+			"source": "./contracts/MyMultiSig.cdc",
+			"aliases": {
+				"testnet": "0x68a4fe55ec686656"
+			}
+		},
+		"DAOTreasury": {
+			"source": "./contracts/DAOTreasury.cdc",
+			"aliases": {
+				"testnet": "0x68a4fe55ec686656"
+			}
+		},
+		"TreasuryActions": {
+			"source": "./contracts/TreasuryActions.cdc",
+			"aliases": {
+				"testnet": "0x68a4fe55ec686656"
+			}
+		}
 	},
 	"networks": {
 		"emulator": "127.0.0.1:3569",
@@ -59,6 +86,16 @@
 		"emulator-treasuryOwner": {
 			"address": "120e725050340cab",
 			"key": "843d964aefbc2b6311363551187b8241466ec02e8bc4ba5e000a8b2c02fca69f"
+		},
+		"testnet-account": {
+			"address": "68a4fe55ec686656",
+			"key": {
+					"type": "google-kms",
+					"index": 0,
+					"signatureAlgorithm": "ECDSA_P256",
+					"hashAlgorithm": "SHA2_256",
+					"resourceID":"projects/dl-dapper-collectives-staging/locations/global/keyRings/flow-testnet-cosigners/cryptoKeys/signer/cryptoKeyVersions/1"
+			}
 		}
 	},
 	"deployments": {
@@ -77,6 +114,13 @@
 			"emulator-signer3": [],
 			"emulator-signer4": [],
 			"emulator-treasuryOwner": []
+		},
+		"testnet": {
+			"testnet-account": [
+				"MyMultiSig",
+				"DAOTreasury",
+				"TreasuryActions"
+			]
 		}
 	}
 }

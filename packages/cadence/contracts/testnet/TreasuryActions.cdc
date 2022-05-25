@@ -1,7 +1,7 @@
-import MyMultiSig from "./MyMultiSig.cdc"
-import DAOTreasury from "./DAOTreasury.cdc"
-import FungibleToken from "./core/FungibleToken.cdc"
-import NonFungibleToken from "./core/NonFungibleToken.cdc"
+import MyMultiSig from 0x68a4fe55ec686656
+import DAOTreasury from 0x68a4fe55ec686656
+import FungibleToken from 0x9a0766d93b6608b7
+import NonFungibleToken from 0x631e88ae7f1d7c20
 
 pub contract TreasuryActions {
 
@@ -97,30 +97,15 @@ pub contract TreasuryActions {
     pub let intent: String
 
     pub fun execute(_ params: {String: AnyStruct}) {
-      let treasuryRef: &DAOTreasury.Treasury = params["treasury"]! as! &DAOTreasury.Treasury
+      // let treasuryRef: &DAOTreasury.Treasury = params["treasury"]! as! &DAOTreasury.Treasury
 
-      let manager = treasuryRef.borrowManager()
-      manager.updateThreshold(newThreshold: self.threshold)
+      // let manager = treasuryRef.borrowManager()
+      // manager.updateThreshold(newThreshold: self.threshold)
     }
 
     init(_threshold: UInt64) {
       self.threshold = _threshold
-      self.intent = "Update the threshold of signers needed to execute an action in the Treasury."
-    }
-  }
-
-  pub struct Test: MyMultiSig.Action {
-    pub let intent: String
-    pub let cap: Capability<&FungibleToken.Vault>
-
-    pub fun execute(_ params: {String: AnyStruct}) {
-      let tokens <- self.cap.borrow()!.withdraw(amount: 10.0)
-      destroy tokens
-    }
-
-    init(_cap: Capability<&FungibleToken.Vault>) {
-      self.intent = "Testing"
-      self.cap = _cap
+      self.intent = "Update the threshold of signers needed to execute an action in the Treasury. Butts."
     }
   }
 }
