@@ -55,19 +55,39 @@ func (otu *OverflowTestUtils) SendFlowToTreasury(from string, to string, amount 
 	return otu
 }
 
-func (otu *OverflowTestUtils) SendNFTToTreasury(account string, id uint) *OverflowTestUtils {
-	fmt.Println("Not Implemented: SendNFTToTreasury")
+func (otu *OverflowTestUtils) SendNFTToTreasury(from string, to string, id uint64) *OverflowTestUtils {
+	// fmt.Println("Not Implemented: SendNFTToTreasury")
+	otu.O.TransactionFromFile("send_nft_to_treasury").
+		SignProposeAndPayAs(from).
+		Args(otu.O.Arguments().
+			Account(to).
+			UInt64(id)).
+		Test(otu.T).
+		AssertSuccess()
 
 	return otu
 }
 
-func (otu *OverflowTestUtils) ProposeAction(treasuryAcct string, proposingAcct, recipientAcct string, amount float64) *OverflowTestUtils {
-	otu.O.TransactionFromFile("propose_transfer").
+func (otu *OverflowTestUtils) ProposeFungibleTokenTransferAction(treasuryAcct string, proposingAcct, recipientAcct string, amount float64) *OverflowTestUtils {
+	otu.O.TransactionFromFile("propose_fungible_token_transfer").
 		SignProposeAndPayAs(proposingAcct).
 		Args(otu.O.Arguments().
 			Account(treasuryAcct).
 			Account(recipientAcct).
 			UFix64(amount)).
+		Test(otu.T).
+		AssertSuccess()
+
+	return otu
+}
+
+func (otu *OverflowTestUtils) ProposeNonFungibleTokenTransferAction(treasuryAcct string, proposingAcct, recipientAcct string, id uint64) *OverflowTestUtils {
+	otu.O.TransactionFromFile("propose_non_fungible_token_transfer").
+		SignProposeAndPayAs(proposingAcct).
+		Args(otu.O.Arguments().
+			Account(treasuryAcct).
+			Account(recipientAcct).
+			UInt64(id)).
 		Test(otu.T).
 		AssertSuccess()
 
@@ -186,6 +206,19 @@ func (otu *OverflowTestUtils) GetTreasuryVaultBalance(treasuryAcct string, vault
 		RunReturns()
 
 	return val.ToGoValue().(uint64)
+}
+
+func (otu *OverflowTestUtils) GetTreasuryCollection(treasuryAcct string, collectionType string) []uint64 {
+	val := otu.O.ScriptFromFile("get_treasury_collection").
+		Args(otu.O.Arguments().
+			Account(treasuryAcct).
+			String(collectionType)).
+		RunReturnsJsonString()
+
+	var ownedNFTIds []uint64
+	json.Unmarshal([]byte(val), &ownedNFTIds)
+
+	return ownedNFTIds
 }
 
 // TODO: add to overflow

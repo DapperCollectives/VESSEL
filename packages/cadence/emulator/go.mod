@@ -1,4 +1,4 @@
-module github.com/DapperCollectives/VESSEL
+module github.com/DapperCollectives/VESSEL/emulator
 
 go 1.17
 

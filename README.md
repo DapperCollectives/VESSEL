@@ -31,6 +31,17 @@ To deploy all contracts in `./packages/cadence/contracts`:
 yarn deploy
 ```
 
+##### Alternatively...
+
+NOTE: Docker must be running for this method
+
+You can build & run the emulator via Docker with the contracts automatically deployed, and a few
+accounts already created:
+
+```bash
+make vessel-emulator
+```
+
 #### Client
 
 First, make sure you have a `.env` file in the same location and shape as `packages/client/.env.example`. Then, to start the client:
