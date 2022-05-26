@@ -1,7 +1,12 @@
 import React from "react";
-import { Trash } from "./Svg";
+import { Trash, Check } from "./Svg";
 
-function SafeOwners({ address, safeOwners, setSafeOwners }) {
+function SafeOwners({
+  address,
+  safeOwners,
+  safeOwnersValidByAddress,
+  setSafeOwners,
+}) {
   const onOwnerNameChange = (value, idx) => {
     const newOwners = safeOwners.slice(0);
     newOwners[idx].name = value;
@@ -17,7 +22,9 @@ function SafeOwners({ address, safeOwners, setSafeOwners }) {
   let safeOwnerCpts = [
     <div className="column is-flex is-full" key={address}>
       <div className="flex-1 is-flex is-flex-direction-column pr-5">
-        <label className="has-text-grey mb-2">Owner Name</label>
+        <label className="has-text-grey mb-2">
+          Owner Name<span className="has-text-red">*</span>
+        </label>
         <input
           className="p-4 rounded-sm"
           type="text"
@@ -28,13 +35,18 @@ function SafeOwners({ address, safeOwners, setSafeOwners }) {
       </div>
       <div className="flex-1 is-flex is-flex-direction-column">
         <label className="has-text-grey mb-2">Owner Address</label>
-        <input
-          className="p-4 rounded-sm"
-          type="text"
-          placeholder="Enter user's FLOW address"
-          value={address}
-          disabled
-        />
+        <div style={{ position: "relative" }}>
+          <input
+            className="p-4 rounded-sm column is-full"
+            type="text"
+            placeholder="Enter user's FLOW address"
+            value={address}
+            disabled
+          />
+          <div style={{ position: "absolute", right: 17, top: 14 }}>
+            <Check />
+          </div>
+        </div>
       </div>
     </div>,
   ];
@@ -45,7 +57,9 @@ function SafeOwners({ address, safeOwners, setSafeOwners }) {
       safeOwnerCpts.push(
         <div className="column is-flex is-full" key={`extra-owner-${idx}`}>
           <div className="flex-1 is-flex is-flex-direction-column pr-5">
-            <label className="has-text-grey mb-2">Owner Name</label>
+            <label className="has-text-grey mb-2">
+              Owner Name<span className="has-text-red">*</span>
+            </label>
             <input
               className="p-4 rounded-sm"
               type="text"
@@ -55,15 +69,26 @@ function SafeOwners({ address, safeOwners, setSafeOwners }) {
             />
           </div>
           <div className="flex-1 is-flex is-flex-direction-column">
-            <label className="has-text-grey mb-2">Owner Address</label>
+            <label className="has-text-grey mb-2">
+              Owner Address<span className="has-text-red">*</span>
+            </label>
             <div className="is-flex">
-              <input
-                className="p-4 rounded-sm flex-1"
-                type="text"
-                placeholder="Enter user's FLOW address"
-                value={so?.address}
-                onChange={(e) => onOwnerAddressChange(e.target.value, idx + 1)}
-              />
+              <div className="flex-1" style={{ position: "relative" }}>
+                <input
+                  className="p-4 rounded-sm column is-full"
+                  type="text"
+                  placeholder="Enter user's FLOW address"
+                  value={so?.address}
+                  onChange={(e) =>
+                    onOwnerAddressChange(e.target.value, idx + 1)
+                  }
+                />
+                {safeOwnersValidByAddress[so.address] && (
+                  <div style={{ position: "absolute", right: 17, top: 14 }}>
+                    <Check />
+                  </div>
+                )}
+              </div>
               <button
                 className="button ml-2 p-4"
                 onClick={() => {
