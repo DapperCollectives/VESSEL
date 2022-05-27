@@ -2,7 +2,12 @@ module github.com/DapperCollectives/VESSEL
 
 go 1.17
 
-require github.com/bjartek/overflow v0.0.0-20220407214147-f74f6ea0f10b
+require (
+	github.com/bjartek/overflow v0.0.0-20220407214147-f74f6ea0f10b
+	github.com/onflow/cadence v0.23.3
+	github.com/onflow/flow-go-sdk v0.24.0
+	github.com/stretchr/testify v1.7.1
+)
 
 require (
 	cloud.google.com/go v0.99.0 // indirect
@@ -71,14 +76,12 @@ require (
 	github.com/multiformats/go-multihash v0.1.0 // indirect
 	github.com/multiformats/go-varint v0.0.6 // indirect
 	github.com/onflow/atree v0.2.0 // indirect
-	github.com/onflow/cadence v0.23.3 // indirect
 	github.com/onflow/flow-cli v0.33.0 // indirect
 	github.com/onflow/flow-core-contracts/lib/go/contracts v0.11.0 // indirect
 	github.com/onflow/flow-core-contracts/lib/go/templates v0.11.0 // indirect
 	github.com/onflow/flow-emulator v0.31.0 // indirect
 	github.com/onflow/flow-ft/lib/go/contracts v0.5.0 // indirect
 	github.com/onflow/flow-go v0.25.5-0.20220330212458-32bda868ae65 // indirect
-	github.com/onflow/flow-go-sdk v0.24.0 // indirect
 	github.com/onflow/flow-go/crypto v0.24.3 // indirect
 	github.com/onflow/flow/protobuf/go/flow v0.2.4 // indirect
 	github.com/opentracing/opentracing-go v1.2.0 // indirect
@@ -97,7 +100,6 @@ require (
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/spf13/viper v1.10.1 // indirect
-	github.com/stretchr/testify v1.7.1 // indirect
 	github.com/subosito/gotenv v1.2.0 // indirect
 	github.com/thoas/go-funk v0.9.2 // indirect
 	github.com/uber/jaeger-client-go v2.29.1+incompatible // indirect
