@@ -1,5 +1,5 @@
 import React from "react";
-import IntentList from "./IntentList";
+import ActionsList from "./ActionsList";
 
 function ThingsToDo(props) {
   return (
@@ -7,7 +7,7 @@ function ThingsToDo(props) {
       <div className="column p-0 mt-5 is-flex is-full">
         <h4 className="is-size-5">Things to do</h4>
       </div>
-      <IntentList {...props} />
+      <ActionsList {...props} />
     </>
   );
 }

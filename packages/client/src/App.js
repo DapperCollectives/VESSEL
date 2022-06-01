@@ -35,9 +35,9 @@ const Body = () => (
 
 function App() {
   return (
-    <Web3Provider network={process.env.REACT_APP_FLOW_ENV}>
-      <ModalProvider>
-        <Router>
+    <Router>
+      <Web3Provider network={process.env.REACT_APP_FLOW_ENV}>
+        <ModalProvider>
           <Wrapper>
             <Sidebar>
               <Logo className="mb-6 px-4" />
@@ -45,9 +45,9 @@ function App() {
             </Sidebar>
             <Body />
           </Wrapper>
-        </Router>
-      </ModalProvider>
-    </Web3Provider>
+        </ModalProvider>
+      </Web3Provider>
+    </Router>
   );
 }
 

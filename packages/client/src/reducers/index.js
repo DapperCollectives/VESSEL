@@ -1,15 +1,23 @@
 export const INITIAL_STATE = {
-  loading: "Loading Treasuries",
+  loadingTreasuries: "Loading Treasuries",
   error: null,
   creatingTreasury: false,
   createdTreasury: false,
   submittedTransaction: false,
   treasuries: {},
+  actions: {},
+  balances: {},
 };
 
 const defaultReducer = (state, action) => {
   switch (action.type) {
-    case "SET_TREASURY":
+    case "CLEAR_TREASURIES": {
+      return {
+        ...state,
+        treasuries: {},
+      };
+    }
+    case "SET_TREASURY": {
       const address = Object.keys(action.payload)[0];
       return {
         ...state,
@@ -20,9 +28,28 @@ const defaultReducer = (state, action) => {
             ...action.payload[address],
           },
         },
-        loading: null,
+        loadingTreasuries: null,
         error: null,
       };
+    }
+    case "SET_ACTIONS": {
+      return {
+        ...state,
+        actions: {
+          ...state.actions,
+          ...action.payload,
+        },
+      };
+    }
+    case "SET_BALANCE": {
+      return {
+        ...state,
+        balances: {
+          ...state.balances,
+          ...action.payload,
+        },
+      };
+    }
     case "SET_CREATING_TREASURY":
       return {
         ...state,
@@ -41,12 +68,12 @@ const defaultReducer = (state, action) => {
     case "SET_LOADING":
       return {
         ...state,
-        loading: action.payload,
+        loadingTreasuries: action.payload,
       };
     case "ERROR":
       return {
         ...state,
-        loading: false,
+        loadingTreasuries: false,
         error: action.payload.error,
       };
     default:

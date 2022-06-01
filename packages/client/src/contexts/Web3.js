@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import * as fcl from "@onflow/fcl";
 import networks from "../networks";
+import { useRouteMatch } from "react-router-dom";
 import { useFclUser, useTreasury } from "../hooks";
 
 // create our app context
@@ -64,16 +65,12 @@ export default function Web3Provider({
   }, [network]);
 
   const user = useFclUser(fcl);
-  const {
-    treasuries,
-    loading: loadingTreasuries,
-    creatingTreasury,
-    createdTreasury,
-    submittedTransaction,
-    createTreasury,
-    fetchTreasury,
-    setTreasury,
-  } = useTreasury(user?.addr);
+  // if on a safe page, get safe's treasury info
+  const match = useRouteMatch({
+    path: ["/safe/:address", "/safe/:address/:tab"],
+  });
+  const treasuryAddr = match?.params?.address;
+  const treasuryProps = useTreasury(treasuryAddr, user?.addr);
 
   // for Nextjs Builds, return null until "window" is available
   if (!global.window) {
@@ -93,14 +90,7 @@ export default function Web3Provider({
     user,
     address: user.addr,
     logOut,
-    treasuries,
-    loadingTreasuries,
-    creatingTreasury,
-    createdTreasury,
-    submittedTransaction,
-    createTreasury,
-    fetchTreasury,
-    setTreasury,
+    ...treasuryProps,
     ...props,
   };
 

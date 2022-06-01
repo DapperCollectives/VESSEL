@@ -1,3 +1,5 @@
+import { isNaN } from "lodash";
+
 export const checkResponse = async (response) => {
   if (!response.ok) {
     const { status, statusText, url } = response;
@@ -35,9 +37,41 @@ export const shortenAddr = (addr) => {
 export const isAddr = (addr) => {
   // remove special chars
   addr = addr.replace(/[^a-z0-9]/gi, "");
-  console.log("new addr", addr);
   // remove 0x prefix if exists
   const noPrefix = addr.startsWith("0x") ? addr.replace("0x", "") : addr;
   // result should be 16 chars long
   return noPrefix.length === 16;
+};
+
+export const formatActionString = (str) => {
+  const isFungibleTransfer = str.includes("FungibleToken.Receiver");
+  let newStr = "";
+  const words = str.split(" ");
+  words.forEach((word, idx) => {
+    const noLength = !word?.trim().length;
+    //remove class names like Capability<&AnyResource{A.0x.FungibleToken.Receiver}>
+    const isClass = word.startsWith("Capability<");
+    if (noLength || isClass) {
+      return;
+    }
+    const float = parseFloat(word);
+    if (isNaN(float) || word.startsWith("0x")) {
+      // add FLOW to token transfers
+      if (isFungibleTransfer && word === "tokens") {
+        newStr += "FLOW ";
+      }
+      newStr += word;
+    } else {
+      newStr += float;
+    }
+    // add space if not done
+    if (idx < words.length - 1) {
+      newStr += " ";
+    }
+  });
+
+  // remove "from the treasury" as thats implied
+  newStr = newStr.replace("from the treasury ", "");
+
+  return newStr;
 };
