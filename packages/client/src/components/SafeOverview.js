@@ -2,41 +2,41 @@ import React from "react";
 
 const BalanceBar = ({ progress = 0 }) => {
   return (
-    <div className="is-flex is-justify-content-space-between column p-0 is-full">
+    <div
+      className="is-flex is-justify-content-space-between column p-0 is-full"
+      style={{ position: "relative" }}
+    >
       <div
         className="column is-full p-0 rounded-sm has-background-white"
         style={{
           height: 8,
           opacity: 0.3,
-          position: "relative",
         }}
-      >
-        {progress > 0 && (
-          <div
-            className="rounded-sm has-background-white"
-            style={{
-              height: 8,
-              opacity: 0.3,
-              position: "absolute",
-              top: 0,
-              left: 0,
-              width: `${progress}%`,
-            }}
-          />
-        )}
-      </div>
+      />
+      {progress > 0 && (
+        <div
+          className="rounded-sm has-background-white"
+          style={{
+            height: 8,
+            opacity: 0.3,
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: `${progress}%`,
+            zIndex: 10,
+          }}
+        />
+      )}
     </div>
   );
 };
 
-function SafeOverview() {
+function SafeOverview({ balance }) {
   const balanceClasses = [
     "is-flex is-flex-direction-column flex-1",
     "rounded-sm has-safe-gradient has-shadow has-text-white",
     "p-5 mr-6",
   ];
-
-  const balance = 0;
 
   const moneyClasses = [
     "is-flex is-flex-direction-column is-justify-content-space-between flex-1",
@@ -51,12 +51,12 @@ function SafeOverview() {
         <div className={balanceClasses.join(" ")}>
           <div className="column is-full p-0 is-flex is-justify-content-space-between mb-2">
             <div>Available</div>
-            <div>USD</div>
+            <div>FLOW</div>
           </div>
           <div className="column is-full p-0 mb-2">
-            <h2 className="is-size-4">$0.00</h2>
+            <h2 className="is-size-4">{balance}</h2>
           </div>
-          <BalanceBar progress={0} />
+          <BalanceBar progress={100} />
           <div className="column is-full p-0 is-flex is-justify-content-space-between mt-2 is-size-6">
             {balance > 0 ? (
               <div>100% FLOW</div>

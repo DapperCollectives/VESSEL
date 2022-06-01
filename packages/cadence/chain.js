@@ -2,7 +2,7 @@ const fs = require("fs");
 const { spawn } = require("child_process");
 
 let chain;
-const chainArgs = ["emulator", "--dev-wallet"];
+const chainArgs = ["emulator", "--dev-wallet", "--verbose"];
 
 if (fs.existsSync("./flow.json")) {
   chain = spawn("flow", chainArgs);

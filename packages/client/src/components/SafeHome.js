@@ -3,11 +3,11 @@ import SafeOverview from "./SafeOverview";
 import ThingsToDo from "./ThingsToDo";
 import TransactionHistory from "./TransactionHistory";
 
-const SafeHome = () => (
+const SafeHome = (props) => (
   <>
-    <SafeOverview />
-    <ThingsToDo />
-    <TransactionHistory />
+    <SafeOverview {...props} />
+    <ThingsToDo {...props} />
+    <TransactionHistory {...props} />
   </>
 );
 
