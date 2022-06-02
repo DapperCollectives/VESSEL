@@ -3,7 +3,6 @@ package test_main
 import (
 	"testing"
 
-	// "fmt"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -209,7 +208,7 @@ func TestTransferNonFungibleTokensToTreasuryActions(t *testing.T) {
 	otu.SetupTreasury("recipient", Signers)
 
 	t.Run("Signers should be able to propose a transfer of a non fungible token out of the Treasury to another Treasury", func(t *testing.T) {
-		otu.ProposeNonFungibleTokenTransferToTreasuryAction("treasuryOwner", Signers[0], RecipientAcct, FlowTokenVaultID, 0)
+		otu.ProposeNonFungibleTokenTransferToTreasuryAction("treasuryOwner", Signers[0], RecipientAcct, NonFungibleTokenCollectionID, 0)
 	})
 
 	t.Run("Signers should be able to sign to approve a proposed action to transfer a non-fungible token to a Treasury", func(t *testing.T) {
@@ -233,20 +232,22 @@ func TestTransferNonFungibleTokensToTreasuryActions(t *testing.T) {
 		}
 	})
 
-	// t.Run(`A signer should be able to execute a proposed action to transfer a non-fungible token to a Treasury once it has received
-	// 	the required threshold of signatures`, func(t *testing.T) {
-	// 	// First, create an empty collection in the recipient's treasury to hold the NFT
-	// 	otu.CreateNFTCollection("recipient")
-	// 	otu.ExecuteAction("treasuryOwner", transferNFTActionUUID)
+	t.Run(`A signer should be able to execute a proposed action to transfer a non-fungible token to a Treasury once it has received
+		the required threshold of signatures`, func(t *testing.T) {
+		// First, create an empty collection in the recipient's  account and transfer it to the treasury
+		otu.CreateNFTCollection("recipient")
+		otu.SendCollectionToTreasury("recipient", "recipient")
 
-	// 	// Assert that the NFT has been transfered out of the treasury vault
-	// 	collectionIds := otu.GetTreasuryIdentifiers("treasuryOwner")
-	// 	ownedNFTIds := otu.GetTreasuryCollection("treasuryOwner", collectionIds[1][0])
-	// 	assert.Equal(otu.T, 0, len(ownedNFTIds))
+		otu.ExecuteAction("treasuryOwner", transferNFTActionUUID)
 
-	// 	// Assert that the NFT has been transfered into the recpient treasury
-	// 	collectionIds = otu.GetTreasuryIdentifiers("recipient")
-	// 	ownedNFTIds = otu.GetTreasuryCollection("recipient", collectionIds[1][0])
-	// 	assert.Contains(otu.T, ownedNFTIds, uint64(0))
-	// })
+		// Assert that the NFT has been transfered out of the treasury vault
+		collectionIds := otu.GetTreasuryIdentifiers("treasuryOwner")
+		ownedNFTIds := otu.GetTreasuryCollection("treasuryOwner", collectionIds[1][0])
+		assert.Equal(otu.T, 0, len(ownedNFTIds))
+
+		// Assert that the NFT has been transfered into the recpient treasury
+		collectionIds = otu.GetTreasuryIdentifiers("recipient")
+		ownedNFTIds = otu.GetTreasuryCollection("recipient", collectionIds[1][0])
+		assert.Contains(otu.T, ownedNFTIds, uint64(0))
+	})
 }
