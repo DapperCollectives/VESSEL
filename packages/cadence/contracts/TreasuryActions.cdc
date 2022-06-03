@@ -108,19 +108,4 @@ pub contract TreasuryActions {
       self.intent = "Update the threshold of signers needed to execute an action in the Treasury."
     }
   }
-
-  pub struct Test: MyMultiSig.Action {
-    pub let intent: String
-    pub let cap: Capability<&FungibleToken.Vault>
-
-    pub fun execute(_ params: {String: AnyStruct}) {
-      let tokens <- self.cap.borrow()!.withdraw(amount: 10.0)
-      destroy tokens
-    }
-
-    init(_cap: Capability<&FungibleToken.Vault>) {
-      self.intent = "Testing"
-      self.cap = _cap
-    }
-  }
 }
