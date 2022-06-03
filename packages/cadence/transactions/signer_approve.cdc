@@ -20,8 +20,6 @@ transaction(treasuryAddr: Address, actionUUID: UInt64, message: String, keyIds: 
     }
 
     var isValid = action.verifySignature(acctAddress: signer.address, message: message, keyIds: _keyIds, signatures: signatures, signatureBlock: signatureBlock)
-    log("isValid")
-    log(isValid)
   }
   execute {
     

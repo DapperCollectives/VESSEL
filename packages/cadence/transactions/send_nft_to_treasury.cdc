@@ -22,7 +22,6 @@ transaction(treasuryAddr: Address, withdrawID: UInt64) {
         // withdraw the NFT from the owner's collection
         let nft <- collectionRef.withdraw(withdrawID: withdrawID)
         let identifier: String = collectionRef.getType().identifier
-        log(identifier)
         let treasuryCollection: &{NonFungibleToken.CollectionPublic} = treasury.borrowCollectionPublic(identifier: identifier)
 
         treasuryCollection.deposit(token: <- nft)
