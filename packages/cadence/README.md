@@ -25,6 +25,10 @@ node deploy
 ```bash
 go test main_test.go
 ```
+or
+```bash
+make test
+```
 
 ## Build & Run Emulator with Accounts & Contracts pre-initialized from Dockerfile
 
