@@ -56,12 +56,22 @@ func (otu *OverflowTestUtils) SendFlowToTreasury(from string, to string, amount 
 }
 
 func (otu *OverflowTestUtils) SendNFTToTreasury(from string, to string, id uint64) *OverflowTestUtils {
-	// fmt.Println("Not Implemented: SendNFTToTreasury")
 	otu.O.TransactionFromFile("send_nft_to_treasury").
 		SignProposeAndPayAs(from).
 		Args(otu.O.Arguments().
 			Account(to).
 			UInt64(id)).
+		Test(otu.T).
+		AssertSuccess()
+
+	return otu
+}
+
+func (otu *OverflowTestUtils) SendCollectionToTreasury(from string, to string) *OverflowTestUtils {
+	otu.O.TransactionFromFile("send_collection_to_treasury").
+		SignProposeAndPayAs(from).
+		Args(otu.O.Arguments().
+			Account(to)).
 		Test(otu.T).
 		AssertSuccess()
 
@@ -81,12 +91,40 @@ func (otu *OverflowTestUtils) ProposeFungibleTokenTransferAction(treasuryAcct st
 	return otu
 }
 
+func (otu *OverflowTestUtils) ProposeFungibleTokenTransferToTreasuryAction(treasuryAcct string, proposingAcct, recipientAcct string, vaultIdentifier string, amount float64) *OverflowTestUtils {
+	otu.O.TransactionFromFile("propose_fungible_token_transfer_to_treasury").
+		SignProposeAndPayAs(proposingAcct).
+		Args(otu.O.Arguments().
+			Account(treasuryAcct).
+			Account(recipientAcct).
+			String(vaultIdentifier).
+			UFix64(amount)).
+		Test(otu.T).
+		AssertSuccess()
+
+	return otu
+}
+
 func (otu *OverflowTestUtils) ProposeNonFungibleTokenTransferAction(treasuryAcct string, proposingAcct, recipientAcct string, id uint64) *OverflowTestUtils {
 	otu.O.TransactionFromFile("propose_non_fungible_token_transfer").
 		SignProposeAndPayAs(proposingAcct).
 		Args(otu.O.Arguments().
 			Account(treasuryAcct).
 			Account(recipientAcct).
+			UInt64(id)).
+		Test(otu.T).
+		AssertSuccess()
+
+	return otu
+}
+
+func (otu *OverflowTestUtils) ProposeNonFungibleTokenTransferToTreasuryAction(treasuryAcct string, proposingAcct, recipientAcct string, collectionIdentifier string, id uint64) *OverflowTestUtils {
+	otu.O.TransactionFromFile("propose_non_fungible_token_transfer_to_treasury").
+		SignProposeAndPayAs(proposingAcct).
+		Args(otu.O.Arguments().
+			Account(treasuryAcct).
+			Account(recipientAcct).
+			String(collectionIdentifier).
 			UInt64(id)).
 		Test(otu.T).
 		AssertSuccess()

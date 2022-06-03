@@ -5,9 +5,12 @@ import MyMultiSig from "../contracts/MyMultiSig.cdc"
 
 // This transaction is for transferring and NFT from
 // one account to another
-transaction(treasuryAddr: Address, withdrawID: UInt64) {
+transaction(treasuryAddr: Address) {
 
     prepare(signer: AuthAccount) {
+        // get the recipients public account object
+        // let recipient = getAccount(treasuryAddr)
+
         // borrow a reference to the signer's NFT collection
         let collectionRef = signer
             .borrow<&ExampleNFT.Collection>(from: ExampleNFT.CollectionStoragePath)
@@ -17,14 +20,9 @@ transaction(treasuryAddr: Address, withdrawID: UInt64) {
                     .borrow<&DAOTreasury.Treasury{DAOTreasury.TreasuryPublic}>()
                     ?? panic("A DAOTreasury doesn't exist here.")
 
-    
+        let collection <- ExampleNFT.createEmptyCollection()
 
-        // withdraw the NFT from the owner's collection
-        let nft <- collectionRef.withdraw(withdrawID: withdrawID)
-        let identifier: String = collectionRef.getType().identifier
-        let treasuryCollection: &{NonFungibleToken.CollectionPublic} = treasury.borrowCollectionPublic(identifier: identifier)
-
-        treasuryCollection.deposit(token: <- nft)
-        // treasury.depositCollection(collection: <-collection)
+        // Deposit the NFT in the treasury's collection
+        treasury.depositCollection(collection: <-collection)
     }
 }
