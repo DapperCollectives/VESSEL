@@ -99,13 +99,6 @@ pub contract DAOTreasury {
       self.collections[collection.getType().identifier] <-! collection
     }
 
-    // pub fun depositNFT(nft: @NonFungibleToken.NFT, collectionIdentifier: String) {
-    //   let collectionRef =  &self.collections[collectionIdentifier]
-    //   collectionRef.deposit(token: <- nft)
-    // }
-
-    // TODO: Figure out how to deposit individual NFTs
-
     // Withdraw an NFT //
     pub fun withdrawNFT(identifier: String, id: UInt64): @NonFungibleToken.NFT {
       let collectionRef = &self.collections[identifier] as &NonFungibleToken.Collection
