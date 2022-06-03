@@ -23,7 +23,7 @@ yarn install
 
 Contract containing the `Treasury` resource.  A `Treasury` can hold Fungible Token `Vault` resources, and Non-Fungible Token `Collection` resources.
 
-Anyone may deposit a `Vault` or `Collection` resource into the `Treasury`.
+Anyone may deposit a `Vault` or `Collection` resource into the `Treasury`. Additionally, anyone may deposit fungible/non-fungible tokens into their respective vault/collection held in the `Treasury`.
 
 A `Treasury` is initialized with a list of Flow addresses, which constitute the signers on the `Treasury`.  It is also initialized with an initial threshold, which constitutes the number of signatures needed to execute an `MyMultiSig.Action` against the `Treasury`.
 
