@@ -29,7 +29,9 @@ function SafeContacts({ safeOwners = [] }) {
                 className="mr-5 pointer"
                 onClick={() => clipboard.copy(so.address)}
               >
-                {clipboard.didCopy ? "Copied" : "Copy Address"}
+                {clipboard.textJustCopied === so.address
+                  ? "Copied"
+                  : "Copy Address"}
               </span>
               <span>Send</span>
             </div>

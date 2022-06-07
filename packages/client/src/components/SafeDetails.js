@@ -21,7 +21,7 @@ const SafeDetails = ({ safeType, setSafeType, safeName, setSafeName }) => (
           Safe name<span className="has-text-red">*</span>
         </label>
         <input
-          className="p-4 rounded-sm"
+          className="p-4 rounded-sm border-light"
           type="text"
           placeholder="Choose a local name for your safe"
           value={safeName}

@@ -139,7 +139,7 @@ function LoadSafe({ web3 }) {
               Owner Name<span className="has-text-red">*</span>
             </label>
             <input
-              className="p-4 rounded-sm"
+              className="p-4 rounded-sm border-light"
               type="text"
               placeholder="Add a local owner name"
               value={so.name}
@@ -187,7 +187,7 @@ function LoadSafe({ web3 }) {
             Safe Name<span className="has-text-red">*</span>
           </label>
           <input
-            className="p-4 rounded-sm"
+            className="p-4 rounded-sm border-light"
             type="text"
             placeholder="Choose a local name for your safe"
             value={safeName}
