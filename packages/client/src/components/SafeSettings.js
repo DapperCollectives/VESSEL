@@ -191,10 +191,13 @@ const EditSafeOwner = ({ web3, safeOwner, onCancel, onSubmit }) => {
   const [name, setName] = useState(safeOwner.name);
   const [address, setAddress] = useState(safeOwner.address);
   const [addressValid, setAddressValid] = useState(true);
-  const isFormValid = useMemo(
-    () => name.trim().length > 0 && addressValid,
-    [name, addressValid]
-  );
+  const isFormValid = useMemo(() => {
+    return (
+      name.trim().length > 0 &&
+      addressValid &&
+      (name !== safeOwner.name || address !== safeOwner.address)
+    );
+  }, [safeOwner, name, address, addressValid]);
 
   const onAddressChange = async (newAddress) => {
     setAddress(newAddress);
