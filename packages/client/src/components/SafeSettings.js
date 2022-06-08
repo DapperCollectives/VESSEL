@@ -460,21 +460,36 @@ function SafeSettings({ address, web3, name, threshold, safeOwners }) {
       ownersToPersist.push(newOwner);
     }
 
-    // TODO: persist thresholdToPersist and ownersToPersist
+    setTreasury(address, {
+      safeOwners: ownersToPersist,
+      threshold: thresholdToPersist,
+    });
+
+    if (newOwner) {
+      // TODO: persist new owner address on blockchain
+    }
+
+    if (thresholdToPersist !== threshold) {
+      // TODO: persist new threshold on blockchain
+    }
 
     modalContext.closeModal();
   };
 
-  const onEditSafeOwnerSubmit = (oldOwner, newOwner) => {
+  const onEditSafeOwnerSubmit = (oldOwner, updatedOwner) => {
     const ownersToPersist = safeOwners.map((owner) => {
       if (owner.address === oldOwner.address) {
-        return newOwner;
+        return updatedOwner;
       }
 
       return owner;
     });
 
-    // TODO: persist ownersToPersist
+    setTreasury(address, { safeOwners: ownersToPersist });
+
+    if (updatedOwner.address !== oldOwner.address) {
+      // TODO: persist new address on blockchain
+    }
 
     modalContext.closeModal();
   };
