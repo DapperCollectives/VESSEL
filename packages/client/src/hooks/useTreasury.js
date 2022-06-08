@@ -222,19 +222,19 @@ export default function useTreasury(treasuryAddr, userAddr) {
     return res;
   };
 
-  const setTreasury = (_treasuryAddr, treasuryData) => {
+  const setTreasury = (treasuryAddr, treasuryData) => {
     dispatch({
       type: "SET_TREASURY",
       payload: {
-        [_treasuryAddr]: treasuryData,
+        [treasuryAddr]: treasuryData,
       },
     });
   };
 
-  const fetchTreasury = async (_treasuryAddr) => {
-    const signers = await getSigners(_treasuryAddr);
+  const fetchTreasury = async (treasuryAddr) => {
+    const signers = await getSigners(treasuryAddr);
     if (signers) {
-      const threshold = await getThreshold(_treasuryAddr);
+      const threshold = await getThreshold(treasuryAddr);
       return { threshold, signers };
     }
 

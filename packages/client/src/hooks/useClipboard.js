@@ -1,23 +1,22 @@
 import { useCallback, useRef, useState, useEffect } from "react";
 
-function useTimedToggle(initialValue) {
-  const [value, setValue] = useState(false);
+function useTimedValue(initialValue) {
+  const [value, setValue] = useState(initialValue);
   const timeoutRef = useRef();
-  const initialValueRef = useRef(initialValue);
 
-  const toggleValue = (timeout) => {
+  const setTimedValue = (newValue, timeout) => {
     clearTimeout(timeoutRef.current);
-    setValue(!initialValueRef.current);
+    setValue(newValue);
 
     timeoutRef.current = window.setTimeout(
-      () => setValue(initialValueRef.current),
+      () => setValue(initialValue),
       timeout
     );
   };
 
   useEffect(() => () => clearTimeout(timeoutRef.current), []);
 
-  return [value, toggleValue];
+  return [value, setTimedValue];
 }
 
 export default function useClipboard({
@@ -25,13 +24,13 @@ export default function useClipboard({
   onSuccess,
   onError,
 } = {}) {
-  const [didCopy, setCopied] = useTimedToggle(false);
+  const [textJustCopied, setTextJustCopied] = useTimedValue(null);
 
   const copyHandler = useCallback(
     (text) => {
-      function handleSuccess() {
+      function handleSuccess(value) {
         onSuccess?.();
-        setCopied(copiedTimeout);
+        setTextJustCopied(value, copiedTimeout);
       }
 
       function handleError() {
@@ -41,7 +40,7 @@ export default function useClipboard({
       async function copy(value) {
         navigator.clipboard
           .writeText(value)
-          .then(handleSuccess)
+          .then(() => handleSuccess(value))
           .catch(handleError);
       }
 
@@ -49,11 +48,11 @@ export default function useClipboard({
         copy(text);
       }
     },
-    [copiedTimeout, onSuccess, onError, setCopied]
+    [copiedTimeout, onSuccess, onError, setTextJustCopied]
   );
 
   return {
-    didCopy,
+    textJustCopied,
     copy: copyHandler,
   };
 }

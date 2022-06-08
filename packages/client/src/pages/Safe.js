@@ -34,7 +34,9 @@ const ReceiveTokens = ({ name, address }) => {
           className="is-underlined mt-5 pointer"
           onClick={() => clipboard.copy(address)}
         >
-          {clipboard.didCopy ? "Copied" : "Copy Safe Address"}
+          {clipboard.textJustCopied === address
+            ? "Copied"
+            : "Copy Safe Address"}
         </div>
       </div>
       <div className="is-flex is-align-items-center mt-6">
@@ -281,7 +283,12 @@ function Safe({ web3 }) {
       <SafeContacts safeOwners={safeData?.safeOwners} key="safe-contacts" />
     ),
     settings: (
-      <SafeSettings address={address} {...safeData} key="safe-settings" />
+      <SafeSettings
+        address={address}
+        web3={web3}
+        {...safeData}
+        key="safe-settings"
+      />
     ),
   };
 
@@ -289,21 +296,18 @@ function Safe({ web3 }) {
 
   const onSend = () => {
     modalContext.openModal(
-      React.createElement(SendTokens, {
-        name: safeData.name,
-        address,
-        web3,
-        balance,
-      })
+      <SendTokens
+        name={safeData.name}
+        address={address}
+        web3={web3}
+        balance={balance}
+      />
     );
   };
 
   const onReceive = () => {
     modalContext.openModal(
-      React.createElement(ReceiveTokens, {
-        name: safeData.name,
-        address,
-      })
+      <ReceiveTokens name={safeData.name} address={address} />
     );
   };
 
@@ -324,7 +328,7 @@ function Safe({ web3 }) {
             className="is-underlined ml-2 pointer"
             onClick={() => clipboard.copy(address)}
           >
-            {clipboard.didCopy ? "Copied" : "Copy address"}
+            {clipboard.textJustCopied === address ? "Copied" : "Copy address"}
           </span>
           <span className="is-underlined ml-4 pointer" onClick={onDeposit}>
             Deposit

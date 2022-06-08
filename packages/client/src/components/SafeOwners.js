@@ -26,7 +26,7 @@ function SafeOwners({
           Owner Name<span className="has-text-red">*</span>
         </label>
         <input
-          className="p-4 rounded-sm"
+          className="p-4 rounded-sm border-light"
           type="text"
           placeholder="Add a local owner name"
           value={safeOwners.find((so) => so.address === address)?.name}
@@ -61,7 +61,7 @@ function SafeOwners({
               Owner Name<span className="has-text-red">*</span>
             </label>
             <input
-              className="p-4 rounded-sm"
+              className="p-4 rounded-sm border-light"
               type="text"
               placeholder="Add a local owner name"
               value={so?.name}

@@ -1,5 +1,56 @@
-import React from "react";
+import React, { useMemo, useState } from "react";
+import { useModalContext } from "../contexts";
 import { useClipboard } from "../hooks";
+
+const EditSafeName = ({ name, onCancel, onSubmit }) => {
+  const [currSafeName, setCurrSafeName] = useState(name);
+  const isNameValid = useMemo(
+    () => currSafeName.trim().length > 0,
+    [currSafeName]
+  );
+
+  const onSubmitClick = () => {
+    onSubmit(currSafeName);
+  };
+
+  const submitButtonClasses = [
+    "button flex-1 p-4",
+    isNameValid ? "is-link" : "is-light is-disabled",
+  ];
+
+  return (
+    <>
+      <div className="p-5 has-text-black">
+        <h2 className="is-size-4">Edit safe name</h2>
+        <p className="has-text-grey">Update the local name of your safe</p>
+      </div>
+      <div className="border-light-top p-5">
+        <div className="flex-1 is-flex is-flex-direction-column">
+          <label className="has-text-grey mb-2">Name</label>
+          <input
+            className="p-4 rounded-sm border-light"
+            type="text"
+            placeholder="Choose a local name for your safe"
+            value={currSafeName}
+            onChange={(e) => setCurrSafeName(e.target.value)}
+          />
+          <div className="is-flex is-align-items-center mt-6">
+            <button className="button flex-1 p-4 mr-2" onClick={onCancel}>
+              Cancel
+            </button>
+            <button
+              className={submitButtonClasses.join(" ")}
+              disabled={!isNameValid}
+              onClick={onSubmitClick}
+            >
+              Save
+            </button>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+};
 
 const SignatureBar = ({ threshold, safeOwners }) => (
   <div className="is-flex column p-0 is-full">
@@ -16,8 +67,26 @@ const SignatureBar = ({ threshold, safeOwners }) => (
   </div>
 );
 
-function SafeSettings({ address, name, threshold, safeOwners }) {
-  const clipboard = useClipboard();
+function SafeSettings({ address, web3, name, threshold, safeOwners }) {
+  const modalContext = useModalContext();
+  const safeAddressClipboard = useClipboard();
+  const ownersAddressClipboard = useClipboard();
+  const { setTreasury } = web3;
+
+  const onEditNameSubmit = (newName) => {
+    modalContext.closeModal();
+    setTreasury(address, { name: newName });
+  };
+
+  const onEditNameClick = () => {
+    modalContext.openModal(
+      <EditSafeName
+        name={name}
+        onCancel={() => modalContext.closeModal()}
+        onSubmit={onEditNameSubmit}
+      />
+    );
+  };
 
   return (
     <>
@@ -29,14 +98,23 @@ function SafeSettings({ address, name, threshold, safeOwners }) {
           <div className="has-text-grey">Name</div>
           <div className="mt-1 is-flex is-justify-content-space-between">
             <div>{name}</div>
-            <div className="is-underlined">Edit</div>
+            <div className="is-underlined pointer" onClick={onEditNameClick}>
+              Edit
+            </div>
           </div>
         </div>
         <div className="border-light-right pr-5 mr-5 flex-1">
           <div className="has-text-grey">Address</div>
           <div className="mt-1 is-flex is-justify-content-space-between">
             <div>{address}</div>
-            <div className="is-underlined">Copy</div>
+            <div
+              className="is-underlined pointer"
+              onClick={() => safeAddressClipboard.copy(address)}
+            >
+              {safeAddressClipboard.textJustCopied === address
+                ? "Copied"
+                : "Copy"}
+            </div>
           </div>
         </div>
         <div className="flex-1">
@@ -79,9 +157,11 @@ function SafeSettings({ address, name, threshold, safeOwners }) {
               <div>
                 <span
                   className="is-underlined mr-5 pointer"
-                  onClick={() => clipboard.copy(so.address)}
+                  onClick={() => ownersAddressClipboard.copy(so.address)}
                 >
-                  {clipboard.didCopy ? "Copied" : "Copy Address"}
+                  {ownersAddressClipboard.textJustCopied === so.address
+                    ? "Copied"
+                    : "Copy Address"}
                 </span>
                 <span className="is-underlined">Edit</span>
               </div>
