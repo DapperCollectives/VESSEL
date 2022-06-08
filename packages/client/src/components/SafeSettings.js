@@ -71,11 +71,11 @@ function SafeSettings({ address, web3, name, threshold, safeOwners }) {
   const modalContext = useModalContext();
   const safeAddressClipboard = useClipboard();
   const ownersAddressClipboard = useClipboard();
-  const { renameTreasury } = web3;
+  const { setTreasury } = web3;
 
   const onEditNameSubmit = (newName) => {
     modalContext.closeModal();
-    renameTreasury(address, newName);
+    setTreasury(address, { name: newName });
   };
 
   const onEditNameClick = () => {

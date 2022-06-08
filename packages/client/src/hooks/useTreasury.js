@@ -279,16 +279,6 @@ export default function useTreasury(treasuryAddr, userAddr) {
     await refreshTreasury();
   };
 
-  const renameTreasury = (treasuryAddr, newName) => {
-    dispatch({
-      type: "RENAME_TREASURY",
-      payload: {
-        address: treasuryAddr,
-        name: newName,
-      },
-    });
-  };
-
   const executeAction = async (actionUUID) => {
     const res = await doExecuteAction(treasuryAddr, actionUUID);
     await tx(res).onceSealed();
@@ -303,7 +293,6 @@ export default function useTreasury(treasuryAddr, userAddr) {
     sendFlowToTreasury,
     proposeTransfer,
     signerApprove,
-    renameTreasury,
     executeAction,
   };
 }

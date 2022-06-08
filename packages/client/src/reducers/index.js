@@ -65,18 +65,6 @@ const defaultReducer = (state, action) => {
         ...state,
         createdTreasury: true,
       };
-    case "RENAME_TREASURY": {
-      return {
-        ...state,
-        treasuries: {
-          ...state.treasuries,
-          [action.payload.address]: {
-            ...state.treasuries[action.payload.address],
-            name: action.payload.name,
-          },
-        },
-      };
-    }
     case "SET_LOADING":
       return {
         ...state,
