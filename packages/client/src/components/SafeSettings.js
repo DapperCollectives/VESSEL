@@ -445,24 +445,24 @@ function SafeSettings({ address, web3, name, threshold, safeOwners }) {
   const modalContext = useModalContext();
   const safeAddressClipboard = useClipboard();
   const ownersAddressClipboard = useClipboard();
-  const { setTreasury } = web3;
+  const { setTreasury, addSigner, updateThreshold, updateSigner } = web3;
 
   const onEditNameSubmit = (newName) => {
     modalContext.closeModal();
     setTreasury(address, { name: newName });
   };
 
-  const onReviewSafeEditsSubmit = (newOwner, newThreshold) => {
+  const onReviewSafeEditsSubmit = async (newOwner, newThreshold) => {
     const thresholdToPersist = newThreshold ?? threshold;
     const ownersToPersist = [...safeOwners];
 
     if (newOwner) {
       ownersToPersist.push(newOwner);
-      // TODO: persist new owner address on blockchain
+      await addSigner(newOwner.address);
     }
 
     if (thresholdToPersist !== threshold) {
-      // TODO: persist new threshold on blockchain
+      await updateThreshold(thresholdToPersist);
     }
 
     setTreasury(address, {
@@ -473,9 +473,9 @@ function SafeSettings({ address, web3, name, threshold, safeOwners }) {
     modalContext.closeModal();
   };
 
-  const onEditSafeOwnerSubmit = (oldOwner, updatedOwner) => {
+  const onEditSafeOwnerSubmit = async (oldOwner, updatedOwner) => {
     if (updatedOwner.address !== oldOwner.address) {
-      // TODO: persist new address on blockchain
+      await updateSigner(oldOwner.address, updatedOwner.address);
     }
 
     const ownersToPersist = safeOwners.map((owner) => {
