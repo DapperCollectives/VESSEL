@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useParams, NavLink } from "react-router-dom";
 import QRCode from "react-qr-code";
-import { shortenAddr, isAddr } from "../utils";
+import { shortenAddr } from "../utils";
 import {
   SafeHome,
   SafeTransactions,
@@ -84,11 +84,7 @@ const SendTokens = ({ name, address, web3 }) => {
     let newValue = e.target.value;
 
     setRecipient(newValue);
-    let isValid = isAddr(e.target.value);
-    if (isValid) {
-      isValid = await isAddressValid(e.target.value);
-    }
-    setRecipientValid(isValid);
+    setRecipientValid(await isAddressValid(newValue));
   };
 
   return (
