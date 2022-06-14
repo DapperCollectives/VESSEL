@@ -7,3 +7,6 @@ export { SEND_FLOW_TO_TREASURY } from "./sendFlowToTreasury.tx";
 export { SIGNER_APPROVE } from "./signerApprove.tx";
 export { GET_SIGNERS_FOR_ACTION } from "./getSignersForAction.tx";
 export { EXECUTE_ACTION } from "./executeAction.tx";
+export { UPDATE_THRESHOLD } from "./updateThreshold.tx";
+export { ADD_SIGNER } from "./addSigner.tx";
+export { UPDATE_SIGNER } from "./updateSigner.tx";

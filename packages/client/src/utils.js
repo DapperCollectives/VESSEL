@@ -75,3 +75,7 @@ export const formatActionString = (str) => {
 
   return newStr;
 };
+
+export const getProgressPercentageForSignersAmount = (signersAmount) => {
+  return Math.min(60 + signersAmount * 10, 100);
+};

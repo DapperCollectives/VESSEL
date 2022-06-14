@@ -1,6 +1,7 @@
 import React from "react";
 import ProgressBar from "./ProgressBar";
 import { Person, Minus, Plus } from "./Svg";
+import { getProgressPercentageForSignersAmount } from "../utils";
 
 function SignatureRequirements({
   safeOwners,
@@ -36,7 +37,7 @@ function SignatureRequirements({
     }
   };
 
-  const progress = Math.min(60 + signersAmount * 10, 100);
+  const progress = getProgressPercentageForSignersAmount(signersAmount);
 
   return (
     <>
