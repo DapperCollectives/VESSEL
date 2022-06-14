@@ -115,7 +115,7 @@ function SafeOwners({
       {safeOwnerCpts}
       <div className="column is-flex is-flex-direction-column is-full">
         <button
-          className="button column is-full p-4"
+          className="button column is-full p-4 border-light"
           onClick={() => {
             setSafeOwners(safeOwners.concat({ name: "", address: "" }));
           }}

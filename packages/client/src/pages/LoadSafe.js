@@ -2,7 +2,7 @@ import { isEmpty } from "lodash";
 import React, { useState } from "react";
 import { NavLink, useHistory } from "react-router-dom";
 import { WalletPrompt } from "../components";
-import { isAddr } from "../utils";
+import { isAddr, getProgressPercentageForSignersAmount } from "../utils";
 import { Web3Consumer } from "../contexts/Web3";
 import { Check, Person } from "../components/Svg";
 import { ProgressBar } from "../components";
@@ -168,7 +168,7 @@ function LoadSafe({ web3 }) {
     });
   }
 
-  const progress = Math.min(60 + threshold * 10, 100);
+  const progress = getProgressPercentageForSignersAmount(threshold);
 
   return (
     <section className="section is-flex is-flex-direction-column has-text-black">

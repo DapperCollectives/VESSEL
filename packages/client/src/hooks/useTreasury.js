@@ -13,6 +13,9 @@ import {
   GET_SIGNERS_FOR_ACTION,
   EXECUTE_ACTION,
   GET_TREASURY_IDENTIFIERS,
+  UPDATE_THRESHOLD,
+  ADD_SIGNER,
+  UPDATE_SIGNER,
 } from "../flow";
 import { GET_VAULT_BALANCE } from "../flow/getVaultBalance.tx";
 
@@ -94,6 +97,33 @@ const doExecuteAction = async (treasuryAddr, actionUUID) => {
   return await mutate({
     cadence: EXECUTE_ACTION,
     args: (arg, t) => [arg(treasuryAddr, t.Address), arg(actionUUID, t.UInt64)],
+    limit: 110,
+  });
+};
+
+const doUpdateThreshold = async (newThreshold) => {
+  return await mutate({
+    cadence: UPDATE_THRESHOLD,
+    args: (arg, t) => [arg(newThreshold, t.UInt64)],
+    limit: 55,
+  });
+};
+
+const doAddSigner = async (newSignerAddress) => {
+  return await mutate({
+    cadence: ADD_SIGNER,
+    args: (arg, t) => [arg(newSignerAddress, t.Address)],
+    limit: 55,
+  });
+};
+
+const doUpdateSigner = async (oldSignerAddress, newSignerAddress) => {
+  return await mutate({
+    cadence: UPDATE_SIGNER,
+    args: (arg, t) => [
+      arg(oldSignerAddress, t.Address),
+      arg(newSignerAddress, t.Address),
+    ],
     limit: 110,
   });
 };
@@ -285,6 +315,24 @@ export default function useTreasury(treasuryAddr, userAddr) {
     await refreshTreasury();
   };
 
+  const updateThreshold = async (newThreshold) => {
+    const res = await doUpdateThreshold(newThreshold);
+    await tx(res).onceSealed();
+    await refreshTreasury();
+  };
+
+  const addSigner = async (newSignerAddress) => {
+    const res = await doAddSigner(newSignerAddress);
+    await tx(res).onceSealed();
+    await refreshTreasury();
+  };
+
+  const updateSigner = async (oldSignerAddress, newSignerAddress) => {
+    const res = await doUpdateSigner(oldSignerAddress, newSignerAddress);
+    await tx(res).onceSealed();
+    await refreshTreasury();
+  };
+
   return {
     ...state,
     createTreasury,
@@ -294,5 +342,8 @@ export default function useTreasury(treasuryAddr, userAddr) {
     proposeTransfer,
     signerApprove,
     executeAction,
+    updateThreshold,
+    addSigner,
+    updateSigner,
   };
 }
