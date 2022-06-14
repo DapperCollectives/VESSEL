@@ -1,9 +1,11 @@
 import React from "react";
 import { isEmpty } from "lodash";
 import { Search } from "./Svg";
+import TransactionList from "./TransactionList";
 
 function SafeTransactions(props) {
   let TransactionsComponent = null;
+
   if (isEmpty(props.transactions) && isEmpty(props.intents)) {
     TransactionsComponent = (
       <div
@@ -15,6 +17,10 @@ function SafeTransactions(props) {
         <h2 className="is-size-4">You don't have any transaction history</h2>
         <p className="has-text-grey">Create a new transaction above</p>
       </div>
+    );
+  } else {
+    TransactionsComponent = (
+      <TransactionList transactions={props.transactions} />
     );
   }
 
