@@ -1,12 +1,14 @@
 import React from "react";
 import { isEmpty } from "lodash";
 import TransactionList from "./TransactionList";
+import { useFlowgraphTransactions } from "../hooks";
 
-function TransactionHistory(props) {
+function TransactionHistory({ safeData, address }) {
+  const transactions = useFlowgraphTransactions(address);
   let TransactionsComponent = null;
 
   // TODO: remove false
-  if (false && isEmpty(props.transactions)) {
+  if (false && isEmpty(transactions)) {
     TransactionsComponent = (
       <div className="column p-0 mt-4 is-flex is-full border-light has-shadow rounded-sm">
         <div
@@ -19,7 +21,7 @@ function TransactionHistory(props) {
     );
   } else {
     TransactionsComponent = (
-      <TransactionList transactions={props.transactions} />
+      <TransactionList safeData={safeData} transactions={transactions} />
     );
   }
 

@@ -3,7 +3,7 @@ import { useModalContext } from "../contexts";
 import { shortenAddr } from "../utils";
 import TransactionStatusIcon from "./TransactionStatusIcon";
 
-function TransactionDetails({ transaction, onClose }) {
+function TransactionDetails({ safeOwners, transaction, onClose }) {
   const renderConfirmation = (address) => {
     return (
       <div className="has-background-black rounded-sm has-text-white is-flex is-align-items-center p-4 mr-2">
@@ -17,18 +17,17 @@ function TransactionDetails({ transaction, onClose }) {
       <div className="pt-4">
         <div className="is-flex is-align-items-center is-justify-content-space-between mb-3 has-text-grey">
           <div>Confirmations</div>
-          <div>4 out of 4</div>
+          <div>
+            {transaction.authorizers.length} out of {safeOwners.length}
+          </div>
         </div>
         <div
           className="pb-5 is-flex is-align-items-center is-fullwidth"
           style={{ overflow: "auto" }}
         >
-          {renderConfirmation("0001")}
-          {renderConfirmation("0002")}
-          {renderConfirmation("0003")}
-          {renderConfirmation("0004")}
-          {renderConfirmation("0005")}
-          {renderConfirmation("0006")}
+          {transaction.authorizers.map(({ address }) =>
+            renderConfirmation(address)
+          )}
         </div>
       </div>
     );
@@ -49,6 +48,7 @@ function TransactionDetails({ transaction, onClose }) {
     <>
       <div className="p-5 has-text-black">
         <h2 className="is-size-4">Transaction details</h2>
+        {/* TODO */}
         <p className="has-text-grey">Executed on 10/06/22 at 12:45 PM</p>
       </div>
       <div className="border-light-top p-5">
@@ -79,14 +79,14 @@ function TransactionListItem({ transaction, index, isLastInList, onView }) {
   return (
     <div className={classes.join(" ")}>
       <div className="column">{String(index + 1).padStart(2, "0")}</div>
-      <div className="column">Received</div>
+      <div className="column">Received</div> {/* TODO */}
       <div className="column">
-        <TransactionStatusIcon status="confirmed" />
-        <span className="ml-2">Confirmed</span>
+        <TransactionStatusIcon status={transaction.status} />
+        <span className="ml-2">{transaction.status}</span>
       </div>
-      <div className="column">0.1 ETH</div>
-      <div className="column has-text-grey">02/28/22</div>
-      <div className="column has-text-grey">7:28 AM EST</div>
+      <div className="column">0.1 ETH</div> {/* TODO */}
+      <div className="column has-text-grey">02/28/22</div> {/* TODO */}
+      <div className="column has-text-grey">7:28 AM EST</div> {/* TODO */}
       <div className="column has-text-right">
         <span className="is-underlined pointer" onClick={() => onView()}>
           View
@@ -96,12 +96,13 @@ function TransactionListItem({ transaction, index, isLastInList, onView }) {
   );
 }
 
-function TransactionList({ transactions = [{ foo: "bar" }] }) {
+function TransactionList({ safeData, transactions = [{ foo: "bar" }] }) {
   const modalContext = useModalContext();
 
   const onViewTransaction = (transaction) => {
     modalContext.openModal(
       <TransactionDetails
+        safeOwners={safeData.safeOwners}
         transaction={transaction}
         onClose={() => modalContext.closeModal()}
       />
@@ -109,9 +110,9 @@ function TransactionList({ transactions = [{ foo: "bar" }] }) {
   };
 
   return transactions.map((transaction, index) => {
-    // TODO: key
     return (
       <TransactionListItem
+        key={transaction.hash}
         transaction={transaction}
         index={index}
         isLastInList={index === transactions.length - 1}

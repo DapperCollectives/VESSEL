@@ -2,11 +2,15 @@ import React from "react";
 import { isEmpty } from "lodash";
 import { Search } from "./Svg";
 import TransactionList from "./TransactionList";
+import { useFlowgraphTransactions } from "../hooks";
 
-function SafeTransactions(props) {
+function SafeTransactions({ safeData, address }) {
+  const transactions = useFlowgraphTransactions(address);
   let TransactionsComponent = null;
 
-  if (isEmpty(props.transactions) && isEmpty(props.intents)) {
+  console.log({ transactions });
+
+  if (isEmpty(transactions)) {
     TransactionsComponent = (
       <div
         style={{
@@ -20,7 +24,7 @@ function SafeTransactions(props) {
     );
   } else {
     TransactionsComponent = (
-      <TransactionList transactions={props.transactions} />
+      <TransactionList safeData={safeData} transactions={transactions} />
     );
   }
 
