@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import * as fcl from "@onflow/fcl";
 import networks from "../networks";
 import { useRouteMatch } from "react-router-dom";
-import { useFclUser, useTreasury } from "../hooks";
+import { useFclUser, useTreasury, useNFTs } from "../hooks";
 
 // create our app context
 export const Web3Context = React.createContext({});
@@ -70,7 +70,8 @@ export default function Web3Provider({
     path: ["/safe/:address", "/safe/:address/:tab"],
   });
   const treasuryAddr = match?.params?.address;
-  const treasuryProps = useTreasury(treasuryAddr, user?.addr);
+  const treasuryProps = useTreasury(treasuryAddr);
+  const nftProps = useNFTs(user?.addr);
 
   // for Nextjs Builds, return null until "window" is available
   if (!global.window) {
@@ -90,6 +91,7 @@ export default function Web3Provider({
     user,
     address: user.addr,
     logOut,
+    ...nftProps,
     ...treasuryProps,
     ...props,
   };
