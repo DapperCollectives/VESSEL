@@ -5,6 +5,7 @@
   "scripts": {
     "deploy": "yarn workspace @scaffold-flow/cadence deploy",
     "chain": "yarn workspace @scaffold-flow/cadence start",
+    "nft": "yarn workspace @scaffold-flow/cadence nft",
     "test": "yarn workspace @scaffold-flow/cadence test",
     "build": "yarn workspace @scaffold-flow/client build --max-old-space-size=12288",
     "start": "yarn workspace @scaffold-flow/client start"

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { useParams, NavLink } from "react-router-dom";
 import QRCode from "react-qr-code";
 import { shortenAddr } from "../utils";
@@ -8,10 +8,11 @@ import {
   SafeAssets,
   SafeContacts,
   SafeSettings,
+  SendTokens,
 } from "../components";
-import { ArrowDown, ArrowUp, Check } from "../components/Svg";
+import { ArrowDown, ArrowUp } from "../components/Svg";
 import { Web3Consumer, useModalContext } from "../contexts";
-import { useClipboard, useAddressValidation } from "../hooks";
+import { useClipboard } from "../hooks";
 
 const ReceiveTokens = ({ name, address }) => {
   const modalContext = useModalContext();
@@ -46,132 +47,6 @@ const ReceiveTokens = ({ name, address }) => {
         >
           Cancel
         </button>
-      </div>
-    </div>
-  );
-};
-
-const SendTokens = ({ name, address, web3 }) => {
-  const modalContext = useModalContext();
-  const [step, setStep] = useState(0);
-  const [amount, setAmount] = useState(0);
-  const [recipient, setRecipient] = useState("");
-  const [recipientValid, setRecipientValid] = useState(false);
-  // const [assetType, setAssetType] = useState("FLOW");
-  const assetType = "FLOW";
-  const { isAddressValid } = useAddressValidation(web3.injectedProvider);
-
-  const continueReady = amount > 0 && recipientValid;
-  const btnText = continueReady ? "Sign & Deploy" : "Next";
-  const titleText = continueReady ? "Confirm Transaction" : "Send";
-
-  const btnClasses = [
-    "button p-4 flex-1",
-    continueReady ? "is-link" : "is-light is-disabled",
-  ];
-
-  const onSubmit = async () => {
-    if (step === 0) {
-      return setStep(1);
-    }
-    if (step === 1) {
-      await web3.proposeTransfer(recipient, amount);
-      modalContext.closeModal();
-    }
-  };
-
-  const onRecipientChange = async (e) => {
-    let newValue = e.target.value;
-
-    setRecipient(newValue);
-    setRecipientValid(await isAddressValid(newValue));
-  };
-
-  return (
-    <div className="p-5 has-text-black">
-      <h2 className="is-size-4">{titleText}</h2>
-      <div>
-        <span className="border-light-right mr-2 pr-2 has-text-grey">
-          From {name}
-        </span>
-        <span className="is-underlined">{shortenAddr(address)}</span>
-      </div>
-      <div className="border-light-top mt-4 pt-5">
-        <div className="flex-1 is-flex is-flex-direction-column mb-4">
-          <label className="has-text-grey mb-2">Asset</label>
-          <div className="border-light rounded-sm p-1 is-flex column is-full">
-            <button
-              className={`button border-none flex-1 ${
-                assetType === "FLOW" && "has-background-black has-text-white"
-              }`}
-            >
-              FLOW
-            </button>
-            <button className="button border-none flex-1">NFTs</button>
-          </div>
-        </div>
-        <label className="has-text-grey">
-          Amount{step === 0 && <span className="has-text-red"> *</span>}
-        </label>
-        {step === 0 ? (
-          <input
-            type="number"
-            className="is-size-2 border-none column is-full p-0 mb-4"
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
-          />
-        ) : (
-          <span className="is-size-2 column is-full p-0 mb-4">{amount}</span>
-        )}
-        {step === 0 ? (
-          <>
-            <label className="has-text-grey mb-2">
-              Address{step === 0 && <span className="has-text-red"> *</span>}
-            </label>
-
-            <div className="is-flex">
-              <div className="flex-1" style={{ position: "relative" }}>
-                <input
-                  style={{ height: 48 }}
-                  className="border-light rounded-sm column is-full p-2 mt-2"
-                  type="text"
-                  value={recipient}
-                  onChange={onRecipientChange}
-                />
-                {recipientValid && (
-                  <div style={{ position: "absolute", right: 17, top: 20 }}>
-                    <Check />
-                  </div>
-                )}
-              </div>
-            </div>
-          </>
-        ) : (
-          <div className="border-light-top is-flex is-justify-content-space-between py-5">
-            <span className="has-text-grey">Sending to</span>
-            <span>{shortenAddr(recipient)}</span>
-          </div>
-        )}
-        {step === 1 && (
-          <div className="border-light-top is-flex is-justify-content-space-between py-5">
-            <span className="has-text-grey">Network fee</span>
-            <span>$0</span>
-          </div>
-        )}
-        {step === 1 && (
-          <div className="border-light-top is-flex is-justify-content-space-between py-5">
-            <span>Total</span>
-            <span>{amount}</span>
-          </div>
-        )}
-        <div className="is-flex is-align-items-center mt-6">
-          <button className="button flex-1 p-4 mr-2" onClick={() => setStep(0)}>
-            Cancel
-          </button>
-          <button className={btnClasses.join(" ")} onClick={onSubmit}>
-            {btnText}
-          </button>
-        </div>
       </div>
     </div>
   );
@@ -223,8 +98,15 @@ function Safe({ web3 }) {
     );
   });
 
-  const { injectedProvider, signerApprove, executeAction, sendFlowToTreasury } =
-    web3;
+  const {
+    injectedProvider,
+    signerApprove,
+    executeAction,
+    sendFlowToTreasury,
+    sendNFTToTreasury,
+    sendCollectionToTreasury,
+    getTreasuryCollections,
+  } = web3;
 
   const onSignAction = async ({ uuid, intent }) => {
     const latestBlock = await injectedProvider
@@ -261,6 +143,15 @@ function Safe({ web3 }) {
     await sendFlowToTreasury(10);
   };
 
+  const onDepositCollection = async () => {
+    await sendCollectionToTreasury(address);
+  };
+
+  const onDepositNFT = async () => {
+    await sendNFTToTreasury(address, 0);
+    await getTreasuryCollections(address);
+  };
+
   const tabMap = {
     home: (
       <SafeHome
@@ -274,7 +165,14 @@ function Safe({ web3 }) {
       />
     ),
     transactions: <SafeTransactions key="safe-transactions" />,
-    assets: <SafeAssets key="safe-assets" />,
+    assets: (
+      <SafeAssets
+        web3={web3}
+        name={safeData.name}
+        address={address}
+        key="safe-assets"
+      />
+    ),
     contacts: (
       <SafeContacts safeOwners={safeData?.safeOwners} key="safe-contacts" />
     ),
@@ -327,7 +225,16 @@ function Safe({ web3 }) {
             {clipboard.textJustCopied === address ? "Copied" : "Copy address"}
           </span>
           <span className="is-underlined ml-4 pointer" onClick={onDeposit}>
-            Deposit
+            Deposit FLOW
+          </span>
+          <span
+            className="is-underlined ml-4 pointer"
+            onClick={onDepositCollection}
+          >
+            Deposit Collection
+          </span>
+          <span className="is-underlined ml-4 pointer" onClick={onDepositNFT}>
+            Deposit NFT
           </span>
         </p>
       </div>
