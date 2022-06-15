@@ -37,7 +37,7 @@ const deployContracts = () => {
       deployedContracts[`0x${cn}`] = cnAddress;
     });
     fs.writeFileSync(
-      "../client/src/contracts.json",
+      "./packages/client/src/contracts.json",
       JSON.stringify(deployedContracts, 0, 2)
     );
 
