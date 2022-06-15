@@ -70,6 +70,14 @@ To deploy all contracts in `./packages/cadence/contracts`:
 yarn deploy
 ```
 
+#### Seeding Emulator with NFT
+
+after creating a treasury with the service account, run
+
+```bash
+yarn nft
+```
+
 ##### Alternatively...
 
 NOTE: Docker must be running for this method

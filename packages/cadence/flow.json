@@ -23,6 +23,7 @@
 		"NonFungibleToken": {
 			"source": "./contracts/core/NonFungibleToken.cdc",
 			"aliases": {
+				"emulator": "0xf8d6e0586b0a20c7",
 				"testnet": "0x631e88ae7f1d7c20"
 			}
 		},
@@ -32,17 +33,25 @@
 				"testnet": "0x631e88ae7f1d7c20"
 			}
 		},
-		"ExampleNFT": "./contracts/core/ExampleNFT.cdc",
+		"ExampleNFT": {
+			"source": "./contracts/core/ExampleNFT.cdc",
+			"aliases": {
+				"emulator": "0xf8d6e0586b0a20c7",
+				"testnet": "0x631e88ae7f1d7c20"
+			}
+		},
 		"ZayVerifierV2": "./contracts/core/ZayVerifierv2.cdc",
 		"MyMultiSig": {
 			"source": "./contracts/MyMultiSig.cdc",
 			"aliases": {
+				"emulator": "0xf8d6e0586b0a20c7",
 				"testnet": "0x68a4fe55ec686656"
 			}
 		},
 		"DAOTreasury": {
 			"source": "./contracts/DAOTreasury.cdc",
 			"aliases": {
+				"emulator": "0xf8d6e0586b0a20c7",
 				"testnet": "0x68a4fe55ec686656"
 			}
 		},

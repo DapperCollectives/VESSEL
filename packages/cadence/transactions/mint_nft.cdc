@@ -1,5 +1,5 @@
-import NonFungibleToken from "../contracts/core/NonFungibleToken.cdc"
-import ExampleNFT from "../contracts/core/ExampleNFT.cdc"
+import NonFungibleToken from "./contracts/core/NonFungibleToken.cdc"
+import ExampleNFT from "./contracts/core/ExampleNFT.cdc"
 
 // This script uses the NFTMinter resource to mint a new NFT
 // It must be run with the account that has the minter resource

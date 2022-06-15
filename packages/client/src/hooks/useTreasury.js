@@ -1,7 +1,7 @@
 import { useEffect, useReducer } from "react";
 import { mutate, query, tx } from "@onflow/fcl";
 
-import reducer from "../reducers";
+import reducer, { INITIAL_STATE } from "../reducers/treasuries";
 import {
   GET_SIGNERS,
   GET_THRESHOLD,
@@ -16,19 +16,10 @@ import {
   UPDATE_THRESHOLD,
   ADD_SIGNER,
   UPDATE_SIGNER,
+  GET_VAULT_BALANCE,
 } from "../flow";
-import { GET_VAULT_BALANCE } from "../flow/getVaultBalance.tx";
 
 const storageKey = "vessel-treasuries";
-const initialState = {
-  loadingTreasuries: "Loading Treasuries",
-  creatingTreasury: false,
-  createdTreasury: false,
-  submittedTransaction: false,
-  treasuries: {},
-  actions: {},
-  balances: {},
-};
 
 const doQuery = async (cadence, address) => {
   const queryResp = await query({
@@ -93,7 +84,6 @@ const doSignApprove = async (
 };
 
 const doExecuteAction = async (treasuryAddr, actionUUID) => {
-  console.log(treasuryAddr, actionUUID);
   return await mutate({
     cadence: EXECUTE_ACTION,
     args: (arg, t) => [arg(treasuryAddr, t.Address), arg(actionUUID, t.UInt64)],
@@ -160,10 +150,10 @@ const getVaultBalance = async (address) => {
   return 0;
 };
 
-export default function useTreasury(treasuryAddr, userAddr) {
+export default function useTreasury(treasuryAddr) {
   const [state, dispatch] = useReducer(reducer, [], (initial) => ({
     ...initial,
-    ...initialState,
+    ...INITIAL_STATE,
     treasuries: JSON.parse(localStorage.getItem(storageKey)) || {},
   }));
 
@@ -231,6 +221,8 @@ export default function useTreasury(treasuryAddr, userAddr) {
       refreshTreasury();
     };
     checkTreasuries();
+    // TODO: rewrite so doesnt trigger exhaustive deps warning
+    // eslint-disable-next-line
   }, [state.loadingTreasuries, treasuryAddr]);
 
   useEffect(() => {
@@ -287,7 +279,6 @@ export default function useTreasury(treasuryAddr, userAddr) {
       String(parseFloat(amount).toFixed(8))
     );
     await tx(res).onceSealed();
-    await refreshTreasury();
   };
 
   const signerApprove = async (
@@ -335,6 +326,7 @@ export default function useTreasury(treasuryAddr, userAddr) {
 
   return {
     ...state,
+    refreshTreasury,
     createTreasury,
     fetchTreasury,
     setTreasury,
