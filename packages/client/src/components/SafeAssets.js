@@ -92,7 +92,7 @@ function SafeAssets({ web3, name, address }) {
       }
       return {
         key,
-        collectionName: key.split("/")[1],
+        collectionName: key.split(".")[2],
         tokens,
       };
     })

@@ -1,20 +1,14 @@
 const { exec } = require("child_process");
-const path = require("path");
 
 const deployNFTCollection = () => {
   const flowJson = require("./flow.json");
   const accountName = Object.keys(flowJson.accounts)[0];
   const { address } = flowJson.accounts[accountName];
 
-  const sendCollection = path.resolve(
-    __dirname,
-    "transactions/send_collection_to_treasury.cdc"
-  );
-  const mintNFT = path.resolve(__dirname, "transactions/mint_nft.cdc");
-  const sendNFT = path.resolve(
-    __dirname,
-    "transactions/send_nft_to_treasury.cdc"
-  );
+  const basePath = "packages/cadence/transactions";
+  const sendCollection = `${basePath}/send_collection_to_treasury.cdc`;
+  const mintNFT = `${basePath}/mint_nft.cdc`;
+  const sendNFT = `${basePath}/send_nft_to_treasury.cdc`;
 
   exec(
     `flow transactions send ${sendCollection} 0x${address}`,

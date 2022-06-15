@@ -7,56 +7,56 @@
 	},
 	"contracts": {
 		"FungibleToken": {
-			"source": "./contracts/core/FungibleToken.cdc",
+			"source": "./packages/cadence/contracts/core/FungibleToken.cdc",
 			"aliases": {
 				"emulator": "0xee82856bf20e2aa6",
 				"testnet": "0x9a0766d93b6608b7"
 			}
 		},
 		"FlowToken": {
-			"source": "./contracts/core/FlowToken.cdc",
+			"source": "./packages/cadence/contracts/core/FlowToken.cdc",
 			"aliases": {
 				"emulator": "0x0ae53cb6e3f42a79",
 				"testnet": "0x7e60df042a9c0868"
 			}
 		},
 		"NonFungibleToken": {
-			"source": "./contracts/core/NonFungibleToken.cdc",
+			"source": "./packages/cadence/contracts/core/NonFungibleToken.cdc",
 			"aliases": {
 				"emulator": "0xf8d6e0586b0a20c7",
 				"testnet": "0x631e88ae7f1d7c20"
 			}
 		},
 		"MetadataViews": {
-			"source": "./contracts/core/MetadataViews.cdc",
+			"source": "./packages/cadence/contracts/core/MetadataViews.cdc",
 			"aliases": {
 				"testnet": "0x631e88ae7f1d7c20"
 			}
 		},
 		"ExampleNFT": {
-			"source": "./contracts/core/ExampleNFT.cdc",
+			"source": "./packages/cadence/contracts/core/ExampleNFT.cdc",
 			"aliases": {
 				"emulator": "0xf8d6e0586b0a20c7",
 				"testnet": "0x631e88ae7f1d7c20"
 			}
 		},
-		"ZayVerifierV2": "./contracts/core/ZayVerifierv2.cdc",
+		"ZayVerifierV2": "./packages/cadence/contracts/core/ZayVerifierv2.cdc",
 		"MyMultiSig": {
-			"source": "./contracts/MyMultiSig.cdc",
+			"source": "./packages/cadence/contracts/MyMultiSig.cdc",
 			"aliases": {
 				"emulator": "0xf8d6e0586b0a20c7",
 				"testnet": "0x68a4fe55ec686656"
 			}
 		},
 		"DAOTreasury": {
-			"source": "./contracts/DAOTreasury.cdc",
+			"source": "./packages/cadence/contracts/DAOTreasury.cdc",
 			"aliases": {
 				"emulator": "0xf8d6e0586b0a20c7",
 				"testnet": "0x68a4fe55ec686656"
 			}
 		},
 		"TreasuryActions": {
-			"source": "./contracts/TreasuryActions.cdc",
+			"source": "./packages/cadence/contracts/TreasuryActions.cdc",
 			"aliases": {
 				"testnet": "0x68a4fe55ec686656"
 			}

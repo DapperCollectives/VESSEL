@@ -3,9 +3,6 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "start": "node chain.js",
-    "nft": "node nft.js",
-    "test": "go main_test.go",
-    "deploy": "node deploy.js"
+    "test": "go main_test.go"
   }
 }
