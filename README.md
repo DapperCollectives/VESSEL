@@ -21,13 +21,13 @@ yarn install
 
 #### DAOTreasury.cdc
 
-Contract containing the `Treasury` resource.  A `Treasury` can hold Fungible Token `Vault` resources, and Non-Fungible Token `Collection` resources.
+Contract containing the `Treasury` resource. A `Treasury` can hold Fungible Token `Vault` resources, and Non-Fungible Token `Collection` resources.
 
 Anyone may deposit a `Vault` or `Collection` resource into the `Treasury`. Additionally, anyone may deposit fungible/non-fungible tokens into their respective vault/collection held in the `Treasury`.
 
-A `Treasury` is initialized with a list of Flow addresses, which constitute the signers on the `Treasury`.  It is also initialized with an initial threshold, which constitutes the number of signatures needed to execute an `MyMultiSig.Action` against the `Treasury`.
+A `Treasury` is initialized with a list of Flow addresses, which constitute the signers on the `Treasury`. It is also initialized with an initial threshold, which constitutes the number of signatures needed to execute an `MyMultiSig.Action` against the `Treasury`.
 
-Anyone may propose a `MyMultiSig.Action` for the `Treasury` to execute via `TreasuryPublic.proposeAction`.  Signers on the `MyMultiSig.Manager` may borrow a reference to a proposed `MyMultiSig.Action`, and call `verifySignature`.  If the signature verification passes, the signer's address will be added to the map of accounts that have verified the action.
+Anyone may propose a `MyMultiSig.Action` for the `Treasury` to execute via `TreasuryPublic.proposeAction`. Signers on the `MyMultiSig.Manager` may borrow a reference to a proposed `MyMultiSig.Action`, and call `verifySignature`. If the signature verification passes, the signer's address will be added to the map of accounts that have verified the action.
 
 Once a `MyMultiSig.Action` has received >= the required signature threshold, a signer may call `Treasury.executeAction` to follow through with the proposed action.
 
@@ -37,7 +37,7 @@ The signer addresses and initial threshold are used to initialize a `MyMultiSig.
 
 #### TreasuryActions.cdc
 
-The set of actions that a Treasury can execute is limited to the actions defined within `TreasuryActions.cdc`.  These include actions to transfer tokens (fungible or non-fungible) to Flow accounts, or another `Treasury`.  It also includes actions to manage the list of signers and the signer threshold.
+The set of actions that a Treasury can execute is limited to the actions defined within `TreasuryActions.cdc`. These include actions to transfer tokens (fungible or non-fungible) to Flow accounts, or another `Treasury`. It also includes actions to manage the list of signers and the signer threshold.
 
 Actions that manage signers & threshold must undergo the same multi-signing process as actions that move assets out of the Treasury.
 
@@ -46,6 +46,7 @@ Actions that manage signers & threshold must undergo the same multi-signing proc
 For a signer to successfully endorse a proposed action, they must submit a list of signatures.
 
 The message format for a given action is (omitting the curly braces):
+
 ```bash
 {uuid of MyMultiSig.Action}{hex-encoded MyMultiSig.Action intent}{blockId}
 ```
@@ -98,3 +99,13 @@ yarn start
 ```
 
 You should now be able to see the client app at `localhost:3000`.
+
+#### Switching networks
+
+When switching between networks like emulator and testnet, `packages/client/src/contracts.json` needs to be updated with the appropriate addresses from `flow.json`.
+
+You can specify the target network either via a `NETWORK` env variable or by modifying the `NETWORK` variable in `updateContractAddresses.js`.
+
+```
+NETWORK=testnet yarn update-contracts
+```
