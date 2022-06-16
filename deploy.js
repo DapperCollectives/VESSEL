@@ -1,9 +1,10 @@
 const fs = require("fs");
 const path = require("path");
 const { exec } = require("child_process");
+const { updateContractAddresses } = require("./updateContractAddresses");
 
 // emulator, testnet, mainnet
-const NETWORK = "emulator";
+const NETWORK = process.env.NETWORK ?? "emulator";
 
 const addAccounts = () => {
   exec(
@@ -19,27 +20,13 @@ const addAccounts = () => {
 };
 
 const deployContracts = () => {
-  const flowJson = require("./flow.json");
-  const accountName = Object.keys(flowJson.accounts)[0];
-  const { address } = flowJson.accounts[accountName];
-
   exec(`flow project deploy --network=${NETWORK}`, (error, stdout, stderr) => {
     if (error?.message || stderr) {
       console.log(`error: ${error.message}`);
       return;
     }
 
-    const deployedContracts = {};
-    const contractNames = Object.keys(flowJson.contracts);
-    contractNames.forEach((cn) => {
-      const cnAddress =
-        flowJson.contracts[cn]?.aliases?.emulator ?? `0x${address}`;
-      deployedContracts[`0x${cn}`] = cnAddress;
-    });
-    fs.writeFileSync(
-      "./packages/client/src/contracts.json",
-      JSON.stringify(deployedContracts, 0, 2)
-    );
+    updateContractAddresses(NETWORK);
 
     console.log(stdout);
     // create accounts if using emulator

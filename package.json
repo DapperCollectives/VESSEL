@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "deploy": "node deploy.js",
+    "update-contracts": "node updateContractAddresses.js",
     "chain": "node chain.js",
     "nft": "node nft.js",
     "test": "yarn workspace @scaffold-flow/cadence test",
