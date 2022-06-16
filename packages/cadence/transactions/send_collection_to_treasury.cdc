@@ -1,7 +1,7 @@
-import NonFungibleToken from "./contracts/core/NonFungibleToken.cdc"
-import ExampleNFT from "./contracts/core/ExampleNFT.cdc"
-import DAOTreasury from "./contracts/DAOTreasury.cdc"
-import MyMultiSig from "./contracts/MyMultiSig.cdc"
+import NonFungibleToken from "../contracts/core/NonFungibleToken.cdc"
+import ExampleNFT from "../contracts/core/ExampleNFT.cdc"
+import DAOTreasury from "../contracts/DAOTreasury.cdc"
+import MyMultiSig from "../contracts/MyMultiSig.cdc"
 
 // This transaction is for transferring and NFT from
 // one account to another
