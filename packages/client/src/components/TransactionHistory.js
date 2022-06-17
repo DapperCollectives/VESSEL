@@ -7,8 +7,7 @@ function TransactionHistory({ safeData, address }) {
   const transactions = useFlowgraphTransactions(address);
   let TransactionsComponent = null;
 
-  // TODO: remove false
-  if (false && isEmpty(transactions)) {
+  if (isEmpty(transactions)) {
     TransactionsComponent = (
       <div className="column p-0 mt-4 is-flex is-full border-light has-shadow rounded-sm">
         <div

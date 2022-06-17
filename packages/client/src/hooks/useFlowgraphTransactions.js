@@ -4,22 +4,14 @@ const TRANSACTIONS_QUERY = `
   query AccountTransactions($address: ID!) {
     account(id: $address) {
       transactions (
-        first: 5
         ordering: Descending
       ) {
-        pageInfo {
-          hasNextPage
-          endCursor
-        }
         edges {
           node {
             hash
-            height
-            index
             status
             time
             sequenceNumber
-            eventCount
             proposer {
               address
             }
@@ -28,6 +20,50 @@ const TRANSACTIONS_QUERY = `
             }
             authorizers {
               address
+            }
+            events {
+              edges {
+                node {
+                  type {
+                    id
+                  }
+                  fields
+                }
+              }
+            }
+            tokenTransfers {
+              edges {
+                node {
+                  type
+                  amount {
+                    token {
+                      id
+                    }
+                    value
+                  }
+                  counterparty {
+                    address
+                  }
+                }
+              }
+            }
+            nftTransfers {
+              edges {
+                node {
+                  nft {
+                    contract {
+                      id
+                    }
+                    nftId
+                  }
+                  from {
+                    address
+                  }
+                  to {
+                    address
+                  }
+                }
+              }
             }
           }
         }
@@ -47,5 +83,10 @@ export default function useFlowgraphTransactions(address) {
     return [];
   }
 
-  return data;
+  return data.account.transactions.edges.map(({ node }) => ({
+    ...node,
+    events: node.events.edges.map(({ node }) => node),
+    tokenTransfers: node.tokenTransfers.edges.map(({ node }) => node),
+    nftTransfers: node.nftTransfers.edges.map(({ node }) => node),
+  }));
 }
