@@ -37,7 +37,7 @@ const doCreateTreasury = async (signerAddresses, threshold) => {
       arg(signerAddresses, t.Array(t.Address)),
       arg(threshold, t.UInt64),
     ],
-    limit: 55,
+    limit: 80,
   });
 };
 

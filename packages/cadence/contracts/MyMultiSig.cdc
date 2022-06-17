@@ -214,7 +214,7 @@ pub contract MyMultiSig {
         }
 
         pub fun readyToExecute(actionUUID: UInt64): Bool {
-            let actionRef: &MultiSignAction = &self.actions[actionUUID] as &MultiSignAction
+            let actionRef: &MultiSignAction = (&self.actions[actionUUID] as &MultiSignAction?)!
             return actionRef.totalVerified >= self.threshold
         }
 
@@ -230,7 +230,7 @@ pub contract MyMultiSig {
         }
 
         pub fun borrowAction(actionUUID: UInt64): &MultiSignAction {
-            return &self.actions[actionUUID] as &MultiSignAction
+            return (&self.actions[actionUUID] as &MultiSignAction?)!
         }
 
         pub fun getIDs(): [UInt64] {

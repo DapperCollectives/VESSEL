@@ -73,18 +73,18 @@ pub contract DAOTreasury {
 
     // Withdraw some tokens //
     pub fun withdrawTokens(identifier: String, amount: UFix64): @FungibleToken.Vault {
-      let vaultRef = &self.vaults[identifier] as &FungibleToken.Vault
+      let vaultRef = (&self.vaults[identifier] as &FungibleToken.Vault?)!
       return <- vaultRef.withdraw(amount: amount)
     }
 
     // Reference to Vault //
     pub fun borrowVault(identifier: String): &FungibleToken.Vault {
-      return &self.vaults[identifier] as &FungibleToken.Vault
+      return (&self.vaults[identifier] as &FungibleToken.Vault?)!
     }
 
     // Public Reference to Vault //
     pub fun borrowVaultPublic(identifier: String): &{FungibleToken.Balance, FungibleToken.Receiver} {
-      return &self.vaults[identifier] as &{FungibleToken.Balance, FungibleToken.Receiver}
+      return (&self.vaults[identifier] as &{FungibleToken.Balance, FungibleToken.Receiver}?)!
     }
 
     pub fun getVaultIdentifiers(): [String] {
@@ -101,18 +101,18 @@ pub contract DAOTreasury {
 
     // Withdraw an NFT //
     pub fun withdrawNFT(identifier: String, id: UInt64): @NonFungibleToken.NFT {
-      let collectionRef = &self.collections[identifier] as &NonFungibleToken.Collection
+      let collectionRef = (&self.collections[identifier] as &NonFungibleToken.Collection?)!
       return <- collectionRef.withdraw(withdrawID: id)
     }
 
     // Reference to Collection //
     pub fun borrowCollection(identifier: String): &NonFungibleToken.Collection {
-      return &self.collections[identifier] as &NonFungibleToken.Collection
+      return (&self.collections[identifier] as &NonFungibleToken.Collection?)!
     }
 
     // Public Reference to Collection //
     pub fun borrowCollectionPublic(identifier: String): &{NonFungibleToken.CollectionPublic} {
-      return &self.collections[identifier] as &{NonFungibleToken.CollectionPublic}
+      return (&self.collections[identifier] as &{NonFungibleToken.CollectionPublic}?)!
     }
 
      pub fun getCollectionIdentifiers(): [String] {
