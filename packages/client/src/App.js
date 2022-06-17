@@ -45,7 +45,6 @@ const Body = () => (
 );
 
 function App() {
-  console.log("REACT_APP_FLOW_ENV:", process.env);
   return (
     <Router>
       <Web3Provider network={process.env.REACT_APP_FLOW_ENV}>

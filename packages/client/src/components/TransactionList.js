@@ -166,8 +166,6 @@ function TransactionListItem({
 function TransactionList({ safeData, transactions = [{ foo: "bar" }] }) {
   const modalContext = useModalContext();
 
-  console.log({ transactions });
-
   const onViewTransaction = (transaction) => {
     modalContext.openModal(
       <TransactionDetails

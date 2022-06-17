@@ -8,8 +8,6 @@ function SafeTransactions({ safeData, address }) {
   const transactions = useFlowgraphTransactions(address);
   let TransactionsComponent = null;
 
-  console.log({ transactions });
-
   if (isEmpty(transactions)) {
     TransactionsComponent = (
       <div
