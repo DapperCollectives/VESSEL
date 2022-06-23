@@ -1,6 +1,6 @@
 import React from "react";
 import { useModalContext } from "../contexts";
-import { shortenAddr } from "../utils";
+import { getFlowscanUrlForTransaction, shortenAddr } from "../utils";
 import TransactionStatusIcon from "./TransactionStatusIcon";
 
 const FALLBACK_RECIPIENT_NAME = "No name";
@@ -85,6 +85,17 @@ function TransactionDetails({ safeOwners, transaction, onClose }) {
       <div className="border-light-top p-5">
         <div className="flex-1 is-flex is-flex-direction-column">
           {renderConfirmationsRow()}
+          {renderRow(
+            "Hash",
+            <a
+              href={getFlowscanUrlForTransaction(transaction.hash)}
+              target="_blank"
+              rel="noopen noreferrer"
+              className="is-underlined has-text-black"
+            >
+              {shortenAddr(transaction.hash)}
+            </a>
+          )}
           {renderRow(
             "Sent",
             getDisplayStringForTokenTransfer(lastTokenTransfer)

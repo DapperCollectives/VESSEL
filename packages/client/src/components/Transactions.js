@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Web3Consumer } from "../contexts/Web3";
+import { getFlowscanUrlForTransaction } from "../utils";
 
 function Transaction({ web3 }) {
   const { id, status, errorMessage } = web3.transaction;
@@ -37,9 +38,7 @@ function Transaction({ web3 }) {
         <div className="is-size-5 mb-2">
           {id && (
             <span className="mr-2">
-              <a href={`https://testnet.flowscan.org/transaction/${id}`}>
-                {id.slice(0, 8)}
-              </a>
+              <a href={getFlowscanUrlForTransaction(id)}>{id.slice(0, 8)}</a>
             </span>
           )}
           <code>Pending</code>
@@ -61,9 +60,7 @@ function Transaction({ web3 }) {
         <div className="is-size-5 mb-2">
           {id && (
             <span className="mr-2">
-              <a href={`https://testnet.flowscan.org/transaction/${id}`}>
-                {id.slice(0, 8)}
-              </a>
+              <a href={getFlowscanUrlForTransaction(id)}>{id.slice(0, 8)}</a>
             </span>
           )}
           <code>Finalized</code>
@@ -85,9 +82,7 @@ function Transaction({ web3 }) {
         <div className="is-size-5 mb-2">
           {id && (
             <span className="mr-2">
-              <a href={`https://testnet.flowscan.org/transaction/${id}`}>
-                {id.slice(0, 8)}
-              </a>
+              <a href={getFlowscanUrlForTransaction(id)}>{id.slice(0, 8)}</a>
             </span>
           )}
           <code>Executed</code>
@@ -108,9 +103,7 @@ function Transaction({ web3 }) {
         <div className="is-size-5 mb-2">
           {id && (
             <span className="mr-2">
-              <a href={`https://testnet.flowscan.org/transaction/${id}`}>
-                {id.slice(0, 8)}
-              </a>
+              <a href={getFlowscanUrlForTransaction(id)}>{id.slice(0, 8)}</a>
             </span>
           )}
           <code>✓ Sealed</code>
@@ -129,9 +122,7 @@ function Transaction({ web3 }) {
         <div className="is-size-5 mb-2">
           {id && (
             <span className="mr-2">
-              <a href={`https://testnet.flowscan.org/transaction/${id}`}>
-                {id.slice(0, 8)}
-              </a>
+              <a href={getFlowscanUrlForTransaction(id)}>{id.slice(0, 8)}</a>
             </span>
           )}
           <code>Expired</code>
@@ -149,9 +140,7 @@ function Transaction({ web3 }) {
         <div className="is-size-5 mb-2">
           {id && (
             <span className="mr-2">
-              <a href={`https://testnet.flowscan.org/transaction/${id}`}>
-                {id.slice(0, 8)}
-              </a>
+              <a href={getFlowscanUrlForTransaction(id)}>{id.slice(0, 8)}</a>
             </span>
           )}
           <code>{errorMessage}</code>
