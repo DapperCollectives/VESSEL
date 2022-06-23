@@ -79,3 +79,9 @@ export const formatActionString = (str) => {
 export const getProgressPercentageForSignersAmount = (signersAmount) => {
   return Math.min(60 + signersAmount * 10, 100);
 };
+
+export const getFlowscanUrlForTransaction = (hash) => {
+  return `https://${
+    process.env.REACT_APP_FLOW_ENV === "mainnet" ? "" : "testnet."
+  }flowscan.org/transaction/${hash}`;
+};

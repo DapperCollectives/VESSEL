@@ -164,7 +164,13 @@ function Safe({ web3 }) {
         onConfirm={onConfirmAction}
       />
     ),
-    transactions: <SafeTransactions key="safe-transactions" />,
+    transactions: (
+      <SafeTransactions
+        key="safe-transactions"
+        safeData={safeData}
+        address={address}
+      />
+    ),
     assets: (
       <SafeAssets
         web3={web3}
