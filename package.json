@@ -7,9 +7,9 @@
     "update-contracts": "node updateContractAddresses.js",
     "chain": "node chain.js",
     "nft": "node nft.js",
-    "test": "yarn workspace @scaffold-flow/cadence test",
     "build": "yarn workspace @scaffold-flow/client build --max-old-space-size=12288",
-    "start": "yarn workspace @scaffold-flow/client start"
+    "start": "yarn workspace @scaffold-flow/client start",
+    "test": "go main_test.go"
   },
   "workspaces": {
     "packages": [

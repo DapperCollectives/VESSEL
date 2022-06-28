@@ -5,7 +5,7 @@ const deployNFTCollection = () => {
   const accountName = Object.keys(flowJson.accounts)[0];
   const { address } = flowJson.accounts[accountName];
 
-  const basePath = "packages/cadence/transactions";
+  const basePath = "./transactions";
   const sendCollection = `${basePath}/send_collection_to_treasury.cdc`;
   const mintNFT = `${basePath}/mint_nft.cdc`;
   const sendNFT = `${basePath}/send_nft_to_treasury.cdc`;
