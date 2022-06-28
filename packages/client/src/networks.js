@@ -1,6 +1,6 @@
 const networksConfig = {
   emulator: {
-    accessApi: "http://localhost:8080",
+    accessApi: "http://localhost:8888",
     walletDiscovery: "http://localhost:8701/fcl/authn",
   },
   testnet: {
