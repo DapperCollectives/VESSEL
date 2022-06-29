@@ -4,7 +4,7 @@ const networksConfig = {
     walletDiscovery: "http://localhost:8701/fcl/authn",
   },
   testnet: {
-    accessApi: "https://access-testnet.onflow.org",
+    accessApi: "https://rest-testnet.onflow.org",
     walletDiscovery: "https://fcl-discovery.onflow.org/testnet/authn",
   },
   mainnet: {
