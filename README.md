@@ -9,6 +9,8 @@ Vessel is a secure treasury management solution for DAOs, communities, and squad
 - [Node/NPM](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
 - [Flow CLI v0.37.0](https://docs.onflow.org/flow-cli/install/)
 
+If you plan to use the app on Flow's testnet, you may want to seed your account with FLOW tokens [here](https://testnet-faucet.onflow.org/).
+
 ## Installation
 
 ```bash
@@ -59,16 +61,24 @@ For the signature to be valid, the weight of the sum of all the keys that succes
 
 #### Deploying Contracts to Emulator
 
-To start a local blockchain using `flow emulator`:
+To start a local blockchain use:
 
 ```bash
-yarn chain
+flow emulator --verbose
 ```
 
 To deploy all contracts in `./packages/cadence/contracts`:
 
 ```bash
 yarn deploy
+```
+
+#### Using Emulator Dev Wallet
+
+To use a dev-wallet for connecting locally, download [fcl-dev-wallet](https://github.com/onflow/fcl-dev-wallet) and run it alongside your flow emulator with
+
+```bash
+npm run dev
 ```
 
 #### Seeding Emulator with NFT
