@@ -4,9 +4,21 @@ import NonFungibleToken from "./core/NonFungibleToken.cdc"
 
 pub contract DAOTreasury {
 
+  // Storage Paths
   pub let TreasuryStoragePath: StoragePath
   pub let TreasuryPublicPath: PublicPath
 
+  // Events
+  pub event TreasuryInitialized(initialSigners: [Address], initialThreshold: UInt64)
+  pub event ProposeAction(actionUUID: UInt64)
+  pub event ExecuteAction(address: Address, actionUUID: UInt64)
+  pub event DepositVault(address: Address, vaultID: String)
+  pub event DepositCollection(address: Address, collectionID: String)
+  pub event WithdrawTokens(vaultID: String, amount: UInt64)
+  pub event WithdrawNFT(collectionID: UInt64, nftID: UInt64)
+
+
+  // Interfaces + Resources
   pub resource interface TreasuryPublic {
     pub fun proposeAction(action: {MyMultiSig.Action}): UInt64
     pub fun executeAction(actionUUID: UInt64)
@@ -27,6 +39,7 @@ pub contract DAOTreasury {
     // ------- Manager -------   
     pub fun proposeAction(action: {MyMultiSig.Action}): UInt64 {
       let uuid = self.multiSignManager.createMultiSign(action: action)
+      emit ProposeAction(actionUUID: uuid)
       return uuid
     }
 
@@ -133,6 +146,7 @@ pub contract DAOTreasury {
   }
   
   pub fun createTreasury(initialSigners: [Address], initialThreshold: UInt64): @Treasury {
+    emit TreasuryInitialized(initialSigners: initialSigners, initialThreshold: initialThreshold)
     return <- create Treasury(_initialSigners: initialSigners, _initialThreshold: initialThreshold)
   }
 
