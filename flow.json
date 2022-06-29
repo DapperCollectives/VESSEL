@@ -7,56 +7,47 @@
 	},
 	"contracts": {
 		"FungibleToken": {
-			"source": "./packages/cadence/contracts/core/FungibleToken.cdc",
+			"source": "./contracts/core/FungibleToken.cdc",
 			"aliases": {
 				"emulator": "0xee82856bf20e2aa6",
 				"testnet": "0x9a0766d93b6608b7"
 			}
 		},
 		"FlowToken": {
-			"source": "./packages/cadence/contracts/core/FlowToken.cdc",
+			"source": "./contracts/core/FlowToken.cdc",
 			"aliases": {
 				"emulator": "0x0ae53cb6e3f42a79",
 				"testnet": "0x7e60df042a9c0868"
 			}
 		},
 		"NonFungibleToken": {
-			"source": "./packages/cadence/contracts/core/NonFungibleToken.cdc",
+			"source": "./contracts/core/NonFungibleToken.cdc",
 			"aliases": {
-				"emulator": "0xf8d6e0586b0a20c7",
 				"testnet": "0x631e88ae7f1d7c20"
 			}
 		},
 		"MetadataViews": {
-			"source": "./packages/cadence/contracts/core/MetadataViews.cdc",
+			"source": "./contracts/core/MetadataViews.cdc",
 			"aliases": {
 				"testnet": "0x631e88ae7f1d7c20"
 			}
 		},
-		"ExampleNFT": {
-			"source": "./packages/cadence/contracts/core/ExampleNFT.cdc",
-			"aliases": {
-				"emulator": "0xf8d6e0586b0a20c7",
-				"testnet": "0x631e88ae7f1d7c20"
-			}
-		},
-		"ZayVerifierV2": "./packages/cadence/contracts/core/ZayVerifierv2.cdc",
+		"ExampleNFT": "./contracts/core/ExampleNFT.cdc",
+		"ZayVerifierV2": "./contracts/core/ZayVerifierv2.cdc",
 		"MyMultiSig": {
-			"source": "./packages/cadence/contracts/MyMultiSig.cdc",
+			"source": "./contracts/MyMultiSig.cdc",
 			"aliases": {
-				"emulator": "0xf8d6e0586b0a20c7",
 				"testnet": "0x68a4fe55ec686656"
 			}
 		},
 		"DAOTreasury": {
-			"source": "./packages/cadence/contracts/DAOTreasury.cdc",
+			"source": "./contracts/DAOTreasury.cdc",
 			"aliases": {
-				"emulator": "0xf8d6e0586b0a20c7",
 				"testnet": "0x68a4fe55ec686656"
 			}
 		},
 		"TreasuryActions": {
-			"source": "./packages/cadence/contracts/TreasuryActions.cdc",
+			"source": "./contracts/TreasuryActions.cdc",
 			"aliases": {
 				"testnet": "0x68a4fe55ec686656"
 			}
@@ -70,7 +61,7 @@
 	"accounts": {
 		"emulator-account": {
 			"address": "f8d6e0586b0a20c7",
-			"key": "59092d0231bce1e19f6c2f1fb99d7a27deee3b4ab34fa47db5bfdecd9860f308"
+			"key": "f8e188e8af0b8b414be59c4a1a15cc666c898fb34d94156e9b51e18bfde754a5"
 		},
 		"emulator-recipient": {
 			"address": "01cf0e2f2f715450",

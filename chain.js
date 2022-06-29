@@ -1,28 +1,50 @@
 const fs = require("fs");
-const { spawn } = require("child_process");
+const { exec, spawn } = require("child_process");
 
-let chain;
-const chainArgs = ["emulator", "--dev-wallet", "--verbose"];
+const execCb = (error, stdout, stderr) => {
+  if (error) {
+    console.log(`error: ${error.message}`);
+    return;
+  }
+  if (stderr) {
+    console.log(`stderr: ${stderr}`);
+    return;
+  }
+
+  console.log(stdout);
+};
+
+let chainProcess;
 
 if (fs.existsSync("./flow.json")) {
-  chain = spawn("flow", chainArgs);
+  console.log("Found flow file, starting emulator...");
+  chainProcess = spawn("flow", ["emulator", "--verbose"]);
 } else {
   console.log("No existing flow file found, creating new one...");
   exec("flow init", (error, stdout, stderr) => {
-    if (error?.message || stderr) {
-      console.log(`error: ${error.message || stderr}`);
-      return;
-    }
-
-    console.log(stdout);
-    chain = spawn("flow", chainArgs);
+    execCb(error, stdout, stderr);
+    chainProcess = spawn("flow", ["emulator", "--verbose"]);
   });
 }
 
-chain.stdout.on("data", (data) => console.log(data.toString()));
+chainProcess.stdout.on("data", (stdout) => {
+  console.log(stdout.toString());
+});
 
-chain.stderr.on("data", (data) => console.log(data.toString()));
+chainProcess.stderr.on("data", (stderr) => {
+  console.log(`stderr: ${stderr}`);
+});
 
-chain.on("exit", (code) =>
-  console.log("flow chain process exited with code " + code.toString())
+const execOpts = {
+  env: {
+    ...process.env,
+    APP_ENV: "local",
+    BASE_URL: "http://localhost:8701",
+  },
+};
+
+exec(
+  'flow dev-wallet --emulator-host "http://localhost:8888" -f flow.json',
+  execOpts,
+  execCb
 );

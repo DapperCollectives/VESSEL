@@ -7,7 +7,7 @@ Vessel is a secure treasury management solution for DAOs, communities, and squad
 - [Yarn](https://classic.yarnpkg.com/lang/en/docs/install)
 - [GoLang 1.6](https://golang.org/doc/install)
 - [Node/NPM](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
-- [Flow CLI](https://docs.onflow.org/flow-cli/install/)
+- [Flow CLI v0.37.0](https://docs.onflow.org/flow-cli/install/)
 
 ## Installation
 
