@@ -3,6 +3,15 @@ import FungibleToken from "./core/FungibleToken.cdc"
 
 pub contract MyMultiSig {
 
+    // Events
+    pub event ActionExecutedByManager(uuid: UInt64)
+    pub event ActionCreated(uuid: UInt64, intent: String)
+    pub event SignerAdded(address: Address)
+    pub event SignerRemoved(address: Address)
+    pub event MultiSigThresholdUpdated(oldThreshold: UInt64, newThreshold: UInt64)
+    pub event ActionDestroyed(uuid: UInt64)
+    pub event ManagerInitialized(initialSigners: [Address], initialThreshold: UInt64)
+
     //
     // ------- Resource Interfaces ------- 
     //
@@ -191,6 +200,7 @@ pub contract MyMultiSig {
             let newAction <- create MultiSignAction(_signers: self.signers.keys, _intent: action.intent, _action: action)
             let uuid = newAction.uuid
             self.actions[newAction.uuid] <-! newAction
+            emit ActionCreated(uuid: uuid, intent: action.intent)
             return uuid
         }
 
@@ -198,19 +208,24 @@ pub contract MyMultiSig {
         // so they are multisign actions themselves? Idk
         pub fun addSigner(signer: Address) {
             self.signers.insert(key: signer, true)
+            emit SignerAdded(address: signer)
         }
 
         pub fun removeSigner(signer: Address) {
             self.signers.remove(key: signer)
+            emit SignerRemoved(address: signer)
         }
 
         pub fun updateThreshold(newThreshold: UInt64) {
+            let oldThreshold = self.threshold
             self.threshold = newThreshold
+            emit MultiSigThresholdUpdated(oldThreshold: oldThreshold, newThreshold: newThreshold)
         }
 
         pub fun destroyAction(actionUUID: UInt64) {
             let removedAction <- self.actions.remove(key: actionUUID) ?? panic("This action does not exist.")
             destroy removedAction
+            emit ActionDestroyed(uuid: actionUUID)
         }
 
         pub fun readyToExecute(actionUUID: UInt64): Bool {
@@ -226,6 +241,7 @@ pub contract MyMultiSig {
             
             let action <- self.actions.remove(key: actionUUID) ?? panic("This action does not exist.")
             action.action.execute(params)
+            emit ActionExecutedByManager(uuid: actionUUID)
             destroy action
         }
 
@@ -265,6 +281,7 @@ pub contract MyMultiSig {
             for signer in _initialSigners {
                 self.signers.insert(key: signer, true)
             }
+            emit ManagerInitialized(initialSigners: _initialSigners, initialThreshold: _initialThreshold)
         }
 
         destroy() {
