@@ -208,6 +208,10 @@ func TestTransferFungibleTokensToTreasuryActions(t *testing.T) {
 	})
 }
 
+func TestTransferNonFungibleTokensToAccountActions(t *testing.T) {
+	// TODO
+}
+
 func TestTransferNonFungibleTokensToTreasuryActions(t *testing.T) {
 	var transferNFTActionUUID uint64
 
