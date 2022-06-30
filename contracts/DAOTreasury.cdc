@@ -11,11 +11,11 @@ pub contract DAOTreasury {
   // Events
   pub event TreasuryInitialized(initialSigners: [Address], initialThreshold: UInt64)
   pub event ProposeAction(actionUUID: UInt64)
-  pub event ExecuteAction(address: Address, actionUUID: UInt64)
-  pub event DepositVault(address: Address, vaultID: String)
-  pub event DepositCollection(address: Address, collectionID: String)
-  pub event WithdrawTokens(vaultID: String, amount: UInt64)
-  pub event WithdrawNFT(collectionID: UInt64, nftID: UInt64)
+  pub event ExecuteAction(actionUUID: UInt64)
+  pub event DepositVault(vaultID: String)
+  pub event DepositCollection(collectionID: String)
+  pub event WithdrawTokens(vaultID: String, amount: UFix64)
+  pub event WithdrawNFT(collectionID: String, nftID: UInt64)
 
 
   // Interfaces + Resources
@@ -61,6 +61,7 @@ pub contract DAOTreasury {
     pub fun executeAction(actionUUID: UInt64) {
       let selfRef: &Treasury = &self as &Treasury
       self.multiSignManager.executeAction(actionUUID: actionUUID, {"treasury": selfRef})
+      emit ExecuteAction(actionUUID: actionUUID)
     }
 
     // Reference to Manager //
@@ -82,10 +83,12 @@ pub contract DAOTreasury {
       } else {
         self.vaults[identifier] <-! vault
       }
+      emit DepositVault(vaultID: identifier)
     }
 
     // Withdraw some tokens //
     pub fun withdrawTokens(identifier: String, amount: UFix64): @FungibleToken.Vault {
+      emit WithdrawTokens(vaultID: identifier, amount: amount)
       let vaultRef = (&self.vaults[identifier] as &FungibleToken.Vault?)!
       return <- vaultRef.withdraw(amount: amount)
     }
@@ -109,11 +112,14 @@ pub contract DAOTreasury {
 
     // Deposit a Collection //
     pub fun depositCollection(collection: @NonFungibleToken.Collection) {
-      self.collections[collection.getType().identifier] <-! collection
+      let identifier = collection.getType().identifier
+      self.collections[identifier] <-! collection
+      emit DepositCollection(collectionID: identifier)
     }
 
     // Withdraw an NFT //
     pub fun withdrawNFT(identifier: String, id: UInt64): @NonFungibleToken.NFT {
+      emit WithdrawNFT(collectionID: identifier, nftID: id)
       let collectionRef = (&self.collections[identifier] as &NonFungibleToken.Collection?)!
       return <- collectionRef.withdraw(withdrawID: id)
     }
