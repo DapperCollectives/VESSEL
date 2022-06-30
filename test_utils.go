@@ -25,7 +25,7 @@ func NewOverflowTest(t *testing.T) *OverflowTestUtils {
 	// return &OverflowTestUtils{T: t, O: overflow.NewOverflowEmulator().Start()}
 }
 
-func (otu *OverflowTestUtils) SetupTreasury(name string, signers []string) *OverflowTestUtils {
+func (otu *OverflowTestUtils) SetupTreasury(name string, signers []string, threshold uint64) *OverflowTestUtils {
 	addresses := make([]string, len(signers))
 	for _, name := range signers {
 		addresses = append(addresses, otu.GetAccountAddress(name))
@@ -36,7 +36,7 @@ func (otu *OverflowTestUtils) SetupTreasury(name string, signers []string) *Over
 		Args(otu.O.Arguments().
 			RawAddressArray(
 				addresses...).
-			UInt64(2)).
+			UInt64(threshold)).
 		Test(otu.T).
 		AssertSuccess()
 
