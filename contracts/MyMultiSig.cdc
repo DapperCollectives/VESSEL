@@ -30,6 +30,36 @@ pub contract MyMultiSig {
     }
 
     //
+    // ------- Structs --------
+    //
+
+    pub struct MessageSignaturePayload {
+        pub let signingAddr: Address
+        pub let message: String
+        pub let keyIds: [Int]
+        pub let signatures: [String]
+        pub let signatureBlock: UInt64
+
+        init(_signingAddr: Address, _message: String, _keyIds: [Int], _signatures: [String], _signatureBlock: UInt64) {
+            self.signingAddr = _signingAddr
+            self.message = _message
+            self.keyIds = _keyIds
+            self.signatures = _signatures
+            self.signatureBlock = _signatureBlock
+        }
+    }
+
+    pub struct ValidateSignatureResponse {
+        pub let isValid: Bool
+        pub let totalWeight: UFix64
+
+        init(_isValid: Bool, _totalWeight: UFix64) {
+            self.isValid = _isValid
+            self.totalWeight = _totalWeight
+        }
+    }
+
+    //
     // ------- Resources ------- 
     //
 
@@ -56,20 +86,18 @@ pub contract MyMultiSig {
         //
         // Returns:
         // Whether or not this signature is valid
-        pub fun verifySignature(acctAddress: Address, message: String, keyIds: [Int], signatures: [String], signatureBlock: UInt64): Bool {
-            pre {
-                self.accountsVerified[acctAddress] != nil:
-                    "This address is not allowed to sign for this."
-                !self.accountsVerified[acctAddress]!:
-                    "This address has already signed."
-            }
+        // Cumulative weight of keys if signature is valid
+
+        pub fun validateSignature(payload: MessageSignaturePayload): ValidateSignatureResponse {
             let keyList = Crypto.KeyList()
-            let account = getAccount(acctAddress)
+            let signingAddr = payload.signingAddr
+            let account = getAccount(payload.signingAddr)
 
             let publicKeys: [[UInt8]] = []
             let weights: [UFix64] = []
             let signAlgos: [UInt] = []
             
+            let keyIds = payload.keyIds
             let uniqueKeys: {Int: Bool} = {}
             for id in keyIds {
                 uniqueKeys[id] = true
@@ -91,10 +119,6 @@ pub contract MyMultiSig {
                 counter = counter + 1
             }
 
-            // Why 999 instead of 1000? Blocto currently signs with a 999 weight key sometimes for non-custodial blocto accounts.
-            // We would like to support these non-custodial Blocto wallets - but can be switched to 1000 weight when Blocto updates this.
-            assert(totalWeight >= 999.0, message: "Total weight of combined signatures did not satisfy 999 requirement.")
-
             var i = 0
             for publicKey in publicKeys {
                 keyList.add(
@@ -111,7 +135,7 @@ pub contract MyMultiSig {
             // In verify we need a [KeyListSignature] so we do that here
             let signatureSet: [Crypto.KeyListSignature] = []
             var j = 0
-            for signature in signatures {
+            for signature in payload.signatures {
                 signatureSet.append(
                     Crypto.KeyListSignature(
                         keyIndex: keyIds[j],
@@ -121,8 +145,30 @@ pub contract MyMultiSig {
                 j = j + 1
             }
 
-            counter = 0
-            let signingBlock = getBlock(at: signatureBlock)!
+            let signatureValid = keyList.verify(
+                signatureSet: signatureSet,
+                signedData: payload.message.utf8
+            )
+
+            
+
+            return ValidateSignatureResponse(_isValid: signatureValid, _totalWeight: totalWeight)
+        }
+
+        pub fun signerApproveAction(_messageSignaturePayload: MessageSignaturePayload): Bool {
+            pre {
+                self.accountsVerified[_messageSignaturePayload.signingAddr] != nil:
+                    "This address is not allowed to sign for this."
+                !self.accountsVerified[_messageSignaturePayload.signingAddr]!:
+                    "This address has already signed."
+            }
+
+            /////////////////////////
+            // Validate the message
+            /////////////////////////
+
+            var counter = 0
+            let signingBlock = getBlock(at: _messageSignaturePayload.signatureBlock)!
             let blockId = signingBlock.id
             let blockIds: [UInt8] = []
             
@@ -130,13 +176,14 @@ pub contract MyMultiSig {
                 blockIds.append(blockId[counter])
                 counter = counter + 1
             }
-            
+
             // message: {uuid of this resource}{intent}{blockId}
             let uuidString = self.uuid.toString()
             let intentHex = String.encodeHex(self.intent.utf8)
             let blockIdHexStr: String = String.encodeHex(blockIds)
 
             // Matches the `uuid` of this resource
+            let message = _messageSignaturePayload.message
             assert(
                 uuidString == message.slice(from: 0, upTo: uuidString.length), 
                 message: "This signature is not for this action"
@@ -152,19 +199,17 @@ pub contract MyMultiSig {
                 message: "Unable to validate signature provided contained a valid block id."
             )
 
-            let signatureValid = keyList.verify(
-                signatureSet: signatureSet,
-                signedData: message.utf8
-            )
+            var signatureValidationResponse = self.validateSignature(payload: _messageSignaturePayload)
 
-            assert(
-                signatureValid == true,
-                message: "Signature is not valid. keyList.verify failed."
-            )
-            self.accountsVerified[acctAddress] = signatureValid
+            assert(signatureValidationResponse.isValid == true, message: "Invalid Signatures")
+            // Why 999 instead of 1000? Blocto currently signs with a 999 weight key sometimes for non-custodial blocto accounts.
+            // We would like to support these non-custodial Blocto wallets - but can be switched to 1000 weight when Blocto updates this.
+            assert(signatureValidationResponse.totalWeight >= 999.0, message: "Total weight of combined signatures did not satisfy 999 requirement.")
+
+            self.accountsVerified[_messageSignaturePayload.signingAddr] = signatureValidationResponse.isValid
             self.totalVerified = self.totalVerified + 1
 
-            return signatureValid
+            return signatureValidationResponse.isValid
         }
 
         init(_signers: [Address], _intent: String, _action: {Action}) {

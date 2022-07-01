@@ -73,6 +73,8 @@ pub contract DAOTreasury {
 
     // ------- Vaults ------- 
 
+    // pub fun signerDepositVault(signerAddr: Address, message: String, keyIds: _keyIds)
+
     // Deposit a Vault //
     pub fun depositVault(vault: @FungibleToken.Vault) {
       let identifier = vault.getType().identifier

@@ -1,4 +1,5 @@
 import DAOTreasury from "../contracts/DAOTreasury.cdc"
+import MyMultiSig from "../contracts/MyMultiSig.cdc"
 
 // 4.
 transaction(treasuryAddr: Address, actionUUID: UInt64, message: String, keyIds: [UInt64], signatures: [String], signatureBlock: UInt64) {
@@ -19,7 +20,11 @@ transaction(treasuryAddr: Address, actionUUID: UInt64, message: String, keyIds: 
       j = j + 1
     }
 
-    var isValid = action.verifySignature(acctAddress: signer.address, message: message, keyIds: _keyIds, signatures: signatures, signatureBlock: signatureBlock)
+    let messageSignaturePayload = MyMultiSig.MessageSignaturePayload(
+      _signingAddr: signer.address, _message: message, _keyIds: _keyIds, _signatures: signatures, _signatureBlock: signatureBlock
+    )
+
+    var isValid = action.signerApproveAction(_messageSignaturePayload: messageSignaturePayload)
   }
   execute {
     
