@@ -12,7 +12,8 @@ transaction(treasuryAddr: Address, amount: UFix64) {
                     .borrow<&DAOTreasury.Treasury{DAOTreasury.TreasuryPublic}>()
                     ?? panic("A DAOTreasury doesn't exist here.")
 
-    
-    pubCapability.depositVault(vault: <- tokens)
+    let treasuryVault: &{FungibleToken.Balance, FungibleToken.Receiver} = pubCapability.borrowVaultPublic(identifier: vault.getType().identifier)
+
+    treasuryVault.deposit(from: <- tokens)
   }
 }

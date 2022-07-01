@@ -45,8 +45,8 @@ func TestTreasurySetup(t *testing.T) {
 		otu.MintNFT("account")
 
 		// Treasury must first have a collection to receive an NFT
-		otu.CreateNFTCollection("treasuryOwner")
-		otu.SendCollectionToTreasury("treasuryOwner", "treasuryOwner")
+		otu.CreateNFTCollection("signer1")
+		otu.SendCollectionToTreasury("signer1", "treasuryOwner")
 
 		otu.SendNFTToTreasury("account", "treasuryOwner", 0)
 
@@ -69,8 +69,8 @@ func TestTransferTokensToAccountActions(t *testing.T) {
 	otu.CreateNFTCollection("account")
 	otu.MintNFT("account")
 
-	otu.CreateNFTCollection("treasuryOwner")
-	otu.SendCollectionToTreasury("treasuryOwner", "treasuryOwner")
+	otu.CreateNFTCollection("signer1")
+	otu.SendCollectionToTreasury("signer1", "treasuryOwner")
 	otu.SendNFTToTreasury("account", "treasuryOwner", 0)
 
 	t.Run("Signers should be able to propose a transfer of fungible tokens out of the Treasury", func(t *testing.T) {
@@ -161,8 +161,8 @@ func TestTransferFungibleTokensToTreasuryActions(t *testing.T) {
 	otu.CreateNFTCollection("account")
 	otu.MintNFT("account")
 
-	otu.CreateNFTCollection("treasuryOwner")
-	otu.SendCollectionToTreasury("treasuryOwner", "treasuryOwner")
+	otu.CreateNFTCollection("signer1")
+	otu.SendCollectionToTreasury("signer1", "treasuryOwner")
 
 	otu.SendNFTToTreasury("account", "treasuryOwner", 0)
 
@@ -220,8 +220,8 @@ func TestTransferNonFungibleTokensToTreasuryActions(t *testing.T) {
 	otu.CreateNFTCollection("account")
 	otu.MintNFT("account")
 
-	otu.CreateNFTCollection("treasuryOwner")
-	otu.SendCollectionToTreasury("treasuryOwner", "treasuryOwner")
+	otu.CreateNFTCollection("signer1")
+	otu.SendCollectionToTreasury("signer1", "treasuryOwner")
 	otu.SendNFTToTreasury("account", "treasuryOwner", 0)
 
 	// Recipient treasury
@@ -254,9 +254,9 @@ func TestTransferNonFungibleTokensToTreasuryActions(t *testing.T) {
 
 	t.Run(`A signer should be able to execute a proposed action to transfer a non-fungible token to a Treasury once it has received
 		the required threshold of signatures`, func(t *testing.T) {
-		// First, create an empty collection in the recipient's  account and transfer it to the treasury
-		otu.CreateNFTCollection("recipient")
-		otu.SendCollectionToTreasury("recipient", "recipient")
+		// First, create an empty collection and transfer it to the treasury
+		otu.CreateNFTCollection("signer1")
+		otu.SendCollectionToTreasury("signer1", "recipient")
 
 		otu.ExecuteAction("treasuryOwner", transferNFTActionUUID)
 

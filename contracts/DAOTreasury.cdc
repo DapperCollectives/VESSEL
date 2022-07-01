@@ -21,8 +21,8 @@ pub contract DAOTreasury {
   pub resource interface TreasuryPublic {
     pub fun proposeAction(action: {MyMultiSig.Action}): UInt64
     pub fun executeAction(actionUUID: UInt64)
-    pub fun depositVault(vault: @FungibleToken.Vault)
-    pub fun depositCollection(collection: @NonFungibleToken.Collection)
+    pub fun signerDepositVault(vault: @FungibleToken.Vault, signaturePayload: MyMultiSig.MessageSignaturePayload)
+    pub fun signerDepositCollection(collection: @NonFungibleToken.Collection, signaturePayload: MyMultiSig.MessageSignaturePayload)
     pub fun borrowManagerPublic(): &MyMultiSig.Manager{MyMultiSig.ManagerPublic}
     pub fun borrowVaultPublic(identifier: String): &{FungibleToken.Balance, FungibleToken.Receiver}
     pub fun borrowCollectionPublic(identifier: String): &{NonFungibleToken.CollectionPublic}
@@ -42,19 +42,10 @@ pub contract DAOTreasury {
     }
 
     /*
-      This is arguable the most important function.
       Note that we pass through a reference to this entire
       treasury as a parameter here. So the action can do whatever it 
       wants. This means it's very imporant for the signers
-      to know what they are signing. But it is also brilliant because
-      we can have EVERYTHING with a multisign.
-
-      - Want to transfer tokens? Multisign.
-      - Want to deposit an NFT? Multisign.  
-      - Want to allocate some tokens to X, some tokens to Y,
-        do a backflip, deposit to Z? Multisign.  
-      - Want to add/remove signers? Multisign.  
-      - The possibilities go on.
+      to know what they are signing.
     */
     pub fun executeAction(actionUUID: UInt64) {
       let selfRef: &Treasury = &self as &Treasury
@@ -73,7 +64,53 @@ pub contract DAOTreasury {
 
     // ------- Vaults ------- 
 
-    // pub fun signerDepositVault(signerAddr: Address, message: String, keyIds: _keyIds)
+    pub fun signerDepositVault(vault: @FungibleToken.Vault, signaturePayload: MyMultiSig.MessageSignaturePayload) {
+      // ------- Validate Address is a Signer on the Treasury -----
+      let signers = self.multiSignManager.getSigners()
+      assert(signers[signaturePayload.signingAddr] == true, message: "Address is not a signer on this Treasury")
+
+      // ------- Validate Message --------
+      // message format: {vault identifier hex}{blockId}
+      var counter = 0
+      let signingBlock = getBlock(at: signaturePayload.signatureBlock)!
+      let blockId = signingBlock.id
+      let blockIds: [UInt8] = []
+      
+      while (counter < blockId.length) {
+          blockIds.append(blockId[counter])
+          counter = counter + 1
+      }
+
+      let blockIdHex = String.encodeHex(blockIds)
+      let vaultIdHex = String.encodeHex(vault.getType().identifier.utf8)
+
+      let message = signaturePayload.message
+      // Vault Identifier
+      assert(
+        vaultIdHex == message.slice(from: 0, upTo: vaultIdHex.length),
+        message: "Invalid Message: incorrect vault identifier"
+      )
+      // Block ID
+      assert(
+        blockIdHex == message.slice(from: vaultIdHex.length, upTo: message.length),
+        message: "Invalid Message: invalid blockId"
+      )
+
+      // ------ Validate Signature -------
+      var signatureValidationResponse = MyMultiSig.validateSignature(payload: signaturePayload)
+
+      assert(
+        signatureValidationResponse.isValid == true,
+        message: "Invalid Signature"
+      )
+      assert(
+        signatureValidationResponse.totalWeight >= 999.0,
+        message: "Insufficient Key Weights: sum of total signing key weights must be >= 999.0"
+      )
+
+      // If all asserts passed, deposit vault into Treasury
+      self.depositVault(vault: <- vault)
+    }
 
     // Deposit a Vault //
     pub fun depositVault(vault: @FungibleToken.Vault) {
@@ -87,7 +124,7 @@ pub contract DAOTreasury {
     }
 
     // Withdraw some tokens //
-    pub fun withdrawTokens(identifier: String, amount: UFix64): @FungibleToken.Vault {
+    access(self) fun withdrawTokens(identifier: String, amount: UFix64): @FungibleToken.Vault {
       emit WithdrawTokens(vaultID: identifier, amount: amount)
       let vaultRef = (&self.vaults[identifier] as &FungibleToken.Vault?)!
       return <- vaultRef.withdraw(amount: amount)
@@ -110,6 +147,54 @@ pub contract DAOTreasury {
 
     // ------- Collections ------- 
 
+    pub fun signerDepositCollection(collection: @NonFungibleToken.Collection, signaturePayload: MyMultiSig.MessageSignaturePayload) {
+      // ------- Validate Address is a Signer on the Treasury -----
+      let signers = self.multiSignManager.getSigners()
+      assert(signers[signaturePayload.signingAddr] == true, message: "Address is not a signer on this Treasury")
+
+      // ------- Validate Message --------
+      // message format: {vault identifier hex}{blockId}
+      var counter = 0
+      let signingBlock = getBlock(at: signaturePayload.signatureBlock)!
+      let blockId = signingBlock.id
+      let blockIds: [UInt8] = []
+      
+      while (counter < blockId.length) {
+          blockIds.append(blockId[counter])
+          counter = counter + 1
+      }
+
+      let blockIdHex = String.encodeHex(blockIds)
+      let collectionIdHex = String.encodeHex(collection.getType().identifier.utf8)
+
+      let message = signaturePayload.message
+      // Collection Identifier
+      assert(
+        collectionIdHex == message.slice(from: 0, upTo: collectionIdHex.length),
+        message: "Invalid Message: incorrect vault identifier"
+      )
+      // Block ID
+      assert(
+        blockIdHex == message.slice(from: collectionIdHex.length, upTo: message.length),
+        message: "Invalid Message: invalid blockId"
+      )
+
+      // ------ Validate Signature -------
+      var signatureValidationResponse = MyMultiSig.validateSignature(payload: signaturePayload)
+
+      assert(
+        signatureValidationResponse.isValid == true,
+        message: "Invalid Signature"
+      )
+      assert(
+        signatureValidationResponse.totalWeight >= 999.0,
+        message: "Insufficient Key Weights: sum of total signing key weights must be >= 999.0"
+      )
+
+      // If all asserts passed, deposit vault into Treasury
+      self.depositCollection(collection: <- collection)
+    }
+
     // Deposit a Collection //
     pub fun depositCollection(collection: @NonFungibleToken.Collection) {
       let identifier = collection.getType().identifier
@@ -118,7 +203,7 @@ pub contract DAOTreasury {
     }
 
     // Withdraw an NFT //
-    pub fun withdrawNFT(identifier: String, id: UInt64): @NonFungibleToken.NFT {
+    access(self) fun withdrawNFT(identifier: String, id: UInt64): @NonFungibleToken.NFT {
       emit WithdrawNFT(collectionID: identifier, nftID: id)
       let collectionRef = (&self.collections[identifier] as &NonFungibleToken.Collection?)!
       return <- collectionRef.withdraw(withdrawID: id)
@@ -152,7 +237,8 @@ pub contract DAOTreasury {
   }
   
   pub fun createTreasury(initialSigners: [Address], initialThreshold: UInt64): @Treasury {
-    return <- create Treasury(_initialSigners: initialSigners, _initialThreshold: initialThreshold)
+    let treasury <- create Treasury(_initialSigners: initialSigners, _initialThreshold: initialThreshold)
+    return <- treasury
   }
 
   init() {

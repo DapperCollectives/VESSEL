@@ -5,7 +5,7 @@ import MyMultiSig from "../contracts/MyMultiSig.cdc"
 
 // This transaction is for transferring and NFT from
 // one account to another
-transaction(treasuryAddr: Address) {
+transaction(treasuryAddr: Address, message: String, keyIds: [UInt64], signatures: [String], signatureBlock: UInt64) {
 
     prepare(signer: AuthAccount) {
         // get the recipients public account object
@@ -22,7 +22,19 @@ transaction(treasuryAddr: Address) {
 
         let collection <- ExampleNFT.createEmptyCollection()
 
+        var _keyIds: [Int] = []
+
+        var j = 0
+        for keyId in keyIds {
+            _keyIds.append(Int(keyId))
+            j = j + 1
+        }
+
+        let messageSignaturePayload = MyMultiSig.MessageSignaturePayload(
+            _signingAddr: signer.address, _message: message, _keyIds: _keyIds, _signatures: signatures, _signatureBlock: signatureBlock
+        )
+
         // Deposit the NFT in the treasury's collection
-        treasury.depositCollection(collection: <-collection)
+        treasury.signerDepositCollection(collection: <-collection, signaturePayload: messageSignaturePayload)
     }
 }
