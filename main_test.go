@@ -93,7 +93,7 @@ func TestTransferTokensToAccountActions(t *testing.T) {
 		// Assert that the signatures were registered
 		signersMap := otu.GetVerifiedSignersForAction("treasuryOwner", transferTokenActionUUID)
 		for _, signer := range Signers {
-			assert.True(otu.T, true, signersMap[otu.GetAccountAddress(signer)])
+			assert.True(otu.T, signersMap[otu.GetAccountAddress(signer)])
 		}
 	})
 
@@ -132,7 +132,7 @@ func TestTransferTokensToAccountActions(t *testing.T) {
 		// Assert that the signatures were registered
 		signersMap := otu.GetVerifiedSignersForAction("treasuryOwner", transferNFTActionUUID)
 		for _, signer := range Signers {
-			assert.True(otu.T, true, signersMap[otu.GetAccountAddress(signer)])
+			assert.True(otu.T, signersMap[otu.GetAccountAddress(signer)])
 		}
 	})
 
@@ -189,7 +189,7 @@ func TestTransferFungibleTokensToTreasuryActions(t *testing.T) {
 		// Assert that the signatures were registered
 		signersMap := otu.GetVerifiedSignersForAction("treasuryOwner", transferTokenActionUUID)
 		for _, signer := range Signers {
-			assert.True(otu.T, true, signersMap[otu.GetAccountAddress(signer)])
+			assert.True(otu.T, signersMap[otu.GetAccountAddress(signer)])
 		}
 	})
 
@@ -243,7 +243,7 @@ func TestTransferNonFungibleTokensToTreasuryActions(t *testing.T) {
 		// Assert that the signatures were registered
 		signersMap := otu.GetVerifiedSignersForAction("treasuryOwner", transferNFTActionUUID)
 		for _, signer := range Signers {
-			assert.True(otu.T, true, signersMap[otu.GetAccountAddress(signer)])
+			assert.True(otu.T, signersMap[otu.GetAccountAddress(signer)])
 		}
 	})
 
@@ -264,5 +264,53 @@ func TestTransferNonFungibleTokensToTreasuryActions(t *testing.T) {
 		collectionIds = otu.GetTreasuryIdentifiers("recipient")
 		ownedNFTIds = otu.GetTreasuryCollection("recipient", collectionIds[1][0])
 		assert.Contains(otu.T, ownedNFTIds, uint64(0))
+	})
+}
+
+func TestSignerRevokeApproval(t *testing.T) {
+	var transferTokenActionUUID uint64
+
+	otu := NewOverflowTest(t)
+	otu.MintFlow("signer1", TransferAmount)
+	otu.SetupTreasury("treasuryOwner", Signers)
+	otu.SendFlowToTreasury("signer1", "treasuryOwner", TransferAmount)
+
+	// Propose action
+	otu.ProposeFungibleTokenTransferAction("treasuryOwner", Signers[0], RecipientAcct, TransferAmount)
+
+	t.Run("Signers should be able to sign to approve a proposed action to transfer tokens", func(t *testing.T) {
+		// Get first ID of proposed action
+		actions := otu.GetProposedActions("treasuryOwner")
+		keys := make([]uint64, 0, len(actions))
+		for k := range actions {
+			keys = append(keys, k)
+		}
+		transferTokenActionUUID = keys[0]
+
+		// Each signer submits an approval signature
+		for _, signer := range Signers {
+			otu.SignerApproveAction("treasuryOwner", transferTokenActionUUID, signer)
+		}
+
+		// Assert that the signatures were registered
+		signersMap := otu.GetVerifiedSignersForAction("treasuryOwner", transferTokenActionUUID)
+
+		for _, signer := range Signers {
+			assert.True(otu.T, signersMap[otu.GetAccountAddress(signer)])
+		}
+	})
+
+	t.Run("Signers should be able to sign to revoke their approval of a proposed action", func(t *testing.T) {
+
+		// Each signer submits an approval signature
+		for _, signer := range Signers {
+			otu.SignerRevokeApproval("treasuryOwner", transferTokenActionUUID, signer)
+		}
+
+		// Assert that the signatures were registered
+		signersMap := otu.GetVerifiedSignersForAction("treasuryOwner", transferTokenActionUUID)
+		for _, signer := range Signers {
+			assert.False(otu.T, signersMap[otu.GetAccountAddress(signer)])
+		}
 	})
 }
