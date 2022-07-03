@@ -547,3 +547,14 @@ func (otu *OverflowTestUtils) GetAccount(name string) *flow.Account {
 
 	return account
 }
+func (otu *OverflowTestUtils) GetAccountCollection(account string) []uint64 {
+	val := otu.O.ScriptFromFile("get_account_collection").
+		Args(otu.O.Arguments().
+			Account(account)).
+		RunReturnsJsonString()
+
+	var ownedNFTIds []uint64
+	json.Unmarshal([]byte(val), &ownedNFTIds)
+
+	return ownedNFTIds
+}

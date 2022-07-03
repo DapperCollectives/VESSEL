@@ -62,9 +62,8 @@ func TestTreasurySetup(t *testing.T) {
 	})
 }
 
-func TestTransferTokensToAccountActions(t *testing.T) {
+func TestTransferFungibleTokensToAccountActions(t *testing.T) {
 	var transferTokenActionUUID uint64
-	var transferNFTActionUUID uint64
 
 	otu := NewOverflowTest(t)
 	otu.MintFlow("signer1", TransferAmount)
@@ -113,44 +112,6 @@ func TestTransferTokensToAccountActions(t *testing.T) {
 		// Assert that all funds have been received by the recipient account
 		recipientBalance := otu.GetAccount(RecipientAcct).Balance
 		assert.Equal(otu.T, TransferAmountUInt64+DefaultAccountBalance, recipientBalance)
-	})
-
-	t.Run("Signers should be able to propose a transfer of a non-fungible token out of the Treasury", func(t *testing.T) {
-		// TODO: create collection in one of the signer accounts
-		otu.ProposeNonFungibleTokenTransferAction("treasuryOwner", Signers[0], "account", uint64(0))
-	})
-
-	t.Run("Signers should be able to sign to approve a proposed action to transfer an NFT", func(t *testing.T) {
-		// Get first ID of proposed action
-		actions := otu.GetProposedActions("treasuryOwner")
-		keys := make([]uint64, 0, len(actions))
-		for k := range actions {
-			keys = append(keys, k)
-		}
-		transferNFTActionUUID = keys[0]
-
-		// Each signer submits an approval signature
-		for _, signer := range Signers {
-			otu.SignerApproveAction("treasuryOwner", transferNFTActionUUID, signer)
-		}
-
-		// Assert that the signatures were registered
-		signersMap := otu.GetVerifiedSignersForAction("treasuryOwner", transferNFTActionUUID)
-		for _, signer := range Signers {
-			assert.True(otu.T, signersMap[otu.GetAccountAddress(signer)])
-		}
-	})
-
-	t.Run(`A signer should be able to execute a proposed action to transfer an NFT once it has received
-		the required threshold of signatures`, func(t *testing.T) {
-		otu.ExecuteAction("treasuryOwner", transferNFTActionUUID)
-
-		// Assert that the NFT has been transfered out of the treasury vault
-		collectionIds := otu.GetTreasuryIdentifiers("treasuryOwner")
-		ownedNFTIds := otu.GetTreasuryCollection("treasuryOwner", collectionIds[1][0])
-		assert.Equal(otu.T, 0, len(ownedNFTIds))
-
-		// TODO: Assert that the NFT has been received by the recipient account
 	})
 }
 
@@ -210,6 +171,64 @@ func TestTransferFungibleTokensToTreasuryActions(t *testing.T) {
 		recipientTreasuryBalance := otu.GetTreasuryVaultBalance("recipient", FlowTokenVaultID)
 		assert.Equal(otu.T, TransferAmountUInt64, recipientTreasuryBalance)
 	})
+}
+
+func TestTransferNonFungibleTokensToAccountActions(t *testing.T) {
+	var transferNFTActionUUID uint64
+
+	otu := NewOverflowTest(t)
+	//create NFT collection and mint NFT for signer1
+	otu.CreateNFTCollection("signer1")
+	otu.MintNFT("signer1")
+
+	//set up treasury and send nft from signer1 to treasuray
+	otu.SetupTreasury("treasuryOwner", Signers, uint64(DefaultThreshold))
+	otu.CreateNFTCollection("treasuryOwner")
+	otu.SendCollectionToTreasury("treasuryOwner", "treasuryOwner")
+	otu.SendNFTToTreasury("signer1", "treasuryOwner", 0)
+
+	//set up the account
+	otu.CreateNFTCollection("account")
+
+	t.Run("Signers should be able to propose a transfer of non fungible tokens out of the Treasury", func(t *testing.T) {
+		otu.ProposeNonFungibleTokenTransferAction("treasuryOwner", Signers[0], "account", uint64(0))
+	})
+
+	t.Run("Signers should be able to sign to approve a proposed action to transfer a non-fungible token to an account", func(t *testing.T) {
+		// Get first ID of proposed action
+		actions := otu.GetProposedActions("treasuryOwner")
+		keys := make([]uint64, 0, len(actions))
+		for k := range actions {
+			keys = append(keys, k)
+		}
+		transferNFTActionUUID = keys[0]
+
+		// Each signer submits an approval signature
+		for _, signer := range Signers {
+			otu.SignerApproveAction("treasuryOwner", transferNFTActionUUID, signer)
+		}
+
+		// Assert that the signatures were registered
+		signersMap := otu.GetVerifiedSignersForAction("treasuryOwner", transferNFTActionUUID)
+		for _, signer := range Signers {
+			assert.True(otu.T, true, signersMap[otu.GetAccountAddress(signer)])
+		}
+	})
+
+	t.Run(`A signer should be able to execute a proposed action to transfer a non-fungible token to an account once it has received
+		the required threshold of signatures`, func(t *testing.T) {
+		otu.ExecuteAction("treasuryOwner", transferNFTActionUUID)
+
+		// Assert that the NFT has been transfered out of the treasury vault
+		collectionIds := otu.GetTreasuryIdentifiers("treasuryOwner")
+		ownedNFTIds := otu.GetTreasuryCollection("treasuryOwner", collectionIds[1][0])
+		assert.Equal(otu.T, 0, len(ownedNFTIds))
+
+		// Assert that the NFT has been transfered into the account collection
+		ownedNFTIds = otu.GetAccountCollection("account")
+		assert.Contains(otu.T, ownedNFTIds, uint64(0))
+	})
+
 }
 
 func TestTransferNonFungibleTokensToTreasuryActions(t *testing.T) {
