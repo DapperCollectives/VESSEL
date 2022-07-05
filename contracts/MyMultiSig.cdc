@@ -8,7 +8,7 @@ pub contract MyMultiSig {
     //
 
     pub resource interface MultiSign {
-        pub let multiSignManager: @Manager
+        access(contract) let multiSignManager: @Manager
     }
 
     //
@@ -17,7 +17,7 @@ pub contract MyMultiSig {
 
     pub struct interface Action {
         pub let intent: String
-        pub fun execute(_ params: {String: AnyStruct})
+        access(account) fun execute(_ params: {String: AnyStruct})
     }
 
     //
@@ -194,21 +194,19 @@ pub contract MyMultiSig {
             return uuid
         }
 
-        // Note: In the future, these will probably be access(contract)
-        // so they are multisign actions themselves? Idk
-        pub fun addSigner(signer: Address) {
+        access(account) fun addSigner(signer: Address) {
             self.signers.insert(key: signer, true)
         }
 
-        pub fun removeSigner(signer: Address) {
+        access(account) fun removeSigner(signer: Address) {
             self.signers.remove(key: signer)
         }
 
-        pub fun updateThreshold(newThreshold: UInt64) {
+        access(account) fun updateThreshold(newThreshold: UInt64) {
             self.threshold = newThreshold
         }
 
-        pub fun destroyAction(actionUUID: UInt64) {
+        access(account) fun destroyAction(actionUUID: UInt64) {
             let removedAction <- self.actions.remove(key: actionUUID) ?? panic("This action does not exist.")
             destroy removedAction
         }
@@ -218,7 +216,7 @@ pub contract MyMultiSig {
             return actionRef.totalVerified >= self.threshold
         }
 
-        pub fun executeAction(actionUUID: UInt64, _ params: {String: AnyStruct}) {
+        access(account) fun executeAction(actionUUID: UInt64, _ params: {String: AnyStruct}) {
             pre {
                 self.readyToExecute(actionUUID: actionUUID):
                     "This action has not received a signature from every signer yet."
