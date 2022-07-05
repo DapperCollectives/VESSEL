@@ -147,6 +147,14 @@ func (otu *OverflowTestUtils) GetProposedActions(treasuryAcct string) map[uint64
 	return actionsMap
 }
 
+func GenerateSigners(num int) []string {
+	Signers := make([]string, num)
+	for i := 0; i < num; i++ {
+		Signers[i] = fmt.Sprintf("%s%d", "signer", i+1)
+	}
+	return Signers
+}
+
 func (otu *OverflowTestUtils) GetTreasurySigners(account string) cadence.Value {
 	signers := otu.O.ScriptFromFile("get_treasury_signers").
 		Args(otu.O.Arguments().Account(account)).
