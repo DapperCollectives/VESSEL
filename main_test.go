@@ -540,7 +540,6 @@ func TestTreasuryOwnerExploits(t *testing.T) {
 		for k := range actions {
 			keys = append(keys, k)
 		}
-
 		transferTokenActionUUID = keys[0]
 
 		otu.AttemptDirectManagerAccessExploit("treasuryOwner")
