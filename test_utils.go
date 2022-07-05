@@ -446,6 +446,75 @@ func (otu *OverflowTestUtils) MintNFT(account string) *OverflowTestUtils {
 	return otu
 }
 
+func (otu *OverflowTestUtils) AttemptDirectManagerAccessExploit(account string) *OverflowTestUtils {
+
+	var MULTI_SIGN_MANAGER_ERROR_MSG = "cannot access `multiSignManager`: field has contract access"
+	otu.O.TransactionFromFile("attempt_direct_manager_access").
+		SignProposeAndPayAs(account).
+		Args(otu.O.Arguments()).
+		Test(otu.T).
+		AssertFailure(MULTI_SIGN_MANAGER_ERROR_MSG)
+
+	return otu
+}
+
+func (otu *OverflowTestUtils) AttemptBorrowManagerExploit(account string) *OverflowTestUtils {
+	var BORROW_MANAGER_ERROR_MSG = "cannot access `borrowManager`: function has account access"
+	otu.O.TransactionFromFile("attempt_borrow_manager_exploit").
+		SignProposeAndPayAs(account).
+		Args(otu.O.Arguments()).
+		Test(otu.T).
+		AssertFailure(BORROW_MANAGER_ERROR_MSG)
+
+	return otu
+}
+
+func (otu *OverflowTestUtils) AttemptBorrowVaultExploit(account string) *OverflowTestUtils {
+	var BORROW_VAULT_ERROR_MSG = "cannot access `borrowVault`: function has account access"
+	otu.O.TransactionFromFile("attempt_borrow_vault_exploit").
+		SignProposeAndPayAs(account).
+		Args(otu.O.Arguments()).
+		Test(otu.T).
+		AssertFailure(BORROW_VAULT_ERROR_MSG)
+
+	return otu
+}
+
+func (otu *OverflowTestUtils) AttemptBorrowCollectionExploit(account string) *OverflowTestUtils {
+	var BORROW_COLLECTION_ERROR_MSG = "cannot access `borrowCollection`: function has account access"
+	otu.O.TransactionFromFile("attempt_borrow_collection_exploit").
+		SignProposeAndPayAs(account).
+		Args(otu.O.Arguments()).
+		Test(otu.T).
+		AssertFailure(BORROW_COLLECTION_ERROR_MSG)
+
+	return otu
+}
+
+func (otu *OverflowTestUtils) AttemptBorrowActionTotalVerifiedExploit(account string, actionUUID uint64) *OverflowTestUtils {
+	var ERROR_MSG = "cannot assign to `totalVerified`: field has public access"
+	otu.O.TransactionFromFile("attempt_borrow_action_total_verified_exploit").
+		SignProposeAndPayAs(account).
+		Args(otu.O.Arguments().
+			UInt64(actionUUID)).
+		Test(otu.T).
+		AssertFailure(ERROR_MSG)
+
+	return otu
+}
+
+func (otu *OverflowTestUtils) AttemptBorrowActionExecuteExploit(account string, actionUUID uint64) *OverflowTestUtils {
+	var ERROR_MSG = "cannot access `action`: field has contract access"
+	otu.O.TransactionFromFile("attempt_borrow_action_execute_exploit").
+		SignProposeAndPayAs(account).
+		Args(otu.O.Arguments().
+			UInt64(actionUUID)).
+		Test(otu.T).
+		AssertFailure(ERROR_MSG)
+
+	return otu
+}
+
 func (otu *OverflowTestUtils) GetAccountAddress(name string) string {
 	return fmt.Sprintf("0x%s", otu.O.Account(name).Address().String())
 }

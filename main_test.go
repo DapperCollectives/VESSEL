@@ -514,3 +514,40 @@ func TestUpdateThreshold(t *testing.T) {
 		assert.Equal(otu.T, threshold, DefaultThreshold)
 	})
 }
+
+func TestTreasuryOwnerExploits(t *testing.T) {
+	var transferTokenActionUUID uint64
+
+	otu := NewOverflowTest(t)
+	otu.MintFlow("signer1", TransferAmount)
+	otu.SetupTreasury("treasuryOwner", Signers, DefaultThreshold)
+	otu.SendFlowToTreasury("signer1", "treasuryOwner", TransferAmount)
+	otu.CreateNFTCollection("account")
+	otu.MintNFT("account")
+
+	otu.CreateNFTCollection("treasuryOwner")
+	otu.SendCollectionToTreasury("treasuryOwner", "treasuryOwner")
+	otu.SendNFTToTreasury("account", "treasuryOwner", 0)
+
+	t.Run("Signers should be able to propose a transfer of fungible tokens out of the Treasury", func(t *testing.T) {
+		otu.ProposeFungibleTokenTransferAction("treasuryOwner", Signers[0], RecipientAcct, TransferAmount)
+	})
+
+	t.Run("Treasury owner should not be able to unilaterally manipulate actions or resources in the Treasury", func(t *testing.T) {
+		// Get first ID of proposed action
+		actions := otu.GetProposedActions("treasuryOwner")
+		keys := make([]uint64, 0, len(actions))
+		for k := range actions {
+			keys = append(keys, k)
+		}
+
+		transferTokenActionUUID = keys[0]
+
+		otu.AttemptDirectManagerAccessExploit("treasuryOwner")
+		otu.AttemptBorrowManagerExploit("treasuryOwner")
+		otu.AttemptBorrowVaultExploit("treasuryOwner")
+		otu.AttemptBorrowCollectionExploit("treasuryOwner")
+		otu.AttemptBorrowActionTotalVerifiedExploit("treasuryOwner", transferTokenActionUUID)
+		otu.AttemptBorrowActionExecuteExploit("treasuryOwner", transferTokenActionUUID)
+	})
+}

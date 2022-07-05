@@ -31,9 +31,9 @@ pub contract DAOTreasury {
   }
 
   pub resource Treasury: MyMultiSig.MultiSign, TreasuryPublic {
-    pub let multiSignManager: @MyMultiSig.Manager
-    access(account) var vaults: @{String: FungibleToken.Vault}
-    access(account) var collections: @{String: NonFungibleToken.Collection}
+    access(contract) let multiSignManager: @MyMultiSig.Manager
+    access(self) var vaults: @{String: FungibleToken.Vault}
+    access(self) var collections: @{String: NonFungibleToken.Collection}
 
     // ------- Manager -------   
     pub fun proposeAction(action: {MyMultiSig.Action}): UInt64 {
@@ -63,7 +63,7 @@ pub contract DAOTreasury {
     }
 
     // Reference to Manager //
-    pub fun borrowManager(): &MyMultiSig.Manager {
+    access(account) fun borrowManager(): &MyMultiSig.Manager {
       return &self.multiSignManager as &MyMultiSig.Manager
     }
 
@@ -85,14 +85,14 @@ pub contract DAOTreasury {
     }
 
     // Withdraw some tokens //
-    pub fun withdrawTokens(identifier: String, amount: UFix64): @FungibleToken.Vault {
+    access(account) fun withdrawTokens(identifier: String, amount: UFix64): @FungibleToken.Vault {
       emit WithdrawTokens(vaultID: identifier, amount: amount)
       let vaultRef = (&self.vaults[identifier] as &FungibleToken.Vault?)!
       return <- vaultRef.withdraw(amount: amount)
     }
 
     // Reference to Vault //
-    pub fun borrowVault(identifier: String): &FungibleToken.Vault {
+    access(account) fun borrowVault(identifier: String): &FungibleToken.Vault {
       return (&self.vaults[identifier] as &FungibleToken.Vault?)!
     }
 
@@ -116,14 +116,14 @@ pub contract DAOTreasury {
     }
 
     // Withdraw an NFT //
-    pub fun withdrawNFT(identifier: String, id: UInt64): @NonFungibleToken.NFT {
+    access(account) fun withdrawNFT(identifier: String, id: UInt64): @NonFungibleToken.NFT {
       emit WithdrawNFT(collectionID: identifier, nftID: id)
       let collectionRef = (&self.collections[identifier] as &NonFungibleToken.Collection?)!
       return <- collectionRef.withdraw(withdrawID: id)
     }
 
     // Reference to Collection //
-    pub fun borrowCollection(identifier: String): &NonFungibleToken.Collection {
+    access(account) fun borrowCollection(identifier: String): &NonFungibleToken.Collection {
       return (&self.collections[identifier] as &NonFungibleToken.Collection?)!
     }
 
