@@ -21,6 +21,8 @@ yarn install
 
 ### Contracts
 
+Audit Status: Initial Audit Acknowledged
+
 #### DAOTreasury.cdc
 
 Contract containing the `Treasury` resource. A `Treasury` can hold Fungible Token `Vault` resources, and Non-Fungible Token `Collection` resources.
