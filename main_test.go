@@ -88,6 +88,8 @@ func TestTransferTokensToAccountActions(t *testing.T) {
 
 		// Each signer submits an approval signature
 		for _, signer := range Signers {
+			// Test if the action fails without all signer approvals
+			otu.ExecuteActionFailed("treasuryOwner", transferTokenActionUUID, "This action has not received a signature from every signer yet.")
 			otu.SignerApproveAction("treasuryOwner", transferTokenActionUUID, signer)
 		}
 
@@ -127,6 +129,8 @@ func TestTransferTokensToAccountActions(t *testing.T) {
 
 		// Each signer submits an approval signature
 		for _, signer := range Signers {
+			// Test if the action fails without all signer approvals
+			otu.ExecuteActionFailed("treasuryOwner", transferNFTActionUUID, "This action has not received a signature from every signer yet.")
 			otu.SignerApproveAction("treasuryOwner", transferNFTActionUUID, signer)
 		}
 
@@ -184,6 +188,8 @@ func TestTransferFungibleTokensToTreasuryActions(t *testing.T) {
 
 		// Each signer submits an approval signature
 		for _, signer := range Signers {
+			// Test if the action fails without all signer approvals
+			otu.ExecuteActionFailed("treasuryOwner", transferTokenActionUUID, "This action has not received a signature from every signer yet.")
 			otu.SignerApproveAction("treasuryOwner", transferTokenActionUUID, signer)
 		}
 
@@ -242,6 +248,8 @@ func TestTransferNonFungibleTokensToTreasuryActions(t *testing.T) {
 
 		// Each signer submits an approval signature
 		for _, signer := range Signers {
+			// Test if the action fails without all signer approvals
+			otu.ExecuteActionFailed("treasuryOwner", transferNFTActionUUID, "This action has not received a signature from every signer yet.")
 			otu.SignerApproveAction("treasuryOwner", transferNFTActionUUID, signer)
 		}
 
