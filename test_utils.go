@@ -423,6 +423,18 @@ func (otu *OverflowTestUtils) MintFlow(account string, amount float64) *Overflow
 	return otu
 }
 
+func (otu *OverflowTestUtils) ExecuteActionFailed(treasuryAcct string, actionUUID uint64, msg string) *OverflowTestUtils {
+	otu.O.TransactionFromFile("execute_action").
+		SignProposeAndPayAs("signer1").
+		Args(otu.O.Arguments().
+			Account(treasuryAcct).
+			UInt64(actionUUID)).
+		Test(otu.T).
+		AssertFailure(msg)
+
+	return otu
+}
+
 func (otu *OverflowTestUtils) CreateNFTCollection(account string) *OverflowTestUtils {
 	otu.O.TransactionFromFile("create_collection").
 		SignProposeAndPayAs(account).
