@@ -28,7 +28,6 @@ pub contract MyMultiSig {
 
         pub var totalVerified: UInt64
         access(account) var accountsVerified: {Address: Bool}
-        pub let intent: String
         access(contract) let action: {Action}
 
         // ZayVerifierv2 - verifySignature
@@ -124,7 +123,7 @@ pub contract MyMultiSig {
             
             // message: {uuid of this resource}{intent}{blockId}
             let uuidString = self.uuid.toString()
-            let intentHex = String.encodeHex(self.intent.utf8)
+            let intentHex = String.encodeHex(self.action.intent.utf8)
             let blockIdHexStr: String = String.encodeHex(blockIds)
 
             // Matches the `uuid` of this resource
@@ -161,7 +160,6 @@ pub contract MyMultiSig {
         init(_signers: [Address], _intent: String, _action: {Action}) {
             self.totalVerified = 0
             self.accountsVerified = {}
-            self.intent = _intent
             self.action = _action
             
             for signer in _signers {
@@ -240,7 +238,7 @@ pub contract MyMultiSig {
         pub fun getIntents(): {UInt64: String} {
             let returnVal: {UInt64: String} = {}
             for id in self.actions.keys {
-                returnVal[id] = self.borrowAction(actionUUID: id).intent
+                returnVal[id] = self.borrowAction(actionUUID: id).action.intent
             }
             return returnVal
         }
