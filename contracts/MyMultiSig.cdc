@@ -192,8 +192,6 @@ pub contract MyMultiSig {
             return uuid
         }
 
-        // Note: In the future, these will probably be access(contract)
-        // so they are multisign actions themselves? Idk
         pub fun addSigner(signer: Address) {
             self.signers.insert(key: signer, true)
         }
