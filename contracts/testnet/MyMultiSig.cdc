@@ -56,9 +56,7 @@ pub contract MyMultiSig {
             let keyList = Crypto.KeyList()
             let account = getAccount(acctAddress)
 
-            let publicKeys: [[UInt8]] = []
-            let weights: [UFix64] = []
-            let signAlgos: [UInt] = []
+            
             
             let uniqueKeys: {Int: Bool} = {}
             for id in keyIds {
@@ -66,59 +64,49 @@ pub contract MyMultiSig {
             }
             assert(uniqueKeys.keys.length == keyIds.length, message: "Invalid duplicates of the same keyID provided for signature")
 
-            var counter = 0
+            // In verify we need a [KeyListSignature] so we do that here
+            let signatureSet: [Crypto.KeyListSignature] = []
             var totalWeight = 0.0
-            while (counter < keyIds.length) {
-                let accountKey: AccountKey = account.keys.get(keyIndex: keyIds[counter]) ?? panic("Provided key signature does not exist")
-                
-                publicKeys.append(accountKey.publicKey.publicKey)
-                let keyWeight = accountKey.weight
-                weights.append(keyWeight)
-                totalWeight = totalWeight + keyWeight
-
-                signAlgos.append(UInt(accountKey.publicKey.signatureAlgorithm.rawValue))
-
-                counter = counter + 1
-            }
-
-            // Why 999 instead of 1000? Blocto currently signs with a 999 weight key sometimes for non-custodial blocto accounts.
-            // We would like to support these non-custodial Blocto wallets - but can be switched to 1000 weight when Blocto updates this.
-            assert(totalWeight >= 999.0, message: "Total weight of combined signatures did not satisfy 999 requirement.")
 
             var i = 0
-            for publicKey in publicKeys {
+            while (i < keyIds.length) {
+                let accountKey: AccountKey = account.keys.get(keyIndex: keyIds[i]) ?? panic("Provided key signature does not exist")
+                
+                let keyWeight = accountKey.weight
+                totalWeight = totalWeight + keyWeight
+
                 keyList.add(
                     PublicKey(
                         publicKey: publicKey,
-                        signatureAlgorithm: signAlgos[i] == 2 ? SignatureAlgorithm.ECDSA_secp256k1  : SignatureAlgorithm.ECDSA_P256
+                        signatureAlgorithm: UInt(accountKey.publicKey.signatureAlgorithm.rawValue) == 2 ? SignatureAlgorithm.ECDSA_secp256k1  : SignatureAlgorithm.ECDSA_P256
                     ),
                     hashAlgorithm: HashAlgorithm.SHA3_256,
-                    weight: weights[i]
+                    weight: keyWeight
                 )
-                i = i + 1
-            }
 
-            // In verify we need a [KeyListSignature] so we do that here
-            let signatureSet: [Crypto.KeyListSignature] = []
-            var j = 0
-            for signature in signatures {
+                var signature = signatures[i]
                 signatureSet.append(
                     Crypto.KeyListSignature(
                         keyIndex: keyIds[j],
                         signature: signature.decodeHex()
                     )
                 )
-                j = j + 1
+
+                i = i + 1
             }
 
-            counter = 0
+            // Why 999 instead of 1000? Blocto currently signs with a 999 weight key sometimes for non-custodial blocto accounts.
+            // We would like to support these non-custodial Blocto wallets - but can be switched to 1000 weight when Blocto updates this.
+            assert(totalWeight >= 999.0, message: "Total weight of combined signatures did not satisfy 999 requirement.")
+
             let signingBlock = getBlock(at: signatureBlock)!
             let blockId = signingBlock.id
             let blockIds: [UInt8] = []
             
+            i = 0
             while (counter < blockId.length) {
-                blockIds.append(blockId[counter])
-                counter = counter + 1
+                blockIds.append(blockId[i])
+                i = i + 1
             }
             
             // message: {uuid of this resource}{intent}{blockId}
