@@ -175,7 +175,7 @@ func (otu *OverflowTestUtils) GetTreasurySigners(account string) cadence.Value {
 	return signers
 }
 
-func (otu *OverflowTestUtils) ProposeAddSignerAction(address, proposingAcct string) *OverflowTestUtils {
+func (otu *OverflowTestUtils) ProposeAddSignerAction(proposingAcct, address string) *OverflowTestUtils {
 	otu.O.TransactionFromFile("add_signer").
 		SignProposeAndPayAs(proposingAcct).
 		Args(otu.O.Arguments().Address(address)).
@@ -185,7 +185,7 @@ func (otu *OverflowTestUtils) ProposeAddSignerAction(address, proposingAcct stri
 	return otu
 }
 
-func (otu *OverflowTestUtils) ProposeRemoveSignerAction(address, proposingAcct string) *OverflowTestUtils {
+func (otu *OverflowTestUtils) ProposeRemoveSignerAction(proposingAcct, address string) *OverflowTestUtils {
 	otu.O.TransactionFromFile("remove_signer").
 		SignProposeAndPayAs(proposingAcct).
 		Args(otu.O.Arguments().Address(address)).

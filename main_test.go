@@ -276,15 +276,15 @@ func TestAddSignerAction(t *testing.T) {
 	var addSignerActionUUID uint64
 
 	otu := NewOverflowTest(t)
-	otu.SetupTreasury("signer1", Signers, uint64(DefaultThreshold))
+	otu.SetupTreasury("treasuryOwner", Signers, uint64(DefaultThreshold))
 
 	t.Run("User should be able to propose a signer to be added", func(t *testing.T) {
-		otu.ProposeAddSignerAction("signer6", "signer1")
+		otu.ProposeAddSignerAction("treasuryOwner", "signer6")
 	})
 
 	t.Run("Signers should be able to sign to approve a proposed action to add a new signer", func(t *testing.T) {
 		// Get first ID of proposed action
-		actions := otu.GetProposedActions("signer1")
+		actions := otu.GetProposedActions("treasuryOwner")
 		keys := make([]uint64, 0, len(actions))
 		for k := range actions {
 			keys = append(keys, k)
@@ -293,21 +293,21 @@ func TestAddSignerAction(t *testing.T) {
 
 		// Each signer submits an approval signature
 		for _, signer := range Signers {
-			otu.SignerApproveAction("signer1", addSignerActionUUID, signer)
+			otu.SignerApproveAction("treasuryOwner", addSignerActionUUID, signer)
 		}
 
 		// Assert that the signatures were registered
-		signersMap := otu.GetVerifiedSignersForAction("signer1", addSignerActionUUID)
+		signersMap := otu.GetVerifiedSignersForAction("treasuryOwner", addSignerActionUUID)
 		for _, signer := range Signers {
 			assert.True(otu.T, true, signersMap[otu.GetAccountAddress(signer)])
 		}
 	})
 
-	t.Run(`A signer should be able to execute a proposed action to add a signer to Treasury once it has received the required threshold of signatures`, func(t *testing.T) {
+	t.Run(`A treasuryOwner should be able to execute a proposed action to add a signer to Treasury once it has received the required threshold of signatures`, func(t *testing.T) {
 
-		otu.ExecuteAction("signer1", addSignerActionUUID)
+		otu.ExecuteAction("treasuryOwner", addSignerActionUUID)
 
-		signers := otu.GetTreasurySigners("signer1").String()
+		signers := otu.GetTreasurySigners("treasuryOwner").String()
 
 		assert.Contains(otu.T, signers, otu.GetAccountAddress("signer6"))
 	})
@@ -318,15 +318,15 @@ func TestRemoveSignerAction(t *testing.T) {
 	var removeSignerActionUUID uint64
 
 	otu := NewOverflowTest(t)
-	otu.SetupTreasury("signer1", Signers, uint64(DefaultThreshold))
+	otu.SetupTreasury("treasuryOwner", Signers, uint64(DefaultThreshold))
 
 	t.Run("User should be able to propose a signer to be removed", func(t *testing.T) {
-		otu.ProposeRemoveSignerAction("signer4", "signer1")
+		otu.ProposeRemoveSignerAction("treasuryOwner", "signer4")
 	})
 
 	t.Run("Signers should be able to sign to approve a proposed action to remove a signer", func(t *testing.T) {
 		// Get first ID of proposed action
-		actions := otu.GetProposedActions("signer1")
+		actions := otu.GetProposedActions("treasuryOwner")
 		keys := make([]uint64, 0, len(actions))
 		for k := range actions {
 			keys = append(keys, k)
@@ -335,21 +335,21 @@ func TestRemoveSignerAction(t *testing.T) {
 
 		// Each signer submits an approval signature
 		for _, signer := range Signers {
-			otu.SignerApproveAction("signer1", removeSignerActionUUID, signer)
+			otu.SignerApproveAction("treasuryOwner", removeSignerActionUUID, signer)
 		}
 
 		// Assert that the signatures were registered
-		signersMap := otu.GetVerifiedSignersForAction("signer1", removeSignerActionUUID)
+		signersMap := otu.GetVerifiedSignersForAction("treasuryOwner", removeSignerActionUUID)
 		for _, signer := range Signers {
 			assert.True(otu.T, true, signersMap[otu.GetAccountAddress(signer)])
 		}
 	})
 
-	t.Run(`A signer should be able to execute a proposed action to remove a signer once it has received the required threshold of signatures`, func(t *testing.T) {
+	t.Run(`A treasuryOwner should be able to execute a proposed action to remove a signer once it has received the required threshold of signatures`, func(t *testing.T) {
 
-		otu.ExecuteAction("signer1", removeSignerActionUUID)
+		otu.ExecuteAction("treasuryOwner", removeSignerActionUUID)
 
-		signers := otu.GetTreasurySigners("signer1").String()
+		signers := otu.GetTreasurySigners("treasuryOwner").String()
 
 		assert.NotContains(otu.T, signers, otu.GetAccountAddress("signer4"))
 	})
