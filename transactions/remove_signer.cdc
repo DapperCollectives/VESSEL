@@ -1,7 +1,7 @@
 import DAOTreasury from "../contracts/DAOTreasury.cdc"
 import TreasuryActions from "../contracts/TreasuryActions.cdc"
 
-transaction(additionalSigner: Address) {
+transaction(signerToBeRemoved: Address) {
 
   let Treasury: &DAOTreasury.Treasury{DAOTreasury.TreasuryPublic}
   
@@ -10,7 +10,7 @@ transaction(additionalSigner: Address) {
                     ?? panic("Could not borrow the DAOTreasury")
   }
   execute {
-    let action =  TreasuryActions.AddSigner(additionalSigner)
+    let action = TreasuryActions.RemoveSigner(signerToBeRemoved)
     self.Treasury.proposeAction(action: action)
   }
 }

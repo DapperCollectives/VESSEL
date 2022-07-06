@@ -175,6 +175,26 @@ func (otu *OverflowTestUtils) GetTreasurySigners(account string) cadence.Value {
 	return signers
 }
 
+func (otu *OverflowTestUtils) ProposeAddSignerAction(address, proposingAcct string) *OverflowTestUtils {
+	otu.O.TransactionFromFile("add_signer").
+		SignProposeAndPayAs(proposingAcct).
+		Args(otu.O.Arguments().Address(address)).
+		Test(otu.T).
+		AssertSuccess()
+
+	return otu
+}
+
+func (otu *OverflowTestUtils) ProposeRemoveSignerAction(address, proposingAcct string) *OverflowTestUtils {
+	otu.O.TransactionFromFile("remove_signer").
+		SignProposeAndPayAs(proposingAcct).
+		Args(otu.O.Arguments().Address(address)).
+		Test(otu.T).
+		AssertSuccess()
+
+	return otu
+}
+
 func (otu *OverflowTestUtils) SignerApproveAction(treasuryAcct string, actionUUID uint64, signingAccount string) *OverflowTestUtils {
 	//////////////////////////////////////////////
 	// Generate message/signature for signer
@@ -185,7 +205,7 @@ func (otu *OverflowTestUtils) SignerApproveAction(treasuryAcct string, actionUUI
 	uuid := strconv.FormatUint(actionUUID, 10)
 
 	// hex-encoded intent
-	actions := otu.GetProposedActions("treasuryOwner")
+	actions := otu.GetProposedActions(treasuryAcct)
 	intent := actions[uint64(actionUUID)]
 	src := []byte(intent)
 	hexIntent := make([]byte, hex.EncodedLen(len(src)))
