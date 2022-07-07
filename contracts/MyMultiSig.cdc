@@ -66,9 +66,7 @@ pub contract MyMultiSig {
             let keyList = Crypto.KeyList()
             let account = getAccount(acctAddress)
 
-            let publicKeys: [[UInt8]] = []
-            let weights: [UFix64] = []
-            let signAlgos: [UInt] = []
+            
             
             let uniqueKeys: {Int: Bool} = {}
             for id in keyIds {
@@ -76,59 +74,47 @@ pub contract MyMultiSig {
             }
             assert(uniqueKeys.keys.length == keyIds.length, message: "Invalid duplicates of the same keyID provided for signature")
 
-            var counter = 0
-            var totalWeight = 0.0
-            while (counter < keyIds.length) {
-                let accountKey: AccountKey = account.keys.get(keyIndex: keyIds[counter]) ?? panic("Provided key signature does not exist")
-                
-                publicKeys.append(accountKey.publicKey.publicKey)
-                let keyWeight = accountKey.weight
-                weights.append(keyWeight)
-                totalWeight = totalWeight + keyWeight
-
-                signAlgos.append(UInt(accountKey.publicKey.signatureAlgorithm.rawValue))
-
-                counter = counter + 1
-            }
-
-            // Why 999 instead of 1000? Blocto currently signs with a 999 weight key sometimes for non-custodial blocto accounts.
-            // We would like to support these non-custodial Blocto wallets - but can be switched to 1000 weight when Blocto updates this.
-            assert(totalWeight >= 999.0, message: "Total weight of combined signatures did not satisfy 999 requirement.")
-
-            var i = 0
-            for publicKey in publicKeys {
-                keyList.add(
-                    PublicKey(
-                        publicKey: publicKey,
-                        signatureAlgorithm: signAlgos[i] == 2 ? SignatureAlgorithm.ECDSA_secp256k1  : SignatureAlgorithm.ECDSA_P256
-                    ),
-                    hashAlgorithm: HashAlgorithm.SHA3_256,
-                    weight: weights[i]
-                )
-                i = i + 1
-            }
-
             // In verify we need a [KeyListSignature] so we do that here
             let signatureSet: [Crypto.KeyListSignature] = []
-            var j = 0
-            for signature in signatures {
+            var totalWeight = 0.0
+
+            var i = 0
+            while (i < keyIds.length) {
+                let accountKey: AccountKey = account.keys.get(keyIndex: keyIds[i]) ?? panic("Provided key signature does not exist")
+                
+                let keyWeight = accountKey.weight
+                totalWeight = totalWeight + keyWeight
+
+                keyList.add(
+                    PublicKey(
+                        publicKey: accountKey.publicKey.publicKey,
+                        signatureAlgorithm: UInt(accountKey.publicKey.signatureAlgorithm.rawValue) == 2 ? SignatureAlgorithm.ECDSA_secp256k1  : SignatureAlgorithm.ECDSA_P256
+                    ),
+                    hashAlgorithm: HashAlgorithm.SHA3_256,
+                    weight: keyWeight
+                )
+
+                var signature = signatures[i]
                 signatureSet.append(
                     Crypto.KeyListSignature(
-                        keyIndex: keyIds[j],
+                        keyIndex: keyIds[i],
                         signature: signature.decodeHex()
                     )
                 )
-                j = j + 1
+
+                i = i + 1
             }
 
-            counter = 0
+            assert(totalWeight >= 999.0, message: "Total weight of combined signatures did not satisfy 999 requirement.")
+
             let signingBlock = getBlock(at: signatureBlock)!
             let blockId = signingBlock.id
             let blockIds: [UInt8] = []
             
-            while (counter < blockId.length) {
-                blockIds.append(blockId[counter])
-                counter = counter + 1
+            i = 0
+            while (i < blockId.length) {
+                blockIds.append(blockId[i])
+                i = i + 1
             }
             
             // message: {uuid of this resource}{intent}{blockId}
@@ -167,7 +153,7 @@ pub contract MyMultiSig {
             emit ActionApprovedBySigner(address: acctAddress, uuid: self.uuid)
 
             return signatureValid
-        }
+        } 
 
         init(_signers: [Address], _intent: String, _action: {Action}) {
             self.totalVerified = 0
