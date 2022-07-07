@@ -68,7 +68,7 @@ pub contract MyMultiSig {
     pub resource MultiSignAction {
 
         pub var totalVerified: UInt64
-        access(account) var accountsVerified: {Address: Bool}
+        pub var accountsVerified: {Address: Bool}
         access(contract) let action: {Action}
 
         // ZayVerifierv2 - verifySignature

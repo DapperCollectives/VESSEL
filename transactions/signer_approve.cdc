@@ -2,10 +2,13 @@ import DAOTreasury from "../contracts/DAOTreasury.cdc"
 import MyMultiSig from "../contracts/MyMultiSig.cdc"
 
 transaction(treasuryAddr: Address, actionUUID: UInt64, message: String, keyIds: [UInt64], signatures: [String], signatureBlock: UInt64) {
+
+  var isValid: Bool
   let action: &MyMultiSig.MultiSignAction 
   let messageSignaturePayload: MyMultiSig.MessageSignaturePayload
 
   prepare(signer: AuthAccount) {
+    self.isValid = false
     let treasury = getAccount(treasuryAddr).getCapability(DAOTreasury.TreasuryPublicPath)
                     .borrow<&DAOTreasury.Treasury{DAOTreasury.TreasuryPublic}>()
                     ?? panic("A DAOTreasury doesn't exist here.")
@@ -15,10 +18,8 @@ transaction(treasuryAddr: Address, actionUUID: UInt64, message: String, keyIds: 
 
     var _keyIds: [Int] = []
 
-    var j = 0
     for keyId in keyIds {
       _keyIds.append(Int(keyId))
-      j = j + 1
     }
 
     self.messageSignaturePayload = MyMultiSig.MessageSignaturePayload(
@@ -27,6 +28,11 @@ transaction(treasuryAddr: Address, actionUUID: UInt64, message: String, keyIds: 
 
   }
   execute {
-    var isValid = self.action.signerApproveAction(_messageSignaturePayload: self.messageSignaturePayload)
+    self.isValid = self.action.signerApproveAction(_messageSignaturePayload: self.messageSignaturePayload)
+  }
+
+  post {
+    self.isValid == true: "Unable to revoke approval: invalid message or signature"
+    self.action.accountsVerified[self.messageSignaturePayload.signingAddr] == true: "Error: tx completed but signer approval not revoked"
   }
 }
