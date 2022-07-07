@@ -60,6 +60,7 @@ pub contract MyMultiSig {
                     "This address is not allowed to sign for this."
                 !self.accountsVerified[acctAddress]!:
                     "This address has already signed."
+                keyIds.length == signatures.length: "keyIds and signatures must be the same length"
             }
             let keyList = Crypto.KeyList()
             let account = getAccount(acctAddress)
