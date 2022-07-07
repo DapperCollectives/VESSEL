@@ -271,11 +271,21 @@ pub contract MyMultiSig {
         }
 
         pub fun removeSigner(signer: Address) {
+            post {
+                self.signers.length >= Int(self.threshold):
+                    "Cannot remove signer, number of signers must be equal or higher than the threshold."
+            }
+
             self.signers.remove(key: signer)
             emit SignerRemoved(address: signer)
         }
 
         pub fun updateThreshold(newThreshold: UInt64) {
+            post {
+                self.signers.length >= Int(self.threshold): 
+                    "Cannot update threshold, number of signers must be equal or higher than the threshold."
+            }
+
             let oldThreshold = self.threshold
             self.threshold = newThreshold
             emit MultiSigThresholdUpdated(oldThreshold: oldThreshold, newThreshold: newThreshold)
@@ -337,6 +347,12 @@ pub contract MyMultiSig {
         }
 
         init(_initialSigners: [Address], _initialThreshold: UInt64) {
+
+            pre {
+                _initialSigners.length >= Int(_initialThreshold):
+                    "Number of signers must be equal or higher than the threshold."
+            }
+
             self.signers = {}
             self.actions <- {}
             self.threshold = _initialThreshold

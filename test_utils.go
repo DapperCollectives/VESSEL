@@ -25,10 +25,11 @@ func NewOverflowTest(t *testing.T) *OverflowTestUtils {
 	// return &OverflowTestUtils{T: t, O: overflow.NewOverflowEmulator().Start()}
 }
 
-func (otu *OverflowTestUtils) SetupTreasury(name string, signers []string) *OverflowTestUtils {
+func (otu *OverflowTestUtils) SetupTreasury(name string, signers []string, threshold uint64) *OverflowTestUtils {
 	addresses := make([]string, len(signers))
-	for _, name := range signers {
-		addresses = append(addresses, otu.GetAccountAddress(name))
+
+	for i := 0; i < len(signers); i++ {
+		addresses[i] = otu.GetAccountAddress(signers[i])
 	}
 
 	otu.O.TransactionFromFile("create_treasury").
@@ -36,9 +37,48 @@ func (otu *OverflowTestUtils) SetupTreasury(name string, signers []string) *Over
 		Args(otu.O.Arguments().
 			RawAddressArray(
 				addresses...).
-			UInt64(2)).
+			UInt64(threshold)).
 		Test(otu.T).
 		AssertSuccess()
+
+	return otu
+}
+
+func (otu *OverflowTestUtils) SetupTreasuryFail(name string, signers []string, threshold uint64, msg string) *OverflowTestUtils {
+	addresses := make([]string, len(signers))
+
+	for i := 0; i < len(signers); i++ {
+		addresses[i] = otu.GetAccountAddress(signers[i])
+	}
+
+	otu.O.TransactionFromFile("create_treasury").
+		SignProposeAndPayAs(name).
+		Args(otu.O.Arguments().
+			RawAddressArray(
+				addresses...).
+			UInt64(threshold)).
+		Test(otu.T).
+		AssertFailure(msg)
+
+	return otu
+}
+
+func (otu *OverflowTestUtils) ProposeNewThreshold(proposingAcct string, newThreshold uint64) *OverflowTestUtils {
+	otu.O.TransactionFromFile("update_threshold").
+		SignProposeAndPayAs(proposingAcct).
+		Args(otu.O.Arguments().UInt64(newThreshold)).
+		Test(otu.T).
+		AssertSuccess()
+
+	return otu
+}
+
+func (otu *OverflowTestUtils) ProposeNewThresholdFail(proposingAcct string, newThreshold uint64, msg string) *OverflowTestUtils {
+	otu.O.TransactionFromFile("update_threshold").
+		SignProposeAndPayAs(proposingAcct).
+		Args(otu.O.Arguments().UInt64(newThreshold)).
+		Test(otu.T).
+		AssertFailure(msg)
 
 	return otu
 }
@@ -155,6 +195,34 @@ func (otu *OverflowTestUtils) GetTreasurySigners(account string) cadence.Value {
 	return signers
 }
 
+func (otu *OverflowTestUtils) GetTreasuryThreshold(account string) uint64 {
+	threshold := otu.O.ScriptFromFile("get_treasury_threshold").
+		Args(otu.O.Arguments().Account(account)).
+		RunFailOnError()
+
+	return threshold.ToGoValue().(uint64)
+}
+
+func (otu *OverflowTestUtils) ProposeAddSignerAction(proposingAcct, address string) *OverflowTestUtils {
+	otu.O.TransactionFromFile("add_signer").
+		SignProposeAndPayAs(proposingAcct).
+		Args(otu.O.Arguments().Address(address)).
+		Test(otu.T).
+		AssertSuccess()
+
+	return otu
+}
+
+func (otu *OverflowTestUtils) ProposeRemoveSignerAction(proposingAcct, address string) *OverflowTestUtils {
+	otu.O.TransactionFromFile("remove_signer").
+		SignProposeAndPayAs(proposingAcct).
+		Args(otu.O.Arguments().Address(address)).
+		Test(otu.T).
+		AssertSuccess()
+
+	return otu
+}
+
 func (otu *OverflowTestUtils) SignerApproveAction(treasuryAcct string, actionUUID uint64, signingAccount string) *OverflowTestUtils {
 	//////////////////////////////////////////////
 	// Generate message/signature for signer
@@ -165,7 +233,7 @@ func (otu *OverflowTestUtils) SignerApproveAction(treasuryAcct string, actionUUI
 	uuid := strconv.FormatUint(actionUUID, 10)
 
 	// hex-encoded intent
-	actions := otu.GetProposedActions("treasuryOwner")
+	actions := otu.GetProposedActions(treasuryAcct)
 	intent := actions[uint64(actionUUID)]
 	src := []byte(intent)
 	hexIntent := make([]byte, hex.EncodedLen(len(src)))
@@ -281,6 +349,18 @@ func (otu *OverflowTestUtils) ExecuteAction(treasuryAcct string, actionUUID uint
 			UInt64(actionUUID)).
 		Test(otu.T).
 		AssertSuccess()
+
+	return otu
+}
+
+func (otu *OverflowTestUtils) ExecuteActionFail(treasuryAcct string, actionUUID uint64, msg string) *OverflowTestUtils {
+	otu.O.TransactionFromFile("execute_action").
+		SignProposeAndPayAs("signer1").
+		Args(otu.O.Arguments().
+			Account(treasuryAcct).
+			UInt64(actionUUID)).
+		Test(otu.T).
+		AssertFailure(msg)
 
 	return otu
 }
