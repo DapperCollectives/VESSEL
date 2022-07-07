@@ -60,6 +60,10 @@ pub contract TreasuryActions {
     pub let amount: UFix64
 
     pub fun execute(_ params: {String: AnyStruct}) {
+      pre {
+        self.amount > 0.0 : "Amount should be higher than 0.0"  
+      }
+
       let treasuryRef: &DAOTreasury.Treasury = params["treasury"]! as! &DAOTreasury.Treasury
       let vaultRef: &FungibleToken.Vault = treasuryRef.borrowVault(identifier: self.recipientVault.borrow()!.getType().identifier)
       let withdrawnTokens <- vaultRef.withdraw(amount: self.amount)
@@ -99,6 +103,10 @@ pub contract TreasuryActions {
     pub let amount: UFix64
 
     pub fun execute(_ params: {String: AnyStruct}) {
+      pre {
+        self.amount > 0.0 : "Amount should be higher than 0.0"  
+      }
+
       let treasuryRef: &DAOTreasury.Treasury = params["treasury"]! as! &DAOTreasury.Treasury
       let vaultRef: &FungibleToken.Vault = treasuryRef.borrowVault(identifier: self.identifier)
       let withdrawnTokens <- vaultRef.withdraw(amount: self.amount)

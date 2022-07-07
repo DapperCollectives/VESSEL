@@ -152,6 +152,31 @@ func TestTransferTokensToAccountActions(t *testing.T) {
 
 		// TODO: Assert that the NFT has been received by the recipient account
 	})
+
+	t.Run("Signers shouldn't be able to transfer 0.0 fungible tokens out of the Treasury", func(t *testing.T) {
+		otu.ProposeFungibleTokenTransferAction("treasuryOwner", Signers[0], RecipientAcct, 0.0)
+
+		actions := otu.GetProposedActions("treasuryOwner")
+		keys := make([]uint64, 0, len(actions))
+		for k := range actions {
+			keys = append(keys, k)
+		}
+		transferTokenActionUUID = keys[0]
+
+		// Each signer submits an approval signature
+		for _, signer := range Signers {
+			otu.SignerApproveAction("treasuryOwner", transferTokenActionUUID, signer)
+		}
+
+		// Assert that the signatures were registered
+		signersMap := otu.GetVerifiedSignersForAction("treasuryOwner", transferTokenActionUUID)
+		for _, signer := range Signers {
+			assert.True(otu.T, signersMap[otu.GetAccountAddress(signer)])
+		}
+
+		otu.ExecuteActionFail("treasuryOwner", transferTokenActionUUID, "Amount should be higher than 0.0")
+
+	})
 }
 
 func TestTransferFungibleTokensToTreasuryActions(t *testing.T) {
@@ -209,6 +234,30 @@ func TestTransferFungibleTokensToTreasuryActions(t *testing.T) {
 		// Assert that all funds have been received by the recipient account
 		recipientTreasuryBalance := otu.GetTreasuryVaultBalance("recipient", FlowTokenVaultID)
 		assert.Equal(otu.T, TransferAmountUInt64, recipientTreasuryBalance)
+	})
+
+	t.Run("Signers shouldn't be able to transfer 0 fungible tokens out of the Treasury to another Treasury", func(t *testing.T) {
+		otu.ProposeFungibleTokenTransferToTreasuryAction("treasuryOwner", Signers[0], RecipientAcct, FlowTokenVaultID, 0.0)
+
+		actions := otu.GetProposedActions("treasuryOwner")
+		keys := make([]uint64, 0, len(actions))
+		for k := range actions {
+			keys = append(keys, k)
+		}
+		transferTokenActionUUID = keys[0]
+
+		// Each signer submits an approval signature
+		for _, signer := range Signers {
+			otu.SignerApproveAction("treasuryOwner", transferTokenActionUUID, signer)
+		}
+
+		// Assert that the signatures were registered
+		signersMap := otu.GetVerifiedSignersForAction("treasuryOwner", transferTokenActionUUID)
+		for _, signer := range Signers {
+			assert.True(otu.T, signersMap[otu.GetAccountAddress(signer)])
+		}
+
+		otu.ExecuteActionFail("treasuryOwner", transferTokenActionUUID, "Amount should be higher than 0.0")
 	})
 }
 
