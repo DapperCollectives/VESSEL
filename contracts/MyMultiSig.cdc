@@ -40,8 +40,6 @@ pub contract MyMultiSig {
         access(account) var accountsVerified: {Address: Bool}
         access(contract) let action: {Action}
 
-        // ZayVerifierv2 - verifySignature
-        //
         // Explanation: 
         // Verifies that `acctAddress` is the one that signed the `message` (producing `signatures`) 
         // with the `keyIds` (that are hopefully in its account, or its false) during `signatureBlock`
