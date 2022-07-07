@@ -70,9 +70,9 @@ pub contract MyMultiSig {
             
             let uniqueKeys: {Int: Bool} = {}
             for id in keyIds {
+                assert(uniqueKeys[id] == nil, message: "Duplicate keyId found for signatures")
                 uniqueKeys[id] = true
             }
-            assert(uniqueKeys.keys.length == keyIds.length, message: "Invalid duplicates of the same keyID provided for signature")
 
             // In verify we need a [KeyListSignature] so we do that here
             let signatureSet: [Crypto.KeyListSignature] = []
@@ -107,8 +107,10 @@ pub contract MyMultiSig {
 
             assert(totalWeight >= 999.0, message: "Total weight of combined signatures did not satisfy 999 requirement.")
 
-            let signingBlock = getBlock(at: signatureBlock)!
-            let blockId = signingBlock.id
+            let signingBlock = getBlock(at: signatureBlock)
+            assert(signingBlock != nil, message: "Invalid blockId specified for signature block")
+
+            let blockId = signingBlock!.id
             let blockIds: [UInt8] = []
             
             i = 0
