@@ -46,8 +46,9 @@ func (otu *OverflowTestUtils) SetupTreasury(name string, signers []string, thres
 
 func (otu *OverflowTestUtils) SetupTreasuryFail(name string, signers []string, threshold uint64, msg string) *OverflowTestUtils {
 	addresses := make([]string, len(signers))
-	for _, name := range signers {
-		addresses = append(addresses, otu.GetAccountAddress(name))
+
+	for i := 0; i < len(signers); i++ {
+		addresses[i] = otu.GetAccountAddress(signers[i])
 	}
 
 	otu.O.TransactionFromFile("create_treasury").
