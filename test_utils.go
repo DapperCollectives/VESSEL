@@ -480,6 +480,28 @@ func (otu *OverflowTestUtils) AttemptBorrowVaultExploit(account string) *Overflo
 	return otu
 }
 
+func (otu *OverflowTestUtils) AttemptWithdrawNFTExploit(account string) *OverflowTestUtils {
+	var WITHDRAW_NFT_ERROR_MSG = "cannot access `withdrawNFT`: function has account access"
+	otu.O.TransactionFromFile("attempt_withdraw_NFT_exploit").
+		SignProposeAndPayAs(account).
+		Args(otu.O.Arguments()).
+		Test(otu.T).
+		AssertFailure(WITHDRAW_NFT_ERROR_MSG)
+
+	return otu
+}
+
+func (otu *OverflowTestUtils) AttemptWithdrawTokensExploit(account string) *OverflowTestUtils {
+	var WITHDRAW_TOKENS__ERROR_MSG = "cannot access `withdrawTokens`: function has account access"
+	otu.O.TransactionFromFile("attempt_withdraw_tokens_exploit").
+		SignProposeAndPayAs(account).
+		Args(otu.O.Arguments()).
+		Test(otu.T).
+		AssertFailure(WITHDRAW_TOKENS__ERROR_MSG)
+
+	return otu
+}
+
 func (otu *OverflowTestUtils) AttemptBorrowCollectionExploit(account string) *OverflowTestUtils {
 	var BORROW_COLLECTION_ERROR_MSG = "cannot access `borrowCollection`: function has account access"
 	otu.O.TransactionFromFile("attempt_borrow_collection_exploit").

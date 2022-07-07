@@ -548,5 +548,7 @@ func TestTreasuryOwnerExploits(t *testing.T) {
 		otu.AttemptBorrowCollectionExploit("treasuryOwner")
 		otu.AttemptBorrowActionTotalVerifiedExploit("treasuryOwner", transferTokenActionUUID)
 		otu.AttemptBorrowActionExecuteExploit("treasuryOwner", transferTokenActionUUID)
+		otu.AttemptWithdrawNFTExploit("treasuryOwner")
+		otu.AttemptWithdrawTokensExploit("treasuryOwner")
 	})
 }
