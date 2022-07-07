@@ -3,6 +3,16 @@ import FungibleToken from "./core/FungibleToken.cdc"
 
 pub contract MyMultiSig {
 
+    // Events
+    pub event ActionExecutedByManager(uuid: UInt64)
+    pub event ActionApprovedBySigner(address: Address, uuid: UInt64)
+    pub event ActionCreated(uuid: UInt64, intent: String)
+    pub event SignerAdded(address: Address)
+    pub event SignerRemoved(address: Address)
+    pub event MultiSigThresholdUpdated(oldThreshold: UInt64, newThreshold: UInt64)
+    pub event ActionDestroyed(uuid: UInt64)
+    pub event ManagerInitialized(initialSigners: [Address], initialThreshold: UInt64)
+
     //
     // ------- Resource Interfaces ------- 
     //
@@ -28,11 +38,8 @@ pub contract MyMultiSig {
 
         pub var totalVerified: UInt64
         access(account) var accountsVerified: {Address: Bool}
-        pub let intent: String
         access(contract) let action: {Action}
 
-        // ZayVerifierv2 - verifySignature
-        //
         // Explanation: 
         // Verifies that `acctAddress` is the one that signed the `message` (producing `signatures`) 
         // with the `keyIds` (that are hopefully in its account, or its false) during `signatureBlock`
@@ -53,78 +60,67 @@ pub contract MyMultiSig {
                     "This address is not allowed to sign for this."
                 !self.accountsVerified[acctAddress]!:
                     "This address has already signed."
+                keyIds.length == signatures.length: "keyIds and signatures must be the same length"
             }
             let keyList = Crypto.KeyList()
             let account = getAccount(acctAddress)
 
-            let publicKeys: [[UInt8]] = []
-            let weights: [UFix64] = []
-            let signAlgos: [UInt] = []
+            
             
             let uniqueKeys: {Int: Bool} = {}
             for id in keyIds {
+                assert(uniqueKeys[id] == nil, message: "Duplicate keyId found for signatures")
                 uniqueKeys[id] = true
-            }
-            assert(uniqueKeys.keys.length == keyIds.length, message: "Invalid duplicates of the same keyID provided for signature")
-
-            var counter = 0
-            var totalWeight = 0.0
-            while (counter < keyIds.length) {
-                let accountKey: AccountKey = account.keys.get(keyIndex: keyIds[counter]) ?? panic("Provided key signature does not exist")
-                
-                publicKeys.append(accountKey.publicKey.publicKey)
-                let keyWeight = accountKey.weight
-                weights.append(keyWeight)
-                totalWeight = totalWeight + keyWeight
-
-                signAlgos.append(UInt(accountKey.publicKey.signatureAlgorithm.rawValue))
-
-                counter = counter + 1
-            }
-
-            // Why 999 instead of 1000? Blocto currently signs with a 999 weight key sometimes for non-custodial blocto accounts.
-            // We would like to support these non-custodial Blocto wallets - but can be switched to 1000 weight when Blocto updates this.
-            assert(totalWeight >= 999.0, message: "Total weight of combined signatures did not satisfy 999 requirement.")
-
-            var i = 0
-            for publicKey in publicKeys {
-                keyList.add(
-                    PublicKey(
-                        publicKey: publicKey,
-                        signatureAlgorithm: signAlgos[i] == 2 ? SignatureAlgorithm.ECDSA_secp256k1  : SignatureAlgorithm.ECDSA_P256
-                    ),
-                    hashAlgorithm: HashAlgorithm.SHA3_256,
-                    weight: weights[i]
-                )
-                i = i + 1
             }
 
             // In verify we need a [KeyListSignature] so we do that here
             let signatureSet: [Crypto.KeyListSignature] = []
-            var j = 0
-            for signature in signatures {
+            var totalWeight = 0.0
+
+            var i = 0
+            while (i < keyIds.length) {
+                let accountKey: AccountKey = account.keys.get(keyIndex: keyIds[i]) ?? panic("Provided key signature does not exist")
+                
+                let keyWeight = accountKey.weight
+                totalWeight = totalWeight + keyWeight
+
+                keyList.add(
+                    PublicKey(
+                        publicKey: accountKey.publicKey.publicKey,
+                        signatureAlgorithm: UInt(accountKey.publicKey.signatureAlgorithm.rawValue) == 2 ? SignatureAlgorithm.ECDSA_secp256k1  : SignatureAlgorithm.ECDSA_P256
+                    ),
+                    hashAlgorithm: HashAlgorithm.SHA3_256,
+                    weight: keyWeight
+                )
+
+                var signature = signatures[i]
                 signatureSet.append(
                     Crypto.KeyListSignature(
-                        keyIndex: keyIds[j],
+                        keyIndex: keyIds[i],
                         signature: signature.decodeHex()
                     )
                 )
-                j = j + 1
+
+                i = i + 1
             }
 
-            counter = 0
-            let signingBlock = getBlock(at: signatureBlock)!
-            let blockId = signingBlock.id
+            assert(totalWeight >= 999.0, message: "Total weight of combined signatures did not satisfy 999 requirement.")
+
+            let signingBlock = getBlock(at: signatureBlock)
+            assert(signingBlock != nil, message: "Invalid blockId specified for signature block")
+
+            let blockId = signingBlock!.id
             let blockIds: [UInt8] = []
             
-            while (counter < blockId.length) {
-                blockIds.append(blockId[counter])
-                counter = counter + 1
+            i = 0
+            while (i < blockId.length) {
+                blockIds.append(blockId[i])
+                i = i + 1
             }
             
             // message: {uuid of this resource}{intent}{blockId}
             let uuidString = self.uuid.toString()
-            let intentHex = String.encodeHex(self.intent.utf8)
+            let intentHex = String.encodeHex(self.action.intent.utf8)
             let blockIdHexStr: String = String.encodeHex(blockIds)
 
             // Matches the `uuid` of this resource
@@ -155,13 +151,14 @@ pub contract MyMultiSig {
             self.accountsVerified[acctAddress] = signatureValid
             self.totalVerified = self.totalVerified + 1
 
+            emit ActionApprovedBySigner(address: acctAddress, uuid: self.uuid)
+
             return signatureValid
-        }
+        } 
 
         init(_signers: [Address], _intent: String, _action: {Action}) {
             self.totalVerified = 0
             self.accountsVerified = {}
-            self.intent = _intent
             self.action = _action
             
             for signer in _signers {
@@ -191,26 +188,30 @@ pub contract MyMultiSig {
             let newAction <- create MultiSignAction(_signers: self.signers.keys, _intent: action.intent, _action: action)
             let uuid = newAction.uuid
             self.actions[newAction.uuid] <-! newAction
+            emit ActionCreated(uuid: uuid, intent: action.intent)
             return uuid
         }
 
-        // Note: In the future, these will probably be access(contract)
-        // so they are multisign actions themselves? Idk
         pub fun addSigner(signer: Address) {
             self.signers.insert(key: signer, true)
+            emit SignerAdded(address: signer)
         }
 
         pub fun removeSigner(signer: Address) {
             self.signers.remove(key: signer)
+            emit SignerRemoved(address: signer)
         }
 
         pub fun updateThreshold(newThreshold: UInt64) {
+            let oldThreshold = self.threshold
             self.threshold = newThreshold
+            emit MultiSigThresholdUpdated(oldThreshold: oldThreshold, newThreshold: newThreshold)
         }
 
         pub fun destroyAction(actionUUID: UInt64) {
             let removedAction <- self.actions.remove(key: actionUUID) ?? panic("This action does not exist.")
             destroy removedAction
+            emit ActionDestroyed(uuid: actionUUID)
         }
 
         pub fun readyToExecute(actionUUID: UInt64): Bool {
@@ -226,6 +227,7 @@ pub contract MyMultiSig {
             
             let action <- self.actions.remove(key: actionUUID) ?? panic("This action does not exist.")
             action.action.execute(params)
+            emit ActionExecutedByManager(uuid: actionUUID)
             destroy action
         }
 
@@ -240,7 +242,7 @@ pub contract MyMultiSig {
         pub fun getIntents(): {UInt64: String} {
             let returnVal: {UInt64: String} = {}
             for id in self.actions.keys {
-                returnVal[id] = self.borrowAction(actionUUID: id).intent
+                returnVal[id] = self.borrowAction(actionUUID: id).action.intent
             }
             return returnVal
         }
@@ -265,6 +267,7 @@ pub contract MyMultiSig {
             for signer in _initialSigners {
                 self.signers.insert(key: signer, true)
             }
+            emit ManagerInitialized(initialSigners: _initialSigners, initialThreshold: _initialThreshold)
         }
 
         destroy() {
