@@ -200,6 +200,51 @@ func (otu *OverflowTestUtils) SignerApproveAction(treasuryAcct string, actionUUI
 	return otu
 }
 
+func (otu *OverflowTestUtils) SignerRevokeApproval(treasuryAcct string, actionUUID uint64, signingAccount string) *OverflowTestUtils {
+	//////////////////////////////////////////////
+	// Generate message/signature for signer
+	// msg {actionUUID}{hexEncodedIntent}{blockID}
+	//////////////////////////////////////////////
+
+	// actionUUID
+	uuid := strconv.FormatUint(actionUUID, 10)
+
+	// hex-encoded intent
+	actions := otu.GetProposedActions("treasuryOwner")
+	intent := actions[uint64(actionUUID)]
+	src := []byte(intent)
+	hexIntent := make([]byte, hex.EncodedLen(len(src)))
+	hex.Encode(hexIntent, src)
+
+	// block.ID & block.Height
+	latestBlock, _ := otu.O.GetLatestBlock()
+
+	// message
+	// {uuid}{hexIntent}{block.ID}
+	message := fmt.Sprintf("%s%s%s", uuid, hexIntent, latestBlock.ID)
+
+	// signature
+	signature := otu.SignMessage(signingAccount, message)
+
+	///////////////////
+	// Run Transaction
+	///////////////////
+
+	otu.O.TransactionFromFile("signer_revoke").
+		SignProposeAndPayAs(signingAccount).
+		Args(otu.O.Arguments().
+			Account(treasuryAcct).       // treasuryAddr
+			UInt64(uint64(actionUUID)).  // actionUUID
+			String(message).             // message
+			UInt64Array(0).              // [keyIds]
+			StringArray(signature).      // [signatures]
+			UInt64(latestBlock.Height)). // signatureBlock
+		Test(otu.T).
+		AssertSuccess()
+
+	return otu
+}
+
 func (otu *OverflowTestUtils) GetVerifiedSignersForAction(treasuryAcct string, actionUUID uint64) map[string]bool {
 	verifiedSigners := otu.O.ScriptFromFile("get_verified_signers_for_action").
 		Args(otu.O.Arguments().
@@ -207,10 +252,25 @@ func (otu *OverflowTestUtils) GetVerifiedSignersForAction(treasuryAcct string, a
 			UInt64(actionUUID)).
 		RunReturnsJsonString()
 
-	var signers map[string]bool
-	json.Unmarshal([]byte(verifiedSigners), &signers)
+	var _signers map[string]string
+	var signers map[string]bool = map[string]bool{}
+	json.Unmarshal([]byte(verifiedSigners), &_signers)
+
+	for k, v := range _signers {
+		signers[k] = (v == "true")
+	}
 
 	return signers
+}
+
+func (otu *OverflowTestUtils) GetTotalVerifiedForAction(treasuryAcct string, actionUUID uint64) uint64 {
+	totalVerified, _ := otu.O.ScriptFromFile("get_total_verified_for_action").
+		Args(otu.O.Arguments().
+			Account(treasuryAcct).
+			UInt64(actionUUID)).
+		RunReturns()
+
+	return totalVerified.ToGoValue().(uint64)
 }
 
 func (otu *OverflowTestUtils) ExecuteAction(treasuryAcct string, actionUUID uint64) *OverflowTestUtils {

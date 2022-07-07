@@ -6,6 +6,7 @@ pub contract MyMultiSig {
     // Events
     pub event ActionExecutedByManager(uuid: UInt64)
     pub event ActionApprovedBySigner(address: Address, uuid: UInt64)
+    pub event ActionApprovalRevokedBySigner(address: Address, uuid: UInt64)
     pub event ActionCreated(uuid: UInt64, intent: String)
     pub event SignerAdded(address: Address)
     pub event SignerRemoved(address: Address)
@@ -31,13 +32,43 @@ pub contract MyMultiSig {
     }
 
     //
+    // ------- Structs --------
+    //
+
+    pub struct MessageSignaturePayload {
+        pub let signingAddr: Address
+        pub let message: String
+        pub let keyIds: [Int]
+        pub let signatures: [String]
+        pub let signatureBlock: UInt64
+
+        init(_signingAddr: Address, _message: String, _keyIds: [Int], _signatures: [String], _signatureBlock: UInt64) {
+            self.signingAddr = _signingAddr
+            self.message = _message
+            self.keyIds = _keyIds
+            self.signatures = _signatures
+            self.signatureBlock = _signatureBlock
+        }
+    }
+
+    pub struct ValidateSignatureResponse {
+        pub let isValid: Bool
+        pub let totalWeight: UFix64
+
+        init(_isValid: Bool, _totalWeight: UFix64) {
+            self.isValid = _isValid
+            self.totalWeight = _totalWeight
+        }
+    }
+
+    //
     // ------- Resources ------- 
     //
 
     pub resource MultiSignAction {
 
         pub var totalVerified: UInt64
-        access(account) var accountsVerified: {Address: Bool}
+        pub var accountsVerified: {Address: Bool}
         access(contract) let action: {Action}
 
         // Explanation: 
@@ -54,19 +85,18 @@ pub contract MyMultiSig {
         //
         // Returns:
         // Whether or not this signature is valid
-        pub fun verifySignature(acctAddress: Address, message: String, keyIds: [Int], signatures: [String], signatureBlock: UInt64): Bool {
-            pre {
-                self.accountsVerified[acctAddress] != nil:
-                    "This address is not allowed to sign for this."
-                !self.accountsVerified[acctAddress]!:
-                    "This address has already signed."
-                keyIds.length == signatures.length: "keyIds and signatures must be the same length"
-            }
-            let keyList = Crypto.KeyList()
-            let account = getAccount(acctAddress)
+        // Cumulative weight of keys if signature is valid
 
-            
-            
+        pub fun validateSignature(payload: MessageSignaturePayload): ValidateSignatureResponse {
+            pre {
+                payload.keyIds.length == payload.signatures.length: "keyIds and signatures must be the same length"
+            }
+
+            let keyList = Crypto.KeyList()
+            let signingAddr = payload.signingAddr
+            let account = getAccount(signingAddr)
+
+            let keyIds = payload.keyIds
             let uniqueKeys: {Int: Bool} = {}
             for id in keyIds {
                 assert(uniqueKeys[id] == nil, message: "Duplicate keyId found for signatures")
@@ -93,37 +123,94 @@ pub contract MyMultiSig {
                     weight: keyWeight
                 )
 
-                var signature = signatures[i]
+                var signature = payload.signatures[i]
                 signatureSet.append(
                     Crypto.KeyListSignature(
                         keyIndex: keyIds[i],
                         signature: signature.decodeHex()
                     )
                 )
-
                 i = i + 1
             }
 
-            assert(totalWeight >= 999.0, message: "Total weight of combined signatures did not satisfy 999 requirement.")
+            let signatureValid = keyList.verify(
+                signatureSet: signatureSet,
+                signedData: payload.message.utf8
+            )
 
-            let signingBlock = getBlock(at: signatureBlock)
+            return ValidateSignatureResponse(_isValid: signatureValid, _totalWeight: totalWeight)
+        }
+
+        pub fun signerApproveAction(_messageSignaturePayload: MessageSignaturePayload): Bool {
+            pre {
+                self.accountsVerified[_messageSignaturePayload.signingAddr] != nil:
+                    "This address is not allowed to sign for this."
+                !self.accountsVerified[_messageSignaturePayload.signingAddr]!:
+                    "This address has already signed."
+            }
+
+            // Validate Message
+            assert(
+                self.approveOrRevokeActionMessageIsValid(_messageSignaturePayload: _messageSignaturePayload),
+                message: "Signed message is invalid"
+            )
+        
+            // Validate Signature
+            var signatureValidationResponse = self.validateSignature(payload: _messageSignaturePayload)
+            assert(signatureValidationResponse.isValid == true, message: "Invalid Signatures")
+            assert(signatureValidationResponse.totalWeight >= 999.0, message: "Total weight of combined signatures did not satisfy 999 requirement.")
+
+            // Approve action
+            self.accountsVerified[_messageSignaturePayload.signingAddr] = signatureValidationResponse.isValid
+            self.totalVerified = self.totalVerified + 1
+
+            emit ActionApprovedBySigner(address: _messageSignaturePayload.signingAddr, uuid: self.uuid)
+            return signatureValidationResponse.isValid
+        }
+
+        pub fun signerRevokeApproval(_messageSignaturePayload: MessageSignaturePayload): Bool {
+            pre {
+                self.accountsVerified[_messageSignaturePayload.signingAddr] == true:
+                    "Cannot revoke approval -- signer has not approved this action."
+            }
+
+            // Validate Message
+            assert(
+                self.approveOrRevokeActionMessageIsValid(_messageSignaturePayload: _messageSignaturePayload),
+                message: "Signed message is invalid"
+            )
+        
+            // Validate Signature
+            var signatureValidationResponse = self.validateSignature(payload: _messageSignaturePayload)
+            assert(signatureValidationResponse.isValid == true, message: "Invalid Signatures")
+            assert(signatureValidationResponse.totalWeight >= 999.0, message: "Total weight of combined signatures did not satisfy 999 requirement.")
+
+            // Revoke approval
+            self.accountsVerified[_messageSignaturePayload.signingAddr] = false
+            self.totalVerified = self.totalVerified - 1
+
+            emit ActionApprovalRevokedBySigner(address: _messageSignaturePayload.signingAddr, uuid: self.uuid)
+            return signatureValidationResponse.isValid
+        }
+
+        // Validate the approve/revoke approval message
+        pub fun approveOrRevokeActionMessageIsValid(_messageSignaturePayload: MessageSignaturePayload): Bool {
+            let signingBlock = getBlock(at: _messageSignaturePayload.signatureBlock)!
             assert(signingBlock != nil, message: "Invalid blockId specified for signature block")
-
-            let blockId = signingBlock!.id
+            let blockId = signingBlock.id
             let blockIds: [UInt8] = []
             
-            i = 0
-            while (i < blockId.length) {
-                blockIds.append(blockId[i])
-                i = i + 1
+            for id in blockId {
+                blockIds.append(id)
             }
-            
+
             // message: {uuid of this resource}{intent}{blockId}
             let uuidString = self.uuid.toString()
             let intentHex = String.encodeHex(self.action.intent.utf8)
             let blockIdHexStr: String = String.encodeHex(blockIds)
 
             // Matches the `uuid` of this resource
+            let message = _messageSignaturePayload.message
             assert(
                 uuidString == message.slice(from: 0, upTo: uuidString.length), 
                 message: "This signature is not for this action"
@@ -138,23 +225,8 @@ pub contract MyMultiSig {
                 blockIdHexStr == message.slice(from: uuidString.length + intentHex.length, upTo: message.length), 
                 message: "Unable to validate signature provided contained a valid block id."
             )
-
-            let signatureValid = keyList.verify(
-                signatureSet: signatureSet,
-                signedData: message.utf8
-            )
-
-            assert(
-                signatureValid == true,
-                message: "Signature is not valid. keyList.verify failed."
-            )
-            self.accountsVerified[acctAddress] = signatureValid
-            self.totalVerified = self.totalVerified + 1
-
-            emit ActionApprovedBySigner(address: acctAddress, uuid: self.uuid)
-
-            return signatureValid
-        } 
+            return true
+        }
 
         init(_signers: [Address], _intent: String, _action: {Action}) {
             self.totalVerified = 0
@@ -174,6 +246,7 @@ pub contract MyMultiSig {
         pub fun getSigners(): {Address: Bool}
         pub fun getThreshold(): UInt64
         pub fun getVerifiedSignersForAction(actionUUID: UInt64): {Address: Bool}
+        pub fun getTotalVerifiedForAction(actionUUID: UInt64): UInt64
     }
     
     pub resource Manager: ManagerPublic {
@@ -257,6 +330,10 @@ pub contract MyMultiSig {
 
         pub fun getVerifiedSignersForAction(actionUUID: UInt64): {Address: Bool} {
             return self.borrowAction(actionUUID: actionUUID).accountsVerified
+        }
+
+        pub fun getTotalVerifiedForAction(actionUUID: UInt64): UInt64 {
+            return self.borrowAction(actionUUID: actionUUID).totalVerified
         }
 
         init(_initialSigners: [Address], _initialThreshold: UInt64) {

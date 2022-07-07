@@ -4,9 +4,9 @@ import MyMultiSig from "../contracts/MyMultiSig.cdc"
 transaction(treasuryAddr: Address, actionUUID: UInt64, message: String, keyIds: [UInt64], signatures: [String], signatureBlock: UInt64) {
 
   var isValid: Bool
-  let action: &MyMultiSig.MultiSignAction 
-  let messageSignaturePayload: MyMultiSig.MessageSignaturePayload
-
+  var action: &MyMultiSig.MultiSignAction
+  var messageSignaturePayload: MyMultiSig.MessageSignaturePayload
+  
   prepare(signer: AuthAccount) {
     self.isValid = false
     let treasury = getAccount(treasuryAddr).getCapability(DAOTreasury.TreasuryPublicPath)
@@ -28,11 +28,11 @@ transaction(treasuryAddr: Address, actionUUID: UInt64, message: String, keyIds: 
 
   }
   execute {
-    self.isValid = self.action.signerApproveAction(_messageSignaturePayload: self.messageSignaturePayload)
+    self.isValid = self.action.signerRevokeApproval(_messageSignaturePayload: self.messageSignaturePayload)
   }
 
   post {
     self.isValid == true: "Unable to revoke approval: invalid message or signature"
-    self.action.accountsVerified[self.messageSignaturePayload.signingAddr] == true: "Error: tx completed but signer approval not revoked"
+    self.action.accountsVerified[self.messageSignaturePayload.signingAddr] == false: "Error: tx completed but signer approval not revoked"
   }
 }
