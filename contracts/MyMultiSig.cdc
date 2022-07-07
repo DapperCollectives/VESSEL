@@ -71,8 +71,6 @@ pub contract MyMultiSig {
         pub var accountsVerified: {Address: Bool}
         access(contract) let action: {Action}
 
-        // ZayVerifierv2 - verifySignature
-        //
         // Explanation: 
         // Verifies that `acctAddress` is the one that signed the `message` (producing `signatures`) 
         // with the `keyIds` (that are hopefully in its account, or its false) during `signatureBlock`
@@ -90,6 +88,10 @@ pub contract MyMultiSig {
         // Cumulative weight of keys if signature is valid
 
         pub fun validateSignature(payload: MessageSignaturePayload): ValidateSignatureResponse {
+            pre {
+                payload.keyIds.length == payload.signatures.length: "keyIds and signatures must be the same length"
+            }
+
             let keyList = Crypto.KeyList()
             let signingAddr = payload.signingAddr
             let account = getAccount(signingAddr)
@@ -97,9 +99,9 @@ pub contract MyMultiSig {
             let keyIds = payload.keyIds
             let uniqueKeys: {Int: Bool} = {}
             for id in keyIds {
+                assert(uniqueKeys[id] == nil, message: "Duplicate keyId found for signatures")
                 uniqueKeys[id] = true
             }
-            assert(uniqueKeys.keys.length == keyIds.length, message: "Invalid duplicates of the same keyID provided for signature")
 
             // In verify we need a [KeyListSignature] so we do that here
             let signatureSet: [Crypto.KeyListSignature] = []
@@ -158,7 +160,6 @@ pub contract MyMultiSig {
             assert(signatureValidationResponse.isValid == true, message: "Invalid Signatures")
             assert(signatureValidationResponse.totalWeight >= 999.0, message: "Total weight of combined signatures did not satisfy 999 requirement.")
 
-
             // Approve action
             self.accountsVerified[_messageSignaturePayload.signingAddr] = signatureValidationResponse.isValid
             self.totalVerified = self.totalVerified + 1
@@ -195,13 +196,12 @@ pub contract MyMultiSig {
         // Validate the approve/revoke approval message
         pub fun approveOrRevokeActionMessageIsValid(_messageSignaturePayload: MessageSignaturePayload): Bool {
             let signingBlock = getBlock(at: _messageSignaturePayload.signatureBlock)!
+            assert(signingBlock != nil, message: "Invalid blockId specified for signature block")
             let blockId = signingBlock.id
             let blockIds: [UInt8] = []
             
-            var i = 0
-            while (i < blockId.length) {
-                blockIds.append(blockId[i])
-                i = i + 1
+            for id in blockId {
+                blockIds.append(id)
             }
 
             // message: {uuid of this resource}{intent}{blockId}
