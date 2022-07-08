@@ -492,12 +492,12 @@ func (otu *OverflowTestUtils) AttemptWithdrawNFTExploit(account string) *Overflo
 }
 
 func (otu *OverflowTestUtils) AttemptWithdrawTokensExploit(account string) *OverflowTestUtils {
-	var WITHDRAW_TOKENS__ERROR_MSG = "cannot access `withdrawTokens`: function has account access"
+	var WITHDRAW_TOKENS_ERROR_MSG = "cannot access `withdrawTokens`: function has account access"
 	otu.O.TransactionFromFile("attempt_withdraw_tokens_exploit").
 		SignProposeAndPayAs(account).
 		Args(otu.O.Arguments()).
 		Test(otu.T).
-		AssertFailure(WITHDRAW_TOKENS__ERROR_MSG)
+		AssertFailure(WITHDRAW_TOKENS_ERROR_MSG)
 
 	return otu
 }
