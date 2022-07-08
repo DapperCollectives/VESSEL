@@ -266,9 +266,8 @@ pub contract MyMultiSig {
         }
 
         pub fun addSigner(signer: Address) {
-            pre {
-                signer != 0x0 : "The signer address should be valid"
-            }
+            // Checks if the signer exists, get account key will fail otherwise
+            getAccount(signer).keys.get(keyIndex: 0) 
             
             self.signers.insert(key: signer, true)
             emit SignerAdded(address: signer)
@@ -356,8 +355,10 @@ pub contract MyMultiSig {
                 _initialSigners.length >= Int(_initialThreshold):
                     "Number of signers must be equal or higher than the threshold."
             }
+
             for signer in _initialSigners {
-                assert(signer != 0x0, message: "The signer address should be valid")
+                // Checks if the signer exists, get account key will fail otherwise
+                getAccount(signer).keys.get(keyIndex: 0)
             }
 
             self.signers = {}
