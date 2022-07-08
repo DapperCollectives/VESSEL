@@ -60,9 +60,6 @@ pub contract TreasuryActions {
     pub let amount: UFix64
 
     pub fun execute(_ params: {String: AnyStruct}) {
-      pre {
-        self.amount > 0.0 : "Amount should be higher than 0.0"  
-      }
 
       let treasuryRef: &DAOTreasury.Treasury = params["treasury"]! as! &DAOTreasury.Treasury
       let vaultRef: &FungibleToken.Vault = treasuryRef.borrowVault(identifier: self.recipientVault.borrow()!.getType().identifier)
@@ -78,6 +75,10 @@ pub contract TreasuryActions {
     }
 
     init(_recipientVault: Capability<&{FungibleToken.Receiver}>, _amount: UFix64) {
+      pre {
+        _amount > 0.0 : "Amount should be higher than 0.0"  
+      }
+
       self.intent = "Transfer "
                         .concat(_amount.toString())
                         .concat(" ")
@@ -103,9 +104,6 @@ pub contract TreasuryActions {
     pub let amount: UFix64
 
     pub fun execute(_ params: {String: AnyStruct}) {
-      pre {
-        self.amount > 0.0 : "Amount should be higher than 0.0"  
-      }
 
       let treasuryRef: &DAOTreasury.Treasury = params["treasury"]! as! &DAOTreasury.Treasury
       let vaultRef: &FungibleToken.Vault = treasuryRef.borrowVault(identifier: self.identifier)
@@ -122,6 +120,10 @@ pub contract TreasuryActions {
     }
 
     init(_recipientTreasury: Capability<&{DAOTreasury.TreasuryPublic}>, _identifier: String, _amount: UFix64) {
+      pre {
+        _amount > 0.0 : "Amount should be higher than 0.0"  
+      }
+      
       let recipientAddr = _recipientTreasury.borrow()!.owner!.address
       self.intent = "Transfer "
                         .concat(_amount.toString())
