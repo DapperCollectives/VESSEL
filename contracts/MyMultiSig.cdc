@@ -264,8 +264,11 @@ pub contract MyMultiSig {
             emit ActionCreated(uuid: uuid, intent: action.intent)
             return uuid
         }
-
+            
         access(account) fun addSigner(signer: Address) {
+            // Checks if the signer exists, get account key will fail otherwise
+            getAccount(signer).keys.get(keyIndex: 0)
+
             self.signers.insert(key: signer, true)
             emit SignerAdded(address: signer)
         }
@@ -351,6 +354,11 @@ pub contract MyMultiSig {
             pre {
                 _initialSigners.length >= Int(_initialThreshold):
                     "Number of signers must be equal or higher than the threshold."
+            }
+
+            for signer in _initialSigners {
+                // Checks if the signer exists, get account key will fail otherwise
+                getAccount(signer).keys.get(keyIndex: 0)
             }
 
             self.signers = {}

@@ -115,6 +115,10 @@ func TestTransferTokensToAccountActions(t *testing.T) {
 		assert.Equal(otu.T, TransferAmountUInt64+DefaultAccountBalance, recipientBalance)
 	})
 
+	t.Run("Signers shouldn't be able to propose a transfer of 0.0 fungible tokens out of the Treasury", func(t *testing.T) {
+		otu.ProposeFungibleTokenTransferActionFail("treasuryOwner", Signers[0], RecipientAcct, 0.0)
+	})
+
 	t.Run("Signers should be able to propose a transfer of a non-fungible token out of the Treasury", func(t *testing.T) {
 		// TODO: create collection in one of the signer accounts
 		otu.ProposeNonFungibleTokenTransferAction("treasuryOwner", Signers[0], "account", uint64(0))
@@ -156,7 +160,6 @@ func TestTransferTokensToAccountActions(t *testing.T) {
 
 func TestTransferFungibleTokensToTreasuryActions(t *testing.T) {
 	var transferTokenActionUUID uint64
-	// var transferNFTActionUUID uint64
 
 	otu := NewOverflowTest(t)
 	otu.MintFlow("signer1", TransferAmount)
@@ -209,6 +212,10 @@ func TestTransferFungibleTokensToTreasuryActions(t *testing.T) {
 		// Assert that all funds have been received by the recipient account
 		recipientTreasuryBalance := otu.GetTreasuryVaultBalance("recipient", FlowTokenVaultID)
 		assert.Equal(otu.T, TransferAmountUInt64, recipientTreasuryBalance)
+	})
+
+	t.Run("Signers shouldn't be able to propose to transfer 0.0 fungible tokens out of the Treasury to another Treasury", func(t *testing.T) {
+		otu.ProposeFungibleTokenTransferToTreasuryActionFail("treasuryOwner", Signers[0], RecipientAcct, FlowTokenVaultID, 0.0)
 	})
 }
 

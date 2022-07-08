@@ -131,6 +131,20 @@ func (otu *OverflowTestUtils) ProposeFungibleTokenTransferAction(treasuryAcct st
 	return otu
 }
 
+func (otu *OverflowTestUtils) ProposeFungibleTokenTransferActionFail(treasuryAcct string, proposingAcct, recipientAcct string, amount float64) *OverflowTestUtils {
+	PROPOSE_TOKEN_TRANSFER_ERROR := "Amount should be higher than 0.0"
+	otu.O.TransactionFromFile("propose_fungible_token_transfer").
+		SignProposeAndPayAs(proposingAcct).
+		Args(otu.O.Arguments().
+			Account(treasuryAcct).
+			Account(recipientAcct).
+			UFix64(amount)).
+		Test(otu.T).
+		AssertFailure(PROPOSE_TOKEN_TRANSFER_ERROR)
+
+	return otu
+}
+
 func (otu *OverflowTestUtils) ProposeFungibleTokenTransferToTreasuryAction(treasuryAcct string, proposingAcct, recipientAcct string, vaultIdentifier string, amount float64) *OverflowTestUtils {
 	otu.O.TransactionFromFile("propose_fungible_token_transfer_to_treasury").
 		SignProposeAndPayAs(proposingAcct).
@@ -141,6 +155,22 @@ func (otu *OverflowTestUtils) ProposeFungibleTokenTransferToTreasuryAction(treas
 			UFix64(amount)).
 		Test(otu.T).
 		AssertSuccess()
+
+	return otu
+}
+
+func (otu *OverflowTestUtils) ProposeFungibleTokenTransferToTreasuryActionFail(treasuryAcct string, proposingAcct, recipientAcct string, vaultIdentifier string, amount float64) *OverflowTestUtils {
+	PROPOSE_TOKEN_TRANSFER_ERROR := "Amount should be higher than 0.0"
+
+	otu.O.TransactionFromFile("propose_fungible_token_transfer_to_treasury").
+		SignProposeAndPayAs(proposingAcct).
+		Args(otu.O.Arguments().
+			Account(treasuryAcct).
+			Account(recipientAcct).
+			String(vaultIdentifier).
+			UFix64(amount)).
+		Test(otu.T).
+		AssertFailure(PROPOSE_TOKEN_TRANSFER_ERROR)
 
 	return otu
 }

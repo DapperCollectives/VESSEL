@@ -74,6 +74,10 @@ pub contract TreasuryActions {
     }
 
     init(_recipientVault: Capability<&{FungibleToken.Receiver}>, _amount: UFix64) {
+      pre {
+        _amount > 0.0 : "Amount should be higher than 0.0"  
+      }
+
       self.intent = "Transfer "
                         .concat(_amount.toString())
                         .concat(" ")
@@ -114,6 +118,10 @@ pub contract TreasuryActions {
     }
 
     init(_recipientTreasury: Capability<&{DAOTreasury.TreasuryPublic}>, _identifier: String, _amount: UFix64) {
+      pre {
+        _amount > 0.0 : "Amount should be higher than 0.0"  
+      }
+      
       let recipientAddr = _recipientTreasury.borrow()!.owner!.address
       self.intent = "Transfer "
                         .concat(_amount.toString())
