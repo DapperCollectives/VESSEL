@@ -59,8 +59,7 @@ pub contract TreasuryActions {
     pub let recipientVault: Capability<&{FungibleToken.Receiver}>
     pub let amount: UFix64
 
-    pub fun execute(_ params: {String: AnyStruct}) {
-
+    access(account) fun execute(_ params: {String: AnyStruct}) {
       let treasuryRef: &DAOTreasury.Treasury = params["treasury"]! as! &DAOTreasury.Treasury
       let vaultRef: &FungibleToken.Vault = treasuryRef.borrowVault(identifier: self.recipientVault.borrow()!.getType().identifier)
       let withdrawnTokens <- vaultRef.withdraw(amount: self.amount)
@@ -103,8 +102,7 @@ pub contract TreasuryActions {
     pub let recipientTreasury: Capability<&{DAOTreasury.TreasuryPublic}>
     pub let amount: UFix64
 
-    pub fun execute(_ params: {String: AnyStruct}) {
-
+    access(account) fun execute(_ params: {String: AnyStruct}) {
       let treasuryRef: &DAOTreasury.Treasury = params["treasury"]! as! &DAOTreasury.Treasury
       let vaultRef: &FungibleToken.Vault = treasuryRef.borrowVault(identifier: self.identifier)
       let withdrawnTokens <- vaultRef.withdraw(amount: self.amount)
@@ -149,7 +147,7 @@ pub contract TreasuryActions {
     pub let recipientCollection: Capability<&{NonFungibleToken.CollectionPublic}>
     pub let withdrawID: UInt64
 
-    pub fun execute(_ params: {String: AnyStruct}) {
+    access(account) fun execute(_ params: {String: AnyStruct}) {
       let treasuryRef: &DAOTreasury.Treasury = params["treasury"]! as! &DAOTreasury.Treasury
       let collectionID = self.recipientCollection.borrow()!.getType().identifier
       let collectionRef: &NonFungibleToken.Collection = treasuryRef.borrowCollection(identifier: collectionID)
@@ -189,7 +187,7 @@ pub contract TreasuryActions {
     pub let recipientTreasury: Capability<&{DAOTreasury.TreasuryPublic}>
     pub let withdrawID: UInt64
 
-    pub fun execute(_ params: {String: AnyStruct}) {
+    access(account) fun execute(_ params: {String: AnyStruct}) {
       let treasuryRef: &DAOTreasury.Treasury = params["treasury"]! as! &DAOTreasury.Treasury
       let collectionRef: &NonFungibleToken.Collection = treasuryRef.borrowCollection(identifier: self.identifier)
       let nft <- collectionRef.withdraw(withdrawID: self.withdrawID)
@@ -232,7 +230,7 @@ pub contract TreasuryActions {
     pub let signer: Address
     pub let intent: String
 
-    pub fun execute(_ params: {String: AnyStruct}) {
+    access(account) fun execute(_ params: {String: AnyStruct}) {
       let treasuryRef: &DAOTreasury.Treasury = params["treasury"]! as! &DAOTreasury.Treasury
 
       let manager = treasuryRef.borrowManager()
@@ -253,7 +251,7 @@ pub contract TreasuryActions {
     pub let signer: Address
     pub let intent: String
 
-    pub fun execute(_ params: {String: AnyStruct}) {
+    access(account) fun execute(_ params: {String: AnyStruct}) {
       let treasuryRef: &DAOTreasury.Treasury = params["treasury"]! as! &DAOTreasury.Treasury
 
       let manager = treasuryRef.borrowManager()
@@ -273,7 +271,7 @@ pub contract TreasuryActions {
     pub let threshold: UInt64
     pub let intent: String
 
-    pub fun execute(_ params: {String: AnyStruct}) {
+    access(account) fun execute(_ params: {String: AnyStruct}) {
       let treasuryRef: &DAOTreasury.Treasury = params["treasury"]! as! &DAOTreasury.Treasury
 
       let manager = treasuryRef.borrowManager()
