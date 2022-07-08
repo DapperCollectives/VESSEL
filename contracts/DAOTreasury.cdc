@@ -143,9 +143,41 @@ pub contract DAOTreasury {
     }
 
     destroy() {
-      destroy self.multiSignManager
-      destroy self.vaults
-      destroy self.collections
+      // Check if Valuts are empty
+      var isValutEmpty = true
+      var vaultIds = self.vaults.keys
+      var i = 0
+      while (i < vaultIds.length) {
+        var identifier = vaultIds[i]
+        let vaultRef = (&self.vaults[identifier] as &FungibleToken.Vault?)!
+        if vaultRef.balance > 0.0 {
+          isValutEmpty = false
+        }
+        i = i + 1
+      }
+
+      // Check if Collections are empty
+      var isCollectionEmpty = true
+      var collectionIds = self.collections.keys
+      var j = 0
+      while (j < collectionIds.length) {
+        var identifier = collectionIds[j]
+        let collectionRef = (&self.collections[identifier] as &NonFungibleToken.Collection?)!
+        if collectionRef.getIDs().length > 0 {
+          isCollectionEmpty = false
+        }
+        j = j + 1
+      }
+
+      // Only destroy if both vaults and collections are empty
+      if isValutEmpty && isCollectionEmpty {
+        destroy self.multiSignManager
+        destroy self.vaults
+        destroy self.collections
+      } else {
+        panic("Treasury is not empty, cannot be destroyed!")
+      }
+      
     }
   }
   

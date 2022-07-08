@@ -653,3 +653,19 @@ func (otu *OverflowTestUtils) GetAccountCollection(account string) []uint64 {
 
 	return ownedNFTIds
 }
+
+func (otu *OverflowTestUtils) DestroyTreasuryShoudNotBeAllowed(account string) *OverflowTestUtils {
+	otu.O.TransactionFromFile("destroy_treasury").
+		SignProposeAndPayAs(account).
+		Test(otu.T).
+		AssertFailure("Treasury is not empty, cannot be destroyed!")
+	return otu
+}
+
+func (otu *OverflowTestUtils) DestroyTreasuryShoudBeAllowed(account string) *OverflowTestUtils {
+	otu.O.TransactionFromFile("destroy_treasury").
+		SignProposeAndPayAs(account).
+		Test(otu.T).
+		AssertSuccess()
+	return otu
+}

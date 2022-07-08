@@ -65,6 +65,11 @@ func TestTreasurySetup(t *testing.T) {
 		assert.Contains(otu.T, ownedNFTIds, uint64(0))
 
 	})
+
+	t.Run("Destroy Treasury should not be allowed if it has vaults/collections", func(t *testing.T) {
+		otu.DestroyTreasuryShoudNotBeAllowed("treasuryOwner")
+
+	})
 }
 
 func TestTransferFungibleTokensToAccountActions(t *testing.T) {
@@ -216,6 +221,11 @@ func TestTransferTokensToAccountActionsWith20Signers(t *testing.T) {
 
 		// TODO: Assert that the NFT has been received by the recipient account
 	})
+
+	t.Run("Destroy Treasury should be allowed if both vaults and collections are empty", func(t *testing.T) {
+		otu.DestroyTreasuryShoudBeAllowed("treasuryOwner")
+	})
+
 }
 
 func TestTransferFungibleTokensToTreasuryActions(t *testing.T) {
