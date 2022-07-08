@@ -33,7 +33,6 @@
 			}
 		},
 		"ExampleNFT": "./contracts/core/ExampleNFT.cdc",
-		"ZayVerifierV2": "./contracts/core/ZayVerifierv2.cdc",
 		"MyMultiSig": {
 			"source": "./contracts/MyMultiSig.cdc",
 			"aliases": {
