@@ -540,7 +540,6 @@ func TestTreasuryOwnerExploits(t *testing.T) {
 		for k := range actions {
 			keys = append(keys, k)
 		}
-
 		transferTokenActionUUID = keys[0]
 
 		otu.AttemptDirectManagerAccessExploit("treasuryOwner")
@@ -549,5 +548,7 @@ func TestTreasuryOwnerExploits(t *testing.T) {
 		otu.AttemptBorrowCollectionExploit("treasuryOwner")
 		otu.AttemptBorrowActionTotalVerifiedExploit("treasuryOwner", transferTokenActionUUID)
 		otu.AttemptBorrowActionExecuteExploit("treasuryOwner", transferTokenActionUUID)
+		otu.AttemptWithdrawNFTExploit("treasuryOwner")
+		otu.AttemptWithdrawTokensExploit("treasuryOwner")
 	})
 }
