@@ -10,7 +10,6 @@ transaction() {
     treasury?.multiSignManager?.updateThreshold(newThreshold: 100)
 
     signer.save(<-treasury, to: DAOTreasury.TreasuryStoragePath)
-    // let action = manager.borrowAction(actionUUID: actionUUID)
   }
   execute {
     
