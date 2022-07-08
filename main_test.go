@@ -350,7 +350,7 @@ func TestAddSignerAction(t *testing.T) {
 		// Assert that the signatures were registered
 		signersMap := otu.GetVerifiedSignersForAction("treasuryOwner", addSignerActionUUID)
 		for _, signer := range signers {
-			assert.True(otu.T, true, signersMap[otu.GetAccountAddress(signer)])
+			assert.True(otu.T, signersMap[otu.GetAccountAddress(signer)])
 		}
 	})
 
@@ -391,7 +391,7 @@ func TestRemoveSignerAction(t *testing.T) {
 		// Assert that the signatures were registered
 		signersMap := otu.GetVerifiedSignersForAction("treasuryOwner", removeSignerActionUUID)
 		for _, signer := range Signers {
-			assert.True(otu.T, true, signersMap[otu.GetAccountAddress(signer)])
+			assert.True(otu.T, signersMap[otu.GetAccountAddress(signer)])
 		}
 	})
 
@@ -473,7 +473,7 @@ func TestUpdateThreshold(t *testing.T) {
 		// Assert that the signatures were registered
 		signersMap := otu.GetVerifiedSignersForAction("treasuryOwner", proposeUpdateThreshold)
 		for _, signer := range Signers {
-			assert.True(otu.T, true, signersMap[otu.GetAccountAddress(signer)])
+			assert.True(otu.T, signersMap[otu.GetAccountAddress(signer)])
 		}
 	})
 
@@ -504,7 +504,7 @@ func TestUpdateThreshold(t *testing.T) {
 		// Assert that the signatures were registered
 		signersMap := otu.GetVerifiedSignersForAction("treasuryOwner", proposeUpdateThreshold)
 		for _, signer := range Signers {
-			assert.True(otu.T, true, signersMap[otu.GetAccountAddress(signer)])
+			assert.True(otu.T, signersMap[otu.GetAccountAddress(signer)])
 		}
 
 		otu.ExecuteActionFail("treasuryOwner", proposeUpdateThreshold, "Cannot update threshold, number of signers must be equal or higher than the threshold.")
