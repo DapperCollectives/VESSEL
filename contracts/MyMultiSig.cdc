@@ -5,11 +5,8 @@ pub contract MyMultiSig {
 
     // Events
     pub event ActionExecutedByManager(uuid: UInt64)
-<<<<<<< HEAD
     pub event ActionApprovedBySigner(address: Address, uuid: UInt64)
     pub event ActionApprovalRevokedBySigner(address: Address, uuid: UInt64)
-=======
->>>>>>> 78c2ddc (adds events to DAOTreasury.cdc, MyMultiSig.cdc, TreasuryActions.cdc)
     pub event ActionCreated(uuid: UInt64, intent: String)
     pub event SignerAdded(address: Address)
     pub event SignerRemoved(address: Address)
