@@ -1,6 +1,5 @@
 import DAOTreasury from "../contracts/DAOTreasury.cdc"
 
-// 1.
 transaction(initialSigners: [Address], initialThreshold: UInt64) {
   
   prepare(signer: AuthAccount) {

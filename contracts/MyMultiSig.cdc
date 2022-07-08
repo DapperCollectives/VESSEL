@@ -19,7 +19,7 @@ pub contract MyMultiSig {
     //
 
     pub resource interface MultiSign {
-        pub let multiSignManager: @Manager
+        access(contract) let multiSignManager: @Manager
     }
 
     //
@@ -28,7 +28,7 @@ pub contract MyMultiSig {
 
     pub struct interface Action {
         pub let intent: String
-        pub fun execute(_ params: {String: AnyStruct})
+        access(account) fun execute(_ params: {String: AnyStruct})
     }
 
     //
@@ -265,12 +265,12 @@ pub contract MyMultiSig {
             return uuid
         }
 
-        pub fun addSigner(signer: Address) {
+        access(account) fun addSigner(signer: Address) {
             self.signers.insert(key: signer, true)
             emit SignerAdded(address: signer)
         }
 
-        pub fun removeSigner(signer: Address) {
+        access(account) fun removeSigner(signer: Address) {
             post {
                 self.signers.length >= Int(self.threshold):
                     "Cannot remove signer, number of signers must be equal or higher than the threshold."
@@ -280,7 +280,7 @@ pub contract MyMultiSig {
             emit SignerRemoved(address: signer)
         }
 
-        pub fun updateThreshold(newThreshold: UInt64) {
+        access(account) fun updateThreshold(newThreshold: UInt64) {
             post {
                 self.signers.length >= Int(self.threshold): 
                     "Cannot update threshold, number of signers must be equal or higher than the threshold."
@@ -291,7 +291,7 @@ pub contract MyMultiSig {
             emit MultiSigThresholdUpdated(oldThreshold: oldThreshold, newThreshold: newThreshold)
         }
 
-        pub fun destroyAction(actionUUID: UInt64) {
+        access(account) fun destroyAction(actionUUID: UInt64) {
             let removedAction <- self.actions.remove(key: actionUUID) ?? panic("This action does not exist.")
             destroy removedAction
             emit ActionDestroyed(uuid: actionUUID)
@@ -302,7 +302,7 @@ pub contract MyMultiSig {
             return actionRef.totalVerified >= self.threshold
         }
 
-        pub fun executeAction(actionUUID: UInt64, _ params: {String: AnyStruct}) {
+        access(account) fun executeAction(actionUUID: UInt64, _ params: {String: AnyStruct}) {
             pre {
                 self.readyToExecute(actionUUID: actionUUID):
                     "This action has not received a signature from every signer yet."
