@@ -1,3 +1,8 @@
+//
+// Copied from: https://github.com/onflow/flow-nft/blob/master/contracts/ExampleNFT.cdc
+// Commit: https://github.com/onflow/flow-nft/commit/48c07b81f0c9752565deb7ac8aadef2852c4ffb7
+// Changes: https://github.com/DapperCollectives/VESSEL/commit/4de256e452d338b561a54b8a62c0c0b72251a01d
+//
 // This is an example implementation of a Flow Non-Fungible Token
 // It is not part of the official standard but it assumed to be
 // very similar to how many NFTs would implement the core functionality.
