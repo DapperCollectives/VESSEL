@@ -563,7 +563,7 @@ func TestRemoveSignerActionErrors(t *testing.T) {
 	})
 
 	t.Run("A treasuryOwner shouldn't be able to execute a proposed action to remove a signer because the threshold will be higher than the number of signers", func(t *testing.T) {
-		otu.ExecuteActionFail("treasuryOwner", removeSignerActionUUID, "Cannot remove signer, number of signers must be equal or higher than the threshold.")
+		otu.ExecuteActionFailed("treasuryOwner", removeSignerActionUUID, "Cannot remove signer, number of signers must be equal or higher than the threshold.")
 
 		signers := otu.GetTreasurySigners("treasuryOwner").String()
 
@@ -632,7 +632,7 @@ func TestUpdateThreshold(t *testing.T) {
 			assert.True(otu.T, signersMap[otu.GetAccountAddress(signer)])
 		}
 
-		otu.ExecuteActionFail("treasuryOwner", proposeUpdateThreshold, "Cannot update threshold, number of signers must be equal or higher than the threshold.")
+		otu.ExecuteActionFailed("treasuryOwner", proposeUpdateThreshold, "Cannot update threshold, number of signers must be equal or higher than the threshold.")
 
 		threshold := otu.GetTreasuryThreshold("treasuryOwner")
 
@@ -675,5 +675,34 @@ func TestTreasuryOwnerExploits(t *testing.T) {
 		otu.AttemptBorrowActionExecuteExploit("treasuryOwner", transferTokenActionUUID)
 		otu.AttemptWithdrawNFTExploit("treasuryOwner")
 		otu.AttemptWithdrawTokensExploit("treasuryOwner")
+	})
+}
+
+func TestDestroyAction(t *testing.T) {
+	var actionUUID uint64
+
+	otu := NewOverflowTest(t)
+	otu.SetupTreasury("treasuryOwner", Signers, 2)
+
+	t.Run("User should be able to propose an action", func(t *testing.T) {
+		otu.ProposeNewThreshold("treasuryOwner", DefaultThreshold)
+	})
+
+	t.Run("User should be able to destroy the action", func(t *testing.T) {
+		actions := otu.GetProposedActions("treasuryOwner")
+		keys := make([]uint64, 0, len(actions))
+		for k := range actions {
+			keys = append(keys, k)
+		}
+		actionUUID = keys[0]
+
+		otu.DestroyAction("treasuryOwner", actionUUID)
+	})
+
+	t.Run("User shouldn't be able to destroy the non-existing action", func(t *testing.T) {
+
+		actionUUID = actionUUID + 1
+
+		otu.DestroyActionFailed("treasuryOwner", actionUUID, "This action does not exist.")
 	})
 }

@@ -10,6 +10,6 @@ transaction(treasuryAddr: Address, actionUUID: UInt64) {
                     ?? panic("A DAOTreasury doesn't exist here.")        
   }
   execute {
-    self.Treasury.executeAction(actionUUID: actionUUID)
+    self.Treasury.destroyAction(actionUUID: actionUUID)
   }
 }

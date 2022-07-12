@@ -361,8 +361,32 @@ func (otu *OverflowTestUtils) ExecuteAction(treasuryAcct string, actionUUID uint
 	return otu
 }
 
-func (otu *OverflowTestUtils) ExecuteActionFail(treasuryAcct string, actionUUID uint64, msg string) *OverflowTestUtils {
+func (otu *OverflowTestUtils) ExecuteActionFailed(treasuryAcct string, actionUUID uint64, msg string) *OverflowTestUtils {
 	otu.O.TransactionFromFile("execute_action").
+		SignProposeAndPayAs("signer1").
+		Args(otu.O.Arguments().
+			Account(treasuryAcct).
+			UInt64(actionUUID)).
+		Test(otu.T).
+		AssertFailure(msg)
+
+	return otu
+}
+
+func (otu *OverflowTestUtils) DestroyAction(treasuryAcct string, actionUUID uint64) *OverflowTestUtils {
+	otu.O.TransactionFromFile("destroy_action").
+		SignProposeAndPayAs("signer1").
+		Args(otu.O.Arguments().
+			Account(treasuryAcct).
+			UInt64(actionUUID)).
+		Test(otu.T).
+		AssertSuccess()
+
+	return otu
+}
+
+func (otu *OverflowTestUtils) DestroyActionFailed(treasuryAcct string, actionUUID uint64, msg string) *OverflowTestUtils {
+	otu.O.TransactionFromFile("destroy_action").
 		SignProposeAndPayAs("signer1").
 		Args(otu.O.Arguments().
 			Account(treasuryAcct).
@@ -427,18 +451,6 @@ func (otu *OverflowTestUtils) MintFlow(account string, amount float64) *Overflow
 			UFix64(amount)).
 		Test(otu.T).
 		AssertSuccess()
-
-	return otu
-}
-
-func (otu *OverflowTestUtils) ExecuteActionFailed(treasuryAcct string, actionUUID uint64, msg string) *OverflowTestUtils {
-	otu.O.TransactionFromFile("execute_action").
-		SignProposeAndPayAs("signer1").
-		Args(otu.O.Arguments().
-			Account(treasuryAcct).
-			UInt64(actionUUID)).
-		Test(otu.T).
-		AssertFailure(msg)
 
 	return otu
 }
