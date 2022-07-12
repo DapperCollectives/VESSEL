@@ -70,20 +70,84 @@
 			"address": "179b6b1cb6755e31",
 			"key": "64e847c1c615c0d6e928f80c641a5974ead26293ac2a8623d6756c935be13630"
 		},
-		"emulator-signer2": {
+		"emulator-signer10": {
 			"address": "f3fcd2c1a78f5eee",
 			"key": "d774eb699bc67d07c8be7cbcee1acfa14e5139ac271ca697b25a081a19335efd"
 		},
-		"emulator-signer3": {
+		"emulator-signer11": {
 			"address": "e03daebed8ca0615",
 			"key": "843d964aefbc2b6311363551187b8241466ec02e8bc4ba5e000a8b2c02fca69f"
 		},
-		"emulator-signer4": {
+		"emulator-signer12": {
 			"address": "045a1763c93006ca",
 			"key": "843d964aefbc2b6311363551187b8241466ec02e8bc4ba5e000a8b2c02fca69f"
 		},
-		"emulator-treasuryOwner": {
+		"emulator-signer13": {
 			"address": "120e725050340cab",
+			"key": "a2b8847de0dcc39cbd901f2e394c902d4a27d112371ff8c75a5eea3720820bdc"
+		},
+		"emulator-signer14": {
+			"address": "f669cb8d41ce0c74",
+			"key": "1e246590ad418659391b226d5cf1afb4f67002d2617c0b00861ef52bafc75544"
+		},
+		"emulator-signer15": {
+			"address": "192440c99cb17282",
+			"key": "0a5d94786a895a2fdd5614d4c4227d1893c6695fd348836b4f4c65e6b5e12de0"
+		},
+		"emulator-signer16": {
+			"address": "fd43f9148d4b725d",
+			"key": "09b776b276d1cb6abde1e2aa0530a67d32a156dfbd95afa528469296336e1283"
+		},
+		"emulator-signer17": {
+			"address": "eb179c27144f783c",
+			"key": "985c3d13e7bc5f2925317c0cc139f9bb51e66d0b67be5fc1a885428948554b51"
+		},
+		"emulator-signer18": {
+			"address": "0f7025fa05b578e3",
+			"key": "985c3d13e7bc5f2925317c0cc139f9bb51e66d0b67be5fc1a885428948554b51"
+		},
+		"emulator-signer19": {
+			"address": "e2f72218abeec2b9",
+			"key": "985c3d13e7bc5f2925317c0cc139f9bb51e66d0b67be5fc1a885428948554b51"
+		},
+		"emulator-signer2": {
+			"address": "06909bc5ba14c266",
+			"key": "985c3d13e7bc5f2925317c0cc139f9bb51e66d0b67be5fc1a885428948554b51"
+		},
+		"emulator-signer20": {
+			"address": "10c4fef62310c807",
+			"key": "985c3d13e7bc5f2925317c0cc139f9bb51e66d0b67be5fc1a885428948554b51"
+		},
+		"emulator-signer3": {
+			"address": "f4a3472b32eac8d8",
+			"key": "985c3d13e7bc5f2925317c0cc139f9bb51e66d0b67be5fc1a885428948554b51"
+		},
+		"emulator-signer4": {
+			"address": "1beecc6fef95b62e",
+			"key": "985c3d13e7bc5f2925317c0cc139f9bb51e66d0b67be5fc1a885428948554b51"
+		},
+		"emulator-signer5": {
+			"address": "ff8975b2fe6fb6f1",
+			"key": "985c3d13e7bc5f2925317c0cc139f9bb51e66d0b67be5fc1a885428948554b51"
+		},
+		"emulator-signer6": {
+			"address": "e9dd1081676bbc90",
+			"key": "985c3d13e7bc5f2925317c0cc139f9bb51e66d0b67be5fc1a885428948554b51"
+		},
+		"emulator-signer7": {
+			"address": "0dbaa95c7691bc4f",
+			"key": "985c3d13e7bc5f2925317c0cc139f9bb51e66d0b67be5fc1a885428948554b51"
+		},
+		"emulator-signer8": {
+			"address": "1e7bd52309d4e4b4",
+			"key": "985c3d13e7bc5f2925317c0cc139f9bb51e66d0b67be5fc1a885428948554b51"
+		},
+		"emulator-signer9": {
+			"address": "fa1c6cfe182ee46b",
+			"key": "985c3d13e7bc5f2925317c0cc139f9bb51e66d0b67be5fc1a885428948554b51"
+		},
+		"emulator-treasuryOwner": {
+			"address": "ec4809cd812aee0a",
 			"key": "843d964aefbc2b6311363551187b8241466ec02e8bc4ba5e000a8b2c02fca69f"
 		},
 		"testnet-account": {
@@ -112,6 +176,23 @@
 			"emulator-signer2": [],
 			"emulator-signer3": [],
 			"emulator-signer4": [],
+			"emulator-signer5": [],
+			"emulator-signer6": [],
+			"emulator-signer7": [],
+			"emulator-signer8": [],
+			"emulator-signer9": [],
+			"emulator-signer10": [],
+			"emulator-signer11": [],
+			"emulator-signer12": [],
+			"emulator-signer13": [],
+			"emulator-signer14": [],
+			"emulator-signer15": [],
+			"emulator-signer16": [],
+			"emulator-signer17": [],
+			"emulator-signer18": [],
+			"emulator-signer19": [],
+			"emulator-signer20": [],
+
 			"emulator-treasuryOwner": []
 		},
 		"testnet": {

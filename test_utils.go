@@ -217,6 +217,14 @@ func (otu *OverflowTestUtils) GetProposedActions(treasuryAcct string) map[uint64
 	return actionsMap
 }
 
+func GenerateSigners(num int) []string {
+	Signers := make([]string, num)
+	for i := 0; i < num; i++ {
+		Signers[i] = fmt.Sprintf("%s%d", "signer", i+1)
+	}
+	return Signers
+}
+
 func (otu *OverflowTestUtils) GetTreasurySigners(account string) cadence.Value {
 	signers := otu.O.ScriptFromFile("get_treasury_signers").
 		Args(otu.O.Arguments().Account(account)).
@@ -343,6 +351,51 @@ func (otu *OverflowTestUtils) SignerRevokeApproval(treasuryAcct string, actionUU
 	return otu
 }
 
+func (otu *OverflowTestUtils) SignerRevokeApprovalFailed(treasuryAcct string, actionUUID uint64, signingAccount, msg string) *OverflowTestUtils {
+	//////////////////////////////////////////////
+	// Generate message/signature for signer
+	// msg {actionUUID}{hexEncodedIntent}{blockID}
+	//////////////////////////////////////////////
+
+	// actionUUID
+	uuid := strconv.FormatUint(actionUUID, 10)
+
+	// hex-encoded intent
+	actions := otu.GetProposedActions("treasuryOwner")
+	intent := actions[uint64(actionUUID)]
+	src := []byte(intent)
+	hexIntent := make([]byte, hex.EncodedLen(len(src)))
+	hex.Encode(hexIntent, src)
+
+	// block.ID & block.Height
+	latestBlock, _ := otu.O.GetLatestBlock()
+
+	// message
+	// {uuid}{hexIntent}{block.ID}
+	message := fmt.Sprintf("%s%s%s", uuid, hexIntent, latestBlock.ID)
+
+	// signature
+	signature := otu.SignMessage(signingAccount, message)
+
+	///////////////////
+	// Run Transaction
+	///////////////////
+
+	otu.O.TransactionFromFile("signer_revoke").
+		SignProposeAndPayAs(signingAccount).
+		Args(otu.O.Arguments().
+			Account(treasuryAcct).       // treasuryAddr
+			UInt64(uint64(actionUUID)).  // actionUUID
+			String(message).             // message
+			UInt64Array(0).              // [keyIds]
+			StringArray(signature).      // [signatures]
+			UInt64(latestBlock.Height)). // signatureBlock
+		Test(otu.T).
+		AssertFailure(msg)
+
+	return otu
+}
+
 func (otu *OverflowTestUtils) GetVerifiedSignersForAction(treasuryAcct string, actionUUID uint64) map[string]bool {
 	verifiedSigners := otu.O.ScriptFromFile("get_verified_signers_for_action").
 		Args(otu.O.Arguments().
@@ -383,7 +436,7 @@ func (otu *OverflowTestUtils) ExecuteAction(treasuryAcct string, actionUUID uint
 	return otu
 }
 
-func (otu *OverflowTestUtils) ExecuteActionFail(treasuryAcct string, actionUUID uint64, msg string) *OverflowTestUtils {
+func (otu *OverflowTestUtils) ExecuteActionFailed(treasuryAcct string, actionUUID uint64, msg string) *OverflowTestUtils {
 	otu.O.TransactionFromFile("execute_action").
 		SignProposeAndPayAs("signer1").
 		Args(otu.O.Arguments().
@@ -391,6 +444,18 @@ func (otu *OverflowTestUtils) ExecuteActionFail(treasuryAcct string, actionUUID 
 			UInt64(actionUUID)).
 		Test(otu.T).
 		AssertFailure(msg)
+
+	return otu
+}
+
+func (otu *OverflowTestUtils) ProposeDestroyAction(treasuryAcct string, actionUUID uint64) *OverflowTestUtils {
+	otu.O.TransactionFromFile("destroy_action").
+		SignProposeAndPayAs("signer1").
+		Args(otu.O.Arguments().
+			Account(treasuryAcct).
+			UInt64(actionUUID)).
+		Test(otu.T).
+		AssertSuccess()
 
 	return otu
 }
@@ -576,4 +641,15 @@ func (otu *OverflowTestUtils) GetAccount(name string) *flow.Account {
 	account, _ := otu.O.Services.Accounts.Get(rawAddress)
 
 	return account
+}
+func (otu *OverflowTestUtils) GetAccountCollection(account string) []uint64 {
+	val := otu.O.ScriptFromFile("get_account_collection").
+		Args(otu.O.Arguments().
+			Account(account)).
+		RunReturnsJsonString()
+
+	var ownedNFTIds []uint64
+	json.Unmarshal([]byte(val), &ownedNFTIds)
+
+	return ownedNFTIds
 }
