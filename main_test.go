@@ -694,7 +694,7 @@ func TestDestroyAction(t *testing.T) {
 		otu.ProposeNewThreshold("treasuryOwner", DefaultThreshold)
 	})
 
-	t.Run("User should be able to destroy the action", func(t *testing.T) {
+	t.Run("User should be able to propose to destroy the action", func(t *testing.T) {
 		actions := otu.GetProposedActions("treasuryOwner")
 		keys := make([]uint64, 0, len(actions))
 		for k := range actions {
@@ -702,13 +702,45 @@ func TestDestroyAction(t *testing.T) {
 		}
 		actionUUID = keys[0]
 
-		otu.DestroyAction("treasuryOwner", actionUUID)
+		otu.ProposeDestroyAction("treasuryOwner", actionUUID)
 	})
 
-	t.Run("User shouldn't be able to destroy the non-existing action", func(t *testing.T) {
+	t.Run("Signers should be able to sign to approve a proposed destroy action", func(t *testing.T) {
+
+		// Each signer submits an approval signature
+		for _, signer := range Signers {
+			otu.SignerApproveAction("treasuryOwner", actionUUID, signer)
+		}
+
+		// Assert that the signatures were registered
+		signersMap := otu.GetVerifiedSignersForAction("treasuryOwner", actionUUID)
+		for _, signer := range Signers {
+			assert.True(otu.T, signersMap[otu.GetAccountAddress(signer)])
+		}
+	})
+
+	t.Run(`A treasuryOwner should be able to execute a proposed action to remove the action once it has received the required threshold of signatures`, func(t *testing.T) {
+
+		otu.ExecuteAction("treasuryOwner", actionUUID)
+	})
+
+	t.Run("A treasuryOwner shouldn't be able to destroy the non-existing action", func(t *testing.T) {
 
 		actionUUID = actionUUID + 1
 
-		otu.DestroyActionFailed("treasuryOwner", actionUUID, "This action does not exist.")
+		otu.ProposeDestroyAction("treasuryOwner", actionUUID)
+
+		// Each signer submits an approval signature
+		for _, signer := range Signers {
+			otu.SignerApproveAction("treasuryOwner", actionUUID, signer)
+		}
+
+		// Assert that the signatures were registered
+		signersMap := otu.GetVerifiedSignersForAction("treasuryOwner", actionUUID)
+		for _, signer := range Signers {
+			assert.True(otu.T, signersMap[otu.GetAccountAddress(signer)])
+		}
+
+		otu.ExecuteActionFailed("treasuryOwner", actionUUID, "This action does not exist.")
 	})
 }

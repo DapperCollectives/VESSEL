@@ -53,6 +53,10 @@ pub contract TreasuryActions {
   pub event UpdateThresholdActionCreated(threshold: UInt64)
   pub event UpdateThresholdActionExecuted(oldThreshold: UInt64, newThreshold: UInt64, treasuryAddr: Address)
 
+  // Destroy Action
+  pub event DestroyActionActionCreated(actionUUID: UInt64)
+  pub event DestroyActionActionExecuted(actionUUID: UInt64, treasuryAddr: Address)
+
   // Transfers `amount` tokens from the treasury to `recipientVault`
   pub struct TransferToken: MyMultiSig.Action {
     pub let intent: String
@@ -276,6 +280,26 @@ pub contract TreasuryActions {
       self.threshold = _threshold
       self.intent = "Update the threshold of signers needed to execute an action in the Treasury."
       emit UpdateThresholdActionCreated(threshold: _threshold)
+    }
+  }
+
+  // Destroy the action
+  pub struct DestroyAction: MyMultiSig.Action {
+    pub let actionUUID: UInt64
+    pub let intent: String
+
+    access(account) fun execute(_ params: {String: AnyStruct}) {
+      let treasuryRef: &DAOTreasury.Treasury = params["treasury"]! as! &DAOTreasury.Treasury
+
+      let manager = treasuryRef.borrowManager()
+      manager.destroyAction(actionUUID: self.actionUUID)
+      emit DestroyActionActionExecuted(actionUUID: self.actionUUID, treasuryAddr: treasuryRef.owner!.address)
+    }
+
+    init(_actionUUID: UInt64) {
+      self.actionUUID = _actionUUID
+      self.intent = "Remove the action from the Treasury."
+      emit DestroyActionActionCreated(actionUUID: _actionUUID)
     }
   }
 }

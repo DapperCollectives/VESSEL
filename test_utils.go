@@ -418,7 +418,7 @@ func (otu *OverflowTestUtils) ExecuteActionFailed(treasuryAcct string, actionUUI
 	return otu
 }
 
-func (otu *OverflowTestUtils) DestroyAction(treasuryAcct string, actionUUID uint64) *OverflowTestUtils {
+func (otu *OverflowTestUtils) ProposeDestroyAction(treasuryAcct string, actionUUID uint64) *OverflowTestUtils {
 	otu.O.TransactionFromFile("destroy_action").
 		SignProposeAndPayAs("signer1").
 		Args(otu.O.Arguments().
@@ -426,18 +426,6 @@ func (otu *OverflowTestUtils) DestroyAction(treasuryAcct string, actionUUID uint
 			UInt64(actionUUID)).
 		Test(otu.T).
 		AssertSuccess()
-
-	return otu
-}
-
-func (otu *OverflowTestUtils) DestroyActionFailed(treasuryAcct string, actionUUID uint64, msg string) *OverflowTestUtils {
-	otu.O.TransactionFromFile("destroy_action").
-		SignProposeAndPayAs("signer1").
-		Args(otu.O.Arguments().
-			Account(treasuryAcct).
-			UInt64(actionUUID)).
-		Test(otu.T).
-		AssertFailure(msg)
 
 	return otu
 }

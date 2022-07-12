@@ -11,7 +11,6 @@ pub contract DAOTreasury {
   pub event TreasuryInitialized(initialSigners: [Address], initialThreshold: UInt64)
   pub event ProposeAction(actionUUID: UInt64)
   pub event ExecuteAction(actionUUID: UInt64)
-  pub event DestroyAction(actionUUID: UInt64)
   pub event DepositVault(vaultID: String)
   pub event DepositCollection(collectionID: String)
   pub event WithdrawTokens(vaultID: String, amount: UFix64)
@@ -22,7 +21,6 @@ pub contract DAOTreasury {
   pub resource interface TreasuryPublic {
     pub fun proposeAction(action: {MyMultiSig.Action}): UInt64
     pub fun executeAction(actionUUID: UInt64)
-    pub fun destroyAction(actionUUID: UInt64)
     pub fun depositVault(vault: @FungibleToken.Vault)
     pub fun depositCollection(collection: @NonFungibleToken.Collection)
     pub fun borrowManagerPublic(): &MyMultiSig.Manager{MyMultiSig.ManagerPublic}
@@ -62,12 +60,6 @@ pub contract DAOTreasury {
       let selfRef: &Treasury = &self as &Treasury
       self.multiSignManager.executeAction(actionUUID: actionUUID, {"treasury": selfRef})
       emit ExecuteAction(actionUUID: actionUUID)
-    }
-
-    pub fun destroyAction(actionUUID: UInt64) {
-      let selfRef: &Treasury = &self as &Treasury
-      self.multiSignManager.destroyAction(actionUUID: actionUUID)
-      emit DestroyAction(actionUUID: actionUUID)
     }
 
     // Reference to Manager //
