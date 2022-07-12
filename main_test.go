@@ -431,7 +431,7 @@ func TestSignerRevokeApproval(t *testing.T) {
 
 	t.Run("Signers should be able to sign to revoke their approval of a proposed action", func(t *testing.T) {
 
-		// Each signer submits an approval signature
+		// Each signer revokes a signature
 		for _, signer := range Signers {
 			otu.SignerRevokeApproval("treasuryOwner", transferTokenActionUUID, signer)
 		}
@@ -440,6 +440,12 @@ func TestSignerRevokeApproval(t *testing.T) {
 		signersMap := otu.GetVerifiedSignersForAction("treasuryOwner", transferTokenActionUUID)
 		for _, signer := range Signers {
 			assert.False(otu.T, signersMap[otu.GetAccountAddress(signer)])
+		}
+	})
+
+	t.Run("Signer that didn't sign shouldn't be able to revoke the approval", func(t *testing.T) {
+		for _, signer := range Signers {
+			otu.SignerRevokeApprovalFailed("treasuryOwner", transferTokenActionUUID, signer, "Cannot revoke approval -- signer has not approved this action.")
 		}
 	})
 }

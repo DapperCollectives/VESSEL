@@ -321,6 +321,51 @@ func (otu *OverflowTestUtils) SignerRevokeApproval(treasuryAcct string, actionUU
 	return otu
 }
 
+func (otu *OverflowTestUtils) SignerRevokeApprovalFailed(treasuryAcct string, actionUUID uint64, signingAccount, msg string) *OverflowTestUtils {
+	//////////////////////////////////////////////
+	// Generate message/signature for signer
+	// msg {actionUUID}{hexEncodedIntent}{blockID}
+	//////////////////////////////////////////////
+
+	// actionUUID
+	uuid := strconv.FormatUint(actionUUID, 10)
+
+	// hex-encoded intent
+	actions := otu.GetProposedActions("treasuryOwner")
+	intent := actions[uint64(actionUUID)]
+	src := []byte(intent)
+	hexIntent := make([]byte, hex.EncodedLen(len(src)))
+	hex.Encode(hexIntent, src)
+
+	// block.ID & block.Height
+	latestBlock, _ := otu.O.GetLatestBlock()
+
+	// message
+	// {uuid}{hexIntent}{block.ID}
+	message := fmt.Sprintf("%s%s%s", uuid, hexIntent, latestBlock.ID)
+
+	// signature
+	signature := otu.SignMessage(signingAccount, message)
+
+	///////////////////
+	// Run Transaction
+	///////////////////
+
+	otu.O.TransactionFromFile("signer_revoke").
+		SignProposeAndPayAs(signingAccount).
+		Args(otu.O.Arguments().
+			Account(treasuryAcct).       // treasuryAddr
+			UInt64(uint64(actionUUID)).  // actionUUID
+			String(message).             // message
+			UInt64Array(0).              // [keyIds]
+			StringArray(signature).      // [signatures]
+			UInt64(latestBlock.Height)). // signatureBlock
+		Test(otu.T).
+		AssertFailure(msg)
+
+	return otu
+}
+
 func (otu *OverflowTestUtils) GetVerifiedSignersForAction(treasuryAcct string, actionUUID uint64) map[string]bool {
 	verifiedSigners := otu.O.ScriptFromFile("get_verified_signers_for_action").
 		Args(otu.O.Arguments().
