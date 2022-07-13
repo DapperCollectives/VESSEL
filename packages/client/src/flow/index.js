@@ -11,6 +11,7 @@ export { EXECUTE_ACTION } from "./executeAction.tx";
 export { UPDATE_THRESHOLD } from "./updateThreshold.tx";
 export { ADD_SIGNER } from "./addSigner.tx";
 export { UPDATE_SIGNER } from "./updateSigner.tx";
+export { REMOVE_SIGNER } from "./removeSigner.tx";
 export { GET_NFT_VIEW } from "./getNFTView.tx";
 export { CHECK_NFT_COLLECTION } from "./checkNFTCollection.tx";
 export { CHECK_TREASURY_NFT_COLLECTION } from "./checkTreasuryNFTCollection.tx";

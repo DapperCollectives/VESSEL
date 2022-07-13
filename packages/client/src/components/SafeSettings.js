@@ -186,7 +186,7 @@ const EditSignatureThreshold = ({
   );
 };
 
-const EditSafeOwner = ({ web3, safeOwner, onCancel, onSubmit }) => {
+const RemoveSafeOwner = ({ web3, safeOwner, onCancel, onSubmit }) => {
   const { isAddressValid } = useAddressValidation(web3.injectedProvider);
   const [name, setName] = useState(safeOwner.name);
   const [address, setAddress] = useState(safeOwner.address);
@@ -194,8 +194,7 @@ const EditSafeOwner = ({ web3, safeOwner, onCancel, onSubmit }) => {
   const isFormValid = useMemo(() => {
     return (
       name.trim().length > 0 &&
-      addressValid &&
-      (name !== safeOwner.name || address !== safeOwner.address)
+      addressValid
     );
   }, [safeOwner, name, address, addressValid]);
 
@@ -205,7 +204,7 @@ const EditSafeOwner = ({ web3, safeOwner, onCancel, onSubmit }) => {
   };
 
   const onSubmitClick = () => {
-    onSubmit(safeOwner, { name, address });
+    onSubmit({ name, address });
   };
 
   const submitButtonClasses = [
@@ -216,8 +215,8 @@ const EditSafeOwner = ({ web3, safeOwner, onCancel, onSubmit }) => {
   return (
     <>
       <div className="p-5">
-        <h2 className="is-size-4 has-text-black">Edit safe owner</h2>
-        <p className="has-text-grey">Update owner information below</p>
+        <h2 className="is-size-4 has-text-black">Remove safe owner</h2>
+        <p className="has-text-grey">This user will no longer be able to sign transactions</p>
       </div>
       <div className="border-light-top p-5 has-text-grey">
         <div className="flex-1 is-flex is-flex-direction-column">
@@ -260,7 +259,7 @@ const EditSafeOwner = ({ web3, safeOwner, onCancel, onSubmit }) => {
             className={submitButtonClasses.join(" ")}
             onClick={onSubmitClick}
           >
-            Save
+            Remove
           </button>
         </div>
       </div>
@@ -445,7 +444,7 @@ function SafeSettings({ address, web3, name, threshold, safeOwners }) {
   const modalContext = useModalContext();
   const safeAddressClipboard = useClipboard();
   const ownersAddressClipboard = useClipboard();
-  const { setTreasury, addSigner, updateThreshold, updateSigner } = web3;
+  const { setTreasury, addSigner, updateThreshold, removeSigner } = web3;
 
   const onEditNameSubmit = (newName) => {
     modalContext.closeModal();
@@ -453,12 +452,13 @@ function SafeSettings({ address, web3, name, threshold, safeOwners }) {
   };
 
   const onReviewSafeEditsSubmit = async (newOwner, newThreshold) => {
+
     const thresholdToPersist = newThreshold ?? threshold;
     const ownersToPersist = [...safeOwners];
-
+    
     if (newOwner) {
       ownersToPersist.push(newOwner);
-      await addSigner(newOwner.address);
+        await addSigner(`0x${newOwner.address}`);
     }
 
     if (thresholdToPersist !== threshold) {
@@ -473,18 +473,13 @@ function SafeSettings({ address, web3, name, threshold, safeOwners }) {
     modalContext.closeModal();
   };
 
-  const onEditSafeOwnerSubmit = async (oldOwner, updatedOwner) => {
-    if (updatedOwner.address !== oldOwner.address) {
-      await updateSigner(oldOwner.address, updatedOwner.address);
+  const onRemoveSafeOwnerSubmit = async (ownerToBeRemoved) => {
+
+    if (ownerToBeRemoved) {
+      await removeSigner(`0x${ownerToBeRemoved.address}`);
     }
 
-    const ownersToPersist = safeOwners.map((owner) => {
-      if (owner.address === oldOwner.address) {
-        return updatedOwner;
-      }
-
-      return owner;
-    });
+    const ownersToPersist = safeOwners.filter((owner) => owner.address !== ownerToBeRemoved.address);
 
     setTreasury(address, { safeOwners: ownersToPersist });
 
@@ -531,13 +526,13 @@ function SafeSettings({ address, web3, name, threshold, safeOwners }) {
     );
   };
 
-  const openEditOwnerModal = (safeOwner) => {
+  const openRemoveOwnerModal = (safeOwner) => {
     modalContext.openModal(
-      <EditSafeOwner
+      <RemoveSafeOwner
         web3={web3}
         safeOwner={safeOwner}
         onCancel={() => modalContext.closeModal()}
-        onSubmit={onEditSafeOwnerSubmit}
+        onSubmit={onRemoveSafeOwnerSubmit}
       />
     );
   };
@@ -634,9 +629,9 @@ function SafeSettings({ address, web3, name, threshold, safeOwners }) {
                 </span>
                 <span
                   className="is-underlined pointer"
-                  onClick={() => openEditOwnerModal(so)}
+                  onClick={() => openRemoveOwnerModal(so)}
                 >
-                  Edit
+                  Remove
                 </span>
               </div>
             </div>
