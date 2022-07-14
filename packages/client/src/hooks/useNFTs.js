@@ -67,12 +67,12 @@ export default function useNFTs() {
       console.log("fcl error", e);
     }
 
-    const tokens = (res ?? []).map((id) => ({
-      tokenId: id,
-      name: `${identifier} #${id}`,
-      description: "description",
+    const tokens = res?.map(rec => ({
+      tokenId: rec.id,
+      name: rec.name,
+      description: rec.description,
       thumbnail: {
-        url: `https://dummyimage.com/256x256/e0e0e0/000&text=${identifier}+#${id}`,
+        url: rec.thumbnail,
       },
     }));
 
@@ -92,7 +92,7 @@ export default function useNFTs() {
       args: (arg, t) => [arg(treasuryAddr, t.Address)],
     }).catch(console.error);
 
-    const collections = identifiers[1] ?? [];
+    const collections = (identifiers && identifiers[1]) ?? [];
     for (const identifier in collections) {
       await checkCollection(treasuryAddr, collections[identifier]);
     }
