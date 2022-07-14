@@ -13,6 +13,7 @@ pub contract DAOTreasury {
   pub event ExecuteAction(actionUUID: UInt64)
   pub event DepositVault(vaultID: String)
   pub event DepositCollection(collectionID: String)
+  pub event DepositTokens(identifier: String)
   pub event DepositNFT(collectionID: String, nftID: UInt64)
   pub event WithdrawTokens(vaultID: String, amount: UFix64)
   pub event WithdrawNFT(collectionID: String, nftID: UInt64)
@@ -24,6 +25,7 @@ pub contract DAOTreasury {
     pub fun executeAction(actionUUID: UInt64)
     pub fun depositVault(vault: @FungibleToken.Vault)
     pub fun depositCollection(collection: @NonFungibleToken.Collection)
+    pub fun depositTokens(identifier: String, vault: @FungibleToken.Vault)
     pub fun depositNFT(identifier: String, nft: @NonFungibleToken.NFT)
     pub fun borrowManagerPublic(): &MyMultiSig.Manager{MyMultiSig.ManagerPublic}
     pub fun borrowVaultPublic(identifier: String): &{FungibleToken.Balance, FungibleToken.Receiver}
@@ -111,6 +113,15 @@ pub contract DAOTreasury {
       self.collections[identifier] <-! collection
       emit DepositCollection(collectionID: identifier)
     }
+
+    // Deposit tokens //
+    pub fun depositTokens(identifier: String, vault: @FungibleToken.Vault) {
+      emit DepositTokens(identifier: identifier)
+
+      let vaultRef = (&self.vaults[identifier] as &FungibleToken.Vault?)!
+      vaultRef.deposit(from: <- vault)
+    }
+
 
     // Deposit an NFT //
     pub fun depositNFT(identifier: String, nft: @NonFungibleToken.NFT) {
