@@ -1,4 +1,5 @@
 import DAOTreasury from "../contracts/DAOTreasury.cdc"
+import TreasuryActions from "../contracts/TreasuryActions.cdc"
 
 transaction(treasuryAddr: Address, actionUUID: UInt64) {
 
@@ -10,6 +11,7 @@ transaction(treasuryAddr: Address, actionUUID: UInt64) {
                     ?? panic("A DAOTreasury doesn't exist here.")        
   }
   execute {
-    self.Treasury.executeAction(actionUUID: actionUUID)
+    let action = TreasuryActions.DestroyAction(actionUUID)
+    self.Treasury.proposeAction(action: action)
   }
 }

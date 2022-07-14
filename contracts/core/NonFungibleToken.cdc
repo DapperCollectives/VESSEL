@@ -1,5 +1,8 @@
 /**
 
+Copied from: https://github.com/onflow/flow-nft/blob/master/contracts/NonFungibleToken.cdc
+Commit: https://github.com/onflow/flow-nft/commit/cda8ccde7db52a0e125650b87bb552788ad15373
+
 ## The Flow Non-Fungible Token standard
 
 ## `NonFungibleToken` contract interface

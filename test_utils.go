@@ -25,10 +25,11 @@ func NewOverflowTest(t *testing.T) *OverflowTestUtils {
 	// return &OverflowTestUtils{T: t, O: overflow.NewOverflowEmulator().Start()}
 }
 
-func (otu *OverflowTestUtils) SetupTreasury(name string, signers []string) *OverflowTestUtils {
+func (otu *OverflowTestUtils) SetupTreasury(name string, signers []string, threshold uint64) *OverflowTestUtils {
 	addresses := make([]string, len(signers))
-	for _, name := range signers {
-		addresses = append(addresses, otu.GetAccountAddress(name))
+
+	for i := 0; i < len(signers); i++ {
+		addresses[i] = otu.GetAccountAddress(signers[i])
 	}
 
 	otu.O.TransactionFromFile("create_treasury").
@@ -36,9 +37,48 @@ func (otu *OverflowTestUtils) SetupTreasury(name string, signers []string) *Over
 		Args(otu.O.Arguments().
 			RawAddressArray(
 				addresses...).
-			UInt64(2)).
+			UInt64(threshold)).
 		Test(otu.T).
 		AssertSuccess()
+
+	return otu
+}
+
+func (otu *OverflowTestUtils) SetupTreasuryFail(name string, signers []string, threshold uint64, msg string) *OverflowTestUtils {
+	addresses := make([]string, len(signers))
+
+	for i := 0; i < len(signers); i++ {
+		addresses[i] = otu.GetAccountAddress(signers[i])
+	}
+
+	otu.O.TransactionFromFile("create_treasury").
+		SignProposeAndPayAs(name).
+		Args(otu.O.Arguments().
+			RawAddressArray(
+				addresses...).
+			UInt64(threshold)).
+		Test(otu.T).
+		AssertFailure(msg)
+
+	return otu
+}
+
+func (otu *OverflowTestUtils) ProposeNewThreshold(proposingAcct string, newThreshold uint64) *OverflowTestUtils {
+	otu.O.TransactionFromFile("update_threshold").
+		SignProposeAndPayAs(proposingAcct).
+		Args(otu.O.Arguments().UInt64(newThreshold)).
+		Test(otu.T).
+		AssertSuccess()
+
+	return otu
+}
+
+func (otu *OverflowTestUtils) ProposeNewThresholdFail(proposingAcct string, newThreshold uint64, msg string) *OverflowTestUtils {
+	otu.O.TransactionFromFile("update_threshold").
+		SignProposeAndPayAs(proposingAcct).
+		Args(otu.O.Arguments().UInt64(newThreshold)).
+		Test(otu.T).
+		AssertFailure(msg)
 
 	return otu
 }
@@ -91,6 +131,20 @@ func (otu *OverflowTestUtils) ProposeFungibleTokenTransferAction(treasuryAcct st
 	return otu
 }
 
+func (otu *OverflowTestUtils) ProposeFungibleTokenTransferActionFail(treasuryAcct string, proposingAcct, recipientAcct string, amount float64) *OverflowTestUtils {
+	PROPOSE_TOKEN_TRANSFER_ERROR := "Amount should be higher than 0.0"
+	otu.O.TransactionFromFile("propose_fungible_token_transfer").
+		SignProposeAndPayAs(proposingAcct).
+		Args(otu.O.Arguments().
+			Account(treasuryAcct).
+			Account(recipientAcct).
+			UFix64(amount)).
+		Test(otu.T).
+		AssertFailure(PROPOSE_TOKEN_TRANSFER_ERROR)
+
+	return otu
+}
+
 func (otu *OverflowTestUtils) ProposeFungibleTokenTransferToTreasuryAction(treasuryAcct string, proposingAcct, recipientAcct string, vaultIdentifier string, amount float64) *OverflowTestUtils {
 	otu.O.TransactionFromFile("propose_fungible_token_transfer_to_treasury").
 		SignProposeAndPayAs(proposingAcct).
@@ -101,6 +155,22 @@ func (otu *OverflowTestUtils) ProposeFungibleTokenTransferToTreasuryAction(treas
 			UFix64(amount)).
 		Test(otu.T).
 		AssertSuccess()
+
+	return otu
+}
+
+func (otu *OverflowTestUtils) ProposeFungibleTokenTransferToTreasuryActionFail(treasuryAcct string, proposingAcct, recipientAcct string, vaultIdentifier string, amount float64) *OverflowTestUtils {
+	PROPOSE_TOKEN_TRANSFER_ERROR := "Amount should be higher than 0.0"
+
+	otu.O.TransactionFromFile("propose_fungible_token_transfer_to_treasury").
+		SignProposeAndPayAs(proposingAcct).
+		Args(otu.O.Arguments().
+			Account(treasuryAcct).
+			Account(recipientAcct).
+			String(vaultIdentifier).
+			UFix64(amount)).
+		Test(otu.T).
+		AssertFailure(PROPOSE_TOKEN_TRANSFER_ERROR)
 
 	return otu
 }
@@ -147,12 +217,48 @@ func (otu *OverflowTestUtils) GetProposedActions(treasuryAcct string) map[uint64
 	return actionsMap
 }
 
+func GenerateSigners(num int) []string {
+	Signers := make([]string, num)
+	for i := 0; i < num; i++ {
+		Signers[i] = fmt.Sprintf("%s%d", "signer", i+1)
+	}
+	return Signers
+}
+
 func (otu *OverflowTestUtils) GetTreasurySigners(account string) cadence.Value {
 	signers := otu.O.ScriptFromFile("get_treasury_signers").
 		Args(otu.O.Arguments().Account(account)).
 		RunFailOnError()
 
 	return signers
+}
+
+func (otu *OverflowTestUtils) GetTreasuryThreshold(account string) uint64 {
+	threshold := otu.O.ScriptFromFile("get_treasury_threshold").
+		Args(otu.O.Arguments().Account(account)).
+		RunFailOnError()
+
+	return threshold.ToGoValue().(uint64)
+}
+
+func (otu *OverflowTestUtils) ProposeAddSignerAction(proposingAcct, address string) *OverflowTestUtils {
+	otu.O.TransactionFromFile("add_signer").
+		SignProposeAndPayAs(proposingAcct).
+		Args(otu.O.Arguments().Address(address)).
+		Test(otu.T).
+		AssertSuccess()
+
+	return otu
+}
+
+func (otu *OverflowTestUtils) ProposeRemoveSignerAction(proposingAcct, address string) *OverflowTestUtils {
+	otu.O.TransactionFromFile("remove_signer").
+		SignProposeAndPayAs(proposingAcct).
+		Args(otu.O.Arguments().Address(address)).
+		Test(otu.T).
+		AssertSuccess()
+
+	return otu
 }
 
 func (otu *OverflowTestUtils) SignerApproveAction(treasuryAcct string, actionUUID uint64, signingAccount string) *OverflowTestUtils {
@@ -165,7 +271,7 @@ func (otu *OverflowTestUtils) SignerApproveAction(treasuryAcct string, actionUUI
 	uuid := strconv.FormatUint(actionUUID, 10)
 
 	// hex-encoded intent
-	actions := otu.GetProposedActions("treasuryOwner")
+	actions := otu.GetProposedActions(treasuryAcct)
 	intent := actions[uint64(actionUUID)]
 	src := []byte(intent)
 	hexIntent := make([]byte, hex.EncodedLen(len(src)))
@@ -200,6 +306,96 @@ func (otu *OverflowTestUtils) SignerApproveAction(treasuryAcct string, actionUUI
 	return otu
 }
 
+func (otu *OverflowTestUtils) SignerRevokeApproval(treasuryAcct string, actionUUID uint64, signingAccount string) *OverflowTestUtils {
+	//////////////////////////////////////////////
+	// Generate message/signature for signer
+	// msg {actionUUID}{hexEncodedIntent}{blockID}
+	//////////////////////////////////////////////
+
+	// actionUUID
+	uuid := strconv.FormatUint(actionUUID, 10)
+
+	// hex-encoded intent
+	actions := otu.GetProposedActions("treasuryOwner")
+	intent := actions[uint64(actionUUID)]
+	src := []byte(intent)
+	hexIntent := make([]byte, hex.EncodedLen(len(src)))
+	hex.Encode(hexIntent, src)
+
+	// block.ID & block.Height
+	latestBlock, _ := otu.O.GetLatestBlock()
+
+	// message
+	// {uuid}{hexIntent}{block.ID}
+	message := fmt.Sprintf("%s%s%s", uuid, hexIntent, latestBlock.ID)
+
+	// signature
+	signature := otu.SignMessage(signingAccount, message)
+
+	///////////////////
+	// Run Transaction
+	///////////////////
+
+	otu.O.TransactionFromFile("signer_revoke").
+		SignProposeAndPayAs(signingAccount).
+		Args(otu.O.Arguments().
+			Account(treasuryAcct).       // treasuryAddr
+			UInt64(uint64(actionUUID)).  // actionUUID
+			String(message).             // message
+			UInt64Array(0).              // [keyIds]
+			StringArray(signature).      // [signatures]
+			UInt64(latestBlock.Height)). // signatureBlock
+		Test(otu.T).
+		AssertSuccess()
+
+	return otu
+}
+
+func (otu *OverflowTestUtils) SignerRevokeApprovalFailed(treasuryAcct string, actionUUID uint64, signingAccount, msg string) *OverflowTestUtils {
+	//////////////////////////////////////////////
+	// Generate message/signature for signer
+	// msg {actionUUID}{hexEncodedIntent}{blockID}
+	//////////////////////////////////////////////
+
+	// actionUUID
+	uuid := strconv.FormatUint(actionUUID, 10)
+
+	// hex-encoded intent
+	actions := otu.GetProposedActions("treasuryOwner")
+	intent := actions[uint64(actionUUID)]
+	src := []byte(intent)
+	hexIntent := make([]byte, hex.EncodedLen(len(src)))
+	hex.Encode(hexIntent, src)
+
+	// block.ID & block.Height
+	latestBlock, _ := otu.O.GetLatestBlock()
+
+	// message
+	// {uuid}{hexIntent}{block.ID}
+	message := fmt.Sprintf("%s%s%s", uuid, hexIntent, latestBlock.ID)
+
+	// signature
+	signature := otu.SignMessage(signingAccount, message)
+
+	///////////////////
+	// Run Transaction
+	///////////////////
+
+	otu.O.TransactionFromFile("signer_revoke").
+		SignProposeAndPayAs(signingAccount).
+		Args(otu.O.Arguments().
+			Account(treasuryAcct).       // treasuryAddr
+			UInt64(uint64(actionUUID)).  // actionUUID
+			String(message).             // message
+			UInt64Array(0).              // [keyIds]
+			StringArray(signature).      // [signatures]
+			UInt64(latestBlock.Height)). // signatureBlock
+		Test(otu.T).
+		AssertFailure(msg)
+
+	return otu
+}
+
 func (otu *OverflowTestUtils) GetVerifiedSignersForAction(treasuryAcct string, actionUUID uint64) map[string]bool {
 	verifiedSigners := otu.O.ScriptFromFile("get_verified_signers_for_action").
 		Args(otu.O.Arguments().
@@ -207,14 +403,53 @@ func (otu *OverflowTestUtils) GetVerifiedSignersForAction(treasuryAcct string, a
 			UInt64(actionUUID)).
 		RunReturnsJsonString()
 
-	var signers map[string]bool
-	json.Unmarshal([]byte(verifiedSigners), &signers)
+	var _signers map[string]string
+	var signers map[string]bool = map[string]bool{}
+	json.Unmarshal([]byte(verifiedSigners), &_signers)
+
+	for k, v := range _signers {
+		signers[k] = (v == "true")
+	}
 
 	return signers
 }
 
+func (otu *OverflowTestUtils) GetTotalVerifiedForAction(treasuryAcct string, actionUUID uint64) uint64 {
+	totalVerified, _ := otu.O.ScriptFromFile("get_total_verified_for_action").
+		Args(otu.O.Arguments().
+			Account(treasuryAcct).
+			UInt64(actionUUID)).
+		RunReturns()
+
+	return totalVerified.ToGoValue().(uint64)
+}
+
 func (otu *OverflowTestUtils) ExecuteAction(treasuryAcct string, actionUUID uint64) *OverflowTestUtils {
 	otu.O.TransactionFromFile("execute_action").
+		SignProposeAndPayAs("signer1").
+		Args(otu.O.Arguments().
+			Account(treasuryAcct).
+			UInt64(actionUUID)).
+		Test(otu.T).
+		AssertSuccess()
+
+	return otu
+}
+
+func (otu *OverflowTestUtils) ExecuteActionFailed(treasuryAcct string, actionUUID uint64, msg string) *OverflowTestUtils {
+	otu.O.TransactionFromFile("execute_action").
+		SignProposeAndPayAs("signer1").
+		Args(otu.O.Arguments().
+			Account(treasuryAcct).
+			UInt64(actionUUID)).
+		Test(otu.T).
+		AssertFailure(msg)
+
+	return otu
+}
+
+func (otu *OverflowTestUtils) ProposeDestroyAction(treasuryAcct string, actionUUID uint64) *OverflowTestUtils {
+	otu.O.TransactionFromFile("destroy_action").
 		SignProposeAndPayAs("signer1").
 		Args(otu.O.Arguments().
 			Account(treasuryAcct).
@@ -306,6 +541,97 @@ func (otu *OverflowTestUtils) MintNFT(account string) *OverflowTestUtils {
 	return otu
 }
 
+func (otu *OverflowTestUtils) AttemptDirectManagerAccessExploit(account string) *OverflowTestUtils {
+
+	var MULTI_SIGN_MANAGER_ERROR_MSG = "cannot access `multiSignManager`: field has contract access"
+	otu.O.TransactionFromFile("attempt_direct_manager_access").
+		SignProposeAndPayAs(account).
+		Args(otu.O.Arguments()).
+		Test(otu.T).
+		AssertFailure(MULTI_SIGN_MANAGER_ERROR_MSG)
+
+	return otu
+}
+
+func (otu *OverflowTestUtils) AttemptBorrowManagerExploit(account string) *OverflowTestUtils {
+	var BORROW_MANAGER_ERROR_MSG = "cannot access `borrowManager`: function has account access"
+	otu.O.TransactionFromFile("attempt_borrow_manager_exploit").
+		SignProposeAndPayAs(account).
+		Args(otu.O.Arguments()).
+		Test(otu.T).
+		AssertFailure(BORROW_MANAGER_ERROR_MSG)
+
+	return otu
+}
+
+func (otu *OverflowTestUtils) AttemptBorrowVaultExploit(account string) *OverflowTestUtils {
+	var BORROW_VAULT_ERROR_MSG = "cannot access `borrowVault`: function has account access"
+	otu.O.TransactionFromFile("attempt_borrow_vault_exploit").
+		SignProposeAndPayAs(account).
+		Args(otu.O.Arguments()).
+		Test(otu.T).
+		AssertFailure(BORROW_VAULT_ERROR_MSG)
+
+	return otu
+}
+
+func (otu *OverflowTestUtils) AttemptWithdrawNFTExploit(account string) *OverflowTestUtils {
+	var WITHDRAW_NFT_ERROR_MSG = "cannot access `withdrawNFT`: function has account access"
+	otu.O.TransactionFromFile("attempt_withdraw_NFT_exploit").
+		SignProposeAndPayAs(account).
+		Args(otu.O.Arguments()).
+		Test(otu.T).
+		AssertFailure(WITHDRAW_NFT_ERROR_MSG)
+
+	return otu
+}
+
+func (otu *OverflowTestUtils) AttemptWithdrawTokensExploit(account string) *OverflowTestUtils {
+	var WITHDRAW_TOKENS_ERROR_MSG = "cannot access `withdrawTokens`: function has account access"
+	otu.O.TransactionFromFile("attempt_withdraw_tokens_exploit").
+		SignProposeAndPayAs(account).
+		Args(otu.O.Arguments()).
+		Test(otu.T).
+		AssertFailure(WITHDRAW_TOKENS_ERROR_MSG)
+
+	return otu
+}
+
+func (otu *OverflowTestUtils) AttemptBorrowCollectionExploit(account string) *OverflowTestUtils {
+	var BORROW_COLLECTION_ERROR_MSG = "cannot access `borrowCollection`: function has account access"
+	otu.O.TransactionFromFile("attempt_borrow_collection_exploit").
+		SignProposeAndPayAs(account).
+		Args(otu.O.Arguments()).
+		Test(otu.T).
+		AssertFailure(BORROW_COLLECTION_ERROR_MSG)
+
+	return otu
+}
+
+func (otu *OverflowTestUtils) AttemptBorrowActionTotalVerifiedExploit(account string, actionUUID uint64) *OverflowTestUtils {
+	var ERROR_MSG = "cannot assign to `totalVerified`: field has public access"
+	otu.O.TransactionFromFile("attempt_borrow_action_total_verified_exploit").
+		SignProposeAndPayAs(account).
+		Args(otu.O.Arguments().
+			UInt64(actionUUID)).
+		Test(otu.T).
+		AssertFailure(ERROR_MSG)
+
+	return otu
+}
+
+func (otu *OverflowTestUtils) AttemptBorrowActionExecuteExploit(account string, actionUUID uint64) *OverflowTestUtils {
+	var ERROR_MSG = "cannot access `action`: field has contract access"
+	otu.O.TransactionFromFile("attempt_borrow_action_execute_exploit").
+		SignProposeAndPayAs(account).
+		Args(otu.O.Arguments().
+			UInt64(actionUUID)).
+		Test(otu.T).
+		AssertFailure(ERROR_MSG)
+
+	return otu
+}
+
 func (otu *OverflowTestUtils) GetAccountAddress(name string) string {
 	return fmt.Sprintf("0x%s", otu.O.Account(name).Address().String())
 }
@@ -315,4 +641,15 @@ func (otu *OverflowTestUtils) GetAccount(name string) *flow.Account {
 	account, _ := otu.O.Services.Accounts.Get(rawAddress)
 
 	return account
+}
+func (otu *OverflowTestUtils) GetAccountCollection(account string) []uint64 {
+	val := otu.O.ScriptFromFile("get_account_collection").
+		Args(otu.O.Arguments().
+			Account(account)).
+		RunReturnsJsonString()
+
+	var ownedNFTIds []uint64
+	json.Unmarshal([]byte(val), &ownedNFTIds)
+
+	return ownedNFTIds
 }

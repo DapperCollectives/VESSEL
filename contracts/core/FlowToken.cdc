@@ -1,3 +1,9 @@
+/**
+    Copied from: https://github.com/onflow/flow-core-contracts/blob/master/contracts/FlowToken.cdc
+    Commit: https://github.com/onflow/flow-core-contracts/commit/89e27825d0bdc384e254ee10abeb4ee2857a04d3
+    Modified the import address for FungibleToken   
+*/
+
 import FungibleToken from "./FungibleToken.cdc"
 
 pub contract FlowToken: FungibleToken {
