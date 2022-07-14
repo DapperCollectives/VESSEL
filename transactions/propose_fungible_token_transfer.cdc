@@ -8,7 +8,6 @@ import MyMultiSig from "../contracts/MyMultiSig.cdc"
 // Proposed ACTION: Transfer `amount` FlowToken from the DAOTreasury
 // at `treasuryAddr` to `recipientAddr`
 
-// 3.
 transaction(treasuryAddr: Address, recipientAddr: Address, amount: UFix64) {
 
   let Treasury: &DAOTreasury.Treasury{DAOTreasury.TreasuryPublic}
