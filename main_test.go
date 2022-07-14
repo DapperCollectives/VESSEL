@@ -49,6 +49,10 @@ func TestTreasurySetup(t *testing.T) {
 		assert.Equal(otu.T, TransferAmountUInt64, balance)
 	})
 
+	t.Run("Treasury has fungible tokens, destroy Treasury should not be allowed", func(t *testing.T) {
+		otu.DestroyTreasuryWithVaultsNotAllowed("treasuryOwner")
+	})
+
 	t.Run("Treasury should be able to receive non-fungible tokens", func(t *testing.T) {
 		otu.CreateNFTCollection("account")
 		otu.MintNFT("account")
@@ -63,11 +67,6 @@ func TestTreasurySetup(t *testing.T) {
 		collectionIds := otu.GetTreasuryIdentifiers("treasuryOwner")
 		ownedNFTIds := otu.GetTreasuryCollection("treasuryOwner", collectionIds[1][0])
 		assert.Contains(otu.T, ownedNFTIds, uint64(0))
-
-	})
-
-	t.Run("Destroy Treasury should not be allowed if it has vaults/collections", func(t *testing.T) {
-		otu.DestroyTreasuryShoudNotBeAllowed("treasuryOwner")
 
 	})
 }
@@ -307,6 +306,10 @@ func TestTransferNonFungibleTokensToAccountActions(t *testing.T) {
 
 	//set up the account
 	otu.CreateNFTCollection("account")
+
+	t.Run("Treasury has non-fungible tokens, destroy Treasury should not be allowed", func(t *testing.T) {
+		otu.DestroyTreasuryWithCollectionsNotAllowed("treasuryOwner")
+	})
 
 	t.Run("Signers should be able to propose a transfer of non fungible tokens out of the Treasury", func(t *testing.T) {
 		otu.ProposeNonFungibleTokenTransferAction("treasuryOwner", Signers[0], "account", uint64(0))
