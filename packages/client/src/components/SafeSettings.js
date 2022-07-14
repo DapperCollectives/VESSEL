@@ -458,7 +458,7 @@ function SafeSettings({ address, web3, name, threshold, safeOwners }) {
     
     if (newOwner) {
       ownersToPersist.push(newOwner);
-        await addSigner(formatAddress(newOwner.address));
+        await proposeAddSigner(formatAddress(newOwner.address));
     }
 
     if (thresholdToPersist !== threshold) {
