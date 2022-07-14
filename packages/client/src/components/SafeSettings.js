@@ -3,7 +3,7 @@ import { useModalContext } from "../contexts";
 import { useClipboard, useAddressValidation } from "../hooks";
 import ProgressBar from "./ProgressBar";
 import { Person, Minus, Plus, Check } from "./Svg";
-import { getProgressPercentageForSignersAmount, isAddr } from "../utils";
+import { getProgressPercentageForSignersAmount, isAddr, formatAddress } from "../utils";
 
 const SignatureBar = ({ threshold, safeOwners }) => (
   <div className="is-flex column p-0 is-full">
@@ -458,7 +458,7 @@ function SafeSettings({ address, web3, name, threshold, safeOwners }) {
     
     if (newOwner) {
       ownersToPersist.push(newOwner);
-        await addSigner(`0x${newOwner.address}`);
+        await addSigner(formatAddress(newOwner.address));
     }
 
     if (thresholdToPersist !== threshold) {
@@ -476,7 +476,7 @@ function SafeSettings({ address, web3, name, threshold, safeOwners }) {
   const onRemoveSafeOwnerSubmit = async (ownerToBeRemoved) => {
 
     if (ownerToBeRemoved) {
-      await removeSigner(`0x${ownerToBeRemoved.address}`);
+      await removeSigner(formatAddress(ownerToBeRemoved.address));
     }
 
     const ownersToPersist = safeOwners.filter((owner) => owner.address !== ownerToBeRemoved.address);
