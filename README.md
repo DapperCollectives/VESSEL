@@ -21,7 +21,7 @@ yarn install
 
 ### Contracts
 
-Audit Status: Initial Audit Acknowledged
+Audit Status: Initial Audit Findings Addressed
 
 #### DAOTreasury.cdc
 
