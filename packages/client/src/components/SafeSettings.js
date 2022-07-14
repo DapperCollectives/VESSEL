@@ -444,7 +444,7 @@ function SafeSettings({ address, web3, name, threshold, safeOwners }) {
   const modalContext = useModalContext();
   const safeAddressClipboard = useClipboard();
   const ownersAddressClipboard = useClipboard();
-  const { setTreasury, addSigner, updateThreshold, removeSigner } = web3;
+  const { setTreasury, proposeAddSigner, updateThreshold, proposeRemoveSigner } = web3;
 
   const onEditNameSubmit = (newName) => {
     modalContext.closeModal();
@@ -476,7 +476,7 @@ function SafeSettings({ address, web3, name, threshold, safeOwners }) {
   const onRemoveSafeOwnerSubmit = async (ownerToBeRemoved) => {
 
     if (ownerToBeRemoved) {
-      await removeSigner(formatAddress(ownerToBeRemoved.address));
+      await proposeRemoveSigner(formatAddress(ownerToBeRemoved.address));
     }
 
     const ownersToPersist = safeOwners.filter((owner) => owner.address !== ownerToBeRemoved.address);

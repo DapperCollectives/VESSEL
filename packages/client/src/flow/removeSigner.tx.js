@@ -1,14 +1,18 @@
 export const REMOVE_SIGNER = `
-  import DAOTreasury from 0xDAOTreasury
+import DAOTreasury from 0xDAOTreasury
+import TreasuryActions from 0xTreasuryActions
 
-  transaction(signerToBeRemoved: Address) {
+transaction(signerToBeRemoved: Address) {
+  
+  let Treasury: &DAOTreasury.Treasury{DAOTreasury.TreasuryPublic}
 
-    prepare(signer: AuthAccount) {
-      let treasury = signer.borrow<&DAOTreasury.Treasury>(from: DAOTreasury.TreasuryStoragePath)
-                      ?? panic("Could not borrow the DAOTreasury")
-      let manager = treasury.borrowManager()
-
-      manager.removeSigner(signer: signerToBeRemoved)
-    }
+  prepare(signer: AuthAccount) {
+    self.Treasury = signer.borrow<&DAOTreasury.Treasury>(from: DAOTreasury.TreasuryStoragePath)
+                    ?? panic("Could not borrow the DAOTreasury")
   }
+  execute {
+    let action = TreasuryActions.RemoveSigner(signerToBeRemoved)
+    self.Treasury.proposeAction(action: action)
+  }
+}
 `;
