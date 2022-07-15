@@ -50,11 +50,20 @@ export default function Web3Provider({
   };
 
   useEffect(() => {
-    const { accessApi, walletDiscovery } = networks[network];
+    const { 
+      accessApi,
+      walletDiscovery,
+      walletDiscoveryApi,
+      walletDiscoveryInclude
+    } = networks[network];
+
     fcl
-      .config()
-      .put("accessNode.api", accessApi) // connect to Flow
-      .put("discovery.wallet", walletDiscovery); // use Blocto wallet
+      .config({
+        'accessNode.api': accessApi, // connect to Flow
+        'discovery.wallet': walletDiscovery, // use wallets on public discovery
+        'discovery.authn.endpoint': walletDiscoveryApi, // public discovery api endpoint
+        'discover.authn.include': walletDiscoveryInclude, // opt-in wallets
+      })
 
     try {
       const contracts = require("../contracts.json");
