@@ -108,10 +108,31 @@ func (otu *OverflowTestUtils) SendNFTToTreasury(from string, to string, id uint6
 }
 
 func (otu *OverflowTestUtils) SendCollectionToTreasury(from string, to string) *OverflowTestUtils {
+
+	//////////////////////////////////////////////
+	// Generate message/signature for signer
+	// msg {hexCollectionID}{blockID}
+	//////////////////////////////////////////////
+
+	src := []byte("A.f8d6e0586b0a20c7.ExampleNFT.Collection")
+	hexCollectionID := make([]byte, hex.EncodedLen(len(src)))
+	hex.Encode(hexCollectionID, src)
+
+	// block.ID & block.Height
+	latestBlock, _ := otu.O.GetLatestBlock()
+	// message
+	message := fmt.Sprintf("%s%s", hexCollectionID, latestBlock.ID)
+	// signature
+	signature := otu.SignMessage(from, message)
+
 	otu.O.TransactionFromFile("send_collection_to_treasury").
 		SignProposeAndPayAs(from).
 		Args(otu.O.Arguments().
-			Account(to)).
+			Account(to).
+			String(message).
+			UInt64Array(0).
+			StringArray(signature).
+			UInt64(latestBlock.Height)).
 		Test(otu.T).
 		AssertSuccess()
 
@@ -661,7 +682,6 @@ func (otu *OverflowTestUtils) DestroyTreasuryWithVaultsNotAllowed(account string
 		AssertFailure("Vault is not empty! Treasury cannot be destroyed")
 	return otu
 }
-
 
 func (otu *OverflowTestUtils) DestroyTreasuryWithCollectionsNotAllowed(account string) *OverflowTestUtils {
 	otu.O.TransactionFromFile("destroy_treasury").

@@ -111,8 +111,9 @@ pub contract TreasuryActions {
       let vaultRef: &FungibleToken.Vault = treasuryRef.borrowVault(identifier: self.identifier)
       let withdrawnTokens <- vaultRef.withdraw(amount: self.amount)
       let recipientAddr = self.recipientTreasury.borrow()!.owner!.address
-      self.recipientTreasury.borrow()!.depositVault(vault: <- withdrawnTokens)
-
+      let recipientVaultRef = self.recipientTreasury.borrow()!.borrowVaultPublic(identifier: self.identifier)
+      recipientVaultRef.deposit(from: <- withdrawnTokens)
+      
       emit TransferTokenToTreasuryActionExecuted(
         recipientAddr: recipientAddr,
         vaultID: self.identifier,
