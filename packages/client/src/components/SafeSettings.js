@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from "react";
 import { useModalContext } from "../contexts";
 import { useClipboard, useAddressValidation } from "../hooks";
+import { useHistory } from "react-router-dom";
 import ProgressBar from "./ProgressBar";
 import { Person, Minus, Plus, Check } from "./Svg";
 import { getProgressPercentageForSignersAmount, isAddr, formatAddress } from "../utils";
@@ -191,12 +192,7 @@ const RemoveSafeOwner = ({ web3, safeOwner, onCancel, onSubmit }) => {
   const [name, setName] = useState(safeOwner.name);
   const [address, setAddress] = useState(safeOwner.address);
   const [addressValid, setAddressValid] = useState(true);
-  const isFormValid = useMemo(() => {
-    return (
-      name.trim().length > 0 &&
-      addressValid
-    );
-  }, [safeOwner, name, address, addressValid]);
+  const isFormValid =  name.trim().length > 0 && addressValid;
 
   const onAddressChange = async (newAddress) => {
     setAddress(newAddress);
@@ -272,10 +268,7 @@ const AddSafeOwner = ({ web3, onCancel, onNext }) => {
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
   const [addressValid, setAddressValid] = useState(false);
-  const isFormValid = useMemo(
-    () => name.trim().length > 0 && addressValid,
-    [name, addressValid]
-  );
+  const isFormValid = name.trim().length > 0 && addressValid;
 
   const onAddressChange = async (newAddress) => {
     setAddress(newAddress);
@@ -444,8 +437,8 @@ function SafeSettings({ address, web3, name, threshold, safeOwners }) {
   const modalContext = useModalContext();
   const safeAddressClipboard = useClipboard();
   const ownersAddressClipboard = useClipboard();
-  const { setTreasury, proposeAddSigner, updateThreshold, proposeRemoveSigner } = web3;
-
+  const history = useHistory();
+  const {setTreasury, proposeAddSigner, updateThreshold, proposeRemoveSigner } = web3;
   const onEditNameSubmit = (newName) => {
     modalContext.closeModal();
     setTreasury(address, { name: newName });
@@ -454,10 +447,8 @@ function SafeSettings({ address, web3, name, threshold, safeOwners }) {
   const onReviewSafeEditsSubmit = async (newOwner, newThreshold) => {
 
     const thresholdToPersist = newThreshold ?? threshold;
-    const ownersToPersist = [...safeOwners];
     
     if (newOwner) {
-      ownersToPersist.push(newOwner);
         await proposeAddSigner(formatAddress(newOwner.address));
     }
 
@@ -466,11 +457,11 @@ function SafeSettings({ address, web3, name, threshold, safeOwners }) {
     }
 
     setTreasury(address, {
-      safeOwners: ownersToPersist,
       threshold: thresholdToPersist,
     });
 
     modalContext.closeModal();
+    history.push(`/safe/${address}`);
   };
 
   const onRemoveSafeOwnerSubmit = async (ownerToBeRemoved) => {
@@ -479,11 +470,8 @@ function SafeSettings({ address, web3, name, threshold, safeOwners }) {
       await proposeRemoveSigner(formatAddress(ownerToBeRemoved.address));
     }
 
-    const ownersToPersist = safeOwners.filter((owner) => owner.address !== ownerToBeRemoved.address);
-
-    setTreasury(address, { safeOwners: ownersToPersist });
-
     modalContext.closeModal();
+    history.push(`/safe/${address}`)
   };
 
   const openReviewEditsModal = (newOwner, newThreshold, onBack) => {
