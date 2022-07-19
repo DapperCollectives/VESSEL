@@ -1,7 +1,6 @@
 import DAOTreasury from "../contracts/DAOTreasury.cdc"
 import FungibleToken from "../contracts/core/FungibleToken.cdc"
 
-// 5.
 transaction(treasuryAddr: Address, amount: UFix64) {
   
   prepare(signer: AuthAccount) {

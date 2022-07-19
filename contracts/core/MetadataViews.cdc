@@ -1,5 +1,8 @@
 /**
 
+Copied from: https://github.com/onflow/flow-nft/blob/master/contracts/ExampleNFT.cdc
+Commit: https://github.com/onflow/flow-nft/commit/48c07b81f0c9752565deb7ac8aadef2852c4ffb7
+
 This contract implements the metadata standard proposed
 in FLIP-0636.
 

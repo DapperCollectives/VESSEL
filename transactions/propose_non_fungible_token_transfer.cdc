@@ -9,7 +9,6 @@ import ExampleNFT from "../contracts/core/ExampleNFT.cdc"
 // Proposed ACTION: Transfer ExampleNFT with ID `id` from the DAOTreasury
 // at `treasuryAddr` to `recipientAddr`
 
-// 3.
 transaction(treasuryAddr: Address, recipientAddr: Address, id: UInt64) {
 
   let Treasury: &DAOTreasury.Treasury{DAOTreasury.TreasuryPublic}
