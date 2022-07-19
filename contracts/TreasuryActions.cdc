@@ -268,7 +268,7 @@ pub contract TreasuryActions {
     init(_signer: Address) {
       self.signer = _signer
       self.intent = "Remove "
-                      .concat((_signer as Address).toString())
+                      .concat(_signer.toString())
                       .concat(" as a signer.")
       emit RemoveSignerActionCreated(address: _signer)
     }
