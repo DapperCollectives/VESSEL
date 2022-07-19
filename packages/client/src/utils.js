@@ -42,7 +42,9 @@ export const isAddr = (addr) => {
   // result should be 16 chars long
   return noPrefix.length === 16;
 };
-
+export const formatAddress = (addr) => {
+  return addr.startsWith("0x")? addr: `0x${addr}`;
+}
 export const formatActionString = (str) => {
   const isFungibleTransfer = str.includes("FungibleToken.Receiver");
   let newStr = "";
