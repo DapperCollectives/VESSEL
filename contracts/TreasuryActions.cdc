@@ -245,7 +245,7 @@ pub contract TreasuryActions {
 
     init(_signer: Address) {
       self.signer = _signer
-      self.intent = "Add a signer to the Treasury."
+      self.intent = "Add ".concat((_signer as Address).toString()).concat(" as a signer to the Treasury.")
       emit AddSignerActionCreated(address: _signer)
     }
   }
