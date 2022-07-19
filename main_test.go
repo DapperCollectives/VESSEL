@@ -13,7 +13,7 @@ var TransferAmount float64 = 100
 var TransferAmountUInt64 uint64 = 100e8
 var Signers = []string{"treasuryOwner", "signer1", "signer2", "signer3", "signer4"}
 var DefaultThreshold = uint64(len(Signers))
-var MaxSigners = GenerateSigners(20)
+var MaxSigners = append(GenerateSigners(20), "treasuryOwner")
 var MaxThreshold = 20
 var RecipientAcct = "recipient"
 
@@ -473,7 +473,7 @@ func TestSignerRevokeApproval(t *testing.T) {
 func TestAddSignerAction(t *testing.T) {
 	var addSignerActionUUID uint64
 
-	var signers = []string{"signer1", "signer2", "signer3"}
+	var signers = []string{"treasuryOwner", "signer1", "signer2", "signer3"}
 
 	otu := NewOverflowTest(t)
 	otu.SetupTreasury("treasuryOwner", signers, uint64(len(signers)))
@@ -726,6 +726,13 @@ func TestDestroyAction(t *testing.T) {
 	})
 
 	t.Run("Signers should be able to sign to approve a proposed destroy action", func(t *testing.T) {
+
+		actions := otu.GetProposedActions("treasuryOwner")
+		keys := make([]uint64, 0, len(actions))
+		for k := range actions {
+			keys = append(keys, k)
+		}
+		actionUUID = keys[0]
 
 		// Each signer submits an approval signature
 		for _, signer := range Signers {
