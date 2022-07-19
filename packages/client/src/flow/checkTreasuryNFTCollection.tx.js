@@ -1,5 +1,6 @@
 export const CHECK_TREASURY_NFT_COLLECTION = `
   import DAOTreasury from 0xDAOTreasury
+  import NonFungibleToken from 0xNonFungibleToken
 
   pub fun main(treasuryAddr: Address, collectionId: String): [UInt64] {
     let treasury = getAccount(treasuryAddr).getCapability(DAOTreasury.TreasuryPublicPath)
