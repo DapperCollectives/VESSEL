@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { flatten } from "lodash";
 import { useHistory } from "react-router-dom";
-import { useModalContext } from "../contexts";
-import { useAddressValidation } from "../hooks";
-import { isAddr, shortenAddr } from "../utils";
-import { Check } from "./Svg";
+import { useModalContext } from "../../contexts";
+import { useAddressValidation } from "../../hooks";
+import { isAddr, shortenAddr } from "../../utils";
+import { Check } from "../Svg";
 
 const SendTokens = ({ name, address, web3, initialState }) => {
   const history = useHistory();
@@ -70,13 +70,32 @@ const SendTokens = ({ name, address, web3, initialState }) => {
   return (
     <div className="p-5 has-text-black">
       <h2 className="is-size-4">{titleText}</h2>
-      <div>
+      <div className="border-light-bottom mb-4 pb-5">
         <span className="border-light-right mr-2 pr-2 has-text-grey">
           From {name}
         </span>
         <span className="is-underlined">{shortenAddr(address)}</span>
       </div>
-      <div className="border-light-top mt-4 pt-5">
+      {assetType === "FLOW" && (
+          <div>
+            <label className="has-text-grey">
+              Amount{step === 0 && <span className="has-text-red"> *</span>}
+            </label>
+            {step === 0 ? (
+              <input
+                type="number"
+                className="is-size-2 border-none column is-full p-0 mb-4"
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+              />
+            ) : (
+              <span className="is-size-2 column is-full p-0 mb-4">
+                {amount}
+              </span>
+            )}
+          </div>
+        )}
+      <div className="mt-4 pt-5">
         <div className="flex-1 is-flex is-flex-direction-column mb-4">
           <label className="has-text-grey mb-2">Asset</label>
           <div className="border-light rounded-sm p-1 is-flex column is-full">
@@ -98,25 +117,7 @@ const SendTokens = ({ name, address, web3, initialState }) => {
             </button>
           </div>
         </div>
-        {assetType === "FLOW" && (
-          <>
-            <label className="has-text-grey">
-              Amount{step === 0 && <span className="has-text-red"> *</span>}
-            </label>
-            {step === 0 ? (
-              <input
-                type="number"
-                className="is-size-2 border-none column is-full p-0 mb-4"
-                value={amount}
-                onChange={(e) => setAmount(e.target.value)}
-              />
-            ) : (
-              <span className="is-size-2 column is-full p-0 mb-4">
-                {amount}
-              </span>
-            )}
-          </>
-        )}
+
         {assetType === "NFTs" && (
           <div className="border-light p-1 mb-4 rounded-sm">
             {nftsToDisplay.map((nft) => (
