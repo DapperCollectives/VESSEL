@@ -67,12 +67,12 @@ export default function useNFTs() {
       console.log("fcl error", e);
     }
 
-    const tokens = res?.map(rec => ({
-      tokenId: rec.id,
-      name: rec.name,
-      description: rec.description,
+    const tokens = (res ?? []).map((id) => ({
+      tokenId: id,
+      name: `${identifier} #${id}`,
+      description: "description",
       thumbnail: {
-        url: rec.thumbnail,
+        url: `https://dummyimage.com/256x256/e0e0e0/000&text=${identifier}+#${id}`,
       },
     }));
 

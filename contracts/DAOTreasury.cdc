@@ -28,7 +28,7 @@ pub contract DAOTreasury {
     pub fun depositTokens(identifier: String, vault: @FungibleToken.Vault)
     pub fun depositNFT(identifier: String, nft: @NonFungibleToken.NFT)
     pub fun borrowManagerPublic(): &MyMultiSig.Manager{MyMultiSig.ManagerPublic}
-    pub fun borrowVaultPublic(identifier: String): &{FungibleToken.Balance, FungibleToken.Receiver}
+    pub fun borrowVaultPublic(identifier: String): &{FungibleToken.Balance}
     pub fun borrowCollectionPublic(identifier: String): &{NonFungibleToken.CollectionPublic}
     pub fun getVaultIdentifiers(): [String]
     pub fun getCollectionIdentifiers(): [String]
@@ -96,8 +96,8 @@ pub contract DAOTreasury {
     }
 
     // Public Reference to Vault //
-    pub fun borrowVaultPublic(identifier: String): &{FungibleToken.Balance, FungibleToken.Receiver} {
-      return (&self.vaults[identifier] as &{FungibleToken.Balance, FungibleToken.Receiver}?)!
+    pub fun borrowVaultPublic(identifier: String): &{FungibleToken.Balance} {
+      return (&self.vaults[identifier] as &{FungibleToken.Balance}?)!
     }
 
     pub fun getVaultIdentifiers(): [String] {

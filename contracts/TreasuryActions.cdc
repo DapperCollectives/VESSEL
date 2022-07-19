@@ -65,8 +65,8 @@ pub contract TreasuryActions {
 
     access(account) fun execute(_ params: {String: AnyStruct}) {
       let treasuryRef: &DAOTreasury.Treasury = params["treasury"]! as! &DAOTreasury.Treasury
-      let collectionID: String = self.recipientVault.borrow()!.getType().identifier
-      let withdrawnTokens <- treasuryRef.withdrawTokens(identifier: collectionID, amount: self.amount)
+      let vaultID: String = self.recipientVault.borrow()!.getType().identifier
+      let withdrawnTokens <- treasuryRef.withdrawTokens(identifier: vaultID, amount: self.amount)
       self.recipientVault.borrow()!.deposit(from: <- withdrawnTokens)
 
       emit TransferTokenToAccountActionExecuted(
