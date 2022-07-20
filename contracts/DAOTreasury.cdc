@@ -11,6 +11,7 @@ pub contract DAOTreasury {
   pub event TreasuryInitialized(initialSigners: [Address], initialThreshold: UInt64)
   pub event ProposeAction(actionUUID: UInt64)
   pub event ExecuteAction(actionUUID: UInt64)
+  pub event DepositVault(vaultID: String)
   pub event DepositCollection(collectionID: String)
   pub event DepositTokens(identifier: String)
   pub event DepositNFT(collectionID: String, nftID: UInt64)
@@ -75,6 +76,17 @@ pub contract DAOTreasury {
 
     // ------- Vaults ------- 
 
+    // Deposit a Vault //
+    pub fun depositVault(vault: @FungibleToken.Vault) {
+      let identifier = vault.getType().identifier
+      if self.vaults[identifier] != nil {
+        self.vaults[identifier]?.deposit!(from: <- vault)
+      } else {
+        self.vaults[identifier] <-! vault
+      }
+      emit DepositVault(vaultID: identifier)
+    }
+
     // Withdraw some tokens //
     access(account) fun withdrawTokens(identifier: String, amount: UFix64): @FungibleToken.Vault {
       emit WithdrawTokens(vaultID: identifier, amount: amount)
@@ -103,13 +115,10 @@ pub contract DAOTreasury {
 
     // Deposit tokens //
     pub fun depositTokens(identifier: String, vault: @FungibleToken.Vault) {
-      if self.vaults[identifier] != nil {
-        self.vaults[identifier]?.deposit!(from: <- vault)
-      } else {
-        self.vaults[identifier] <-! vault
-      }
-
       emit DepositTokens(identifier: identifier)
+
+      let vaultRef = (&self.vaults[identifier] as &FungibleToken.Vault?)!
+      vaultRef.deposit(from: <- vault)
     }
 
 
