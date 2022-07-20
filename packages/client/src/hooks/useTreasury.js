@@ -170,6 +170,13 @@ export default function useTreasury(treasuryAddr) {
 
   const refreshTreasury = async () => {
     const signers = await getSigners(treasuryAddr);
+    const safeOwners = Object.entries(signers).reduce((acc, curr)=>{
+      const [signerAddress, verified] = curr;
+      if(verified){
+        return [...acc, {address: signerAddress}]
+      }
+    },[]);
+    
     if (!signers) {
       dispatch({ type: "SET_LOADING", payload: false });
       return;
@@ -182,6 +189,7 @@ export default function useTreasury(treasuryAddr) {
         [treasuryAddr]: {
           address: treasuryAddr,
           signers,
+          safeOwners,
           threshold,
         },
       },
