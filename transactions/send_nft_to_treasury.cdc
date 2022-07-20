@@ -17,14 +17,10 @@ transaction(treasuryAddr: Address, withdrawID: UInt64) {
                     .borrow<&DAOTreasury.Treasury{DAOTreasury.TreasuryPublic}>()
                     ?? panic("A DAOTreasury doesn't exist here.")
 
-    
-
         // withdraw the NFT from the owner's collection
         let nft <- collectionRef.withdraw(withdrawID: withdrawID)
         let identifier: String = collectionRef.getType().identifier
-        let treasuryCollection: &{NonFungibleToken.CollectionPublic} = treasury.borrowCollectionPublic(identifier: identifier)
 
-        treasuryCollection.deposit(token: <- nft)
-        // treasury.depositCollection(collection: <-collection)
+        treasury.depositNFT(identifier: identifier, nft: <- nft)
     }
 }

@@ -18,7 +18,4 @@ transaction(initialSigners: [Address], initialThreshold: UInt64) {
     signer.save(<- treasury, to: DAOTreasury.TreasuryStoragePath)
     signer.link<&DAOTreasury.Treasury{DAOTreasury.TreasuryPublic}>(DAOTreasury.TreasuryPublicPath, target: DAOTreasury.TreasuryStoragePath)
   }
-  execute {
-   
-  }
 }

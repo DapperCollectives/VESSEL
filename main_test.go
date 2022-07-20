@@ -11,9 +11,9 @@ var NonFungibleTokenCollectionID = "A.f8d6e0586b0a20c7.ExampleNFT.Collection"
 var DefaultAccountBalance uint64 = 1e5
 var TransferAmount float64 = 100
 var TransferAmountUInt64 uint64 = 100e8
-var Signers = []string{"signer1", "signer2", "signer3", "signer4"}
+var Signers = []string{"treasuryOwner", "signer1", "signer2", "signer3", "signer4"}
 var DefaultThreshold = uint64(len(Signers))
-var MaxSigners = GenerateSigners(20)
+var MaxSigners = append(GenerateSigners(20), "treasuryOwner")
 var MaxThreshold = 20
 var RecipientAcct = "recipient"
 
@@ -54,13 +54,13 @@ func TestTreasurySetup(t *testing.T) {
 	})
 
 	t.Run("Treasury should be able to receive non-fungible tokens", func(t *testing.T) {
-		otu.CreateNFTCollection("signer1")
-		otu.MintNFT("signer1")
+		otu.CreateNFTCollection("account")
+		otu.MintNFT("account")
 
 		// Treasury must first have a collection to receive an NFT
 		otu.CreateNFTCollection("treasuryOwner")
-		otu.SendCollectionToTreasury("signer1", "treasuryOwner")
-		otu.SendNFTToTreasury("signer1", "treasuryOwner", 0)
+		otu.SendCollectionToTreasury("treasuryOwner", "treasuryOwner")
+		otu.SendNFTToTreasury("account", "treasuryOwner", 0)
 
 		// Assert that the NFT has been transfered into the treasury
 		collectionIds := otu.GetTreasuryIdentifiers("treasuryOwner")
@@ -77,11 +77,11 @@ func TestTransferFungibleTokensToAccountActions(t *testing.T) {
 	otu.MintFlow("signer1", TransferAmount)
 	otu.SetupTreasury("treasuryOwner", Signers, DefaultThreshold)
 	otu.SendFlowToTreasury("signer1", "treasuryOwner", TransferAmount)
-	otu.CreateNFTCollection("signer1")
+	otu.CreateNFTCollection("treasuryOwner")
 	otu.CreateNFTCollection("account")
 	otu.MintNFT("account")
 
-	otu.SendCollectionToTreasury("signer1", "treasuryOwner")
+	otu.SendCollectionToTreasury("treasuryOwner", "treasuryOwner")
 	otu.SendNFTToTreasury("account", "treasuryOwner", 0)
 
 	t.Run("Signers should be able to propose a transfer of fungible tokens out of the Treasury", func(t *testing.T) {
@@ -131,14 +131,14 @@ func TestTransferTokensToAccountActionsWith20Signers(t *testing.T) {
 
 	otu := NewOverflowTest(t)
 	otu.MintFlow("signer1", TransferAmount)
-	otu.CreateNFTCollection("signer1")
-	otu.MintNFT("signer1")
+	otu.CreateNFTCollection("account")
+	otu.MintNFT("account")
 
 	otu.SetupTreasury("treasuryOwner", MaxSigners, uint64(MaxThreshold))
 	otu.CreateNFTCollection("treasuryOwner")
 	otu.SendFlowToTreasury("signer1", "treasuryOwner", TransferAmount)
-	otu.SendCollectionToTreasury("signer1", "treasuryOwner")
-	otu.SendNFTToTreasury("signer1", "treasuryOwner", 0)
+	otu.SendCollectionToTreasury("treasuryOwner", "treasuryOwner")
+	otu.SendNFTToTreasury("account", "treasuryOwner", 0)
 
 	otu.CreateNFTCollection("account")
 
@@ -697,8 +697,6 @@ func TestTreasuryOwnerExploits(t *testing.T) {
 
 		otu.AttemptDirectManagerAccessExploit("treasuryOwner")
 		otu.AttemptBorrowManagerExploit("treasuryOwner")
-		otu.AttemptBorrowVaultExploit("treasuryOwner")
-		otu.AttemptBorrowCollectionExploit("treasuryOwner")
 		otu.AttemptBorrowActionTotalVerifiedExploit("treasuryOwner", transferTokenActionUUID)
 		otu.AttemptBorrowActionExecuteExploit("treasuryOwner", transferTokenActionUUID)
 		otu.AttemptWithdrawNFTExploit("treasuryOwner")

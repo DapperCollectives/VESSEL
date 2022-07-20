@@ -92,7 +92,7 @@ export default function useNFTs() {
       args: (arg, t) => [arg(treasuryAddr, t.Address)],
     }).catch(console.error);
 
-    const collections = identifiers[1] ?? [];
+    const collections = (identifiers && identifiers[1]) ?? [];
     for (const identifier in collections) {
       await checkCollection(treasuryAddr, collections[identifier]);
     }
