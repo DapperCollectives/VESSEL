@@ -121,7 +121,7 @@ pub contract DAOTreasury {
       // Collection Identifier
       assert(
         collectionIdHex == message.slice(from: 0, upTo: collectionIdHex.length),
-        message: "Invalid Message: incorrect vault identifier"
+        message: "Invalid Message: incorrect collection identifier"
       )
       // Block ID
       assert(

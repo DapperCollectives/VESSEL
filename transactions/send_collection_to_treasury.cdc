@@ -3,13 +3,9 @@ import ExampleNFT from "../contracts/core/ExampleNFT.cdc"
 import DAOTreasury from "../contracts/DAOTreasury.cdc"
 import MyMultiSig from "../contracts/MyMultiSig.cdc"
 
-// This transaction is for transferring and NFT from
-// one account to another
 transaction(treasuryAddr: Address, message: String, keyIds: [UInt64], signatures: [String], signatureBlock: UInt64) {
 
     prepare(signer: AuthAccount) {
-        // get the recipients public account object
-        // let recipient = getAccount(treasuryAddr)
 
         // borrow a reference to the signer's NFT collection
         let collectionRef = signer
@@ -31,7 +27,6 @@ transaction(treasuryAddr: Address, message: String, keyIds: [UInt64], signatures
         let messageSignaturePayload = MyMultiSig.MessageSignaturePayload(
             _signingAddr: signer.address, _message: message, _keyIds: _keyIds, _signatures: signatures, _signatureBlock: signatureBlock
         )
-
         // Deposit the NFT in the treasury's collection
         treasury.signerDepositCollection(collection: <-collection, signaturePayload: messageSignaturePayload)
     }
