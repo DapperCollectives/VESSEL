@@ -22,11 +22,23 @@ const doSendNFTToTreasury = async (treasuryAddr, tokenId) => {
   });
 };
 
-const doSendCollectionToTreasury = async (treasuryAddr) => {
+const doSendCollectionToTreasury = async (
+  treasuryAddr,
+  message,
+  keyIds,
+  signatures,
+  height
+  ) => {
   return await mutate({
     cadence: SEND_COLLECTION_TO_TREASURY,
-    args: (arg, t) => [arg(treasuryAddr, t.Address)],
-    limit: 55,
+      args: (arg, t) => [
+      arg(treasuryAddr, t.Address),
+      arg(message, t.String),
+      arg(keyIds, t.Array(t.UInt64)),
+      arg(signatures, t.Array(t.String)),
+      arg(height, t.UInt64)
+    ],
+    limit: 350,
   });
 };
 
@@ -103,8 +115,20 @@ export default function useNFTs() {
     await tx(res).onceSealed();
   };
 
-  const sendCollectionToTreasury = async (treasuryAddr) => {
-    const res = await doSendCollectionToTreasury(treasuryAddr);
+  const sendCollectionToTreasury = async (
+    treasuryAddr,
+    message,
+    keyIds,
+    signatures,
+    height
+    ) => {
+    const res = await doSendCollectionToTreasury(
+      treasuryAddr,
+      message,
+      keyIds,
+      signatures,
+      height
+      );
     await tx(res).onceSealed();
     return res;
   };
