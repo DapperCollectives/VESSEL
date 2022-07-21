@@ -49,7 +49,7 @@ function ActionsList({ actions = [], onSign, onConfirm, safeData }) {
             {actionPrompt}
           </div>
           <div className="pl-6" style={{ position: "relative" }}>
-            {totalSigned} of {totalSigs} signatures
+            {totalSigned} of {safeData.threshold} signatures
           </div>
           <div
             className="pl-6 is-underlined pointer"
