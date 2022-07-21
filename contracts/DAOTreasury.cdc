@@ -37,7 +37,7 @@ pub contract DAOTreasury {
 
     // ------- Manager -------   
     pub fun proposeAction(action: {MyMultiSig.Action}, signaturePayload: MyMultiSig.MessageSignaturePayload): UInt64 {
-      self.validateTreasurySigner(identifier: "no action id", signaturePayload: signaturePayload)
+      self.validateTreasurySigner(identifier: action.intent, signaturePayload: signaturePayload)
 
       let uuid = self.multiSignManager.createMultiSign(action: action)
       emit ProposeAction(actionUUID: uuid, proposer: action.proposer)

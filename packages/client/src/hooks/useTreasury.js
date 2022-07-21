@@ -91,19 +91,43 @@ const doExecuteAction = async (treasuryAddr, actionUUID) => {
   });
 };
 
-const doUpdateThreshold = async (newThreshold) => {
+const doUpdateThreshold = async (
+  newThreshold,
+  message,
+  keyIds,
+  signatures,
+  height
+) => {
   return await mutate({
     cadence: UPDATE_THRESHOLD,
-    args: (arg, t) => [arg(newThreshold, t.UInt64)],
-    limit: 55,
+    args: (arg, t) => [
+      arg(newThreshold, t.UInt64),
+      arg(message, t.String),
+      arg(keyIds, t.Array(t.UInt64)),
+      arg(signatures, t.Array(t.String)),
+      arg(height, t.UInt64)
+    ],
+    limit: 300,
   });
 };
 
-const doAddSigner = async (newSignerAddress) => {
+const doAddSigner = async (
+  newSignerAddress,
+  message,
+  keyIds,
+  signatures,
+  height
+) => {  
   return await mutate({
     cadence: ADD_SIGNER,
-    args: (arg, t) => [arg(newSignerAddress, t.Address)],
-    limit: 55,
+    args: (arg, t) => [
+      arg(newSignerAddress, t.Address),
+      arg(message, t.String),
+      arg(keyIds, t.Array(t.UInt64)),
+      arg(signatures, t.Array(t.String)),
+      arg(height, t.UInt64)
+    ],
+    limit: 300,
   });
 };
 
@@ -306,14 +330,38 @@ export default function useTreasury(treasuryAddr) {
     await refreshTreasury();
   };
 
-  const updateThreshold = async (newThreshold) => {
-    const res = await doUpdateThreshold(newThreshold);
+  const updateThreshold = async (
+    newThreshold,
+    message,
+    keyIds,
+    signatures,
+    height
+  ) => {
+    const res = await doUpdateThreshold(
+      newThreshold,
+      message,
+      keyIds,
+      signatures,
+      height
+    );
     await tx(res).onceSealed();
     await refreshTreasury();
   };
 
-  const addSigner = async (newSignerAddress) => {
-    const res = await doAddSigner(newSignerAddress);
+  const addSigner = async (
+    newSignerAddress,
+    message,
+    keyIds,
+    signatures,
+    height
+  ) => {
+    const res = await doAddSigner(
+      newSignerAddress,
+      message,
+      keyIds,
+      signatures,
+      height
+    );
     await tx(res).onceSealed();
     await refreshTreasury();
   };

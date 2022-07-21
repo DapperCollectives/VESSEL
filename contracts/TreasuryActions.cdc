@@ -255,7 +255,7 @@ pub contract TreasuryActions {
     init(_signer: Address, _proposer: Address) {
       self.signer = _signer
       self.proposer = _proposer
-      self.intent = "Add a signer to the Treasury."
+      self.intent = "Add a signer ".concat(_signer.toString()).concat(" to the Treasury.")
       emit AddSignerActionCreated(address: _signer)
     }
   }
@@ -300,7 +300,7 @@ pub contract TreasuryActions {
     init(_threshold: UInt64, _proposer: Address) {
       self.threshold = _threshold
       self.proposer = _proposer
-      self.intent = "Update the threshold of signers needed to execute an action in the Treasury."
+      self.intent = "Update the threshold of signers to ".concat(_threshold.toString()).concat(".")
       emit UpdateThresholdActionCreated(threshold: _threshold)
     }
   }

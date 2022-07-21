@@ -64,7 +64,7 @@ func (otu *OverflowTestUtils) SetupTreasuryFail(name string, signers []string, t
 }
 
 func (otu *OverflowTestUtils) ProposeNewThreshold(proposingAcct string, newThreshold uint64) *OverflowTestUtils {
-	src := []byte("no action id")
+	src := []byte(fmt.Sprintf("Update the threshold of signers to %d.", newThreshold))
 	hexCollectionID := make([]byte, hex.EncodedLen(len(src)))
 	hex.Encode(hexCollectionID, src)
 
@@ -368,14 +368,14 @@ func (otu *OverflowTestUtils) GetTreasuryThreshold(account string) uint64 {
 }
 
 func (otu *OverflowTestUtils) ProposeAddSignerAction(proposingAcct, address string) *OverflowTestUtils {
-	src := []byte("no action id")
-	hexCollectionID := make([]byte, hex.EncodedLen(len(src)))
-	hex.Encode(hexCollectionID, src)
+	src := []byte(fmt.Sprintf("Add a signer %s to the Treasury.", address))
+	signerHex := make([]byte, hex.EncodedLen(len(src)))
+	hex.Encode(signerHex, src)
 
 	// block.ID & block.Height
 	latestBlock, _ := otu.O.GetLatestBlock()
 	// message
-	message := fmt.Sprintf("%s%s", hexCollectionID, latestBlock.ID)
+	message := fmt.Sprintf("%s%s", signerHex, latestBlock.ID)
 	// signature
 	signature := otu.SignMessage(proposingAcct, message)
 

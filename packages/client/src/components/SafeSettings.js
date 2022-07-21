@@ -457,12 +457,61 @@ function SafeSettings({ address, web3, name, threshold, safeOwners }) {
     const ownersToPersist = [...safeOwners];
 
     if (newOwner) {
+      const latestBlock = await web3.injectedProvider
+        .send([web3.injectedProvider.getBlock(true)])
+        .then(web3.injectedProvider.decode);
+
+      const { height, id } = latestBlock;
+      const newOwnerHex = Buffer.from(`Add a signer ${newOwner.address} to the Treasury.`).toString("hex");
+
+      const message = `${newOwnerHex}${id}`;
+      const messageHex = Buffer.from(message).toString("hex");
+
+      let sigResponse = await web3.injectedProvider
+        .currentUser()
+        .signUserMessage(messageHex);
+      const sigMessage =
+        sigResponse[0]?.signature?.signature ?? sigResponse[0]?.signature;
+      const keyIds = [sigResponse[0]?.keyId];
+      const signatures = [sigMessage];
+
       ownersToPersist.push(newOwner);
-      await addSigner(newOwner.address);
+      await addSigner(
+        newOwner.address,
+        message,
+        keyIds,
+        signatures,
+        height
+      );
     }
 
     if (thresholdToPersist !== threshold) {
-      await updateThreshold(thresholdToPersist);
+
+      const latestBlock = await web3.injectedProvider
+        .send([web3.injectedProvider.getBlock(true)])
+        .then(web3.injectedProvider.decode);
+
+      const { height, id } = latestBlock;
+      const thresholdToPersistHex = Buffer.from(`Update the threshold of signers to ${thresholdToPersist}.`).toString("hex");
+
+      const message = `${thresholdToPersistHex}${id}`;
+      const messageHex = Buffer.from(message).toString("hex");
+
+      let sigResponse = await web3.injectedProvider
+        .currentUser()
+        .signUserMessage(messageHex);
+      const sigMessage =
+        sigResponse[0]?.signature?.signature ?? sigResponse[0]?.signature;
+      const keyIds = [sigResponse[0]?.keyId];
+      const signatures = [sigMessage];
+
+      await updateThreshold(
+        thresholdToPersist,
+        message,
+        keyIds,
+        signatures,
+        height
+      );
     }
 
     setTreasury(address, {
