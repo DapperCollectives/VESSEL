@@ -96,11 +96,25 @@ const doSignApprove = async (
   });
 };
 
-const doExecuteAction = async (treasuryAddr, actionUUID) => {
+const doExecuteAction = async (
+  treasuryAddr, 
+  actionUUID,
+  message,
+  keyIds,
+  signatures,
+  height
+  ) => {
   return await mutate({
     cadence: EXECUTE_ACTION,
-    args: (arg, t) => [arg(treasuryAddr, t.Address), arg(actionUUID, t.UInt64)],
-    limit: 110,
+    args: (arg, t) => [
+      arg(treasuryAddr, t.Address), 
+      arg(actionUUID, t.UInt64),
+      arg(message, t.String),
+      arg(keyIds, t.Array(t.UInt64)),
+      arg(signatures, t.Array(t.String)),
+      arg(height, t.UInt64)
+    ],
+    limit: 350,
   });
 };
 
@@ -368,8 +382,21 @@ export default function useTreasury(treasuryAddr) {
     await refreshTreasury();
   };
 
-  const executeAction = async (actionUUID) => {
-    const res = await doExecuteAction(treasuryAddr, actionUUID);
+  const executeAction = async (
+    actionUUID,
+    message,
+    keyIds,
+    signatures,
+    height
+  ) => {
+    const res = await doExecuteAction(
+      treasuryAddr,
+      actionUUID,
+      message,
+      keyIds,
+      signatures,
+      height
+    );
     await tx(res).onceSealed();
     await refreshTreasury();
   };

@@ -151,7 +151,8 @@ func (otu *OverflowTestUtils) SendCollectionToTreasury(from string, to string) *
 }
 
 func (otu *OverflowTestUtils) ProposeFungibleTokenTransferAction(treasuryAcct string, proposingAcct, recipientAcct string, amount float64) *OverflowTestUtils {
-	src := []byte("no action id")
+	recipient, _ := otu.O.State.Accounts().ByName(fmt.Sprintf("emulator-%s", recipientAcct))
+	src := []byte(fmt.Sprintf("Transfer %d %s tokens from the treasury to 0x%s", int(amount), "Capability<&AnyResource{A.ee82856bf20e2aa6.FungibleToken.Receiver}>", recipient.Address()))
 	hexCollectionID := make([]byte, hex.EncodedLen(len(src)))
 	hex.Encode(hexCollectionID, src)
 

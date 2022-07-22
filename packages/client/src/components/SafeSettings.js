@@ -454,7 +454,7 @@ function SafeSettings({ address, web3, name, threshold, safeOwners }) {
         .then(web3.injectedProvider.decode);
 
       const { height, id } = latestBlock;
-      const newOwnerHex = Buffer.from(`Add a signer ${newOwner.address} to the Treasury.`).toString("hex");
+      const newOwnerHex = Buffer.from(`Add account ${newOwner.address} as a signer.`).toString("hex");
 
       const message = `${newOwnerHex}${id}`;
       const messageHex = Buffer.from(message).toString("hex");

@@ -136,7 +136,31 @@ function Safe({ web3 }) {
   };
 
   const onConfirmAction = async ({ uuid }) => {
-    await executeAction(parseInt(uuid, 10));
+    const latestBlock = await injectedProvider
+      .send([injectedProvider.getBlock(true)])
+      .then(injectedProvider.decode);
+
+    const { height, id } = latestBlock;
+    const uuidHex = Buffer.from(uuid.toString()).toString("hex");
+
+    const message = `${uuidHex}${id}`;
+    const messageHex = Buffer.from(message).toString("hex");
+
+    let sigResponse = await injectedProvider
+      .currentUser()
+      .signUserMessage(messageHex);
+    const sigMessage =
+      sigResponse[0]?.signature?.signature ?? sigResponse[0]?.signature;
+    const keyIds = [sigResponse[0]?.keyId];
+    const signatures = [sigMessage];
+
+    await executeAction(
+      parseInt(uuid, 10),
+      message,
+      keyIds,
+      signatures,
+      height
+    );
   };
 
   const onDeposit = async () => {
