@@ -13,6 +13,8 @@ pub contract DAOTreasury {
   pub event ExecuteAction(actionUUID: UInt64)
   pub event DepositVault(vaultID: String)
   pub event DepositCollection(collectionID: String)
+  pub event DepositTokens(identifier: String)
+  pub event DepositNFT(collectionID: String, nftID: UInt64)
   pub event WithdrawTokens(vaultID: String, amount: UFix64)
   pub event WithdrawNFT(collectionID: String, nftID: UInt64)
 
@@ -21,10 +23,11 @@ pub contract DAOTreasury {
   pub resource interface TreasuryPublic {
     pub fun proposeAction(action: {MyMultiSig.Action}): UInt64
     pub fun executeAction(actionUUID: UInt64)
-    pub fun depositVault(vault: @FungibleToken.Vault)
     pub fun depositCollection(collection: @NonFungibleToken.Collection)
+    pub fun depositTokens(identifier: String, vault: @FungibleToken.Vault)
+    pub fun depositNFT(identifier: String, nft: @NonFungibleToken.NFT)
     pub fun borrowManagerPublic(): &MyMultiSig.Manager{MyMultiSig.ManagerPublic}
-    pub fun borrowVaultPublic(identifier: String): &{FungibleToken.Balance, FungibleToken.Receiver}
+    pub fun borrowVaultPublic(identifier: String): &{FungibleToken.Balance}
     pub fun borrowCollectionPublic(identifier: String): &{NonFungibleToken.CollectionPublic}
     pub fun getVaultIdentifiers(): [String]
     pub fun getCollectionIdentifiers(): [String]
@@ -91,14 +94,9 @@ pub contract DAOTreasury {
       return <- vaultRef.withdraw(amount: amount)
     }
 
-    // Reference to Vault //
-    access(account) fun borrowVault(identifier: String): &FungibleToken.Vault {
-      return (&self.vaults[identifier] as &FungibleToken.Vault?)!
-    }
-
     // Public Reference to Vault //
-    pub fun borrowVaultPublic(identifier: String): &{FungibleToken.Balance, FungibleToken.Receiver} {
-      return (&self.vaults[identifier] as &{FungibleToken.Balance, FungibleToken.Receiver}?)!
+    pub fun borrowVaultPublic(identifier: String): &{FungibleToken.Balance} {
+      return (&self.vaults[identifier] as &{FungibleToken.Balance}?)!
     }
 
     pub fun getVaultIdentifiers(): [String] {
@@ -115,16 +113,28 @@ pub contract DAOTreasury {
       emit DepositCollection(collectionID: identifier)
     }
 
+    // Deposit tokens //
+    pub fun depositTokens(identifier: String, vault: @FungibleToken.Vault) {
+      emit DepositTokens(identifier: identifier)
+
+      let vaultRef = (&self.vaults[identifier] as &FungibleToken.Vault?)!
+      vaultRef.deposit(from: <- vault)
+    }
+
+
+    // Deposit an NFT //
+    pub fun depositNFT(identifier: String, nft: @NonFungibleToken.NFT) {
+      emit DepositNFT(collectionID: identifier, nftID: nft.id)
+
+      let collectionRef = (&self.collections[identifier] as &NonFungibleToken.Collection?)!
+      collectionRef.deposit(token: <- nft)
+    }
+
     // Withdraw an NFT //
     access(account) fun withdrawNFT(identifier: String, id: UInt64): @NonFungibleToken.NFT {
       emit WithdrawNFT(collectionID: identifier, nftID: id)
       let collectionRef = (&self.collections[identifier] as &NonFungibleToken.Collection?)!
       return <- collectionRef.withdraw(withdrawID: id)
-    }
-
-    // Reference to Collection //
-    access(account) fun borrowCollection(identifier: String): &NonFungibleToken.Collection {
-      return (&self.collections[identifier] as &NonFungibleToken.Collection?)!
     }
 
     // Public Reference to Collection //
