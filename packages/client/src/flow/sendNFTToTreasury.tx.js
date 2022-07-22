@@ -19,9 +19,8 @@ export const SEND_NFT_TO_TREASURY = `
 					// withdraw the NFT from the owner's collection
 					let nft <- collectionRef.withdraw(withdrawID: withdrawID)
 					let identifier: String = collectionRef.getType().identifier
-					let treasuryCollection: &{NonFungibleToken.CollectionPublic} = treasury.borrowCollectionPublic(identifier: identifier)
-
-					treasuryCollection.deposit(token: <- nft)
+					
+					treasury.depositNFT(identifier: identifier, nft: <- nft)
 			}
 	}
 `;
