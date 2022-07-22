@@ -427,7 +427,7 @@ function SafeSettings({ address, web3, name, threshold, safeOwners }) {
   const safeAddressClipboard = useClipboard();
   const ownersAddressClipboard = useClipboard();
   const history = useHistory();
-  const {setTreasury, proposeAddSigner, updateThreshold, proposeRemoveSigner, updatePrivateTreasuryMeta } = web3;
+  const {setTreasury, proposeAddSigner, updateThreshold, proposeRemoveSigner } = web3;
   const onEditNameSubmit = (newName) => {
     modalContext.closeModal();
     setTreasury(address, { name: newName });

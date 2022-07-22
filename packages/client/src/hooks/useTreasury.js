@@ -171,8 +171,6 @@ export default function useTreasury(treasuryAddr) {
 
   const refreshTreasury = async () => {
     const signers = await getSigners(treasuryAddr);
-
-    
     if (!signers) {
       dispatch({ type: "SET_LOADING", payload: false });
       return;
