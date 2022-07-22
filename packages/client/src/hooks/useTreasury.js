@@ -16,6 +16,7 @@ import {
   UPDATE_THRESHOLD,
   ADD_SIGNER,
   UPDATE_SIGNER,
+  REMOVE_SIGNER,
   GET_VAULT_BALANCE,
 } from "../flow";
 
@@ -123,7 +124,7 @@ const doUpdateThreshold = async (
   });
 };
 
-const doAddSigner = async (
+const doProposeAddSigner = async (
   newSignerAddress,
   message,
   keyIds,
@@ -149,6 +150,16 @@ const doUpdateSigner = async (oldSignerAddress, newSignerAddress) => {
     args: (arg, t) => [
       arg(oldSignerAddress, t.Address),
       arg(newSignerAddress, t.Address),
+    ],
+    limit: 110,
+  });
+};
+
+const doProposeRemoveSigner = async (signerToBeRemovedAddress) => {
+  return await mutate({
+    cadence: REMOVE_SIGNER,
+    args: (arg, t) => [
+      arg(signerToBeRemovedAddress, t.Address),
     ],
     limit: 110,
   });
@@ -371,14 +382,14 @@ export default function useTreasury(treasuryAddr) {
     await refreshTreasury();
   };
 
-  const addSigner = async (
+  const proposeAddSigner = async (
     newSignerAddress,
     message,
     keyIds,
     signatures,
     height
   ) => {
-    const res = await doAddSigner(
+    const res = await doProposeAddSigner(
       newSignerAddress,
       message,
       keyIds,
@@ -395,6 +406,12 @@ export default function useTreasury(treasuryAddr) {
     await refreshTreasury();
   };
 
+  const proposeRemoveSigner = async (signerToBeRemovedAddress) => {
+
+    const res = await doProposeRemoveSigner(signerToBeRemovedAddress);
+    await tx(res).onceSealed();
+    await refreshTreasury();
+  }
   return {
     ...state,
     refreshTreasury,
@@ -406,7 +423,8 @@ export default function useTreasury(treasuryAddr) {
     signerApprove,
     executeAction,
     updateThreshold,
-    addSigner,
+    proposeAddSigner,
     updateSigner,
+    proposeRemoveSigner
   };
 }

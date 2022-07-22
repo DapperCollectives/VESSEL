@@ -1,9 +1,10 @@
 import React, { useMemo, useState } from "react";
 import { useModalContext } from "../contexts";
 import { useClipboard, useAddressValidation } from "../hooks";
+import { useHistory } from "react-router-dom";
 import ProgressBar from "./ProgressBar";
 import { Person, Minus, Plus, Check } from "./Svg";
-import { getProgressPercentageForSignersAmount, isAddr } from "../utils";
+import { getProgressPercentageForSignersAmount, isAddr, formatAddress } from "../utils";
 
 const SignatureBar = ({ threshold, safeOwners }) => (
   <div className="is-flex column p-0 is-full">
@@ -186,18 +187,12 @@ const EditSignatureThreshold = ({
   );
 };
 
-const EditSafeOwner = ({ web3, safeOwner, onCancel, onSubmit }) => {
+const RemoveSafeOwner = ({ web3, safeOwner, onCancel, onSubmit }) => {
   const { isAddressValid } = useAddressValidation(web3.injectedProvider);
   const [name, setName] = useState(safeOwner.name);
   const [address, setAddress] = useState(safeOwner.address);
   const [addressValid, setAddressValid] = useState(true);
-  const isFormValid = useMemo(() => {
-    return (
-      name.trim().length > 0 &&
-      addressValid &&
-      (name !== safeOwner.name || address !== safeOwner.address)
-    );
-  }, [safeOwner, name, address, addressValid]);
+  const isFormValid =  name.trim().length > 0 && addressValid;
 
   const onAddressChange = async (newAddress) => {
     setAddress(newAddress);
@@ -205,7 +200,7 @@ const EditSafeOwner = ({ web3, safeOwner, onCancel, onSubmit }) => {
   };
 
   const onSubmitClick = () => {
-    onSubmit(safeOwner, { name, address });
+    onSubmit({ name, address });
   };
 
   const submitButtonClasses = [
@@ -216,8 +211,8 @@ const EditSafeOwner = ({ web3, safeOwner, onCancel, onSubmit }) => {
   return (
     <>
       <div className="p-5">
-        <h2 className="is-size-4 has-text-black">Edit safe owner</h2>
-        <p className="has-text-grey">Update owner information below</p>
+        <h2 className="is-size-4 has-text-black">Remove safe owner</h2>
+        <p className="has-text-grey">This user will no longer be able to sign transactions</p>
       </div>
       <div className="border-light-top p-5 has-text-grey">
         <div className="flex-1 is-flex is-flex-direction-column">
@@ -260,7 +255,7 @@ const EditSafeOwner = ({ web3, safeOwner, onCancel, onSubmit }) => {
             className={submitButtonClasses.join(" ")}
             onClick={onSubmitClick}
           >
-            Save
+            Remove
           </button>
         </div>
       </div>
@@ -273,10 +268,7 @@ const AddSafeOwner = ({ web3, onCancel, onNext }) => {
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
   const [addressValid, setAddressValid] = useState(false);
-  const isFormValid = useMemo(
-    () => name.trim().length > 0 && addressValid,
-    [name, addressValid]
-  );
+  const isFormValid = name.trim().length > 0 && addressValid;
 
   const onAddressChange = async (newAddress) => {
     setAddress(newAddress);
@@ -445,17 +437,17 @@ function SafeSettings({ address, web3, name, threshold, safeOwners }) {
   const modalContext = useModalContext();
   const safeAddressClipboard = useClipboard();
   const ownersAddressClipboard = useClipboard();
-  const { setTreasury, addSigner, updateThreshold, updateSigner } = web3;
-
+  const history = useHistory();
+  const {setTreasury, proposeAddSigner, updateThreshold, proposeRemoveSigner } = web3;
   const onEditNameSubmit = (newName) => {
     modalContext.closeModal();
     setTreasury(address, { name: newName });
   };
 
   const onReviewSafeEditsSubmit = async (newOwner, newThreshold) => {
-    const thresholdToPersist = newThreshold ?? threshold;
-    const ownersToPersist = [...safeOwners];
 
+    const thresholdToPersist = newThreshold ?? threshold;
+    
     if (newOwner) {
       const latestBlock = await web3.injectedProvider
         .send([web3.injectedProvider.getBlock(true)])
@@ -477,7 +469,7 @@ function SafeSettings({ address, web3, name, threshold, safeOwners }) {
 
       ownersToPersist.push(newOwner);
       await addSigner(
-        newOwner.address,
+        formatAddress(newOwner.address),
         message,
         keyIds,
         signatures,
@@ -515,29 +507,21 @@ function SafeSettings({ address, web3, name, threshold, safeOwners }) {
     }
 
     setTreasury(address, {
-      safeOwners: ownersToPersist,
       threshold: thresholdToPersist,
     });
 
     modalContext.closeModal();
+    history.push(`/safe/${address}`);
   };
 
-  const onEditSafeOwnerSubmit = async (oldOwner, updatedOwner) => {
-    if (updatedOwner.address !== oldOwner.address) {
-      await updateSigner(oldOwner.address, updatedOwner.address);
+  const onRemoveSafeOwnerSubmit = async (ownerToBeRemoved) => {
+
+    if (ownerToBeRemoved) {
+      await proposeRemoveSigner(formatAddress(ownerToBeRemoved.address));
     }
 
-    const ownersToPersist = safeOwners.map((owner) => {
-      if (owner.address === oldOwner.address) {
-        return updatedOwner;
-      }
-
-      return owner;
-    });
-
-    setTreasury(address, { safeOwners: ownersToPersist });
-
     modalContext.closeModal();
+    history.push(`/safe/${address}`)
   };
 
   const openReviewEditsModal = (newOwner, newThreshold, onBack) => {
@@ -580,13 +564,13 @@ function SafeSettings({ address, web3, name, threshold, safeOwners }) {
     );
   };
 
-  const openEditOwnerModal = (safeOwner) => {
+  const openRemoveOwnerModal = (safeOwner) => {
     modalContext.openModal(
-      <EditSafeOwner
+      <RemoveSafeOwner
         web3={web3}
         safeOwner={safeOwner}
         onCancel={() => modalContext.closeModal()}
-        onSubmit={onEditSafeOwnerSubmit}
+        onSubmit={onRemoveSafeOwnerSubmit}
       />
     );
   };
@@ -683,9 +667,9 @@ function SafeSettings({ address, web3, name, threshold, safeOwners }) {
                 </span>
                 <span
                   className="is-underlined pointer"
-                  onClick={() => openEditOwnerModal(so)}
+                  onClick={() => openRemoveOwnerModal(so)}
                 >
-                  Edit
+                  Remove
                 </span>
               </div>
             </div>

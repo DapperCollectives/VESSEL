@@ -7,8 +7,7 @@ export const GET_VAULT_BALANCE = `
 											.borrow<&DAOTreasury.Treasury{DAOTreasury.TreasuryPublic}>()
 											?? panic("A DAOTreasury doesn't exist here.")
 
-		// let identifier: String = "A.7e60df042a9c0868.FlowToken.Vault"
-		let vault: &{FungibleToken.Receiver, FungibleToken.Balance} = treasury.borrowVaultPublic(identifier: vaultId)
+		let vault: &{FungibleToken.Balance} = treasury.borrowVaultPublic(identifier: vaultId)
 		return vault.balance
 	}
 `;

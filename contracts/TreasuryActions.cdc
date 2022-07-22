@@ -66,8 +66,8 @@ pub contract TreasuryActions {
 
     access(account) fun execute(_ params: {String: AnyStruct}) {
       let treasuryRef: &DAOTreasury.Treasury = params["treasury"]! as! &DAOTreasury.Treasury
-      let vaultRef: &FungibleToken.Vault = treasuryRef.borrowVault(identifier: self.recipientVault.borrow()!.getType().identifier)
-      let withdrawnTokens <- vaultRef.withdraw(amount: self.amount)
+      let vaultID: String = self.recipientVault.borrow()!.getType().identifier
+      let withdrawnTokens <- treasuryRef.withdrawTokens(identifier: vaultID, amount: self.amount)
       self.recipientVault.borrow()!.deposit(from: <- withdrawnTokens)
 
       emit TransferTokenToAccountActionExecuted(
@@ -111,10 +111,10 @@ pub contract TreasuryActions {
 
     access(account) fun execute(_ params: {String: AnyStruct}) {
       let treasuryRef: &DAOTreasury.Treasury = params["treasury"]! as! &DAOTreasury.Treasury
-      let vaultRef: &FungibleToken.Vault = treasuryRef.borrowVault(identifier: self.identifier)
-      let withdrawnTokens <- vaultRef.withdraw(amount: self.amount)
+      let withdrawnTokens <- treasuryRef.withdrawTokens(identifier: self.identifier, amount: self.amount)
+
       let recipientAddr = self.recipientTreasury.borrow()!.owner!.address
-      self.recipientTreasury.borrow()!.depositVault(vault: <- withdrawnTokens)
+      self.recipientTreasury.borrow()!.depositTokens(identifier: self.identifier, vault: <- withdrawnTokens)
 
       emit TransferTokenToTreasuryActionExecuted(
         recipientAddr: recipientAddr,
@@ -159,8 +159,9 @@ pub contract TreasuryActions {
     access(account) fun execute(_ params: {String: AnyStruct}) {
       let treasuryRef: &DAOTreasury.Treasury = params["treasury"]! as! &DAOTreasury.Treasury
       let collectionID = self.recipientCollection.borrow()!.getType().identifier
-      let collectionRef: &NonFungibleToken.Collection = treasuryRef.borrowCollection(identifier: collectionID)
-      let nft <- collectionRef.withdraw(withdrawID: self.withdrawID)
+      
+      let nft <- treasuryRef.withdrawNFT(identifier: collectionID, id: self.withdrawID)
+
       self.recipientCollection.borrow()!.deposit(token: <- nft)
 
       emit TransferNFTToAccountActionExecuted(
@@ -200,8 +201,7 @@ pub contract TreasuryActions {
 
     access(account) fun execute(_ params: {String: AnyStruct}) {
       let treasuryRef: &DAOTreasury.Treasury = params["treasury"]! as! &DAOTreasury.Treasury
-      let collectionRef: &NonFungibleToken.Collection = treasuryRef.borrowCollection(identifier: self.identifier)
-      let nft <- collectionRef.withdraw(withdrawID: self.withdrawID)
+      let nft <- treasuryRef.withdrawNFT(identifier: self.identifier, id: self.withdrawID)
 
       let recipientCollectionRef: &{NonFungibleToken.CollectionPublic} = self.recipientTreasury.borrow()!.borrowCollectionPublic(identifier: self.identifier)
       recipientCollectionRef.deposit(token: <- nft)
@@ -254,8 +254,9 @@ pub contract TreasuryActions {
 
     init(_signer: Address, _proposer: Address) {
       self.signer = _signer
-      self.proposer = _proposer
-      self.intent = "Add a signer ".concat(_signer.toString()).concat(" to the Treasury.")
+      self.intent = "Add account "
+                      .concat(_signer.toString())
+                      .concat(" as a signer.")
       emit AddSignerActionCreated(address: _signer)
     }
   }
@@ -276,8 +277,9 @@ pub contract TreasuryActions {
 
     init(_signer: Address, _proposer: Address) {
       self.signer = _signer
-      self.proposer = _proposer
-      self.intent = "Remove ".concat((_signer as Address).toString()).concat(" as a signer to the Treasury.")
+      self.intent = "Remove "
+                      .concat(_signer.toString())
+                      .concat(" as a signer.")
       emit RemoveSignerActionCreated(address: _signer)
     }
   }

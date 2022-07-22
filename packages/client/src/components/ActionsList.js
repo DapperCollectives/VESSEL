@@ -2,6 +2,7 @@ import React from "react";
 import { formatActionString } from "../utils";
 
 function ActionsList({ actions = [], onSign, onConfirm, safeData }) {
+
   const ActionComponents = [];
   if (!actions.length) {
     ActionComponents.push(
@@ -48,7 +49,7 @@ function ActionsList({ actions = [], onSign, onConfirm, safeData }) {
             {actionPrompt}
           </div>
           <div className="pl-6" style={{ position: "relative" }}>
-            {totalSigned} of {totalSigs} signatures
+            {totalSigned} of {safeData.threshold} signatures
           </div>
           <div
             className="pl-6 is-underlined pointer"
@@ -62,7 +63,7 @@ function ActionsList({ actions = [], onSign, onConfirm, safeData }) {
   }
 
   return (
-    <div className="column p-0 mt-4 mb-5 is-flex is-full border-light has-shadow rounded-sm">
+    <div className="column p-0 mt-4 mb-5 is-flex is-full border-light has-shadow rounded-sm is-flex-wrap-wrap">
       {ActionComponents}
     </div>
   );
