@@ -17,7 +17,6 @@ function ActionsList({ actions = [], onSign, onConfirm, safeData }) {
   } else {
     actions.forEach((action, idx) => {
       const borderClass = idx < actions.length - 1 ? "border-light-top" : ``;
-      const totalSigs = Object.keys(action.verifiedSigners).length;
       const totalSigned = Object.values(action.verifiedSigners).filter(
         (x) => x
       ).length;

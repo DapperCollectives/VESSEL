@@ -467,8 +467,7 @@ function SafeSettings({ address, web3, name, threshold, safeOwners }) {
       const keyIds = [sigResponse[0]?.keyId];
       const signatures = [sigMessage];
 
-      ownersToPersist.push(newOwner);
-      await addSigner(
+      await proposeAddSigner(
         formatAddress(newOwner.address),
         message,
         keyIds,

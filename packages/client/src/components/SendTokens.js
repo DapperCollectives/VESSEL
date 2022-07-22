@@ -40,7 +40,8 @@ const SendTokens = ({ name, address, web3, initialState }) => {
           .then(web3.injectedProvider.decode);
 
         const uFixAmount = String(parseFloat(amount).toFixed(8))
-        const recepientVault = `Capability<&AnyResource{A.%${address.replace("0x", "")}.FungibleToken.Receiver}>`
+        const tokenAddress = process.env.REACT_APP_FLOW_ENV === "emulator" ? "ee82856bf20e2aa6" : "9a0766d93b6608b7";
+        const recepientVault = `Capability<&AnyResource{A.${tokenAddress}.FungibleToken.Receiver}>`
         const transferToken = `Transfer ${uFixAmount} ${recepientVault} tokens from the treasury to ${recipient}`;
 
         const { height, id } = latestBlock;

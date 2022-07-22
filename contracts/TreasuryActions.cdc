@@ -253,6 +253,7 @@ pub contract TreasuryActions {
     }
 
     init(_signer: Address, _proposer: Address) {
+      self.proposer = _proposer
       self.signer = _signer
       self.intent = "Add account "
                       .concat(_signer.toString())
@@ -276,6 +277,7 @@ pub contract TreasuryActions {
     }
 
     init(_signer: Address, _proposer: Address) {
+      self.proposer = _proposer
       self.signer = _signer
       self.intent = "Remove "
                       .concat(_signer.toString())
