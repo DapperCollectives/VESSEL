@@ -2,7 +2,6 @@ import React from "react";
 import { formatActionString } from "../utils";
 
 function ActionsList({ actions = [], onSign, onConfirm, safeData }) {
-
   const ActionComponents = [];
   if (!actions.length) {
     ActionComponents.push(
