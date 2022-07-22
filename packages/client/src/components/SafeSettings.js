@@ -192,9 +192,8 @@ const RemoveSafeOwner = ({ web3, safeOwner, onCancel, onSubmit }) => {
   const [name, setName] = useState(safeOwner.name);
   const [address, setAddress] = useState(safeOwner.address);
   const [addressValid, setAddressValid] = useState(true);
-  //LL: will validate name once name is persisted on the chain
-  // const isFormValid =  name.trim().length > 0 && addressValid;
   const isFormValid = addressValid;
+
 
   const onAddressChange = async (newAddress) => {
     setAddress(newAddress);
@@ -258,9 +257,7 @@ const AddSafeOwner = ({ web3, onCancel, onNext }) => {
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
   const [addressValid, setAddressValid] = useState(false);
-  //LL: will validate name once name is persisted on the chain
-  // const isFormValid =  name.trim().length > 0 && addressValid;
-  const isFormValid = addressValid;
+  const isFormValid =  name?.trim().length > 0 && addressValid;
 
   const onAddressChange = async (newAddress) => {
     setAddress(newAddress);
@@ -288,8 +285,7 @@ const AddSafeOwner = ({ web3, onCancel, onNext }) => {
         </p>
       </div>
       <div className="border-light-top p-5 has-text-grey">
-        {/* LL: will allow name input once name is persisted on the chain */}
-        {/* <div className="flex-1 is-flex is-flex-direction-column">
+        <div className="flex-1 is-flex is-flex-direction-column">
           <label className="has-text-grey mb-2">
             Owner Name<span className="has-text-red">*</span>
           </label>
@@ -300,7 +296,7 @@ const AddSafeOwner = ({ web3, onCancel, onNext }) => {
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
-        </div> */}
+        </div>
         <div className="flex-1 is-flex is-flex-direction-column mt-4">
           <label className="has-text-grey mb-2">
             Address<span className="has-text-red">*</span>
@@ -431,7 +427,7 @@ function SafeSettings({ address, web3, name, threshold, safeOwners }) {
   const safeAddressClipboard = useClipboard();
   const ownersAddressClipboard = useClipboard();
   const history = useHistory();
-  const {setTreasury, proposeAddSigner, updateThreshold, proposeRemoveSigner } = web3;
+  const {setTreasury, proposeAddSigner, updateThreshold, proposeRemoveSigner, updatePrivateTreasuryMeta } = web3;
   const onEditNameSubmit = (newName) => {
     modalContext.closeModal();
     setTreasury(address, { name: newName });
@@ -448,9 +444,9 @@ function SafeSettings({ address, web3, name, threshold, safeOwners }) {
     if (thresholdToPersist !== threshold) {
       await updateThreshold(thresholdToPersist);
     }
-
     setTreasury(address, {
       threshold: thresholdToPersist,
+      safeOwners: [...safeOwners, {...newOwner, verified: false}]
     });
 
     modalContext.closeModal();
@@ -590,7 +586,7 @@ function SafeSettings({ address, web3, name, threshold, safeOwners }) {
       </div>
       <div className="column p-0 mt-4 is-flex is-flex-direction-column is-full rounded-sm border-light has-shadow">
         {Array.isArray(safeOwners) &&
-          safeOwners.map((so, idx) => (
+          safeOwners.filter(so=>so.verified).map((so, idx) => (
             <div
               className="is-flex column is-full p-5 border-light-bottom"
               key={idx}
