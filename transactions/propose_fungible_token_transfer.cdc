@@ -3,11 +3,6 @@ import DAOTreasury from "../contracts/DAOTreasury.cdc"
 import FungibleToken from "../contracts/core/FungibleToken.cdc"
 import MyMultiSig from "../contracts/MyMultiSig.cdc"
 
-// An example of proposing an action.
-//
-// Proposed ACTION: Transfer `amount` FlowToken from the DAOTreasury
-// at `treasuryAddr` to `recipientAddr`
-
 transaction(treasuryAddr: Address, recipientAddr: Address, amount: UFix64, message: String, keyIds: [UInt64], signatures: [String], signatureBlock: UInt64) {
 
   let treasury: &DAOTreasury.Treasury{DAOTreasury.TreasuryPublic}

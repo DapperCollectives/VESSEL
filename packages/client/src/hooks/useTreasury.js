@@ -49,15 +49,27 @@ const doSendFlowToTreasury = async (treasuryAddr, amount) => {
   });
 };
 
-const doProposeTransfer = async (treasuryAddr, recipientAddr, amount) => {
+const doProposeTransfer = async (
+  treasuryAddr, 
+  recipientAddr, 
+  amount,
+  message,
+  keyIds,
+  signatures,
+  height
+) => {
   return await mutate({
     cadence: PROPOSE_TRANSFER,
     args: (arg, t) => [
       arg(treasuryAddr, t.Address),
       arg(recipientAddr, t.Address),
       arg(amount, t.UFix64),
+      arg(message, t.String),
+      arg(keyIds, t.Array(t.UInt64)),
+      arg(signatures, t.Array(t.String)),
+      arg(height, t.UInt64),
     ],
-    limit: 55,
+    limit: 300,
   });
 };
 
@@ -296,11 +308,22 @@ export default function useTreasury(treasuryAddr) {
     await refreshTreasury();
   };
 
-  const proposeTransfer = async (recipientAddr, amount) => {
+  const proposeTransfer = async (
+    recipientAddr, 
+    amount,
+    message,
+    keyIds,
+    signatures,
+    height
+  ) => {
     const res = await doProposeTransfer(
       treasuryAddr,
       recipientAddr,
-      String(parseFloat(amount).toFixed(8))
+      parseFloat(amount).toFixed(8),
+      message,
+      keyIds,
+      signatures,
+      height
     );
     await tx(res).onceSealed();
   };
