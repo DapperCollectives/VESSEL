@@ -192,7 +192,7 @@ const RemoveSafeOwner = ({ web3, safeOwner, onCancel, onSubmit }) => {
   const [name, setName] = useState(safeOwner.name);
   const [address, setAddress] = useState(safeOwner.address);
   const [addressValid, setAddressValid] = useState(true);
-  const isFormValid =  name.trim().length > 0 && addressValid;
+  const isFormValid = name.trim().length > 0 && addressValid;
 
   const onAddressChange = async (newAddress) => {
     setAddress(newAddress);
@@ -438,7 +438,7 @@ function SafeSettings({ address, web3, name, threshold, safeOwners }) {
   const safeAddressClipboard = useClipboard();
   const ownersAddressClipboard = useClipboard();
   const history = useHistory();
-  const {setTreasury, proposeAddSigner, updateThreshold, proposeRemoveSigner } = web3;
+  const { setTreasury, proposeAddSigner, updateThreshold, proposeRemoveSigner } = web3;
   const onEditNameSubmit = (newName) => {
     modalContext.closeModal();
     setTreasury(address, { name: newName });
@@ -447,7 +447,7 @@ function SafeSettings({ address, web3, name, threshold, safeOwners }) {
   const onReviewSafeEditsSubmit = async (newOwner, newThreshold) => {
 
     const thresholdToPersist = newThreshold ?? threshold;
-    
+
     if (newOwner) {
       const latestBlock = await web3.injectedProvider
         .send([web3.injectedProvider.getBlock(true)])
@@ -516,7 +516,31 @@ function SafeSettings({ address, web3, name, threshold, safeOwners }) {
   const onRemoveSafeOwnerSubmit = async (ownerToBeRemoved) => {
 
     if (ownerToBeRemoved) {
-      await proposeRemoveSigner(formatAddress(ownerToBeRemoved.address));
+      const latestBlock = await web3.injectedProvider
+        .send([web3.injectedProvider.getBlock(true)])
+        .then(web3.injectedProvider.decode);
+
+      const { height, id } = latestBlock;
+      const ownerToBeRemovedHex = Buffer.from(`Remove ${ownerToBeRemoved.address} as a signer.`).toString("hex");
+
+      const message = `${ownerToBeRemovedHex}${id}`;
+      const messageHex = Buffer.from(message).toString("hex");
+
+      let sigResponse = await web3.injectedProvider
+        .currentUser()
+        .signUserMessage(messageHex);
+      const sigMessage =
+        sigResponse[0]?.signature?.signature ?? sigResponse[0]?.signature;
+      const keyIds = [sigResponse[0]?.keyId];
+      const signatures = [sigMessage];
+
+      await proposeRemoveSigner(
+        formatAddress(ownerToBeRemoved.address),
+        message,
+        keyIds,
+        signatures,
+        height
+      );
     }
 
     modalContext.closeModal();

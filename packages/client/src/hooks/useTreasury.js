@@ -51,8 +51,8 @@ const doSendFlowToTreasury = async (treasuryAddr, amount) => {
 };
 
 const doProposeTransfer = async (
-  treasuryAddr, 
-  recipientAddr, 
+  treasuryAddr,
+  recipientAddr,
   amount,
   message,
   keyIds,
@@ -130,7 +130,7 @@ const doProposeAddSigner = async (
   keyIds,
   signatures,
   height
-) => {  
+) => {
   return await mutate({
     cadence: ADD_SIGNER,
     args: (arg, t) => [
@@ -155,13 +155,23 @@ const doUpdateSigner = async (oldSignerAddress, newSignerAddress) => {
   });
 };
 
-const doProposeRemoveSigner = async (signerToBeRemovedAddress) => {
+const doProposeRemoveSigner = async (
+  signerToBeRemovedAddress,
+  message,
+  keyIds,
+  signatures,
+  height
+) => {
   return await mutate({
     cadence: REMOVE_SIGNER,
     args: (arg, t) => [
       arg(signerToBeRemovedAddress, t.Address),
+      arg(message, t.String),
+      arg(keyIds, t.Array(t.UInt64)),
+      arg(signatures, t.Array(t.String)),
+      arg(height, t.UInt64)
     ],
-    limit: 110,
+    limit: 300,
   });
 };
 
@@ -320,7 +330,7 @@ export default function useTreasury(treasuryAddr) {
   };
 
   const proposeTransfer = async (
-    recipientAddr, 
+    recipientAddr,
     amount,
     message,
     keyIds,
@@ -406,9 +416,21 @@ export default function useTreasury(treasuryAddr) {
     await refreshTreasury();
   };
 
-  const proposeRemoveSigner = async (signerToBeRemovedAddress) => {
+  const proposeRemoveSigner = async (
+    signerToBeRemovedAddress,
+    message,
+    keyIds,
+    signatures,
+    height
+  ) => {
 
-    const res = await doProposeRemoveSigner(signerToBeRemovedAddress);
+    const res = await doProposeRemoveSigner(
+      signerToBeRemovedAddress,
+      message,
+      keyIds,
+      signatures,
+      height
+    );
     await tx(res).onceSealed();
     await refreshTreasury();
   }
