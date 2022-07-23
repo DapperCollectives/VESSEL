@@ -122,9 +122,7 @@ const doUpdateSigner = async (oldSignerAddress, newSignerAddress) => {
 const doProposeRemoveSigner = async (signerToBeRemovedAddress) => {
   return await mutate({
     cadence: REMOVE_SIGNER,
-    args: (arg, t) => [
-      arg(signerToBeRemovedAddress, t.Address),
-    ],
+    args: (arg, t) => [arg(signerToBeRemovedAddress, t.Address)],
     limit: 110,
   });
 };
@@ -336,11 +334,10 @@ export default function useTreasury(treasuryAddr) {
   };
 
   const proposeRemoveSigner = async (signerToBeRemovedAddress) => {
-
     const res = await doProposeRemoveSigner(signerToBeRemovedAddress);
     await tx(res).onceSealed();
     await refreshTreasury();
-  }
+  };
   return {
     ...state,
     refreshTreasury,
@@ -354,6 +351,6 @@ export default function useTreasury(treasuryAddr) {
     updateThreshold,
     proposeAddSigner,
     updateSigner,
-    proposeRemoveSigner
+    proposeRemoveSigner,
   };
 }
