@@ -1,5 +1,6 @@
 import { useEffect, useReducer } from "react";
 import { mutate, query, tx } from "@onflow/fcl";
+import { syncSafeOwnersWithSigners } from "../utils";
 
 import reducer, { INITIAL_STATE } from "../reducers/treasuries";
 import {
@@ -122,9 +123,7 @@ const doUpdateSigner = async (oldSignerAddress, newSignerAddress) => {
 const doProposeRemoveSigner = async (signerToBeRemovedAddress) => {
   return await mutate({
     cadence: REMOVE_SIGNER,
-    args: (arg, t) => [
-      arg(signerToBeRemovedAddress, t.Address),
-    ],
+    args: (arg, t) => [arg(signerToBeRemovedAddress, t.Address)],
     limit: 110,
   });
 };
@@ -221,6 +220,20 @@ export default function useTreasury(treasuryAddr) {
     });
   };
 
+  const updateOwnerList = async (treasuryAddr) => {
+    const signers = await getSigners(treasuryAddr);
+    const safeOwners = state.treasuries[treasuryAddr].safeOwners;
+    const updatedSafeOwners = syncSafeOwnersWithSigners(signers, safeOwners);
+    dispatch({
+      type: "SET_TREASURY",
+      payload: {
+        [treasuryAddr]: {
+          safeOwners: updatedSafeOwners,
+        },
+      },
+    });
+  };
+
   useEffect(() => {
     if (!treasuryAddr) {
       if (state.loadingTreasuries) {
@@ -263,7 +276,6 @@ export default function useTreasury(treasuryAddr) {
       },
     });
   };
-
   const fetchTreasury = async (treasuryAddr) => {
     const signers = await getSigners(treasuryAddr);
     if (signers) {
@@ -315,6 +327,7 @@ export default function useTreasury(treasuryAddr) {
     const res = await doExecuteAction(treasuryAddr, actionUUID);
     await tx(res).onceSealed();
     await refreshTreasury();
+    await updateOwnerList(treasuryAddr);
   };
 
   const updateThreshold = async (newThreshold) => {
@@ -336,11 +349,10 @@ export default function useTreasury(treasuryAddr) {
   };
 
   const proposeRemoveSigner = async (signerToBeRemovedAddress) => {
-
     const res = await doProposeRemoveSigner(signerToBeRemovedAddress);
     await tx(res).onceSealed();
     await refreshTreasury();
-  }
+  };
   return {
     ...state,
     refreshTreasury,
@@ -354,6 +366,6 @@ export default function useTreasury(treasuryAddr) {
     updateThreshold,
     proposeAddSigner,
     updateSigner,
-    proposeRemoveSigner
+    proposeRemoveSigner,
   };
 }
