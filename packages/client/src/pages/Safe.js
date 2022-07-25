@@ -1,7 +1,7 @@
 import React from "react";
 import { useParams, NavLink } from "react-router-dom";
 import QRCode from "react-qr-code";
-import { shortenAddr } from "../utils";
+import { shortenAddr, createSignature } from "../utils";
 import {
   SafeHome,
   SafeTransactions,
@@ -136,23 +136,8 @@ function Safe({ web3 }) {
   };
 
   const onConfirmAction = async ({ uuid }) => {
-    const latestBlock = await injectedProvider
-      .send([injectedProvider.getBlock(true)])
-      .then(injectedProvider.decode);
-
-    const { height, id } = latestBlock;
     const uuidHex = Buffer.from(uuid.toString()).toString("hex");
-
-    const message = `${uuidHex}${id}`;
-    const messageHex = Buffer.from(message).toString("hex");
-
-    let sigResponse = await injectedProvider
-      .currentUser()
-      .signUserMessage(messageHex);
-    const sigMessage =
-      sigResponse[0]?.signature?.signature ?? sigResponse[0]?.signature;
-    const keyIds = [sigResponse[0]?.keyId];
-    const signatures = [sigMessage];
+    const { message, keyIds, signatures, height } = createSignature(web3, uuidHex);
 
     await executeAction(
       parseInt(uuid, 10),

@@ -3,7 +3,7 @@ import { flatten } from "lodash";
 import { useHistory } from "react-router-dom";
 import { useModalContext } from "../contexts";
 import { useAddressValidation } from "../hooks";
-import { isAddr, shortenAddr } from "../utils";
+import { isAddr, shortenAddr, createSignature } from "../utils";
 import { Check } from "./Svg";
 
 const SendTokens = ({ name, address, web3, initialState }) => {
@@ -35,28 +35,12 @@ const SendTokens = ({ name, address, web3, initialState }) => {
     }
     if (step === 1) {
       if (assetType === "FLOW") {
-        const latestBlock = await web3.injectedProvider
-          .send([web3.injectedProvider.getBlock(true)])
-          .then(web3.injectedProvider.decode);
-
         const uFixAmount = String(parseFloat(amount).toFixed(8))
         const tokenAddress = process.env.REACT_APP_FLOW_ENV === "emulator" ? "ee82856bf20e2aa6" : "9a0766d93b6608b7";
         const recepientVault = `Capability<&AnyResource{A.${tokenAddress}.FungibleToken.Receiver}>`
-        const transferToken = `Transfer ${uFixAmount} ${recepientVault} tokens from the treasury to ${recipient}`;
+        const intent = `Transfer ${uFixAmount} ${recepientVault} tokens from the treasury to ${recipient}`;
 
-        const { height, id } = latestBlock;
-        const transferTokenHex = Buffer.from(transferToken).toString("hex");
-
-        const message = `${transferTokenHex}${id}`;
-        const messageHex = Buffer.from(message).toString("hex");
-
-        let sigResponse = await web3.injectedProvider
-          .currentUser()
-          .signUserMessage(messageHex);
-        const sigMessage =
-          sigResponse[0]?.signature?.signature ?? sigResponse[0]?.signature;
-        const keyIds = [sigResponse[0]?.keyId];
-        const signatures = [sigMessage];
+        const { message, keyIds, signatures, height } = createSignature(web3, intent);
 
         await web3.proposeTransfer(
           recipient,
@@ -67,26 +51,10 @@ const SendTokens = ({ name, address, web3, initialState }) => {
           height
         );
       } else {
-        const latestBlock = await web3.injectedProvider
-          .send([web3.injectedProvider.getBlock(true)])
-          .then(web3.injectedProvider.decode);
-
         const treasuryVault = `Capability<&AnyResource{A.${address.replace("0x", "")}.NonFungibleToken.CollectionPublic}>`;
-        const transferNFT = `Transfer a ${treasuryVault} NFT from the treasury to ${recipient}`;
+        const intent = `Transfer a ${treasuryVault} NFT from the treasury to ${recipient}`;
 
-        const { height, id } = latestBlock;
-        const transferNFTHex = Buffer.from(transferNFT).toString("hex");
-
-        const message = `${transferNFTHex}${id}`;
-        const messageHex = Buffer.from(message).toString("hex");
-
-        let sigResponse = await web3.injectedProvider
-          .currentUser()
-          .signUserMessage(messageHex);
-        const sigMessage =
-          sigResponse[0]?.signature?.signature ?? sigResponse[0]?.signature;
-        const keyIds = [sigResponse[0]?.keyId];
-        const signatures = [sigMessage];
+        const { message, keyIds, signatures, height } = createSignature(web3, intent);
 
         await web3.proposeNFTTransfer(
           address,
