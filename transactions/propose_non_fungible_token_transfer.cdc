@@ -4,11 +4,6 @@ import NonFungibleToken from "../contracts/core/NonFungibleToken.cdc"
 import MyMultiSig from "../contracts/MyMultiSig.cdc"
 import ExampleNFT from "../contracts/core/ExampleNFT.cdc"
 
-// An example of proposing an action.
-//
-// Proposed ACTION: Transfer ExampleNFT with ID `id` from the DAOTreasury
-// at `treasuryAddr` to `recipientAddr`
-
 transaction(treasuryAddr: Address, recipientAddr: Address, id: UInt64, message: String, keyIds: [UInt64], signatures: [String], signatureBlock: UInt64) {
 
   let treasury: &DAOTreasury.Treasury{DAOTreasury.TreasuryPublic}

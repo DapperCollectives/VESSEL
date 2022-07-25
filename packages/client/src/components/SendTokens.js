@@ -67,7 +67,36 @@ const SendTokens = ({ name, address, web3, initialState }) => {
           height
         );
       } else {
-        await web3.proposeNFTTransfer(address, recipient, selectedNFT);
+        const latestBlock = await web3.injectedProvider
+          .send([web3.injectedProvider.getBlock(true)])
+          .then(web3.injectedProvider.decode);
+
+        const treasuryVault = `Capability<&AnyResource{A.${address.replace("0x", "")}.NonFungibleToken.CollectionPublic}>`;
+        const transferNFT = `Transfer a ${treasuryVault} NFT from the treasury to ${recipient}`;
+
+        const { height, id } = latestBlock;
+        const transferNFTHex = Buffer.from(transferNFT).toString("hex");
+
+        const message = `${transferNFTHex}${id}`;
+        const messageHex = Buffer.from(message).toString("hex");
+
+        let sigResponse = await web3.injectedProvider
+          .currentUser()
+          .signUserMessage(messageHex);
+        const sigMessage =
+          sigResponse[0]?.signature?.signature ?? sigResponse[0]?.signature;
+        const keyIds = [sigResponse[0]?.keyId];
+        const signatures = [sigMessage];
+
+        await web3.proposeNFTTransfer(
+          address,
+          recipient,
+          selectedNFT,
+          message,
+          keyIds,
+          signatures,
+          height
+        );
       }
       await web3.refreshTreasury();
       modalContext.closeModal();

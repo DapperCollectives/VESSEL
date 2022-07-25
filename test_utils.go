@@ -152,7 +152,7 @@ func (otu *OverflowTestUtils) SendCollectionToTreasury(from string, to string) *
 
 func (otu *OverflowTestUtils) ProposeFungibleTokenTransferAction(treasuryAcct string, proposingAcct, recipientAcct string, amount float64) *OverflowTestUtils {
 	recipient, _ := otu.O.State.Accounts().ByName(fmt.Sprintf("emulator-%s", recipientAcct))
-	src := []byte(fmt.Sprintf("Transfer %d %s tokens from the treasury to 0x%s", int(amount), "Capability<&AnyResource{A.ee82856bf20e2aa6.FungibleToken.Receiver}>", recipient.Address()))
+	src := []byte(fmt.Sprintf("Transfer %.8f %s tokens from the treasury to 0x%s", amount, "Capability<&AnyResource{A.ee82856bf20e2aa6.FungibleToken.Receiver}>", recipient.Address()))
 	hexCollectionID := make([]byte, hex.EncodedLen(len(src)))
 	hex.Encode(hexCollectionID, src)
 
@@ -211,7 +211,9 @@ func (otu *OverflowTestUtils) ProposeFungibleTokenTransferActionFail(treasuryAcc
 
 func (otu *OverflowTestUtils) ProposeFungibleTokenTransferToTreasuryAction(treasuryAcct string, proposingAcct, recipientAcct string, vaultIdentifier string, amount float64) *OverflowTestUtils {
 
-	src := []byte("no action id")
+	recipient, _ := otu.O.State.Accounts().ByName(fmt.Sprintf("emulator-%s", recipientAcct))
+	src := []byte(fmt.Sprintf("Transfer %.8f %s tokens from the treasury to 0x%s", amount, vaultIdentifier, recipient.Address()))
+
 	hexCollectionID := make([]byte, hex.EncodedLen(len(src)))
 	hex.Encode(hexCollectionID, src)
 
@@ -272,7 +274,9 @@ func (otu *OverflowTestUtils) ProposeFungibleTokenTransferToTreasuryActionFail(t
 
 func (otu *OverflowTestUtils) ProposeNonFungibleTokenTransferAction(treasuryAcct string, proposingAcct, recipientAcct string, id uint64) *OverflowTestUtils {
 
-	src := []byte("no action id")
+	recipient, _ := otu.O.State.Accounts().ByName(fmt.Sprintf("emulator-%s", recipientAcct))
+	src := []byte(fmt.Sprintf("Transfer a %s NFT from the treasury to 0x%s", "Capability<&AnyResource{A.f8d6e0586b0a20c7.NonFungibleToken.CollectionPublic}>", recipient.Address()))
+
 	hexCollectionID := make([]byte, hex.EncodedLen(len(src)))
 	hex.Encode(hexCollectionID, src)
 
@@ -301,7 +305,9 @@ func (otu *OverflowTestUtils) ProposeNonFungibleTokenTransferAction(treasuryAcct
 
 func (otu *OverflowTestUtils) ProposeNonFungibleTokenTransferToTreasuryAction(treasuryAcct string, proposingAcct, recipientAcct string, collectionIdentifier string, id uint64) *OverflowTestUtils {
 
-	src := []byte("no action id")
+	recipient, _ := otu.O.State.Accounts().ByName(fmt.Sprintf("emulator-%s", recipientAcct))
+	src := []byte(fmt.Sprintf("Transfer an NFT from collection %s with ID %s from this Treasury to Treasury at address 0x%s", collectionIdentifier, fmt.Sprint(id), recipient.Address()))
+
 	hexCollectionID := make([]byte, hex.EncodedLen(len(src)))
 	hex.Encode(hexCollectionID, src)
 
@@ -369,7 +375,8 @@ func (otu *OverflowTestUtils) GetTreasuryThreshold(account string) uint64 {
 }
 
 func (otu *OverflowTestUtils) ProposeAddSignerAction(proposingAcct, address string) *OverflowTestUtils {
-	src := []byte(fmt.Sprintf("Add a signer %s to the Treasury.", address))
+	signerAccount, _ := otu.O.State.Accounts().ByName(fmt.Sprintf("emulator-%s", address))
+	src := []byte(fmt.Sprintf("Add account 0x%s as a signer.", signerAccount.Address()))
 	signerHex := make([]byte, hex.EncodedLen(len(src)))
 	hex.Encode(signerHex, src)
 
@@ -395,7 +402,8 @@ func (otu *OverflowTestUtils) ProposeAddSignerAction(proposingAcct, address stri
 }
 
 func (otu *OverflowTestUtils) ProposeRemoveSignerAction(proposingAcct, address string) *OverflowTestUtils {
-	src := []byte("no action id")
+	signerAccount, _ := otu.O.State.Accounts().ByName(fmt.Sprintf("emulator-%s", address))
+	src := []byte(fmt.Sprintf("Remove 0x%s as a signer.", signerAccount.Address()))
 	hexCollectionID := make([]byte, hex.EncodedLen(len(src)))
 	hex.Encode(hexCollectionID, src)
 
@@ -638,7 +646,7 @@ func (otu *OverflowTestUtils) ExecuteActionFailed(treasuryAcct string, actionUUI
 }
 
 func (otu *OverflowTestUtils) ProposeDestroyAction(treasuryAcct string, actionUUID uint64) *OverflowTestUtils {
-	src := []byte("no action id")
+	src := []byte(fmt.Sprintf("Remove the action %d from the Treasury.", actionUUID))
 	hexCollectionID := make([]byte, hex.EncodedLen(len(src)))
 	hex.Encode(hexCollectionID, src)
 

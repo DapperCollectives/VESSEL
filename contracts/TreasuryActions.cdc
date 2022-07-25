@@ -222,7 +222,7 @@ pub contract TreasuryActions {
                         .concat(" with ID ")
                         .concat(_nftID.toString())
                         .concat(" ")
-                        .concat(" from this Treasury to Treasury at address ")
+                        .concat("from this Treasury to Treasury at address ")
                         .concat(recipientAddr.toString())
       self.identifier = _identifier
       self.recipientTreasury = _recipientTreasury
@@ -326,7 +326,9 @@ pub contract TreasuryActions {
     init(_actionUUID: UInt64, _proposer: Address) {
       self.actionUUID = _actionUUID
       self.proposer = _proposer
-      self.intent = "Remove the action from the Treasury."
+      self.intent = "Remove the action "
+                      .concat(_actionUUID.toString())
+                      .concat(" from the Treasury.")
       emit DestroyActionActionCreated(actionUUID: _actionUUID)
     }
   }
