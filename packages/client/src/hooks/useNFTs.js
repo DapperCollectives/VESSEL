@@ -54,9 +54,9 @@ export default function useNFTs() {
   }, [state.NFTs]);
 
   const checkCollection = async (treasuryAddr, identifier) => {
-    let res = [];
+    let result = [];
     try {
-      res = await query({
+      result = await query({
         cadence: CHECK_TREASURY_NFT_COLLECTION,
         args: (arg, t) => [
           arg(treasuryAddr, t.Address),
@@ -67,12 +67,12 @@ export default function useNFTs() {
       console.log("fcl error", e);
     }
 
-    const tokens = (res ?? []).map((id) => ({
-      tokenId: id,
-      name: `${identifier} #${id}`,
-      description: "description",
+    const tokens = result?.map(res => ({
+      tokenId: res.id,
+      name: res.name,
+      description: res.description,
       thumbnail: {
-        url: `https://dummyimage.com/256x256/e0e0e0/000&text=${identifier}+#${id}`,
+        url: res.thumbnail,
       },
     }));
 
