@@ -35,9 +35,68 @@ const SendTokens = ({ name, address, web3, initialState }) => {
     }
     if (step === 1) {
       if (assetType === "FLOW") {
-        await web3.proposeTransfer(recipient, amount);
+        const latestBlock = await web3.injectedProvider
+          .send([web3.injectedProvider.getBlock(true)])
+          .then(web3.injectedProvider.decode);
+
+        const uFixAmount = String(parseFloat(amount).toFixed(8))
+        const tokenAddress = process.env.REACT_APP_FLOW_ENV === "emulator" ? "ee82856bf20e2aa6" : "9a0766d93b6608b7";
+        const recepientVault = `Capability<&AnyResource{A.${tokenAddress}.FungibleToken.Receiver}>`
+        const transferToken = `Transfer ${uFixAmount} ${recepientVault} tokens from the treasury to ${recipient}`;
+
+        const { height, id } = latestBlock;
+        const transferTokenHex = Buffer.from(transferToken).toString("hex");
+
+        const message = `${transferTokenHex}${id}`;
+        const messageHex = Buffer.from(message).toString("hex");
+
+        let sigResponse = await web3.injectedProvider
+          .currentUser()
+          .signUserMessage(messageHex);
+        const sigMessage =
+          sigResponse[0]?.signature?.signature ?? sigResponse[0]?.signature;
+        const keyIds = [sigResponse[0]?.keyId];
+        const signatures = [sigMessage];
+
+        await web3.proposeTransfer(
+          recipient,
+          amount,
+          message,
+          keyIds,
+          signatures,
+          height
+        );
       } else {
-        await web3.proposeNFTTransfer(address, recipient, selectedNFT);
+        const latestBlock = await web3.injectedProvider
+          .send([web3.injectedProvider.getBlock(true)])
+          .then(web3.injectedProvider.decode);
+
+        const treasuryVault = `Capability<&AnyResource{A.${address.replace("0x", "")}.NonFungibleToken.CollectionPublic}>`;
+        const transferNFT = `Transfer a ${treasuryVault} NFT from the treasury to ${recipient}`;
+
+        const { height, id } = latestBlock;
+        const transferNFTHex = Buffer.from(transferNFT).toString("hex");
+
+        const message = `${transferNFTHex}${id}`;
+        const messageHex = Buffer.from(message).toString("hex");
+
+        let sigResponse = await web3.injectedProvider
+          .currentUser()
+          .signUserMessage(messageHex);
+        const sigMessage =
+          sigResponse[0]?.signature?.signature ?? sigResponse[0]?.signature;
+        const keyIds = [sigResponse[0]?.keyId];
+        const signatures = [sigMessage];
+
+        await web3.proposeNFTTransfer(
+          address,
+          recipient,
+          selectedNFT,
+          message,
+          keyIds,
+          signatures,
+          height
+        );
       }
       await web3.refreshTreasury();
       modalContext.closeModal();
@@ -81,17 +140,15 @@ const SendTokens = ({ name, address, web3, initialState }) => {
           <label className="has-text-grey mb-2">Asset</label>
           <div className="border-light rounded-sm p-1 is-flex column is-full">
             <button
-              className={`button border-none flex-1 ${
-                assetType === "FLOW" && "has-background-black has-text-white"
-              }`}
+              className={`button border-none flex-1 ${assetType === "FLOW" && "has-background-black has-text-white"
+                }`}
               onClick={() => setAssetType("FLOW")}
             >
               FLOW
             </button>
             <button
-              className={`button border-none flex-1 ${
-                assetType === "NFTs" && "has-background-black has-text-white"
-              }`}
+              className={`button border-none flex-1 ${assetType === "NFTs" && "has-background-black has-text-white"
+                }`}
               onClick={() => setAssetType("NFTs")}
             >
               NFTs
@@ -122,10 +179,9 @@ const SendTokens = ({ name, address, web3, initialState }) => {
             {nftsToDisplay.map((nft) => (
               <div
                 key={nft.tokenId}
-                className={`rounded-sm ${
-                  nft.collectionName + "-" + nft.tokenId === selectedNFT &&
+                className={`rounded-sm ${nft.collectionName + "-" + nft.tokenId === selectedNFT &&
                   "border"
-                }`}
+                  }`}
                 onClick={() =>
                   setSelectedNFT(nft.collectionName + "-" + nft.tokenId)
                 }

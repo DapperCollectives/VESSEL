@@ -447,11 +447,60 @@ function SafeSettings({ address, web3, name, threshold, safeOwners }) {
     const thresholdToPersist = newThreshold ?? threshold;
 
     if (newOwner) {
-      await proposeAddSigner(formatAddress(newOwner.address));
+      const latestBlock = await web3.injectedProvider
+        .send([web3.injectedProvider.getBlock(true)])
+        .then(web3.injectedProvider.decode);
+
+      const { height, id } = latestBlock;
+      const newOwnerHex = Buffer.from(`Add account ${newOwner.address} as a signer.`).toString("hex");
+
+      const message = `${newOwnerHex}${id}`;
+      const messageHex = Buffer.from(message).toString("hex");
+
+      let sigResponse = await web3.injectedProvider
+        .currentUser()
+        .signUserMessage(messageHex);
+      const sigMessage =
+        sigResponse[0]?.signature?.signature ?? sigResponse[0]?.signature;
+      const keyIds = [sigResponse[0]?.keyId];
+      const signatures = [sigMessage];
+
+      await proposeAddSigner(
+        formatAddress(newOwner.address),
+        message,
+        keyIds,
+        signatures,
+        height
+      );
     }
 
     if (thresholdToPersist !== threshold) {
-      await updateThreshold(thresholdToPersist);
+
+      const latestBlock = await web3.injectedProvider
+        .send([web3.injectedProvider.getBlock(true)])
+        .then(web3.injectedProvider.decode);
+
+      const { height, id } = latestBlock;
+      const thresholdToPersistHex = Buffer.from(`Update the threshold of signers to ${thresholdToPersist}.`).toString("hex");
+
+      const message = `${thresholdToPersistHex}${id}`;
+      const messageHex = Buffer.from(message).toString("hex");
+
+      let sigResponse = await web3.injectedProvider
+        .currentUser()
+        .signUserMessage(messageHex);
+      const sigMessage =
+        sigResponse[0]?.signature?.signature ?? sigResponse[0]?.signature;
+      const keyIds = [sigResponse[0]?.keyId];
+      const signatures = [sigMessage];
+
+      await updateThreshold(
+        thresholdToPersist,
+        message,
+        keyIds,
+        signatures,
+        height
+      );
     }
     setTreasury(address, {
       threshold: thresholdToPersist,
@@ -464,7 +513,31 @@ function SafeSettings({ address, web3, name, threshold, safeOwners }) {
 
   const onRemoveSafeOwnerSubmit = async (ownerToBeRemoved) => {
     if (ownerToBeRemoved) {
-      await proposeRemoveSigner(formatAddress(ownerToBeRemoved.address));
+      const latestBlock = await web3.injectedProvider
+        .send([web3.injectedProvider.getBlock(true)])
+        .then(web3.injectedProvider.decode);
+
+      const { height, id } = latestBlock;
+      const ownerToBeRemovedHex = Buffer.from(`Remove ${ownerToBeRemoved.address} as a signer.`).toString("hex");
+
+      const message = `${ownerToBeRemovedHex}${id}`;
+      const messageHex = Buffer.from(message).toString("hex");
+
+      let sigResponse = await web3.injectedProvider
+        .currentUser()
+        .signUserMessage(messageHex);
+      const sigMessage =
+        sigResponse[0]?.signature?.signature ?? sigResponse[0]?.signature;
+      const keyIds = [sigResponse[0]?.keyId];
+      const signatures = [sigMessage];
+
+      await proposeRemoveSigner(
+        formatAddress(ownerToBeRemoved.address),
+        message,
+        keyIds,
+        signatures,
+        height
+      );
     }
 
     modalContext.closeModal();

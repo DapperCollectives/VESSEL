@@ -4,24 +4,31 @@ import NonFungibleToken from "../contracts/core/NonFungibleToken.cdc"
 import MyMultiSig from "../contracts/MyMultiSig.cdc"
 import ExampleNFT from "../contracts/core/ExampleNFT.cdc"
 
-// An example of proposing an action.
-//
-// Proposed ACTION: Transfer ExampleNFT with ID `id` from the DAOTreasury
-// at `treasuryAddr` to `recipientAddr`
+transaction(treasuryAddr: Address, recipientAddr: Address, id: UInt64, message: String, keyIds: [UInt64], signatures: [String], signatureBlock: UInt64) {
 
-transaction(treasuryAddr: Address, recipientAddr: Address, id: UInt64) {
-
-  let Treasury: &DAOTreasury.Treasury{DAOTreasury.TreasuryPublic}
-  let RecipientCollection: Capability<&{NonFungibleToken.CollectionPublic}>
+  let treasury: &DAOTreasury.Treasury{DAOTreasury.TreasuryPublic}
+  let recipientCollection: Capability<&{NonFungibleToken.CollectionPublic}>
+  let action: AnyStruct{MyMultiSig.Action}
+  let messageSignaturePayload: MyMultiSig.MessageSignaturePayload
   
   prepare(signer: AuthAccount) {
-    self.Treasury = getAccount(treasuryAddr).getCapability(DAOTreasury.TreasuryPublicPath)
+    self.treasury = getAccount(treasuryAddr).getCapability(DAOTreasury.TreasuryPublicPath)
                     .borrow<&DAOTreasury.Treasury{DAOTreasury.TreasuryPublic}>()
                     ?? panic("A DAOTreasury doesn't exist here.")
-    self.RecipientCollection = getAccount(recipientAddr).getCapability<&{NonFungibleToken.CollectionPublic}>(ExampleNFT.CollectionPublicPath)
+    self.recipientCollection = getAccount(recipientAddr).getCapability<&{NonFungibleToken.CollectionPublic}>(ExampleNFT.CollectionPublicPath)
+    self.action = TreasuryActions.TransferNFT(_recipientCollection: self.recipientCollection, _nftID: id, _proposer: signer.address)
+    
+    var _keyIds: [Int] = []
+
+    for keyId in keyIds {
+        _keyIds.append(Int(keyId))
+    }
+
+    self.messageSignaturePayload = MyMultiSig.MessageSignaturePayload(
+        _signingAddr: signer.address, _message: message, _keyIds: _keyIds, _signatures: signatures, _signatureBlock: signatureBlock
+    )
   }
   execute {
-    let action = TreasuryActions.TransferNFT(_recipientCollection: self.RecipientCollection, _nftID: id)
-    self.Treasury.proposeAction(action: action)
+    self.treasury.proposeAction(action: self.action, signaturePayload: self.messageSignaturePayload)
   }
 }
