@@ -1,14 +1,11 @@
 import React from "react";
 import Dropdown from "./Dropdown";
+import { SAFE_TYPES_TO_META } from "constants/maps";
 
-const safeTypes = [
-  "Social",
-  "Creator",
-  "Protocol",
-  "Collector",
-  "Media",
-  "Other",
-];
+const safeTypes = Object.entries(SAFE_TYPES_TO_META).map((type) => ({
+  itemValue: type[0],
+  displayText: type[1].displayText,
+}));
 
 const SafeDetails = ({ safeType, setSafeType, safeName, setSafeName }) => (
   <>

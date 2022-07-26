@@ -9,8 +9,8 @@ const SendTokenConfirmation = () => {
     <div className="p-5 has-text-black">
       <SendModalHeader />
       <AddressInput displayOnly />
-      <TransactionDetails />
-      <ButtonGroup />
+      {/*<TransactionDetails />
+      <ButtonGroup /> */}
       <p>
         You're about to create a transaction and will have to confirm it with
         your currently connected wallet.

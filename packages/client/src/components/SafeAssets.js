@@ -3,6 +3,7 @@ import { isEmpty } from "lodash";
 import { Plus, Check } from "./Svg";
 import { useModalContext } from "../contexts";
 import { useAddressValidation } from "../hooks";
+import { ASSET_TYPES } from "constants/enums";
 import SendTokens from "./SendTokens";
 
 const AddNFT = ({ web3, address }) => {
@@ -134,7 +135,7 @@ function SafeAssets({ web3, name, address }) {
                   name={name}
                   address={address}
                   initialState={{
-                    assetType: "NFTs",
+                    assetType: ASSET_TYPES.NFT,
                     selectedNFT: collection.key + "-" + token.tokenId,
                   }}
                 />
