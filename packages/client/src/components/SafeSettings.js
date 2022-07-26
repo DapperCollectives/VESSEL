@@ -193,7 +193,6 @@ const EditSignatureThreshold = ({
 
 const RemoveSafeOwner = ({ web3, safeOwner, onCancel, onSubmit }) => {
   const { isAddressValid } = useAddressValidation(web3.injectedProvider);
-  const [name, setName] = useState(safeOwner.name);
   const [address, setAddress] = useState(safeOwner.address);
   const [addressValid, setAddressValid] = useState(true);
   const isFormValid = addressValid;
@@ -204,7 +203,7 @@ const RemoveSafeOwner = ({ web3, safeOwner, onCancel, onSubmit }) => {
   };
 
   const onSubmitClick = () => {
-    onSubmit({ name, address });
+    onSubmit({ name: safeOwner.name, address });
   };
 
   const submitButtonClasses = [
@@ -257,7 +256,7 @@ const RemoveSafeOwner = ({ web3, safeOwner, onCancel, onSubmit }) => {
   );
 };
 
-const AddSafeOwner = ({ web3, onCancel, onNext }) => {
+const AddSafeOwner = ({ web3, onCancel, onNext, safeOwners }) => {
   const { isAddressValid } = useAddressValidation(web3.injectedProvider);
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
@@ -266,8 +265,13 @@ const AddSafeOwner = ({ web3, onCancel, onNext }) => {
 
   const onAddressChange = async (newAddress) => {
     setAddress(newAddress);
-    setAddressValid(isAddr(newAddress) && (await isAddressValid(newAddress)));
+    setAddressValid(isAddr(newAddress) && (await isAddressValid(newAddress)) && !isAddressExisting(safeOwners, newAddress));
   };
+
+  const isAddressExisting = (safeOwners, newAddress) => {
+    const address = newAddress.startsWith("0x") ? newAddress : `0x${newAddress}`;
+    return safeOwners.filter(obj => obj.address === address).length !== 0;
+  }
 
   const onNextClick = () => {
     onNext({
@@ -528,6 +532,7 @@ function SafeSettings({ address, web3, name, threshold, safeOwners }) {
         web3={web3}
         onCancel={() => modalContext.closeModal()}
         onNext={openEditSignatureThresholdModal}
+        safeOwners={safeOwners}
       />
     );
   };
