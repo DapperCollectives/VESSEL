@@ -43,8 +43,8 @@ export const isAddr = (addr) => {
   return noPrefix.length === 16;
 };
 export const formatAddress = (addr) => {
-  return addr.startsWith("0x")? addr: `0x${addr}`;
-}
+  return addr.startsWith("0x") ? addr : `0x${addr}`;
+};
 export const formatActionString = (str) => {
   const isFungibleTransfer = str.includes("FungibleToken.Receiver");
   let newStr = "";
@@ -86,4 +86,20 @@ export const getFlowscanUrlForTransaction = (hash) => {
   return `https://${
     process.env.REACT_APP_FLOW_ENV === "mainnet" ? "" : "testnet."
   }flowscan.org/transaction/${hash}`;
+};
+
+export const syncSafeOwnersWithSigners = (signers, safeOwners) => {
+  const verifiedSigners = Object.keys(signers).filter((key) => signers[key]);
+
+  const updatedOwners = verifiedSigners.map((address) => {
+    const owner = safeOwners.find(
+      (owner) => formatAddress(owner.address) === formatAddress(address)
+    );
+    return {
+      name: owner?.name,
+      address: address,
+      verified: true,
+    };
+  });
+  return updatedOwners;
 };

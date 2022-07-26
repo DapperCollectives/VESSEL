@@ -20,7 +20,7 @@ const deployNFTCollection = () => {
       console.log(stdout);
 
       exec(
-        `flow transactions send ${sendNFT} 0x${address} 0`,
+        `flow transactions send ${mintNFT} 0x${address} testName testDescription https://tinyurl.com/j5dehtjv`,
         (error, stdout, stderr) => {
           if (error?.message || stderr) {
             console.log(`error sending nft: ${error.message}`);
