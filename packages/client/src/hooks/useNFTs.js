@@ -1,6 +1,7 @@
 import { useEffect, useReducer } from "react";
 import { mutate, query, tx } from "@onflow/fcl";
 import reducer, { INITIAL_STATE } from "../reducers/nfts";
+import { REGULAR_LIMIT, SIGNED_LIMIT } from "../contexts/Web3";
 import {
   CHECK_TREASURY_NFT_COLLECTION,
   PROPOSE_NFT_TRANSFER,
@@ -18,7 +19,7 @@ const doSendNFTToTreasury = async (treasuryAddr, tokenId) => {
       arg(treasuryAddr, t.Address),
       arg(parseInt(tokenId), t.UInt64),
     ],
-    limit: 55,
+    limit: REGULAR_LIMIT,
   });
 };
 
@@ -26,19 +27,19 @@ const doSendCollectionToTreasury = async (treasuryAddr) => {
   return await mutate({
     cadence: SEND_COLLECTION_TO_TREASURY,
     args: (arg, t) => [arg(treasuryAddr, t.Address)],
-    limit: 55,
+    limit: REGULAR_LIMIT,
   });
 };
 
 const doProposeNFTTransfer = async (
-  treasuryAddr, 
-  recipient, 
+  treasuryAddr,
+  recipient,
   tokenId,
   message,
   keyIds,
   signatures,
   height
-  ) => {
+) => {
   return await mutate({
     cadence: PROPOSE_NFT_TRANSFER,
     args: (arg, t) => [
@@ -50,7 +51,7 @@ const doProposeNFTTransfer = async (
       arg(signatures, t.Array(t.String)),
       arg(height, t.UInt64)
     ],
-    limit: 300,
+    limit: SIGNED_LIMIT,
   });
 };
 
