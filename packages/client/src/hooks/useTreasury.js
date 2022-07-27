@@ -1,5 +1,6 @@
 import { useEffect, useReducer } from "react";
 import { mutate, query, tx } from "@onflow/fcl";
+import { syncSafeOwnersWithSigners } from "../utils";
 
 import reducer, { INITIAL_STATE } from "../reducers/treasuries";
 import {
@@ -219,6 +220,20 @@ export default function useTreasury(treasuryAddr) {
     });
   };
 
+  const updateOwnerList = async (treasuryAddr) => {
+    const signers = await getSigners(treasuryAddr);
+    const safeOwners = state.treasuries[treasuryAddr].safeOwners;
+    const updatedSafeOwners = syncSafeOwnersWithSigners(signers, safeOwners);
+    dispatch({
+      type: "SET_TREASURY",
+      payload: {
+        [treasuryAddr]: {
+          safeOwners: updatedSafeOwners,
+        },
+      },
+    });
+  };
+
   useEffect(() => {
     if (!treasuryAddr) {
       if (state.loadingTreasuries) {
@@ -261,7 +276,6 @@ export default function useTreasury(treasuryAddr) {
       },
     });
   };
-
   const fetchTreasury = async (treasuryAddr) => {
     const signers = await getSigners(treasuryAddr);
     if (signers) {
@@ -313,6 +327,7 @@ export default function useTreasury(treasuryAddr) {
     const res = await doExecuteAction(treasuryAddr, actionUUID);
     await tx(res).onceSealed();
     await refreshTreasury();
+    await updateOwnerList(treasuryAddr);
   };
 
   const updateThreshold = async (newThreshold) => {

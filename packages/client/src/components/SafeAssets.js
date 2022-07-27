@@ -6,7 +6,7 @@ import { useAddressValidation } from "../hooks";
 import { ASSET_TYPES } from "constants/enums";
 import SendTokens from "./SendTokens";
 
-const AddNFT = ({ web3, address }) => {
+const AddNFT = ({ web3, address, message, keyIds, signatures, height }) => {
   const modalContext = useModalContext();
   const [collectionPath, setCollectionPath] = useState("");
   const [isCollectionValid, setCollectionValid] = useState(false);
@@ -18,7 +18,13 @@ const AddNFT = ({ web3, address }) => {
   ];
 
   const onSubmit = async () => {
-    await web3.sendCollectionToTreasury(address);
+    await web3.sendCollectionToTreasury(
+      address,
+      message,
+      keyIds,
+      signatures,
+      height
+      );
     modalContext.closeModal();
   };
 
@@ -68,7 +74,7 @@ const AddNFT = ({ web3, address }) => {
   );
 };
 
-function SafeAssets({ web3, name, address }) {
+function SafeAssets({ web3, name, address, message, keyIds, signatures, height }) {
   const assetComponents = [];
   const { getTreasuryCollections } = web3;
   const userAddr = web3?.user?.addr;
@@ -166,7 +172,14 @@ function SafeAssets({ web3, name, address }) {
             <p
               className="has-text-grey"
               onClick={() =>
-                modalContext.openModal(<AddNFT web3={web3} address={address} />)
+                modalContext.openModal(
+                  <AddNFT 
+                    web3={web3} 
+                    address={address} 
+                    message={message} 
+                    keyId={keyIds}
+                    signatures={signatures} 
+                    height={height} />)
               }
             >
               <Plus style={{ position: "relative", top: 3 }} className="mr-2" />{" "}

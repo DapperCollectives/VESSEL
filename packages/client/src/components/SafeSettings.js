@@ -196,7 +196,7 @@ const RemoveSafeOwner = ({ web3, safeOwner, onCancel, onSubmit }) => {
   const [name, setName] = useState(safeOwner.name);
   const [address, setAddress] = useState(safeOwner.address);
   const [addressValid, setAddressValid] = useState(true);
-  const isFormValid = name.trim().length > 0 && addressValid;
+  const isFormValid = addressValid;
 
   const onAddressChange = async (newAddress) => {
     setAddress(newAddress);
@@ -221,18 +221,6 @@ const RemoveSafeOwner = ({ web3, safeOwner, onCancel, onSubmit }) => {
         </p>
       </div>
       <div className="border-light-top p-5 has-text-grey">
-        <div className="flex-1 is-flex is-flex-direction-column">
-          <label className="has-text-grey mb-2">
-            Owner Name<span className="has-text-red">*</span>
-          </label>
-          <input
-            className="p-4 rounded-sm border-light"
-            type="text"
-            placeholder="Enter local owner name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
-        </div>
         <div className="flex-1 is-flex is-flex-direction-column mt-4">
           <label className="has-text-grey mb-2">
             Address<span className="has-text-red">*</span>
@@ -274,7 +262,7 @@ const AddSafeOwner = ({ web3, onCancel, onNext }) => {
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
   const [addressValid, setAddressValid] = useState(false);
-  const isFormValid = name.trim().length > 0 && addressValid;
+  const isFormValid = name?.trim().length > 0 && addressValid;
 
   const onAddressChange = async (newAddress) => {
     setAddress(newAddress);
@@ -465,9 +453,9 @@ function SafeSettings({ address, web3, name, threshold, safeOwners }) {
     if (thresholdToPersist !== threshold) {
       await updateThreshold(thresholdToPersist);
     }
-
     setTreasury(address, {
       threshold: thresholdToPersist,
+      safeOwners: [...safeOwners, { ...newOwner, verified: false }],
     });
 
     modalContext.closeModal();
@@ -606,33 +594,35 @@ function SafeSettings({ address, web3, name, threshold, safeOwners }) {
       </div>
       <div className="column p-0 mt-4 is-flex is-flex-direction-column is-full rounded-sm border-light has-shadow">
         {Array.isArray(safeOwners) &&
-          safeOwners.map((so, idx) => (
-            <div
-              className="is-flex column is-full p-5 border-light-bottom"
-              key={idx}
-            >
-              <div className="px-2 mr-6" style={{ minWidth: 120 }}>
-                {so.name ?? `Signer #${idx + 1}`}
+          safeOwners
+            .filter((so) => so.verified)
+            .map((so, idx) => (
+              <div
+                className="is-flex column is-full p-5 border-light-bottom"
+                key={idx}
+              >
+                <div className="px-2 mr-6" style={{ minWidth: 120 }}>
+                  {so.name ?? `Signer #${idx + 1}`}
+                </div>
+                <div className="flex-1">{so.address}</div>
+                <div>
+                  <span
+                    className="is-underlined mr-5 pointer"
+                    onClick={() => ownersAddressClipboard.copy(so.address)}
+                  >
+                    {ownersAddressClipboard.textJustCopied === so.address
+                      ? "Copied"
+                      : "Copy Address"}
+                  </span>
+                  <span
+                    className="is-underlined pointer"
+                    onClick={() => openRemoveOwnerModal(so)}
+                  >
+                    Remove
+                  </span>
+                </div>
               </div>
-              <div className="flex-1">{so.address}</div>
-              <div>
-                <span
-                  className="is-underlined mr-5 pointer"
-                  onClick={() => ownersAddressClipboard.copy(so.address)}
-                >
-                  {ownersAddressClipboard.textJustCopied === so.address
-                    ? "Copied"
-                    : "Copy Address"}
-                </span>
-                <span
-                  className="is-underlined pointer"
-                  onClick={() => openRemoveOwnerModal(so)}
-                >
-                  Remove
-                </span>
-              </div>
-            </div>
-          ))}
+            ))}
       </div>
       <button
         className="button mt-4 is-full p-4 border-light"

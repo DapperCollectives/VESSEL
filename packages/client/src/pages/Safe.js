@@ -144,7 +144,32 @@ function Safe({ web3 }) {
   };
 
   const onDepositCollection = async () => {
-    await sendCollectionToTreasury(address);
+    
+    const latestBlock = await injectedProvider
+      .send([injectedProvider.getBlock(true)])
+      .then(injectedProvider.decode);
+
+    const { height, id } = latestBlock;
+    const collectionIdHex = Buffer.from(`A.${address.replace("0x", "")}.ExampleNFT.Collection`).toString("hex");
+
+    const message = `${collectionIdHex}${id}`;
+    const messageHex = Buffer.from(message).toString("hex");
+
+    let sigResponse = await injectedProvider
+      .currentUser()
+      .signUserMessage(messageHex);
+    const sigMessage =
+      sigResponse[0]?.signature?.signature ?? sigResponse[0]?.signature;
+    const keyIds = [sigResponse[0]?.keyId];
+    const signatures = [sigMessage];
+
+    await sendCollectionToTreasury(
+      address,
+      message,
+      keyIds,
+      signatures,
+      height
+      );
   };
 
   const onDepositNFT = async () => {
