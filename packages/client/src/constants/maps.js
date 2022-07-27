@@ -10,7 +10,7 @@ export const ASSET_TYPE_TO_META = {
 
 export const COIN_TYPE_TO_META = {
   [COIN_TYPES.FLOW]: {
-    displayName: "Flow",
+    displayName: "FLOW",
   },
   [COIN_TYPES.FUSD]: {
     displayName: "FUSD",
