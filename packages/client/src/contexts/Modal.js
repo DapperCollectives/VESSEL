@@ -58,6 +58,7 @@ const ModalProvider = ({ children }) => {
 
   const closeModal = useCallback(() => {
     setModal(false);
+    setContent(null);
     modalConfig.onClose();
   }, [modalConfig]);
 

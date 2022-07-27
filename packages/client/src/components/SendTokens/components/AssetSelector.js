@@ -1,5 +1,6 @@
 import { useContext } from "react";
 import { flatten } from "lodash";
+import { Web3Context } from "contexts/Web3";
 import { SendTokensContext } from "../sendTokensContext";
 import { ASSET_TYPES } from "constants/enums";
 import { ASSET_TYPE_TO_META } from "constants/maps";
@@ -7,8 +8,8 @@ import CoinTypeDropDown from "./CoinTypeDropDown";
 import NFTSelector from "./NFTSelector";
 
 const AssetSelector = () => {
-  const [sendModalState, setSendModalState, web3] =
-    useContext(SendTokensContext);
+  const [sendModalState, setSendModalState] = useContext(SendTokensContext);
+  const web3 = useContext(Web3Context);
   const { assetType, coinType, selectedNFT } = sendModalState;
   const userAddr = web3?.user?.addr;
   const userNFTs = web3?.NFTs?.[userAddr] ?? [];
@@ -70,10 +71,11 @@ const AssetSelector = () => {
         <NFTSelector
           nftsToDisplay={nftsToDisplay}
           selectedNFT={selectedNFT}
-          setSelectedNFT={(selected) => {
+          setSelectedNFT={(selected, url) => {
             setSendModalState((prevState) => ({
               ...prevState,
               selectedNFT: selected,
+              selectedNFTUrl: url,
             }));
           }}
         />

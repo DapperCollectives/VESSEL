@@ -1,11 +1,12 @@
+import { useEffect } from "react";
 import { SendTokensContextProvider } from "./sendTokensContext";
 import Steps from "./steps";
 
-const SendToken = (props) => {
+const SendTokens = (props) => {
   return (
     <SendTokensContextProvider {...props}>
       <Steps />
     </SendTokensContextProvider>
   );
 };
-export default SendToken;
+export default SendTokens;

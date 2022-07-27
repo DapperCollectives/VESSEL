@@ -1,24 +1,26 @@
-import { useState, useContext } from "react";
+import { useContext } from "react";
+import { Web3Context } from "contexts/Web3";
 import { SendTokensContext } from "../sendTokensContext";
 import { useAddressValidation } from "hooks";
 import { Check } from "components/Svg";
 import { isAddr, formatAddress } from "utils";
 const AddressInput = () => {
-  const [sendModalState, setSendModalState, web3] =
-    useContext(SendTokensContext);
-  const [receipientValid, setReceipientValid] = useState(false);
-  const { receipient } = sendModalState;
+  const [sendModalState, setSendModalState] = useContext(SendTokensContext);
+  const web3 = useContext(Web3Context);
+  const { receipient, receipientValid } = sendModalState;
   const { isAddressValid } = useAddressValidation(web3.injectedProvider);
 
   const onReceipientChange = async (e) => {
     let newValue = e.target.value;
-    setSendModalState((prevState) => ({ ...prevState, receipient: newValue }));
     let isValid = isAddr(e.target.value);
     if (isValid) {
       isValid = await isAddressValid(formatAddress(e.target.value));
     }
-    setReceipientValid(isValid);
-    console.log(isValid);
+    setSendModalState((prevState) => ({
+      ...prevState,
+      receipient: newValue,
+      receipientValid: isValid,
+    }));
   };
 
   return (

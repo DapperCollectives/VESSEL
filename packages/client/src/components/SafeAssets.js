@@ -131,7 +131,6 @@ function SafeAssets({ web3, name, address }) {
             onClick={() =>
               modalContext.openModal(
                 <SendTokens
-                  web3={web3}
                   name={name}
                   address={address}
                   initialState={{

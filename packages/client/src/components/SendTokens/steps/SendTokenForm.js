@@ -11,7 +11,7 @@ const SendTokenForm = () => {
       <AmountInput />
       <AddressInput />
       <AssetSelector />
-      {/*<ButtonGroup /> */}
+      <ButtonGroup />
     </div>
   );
 };
