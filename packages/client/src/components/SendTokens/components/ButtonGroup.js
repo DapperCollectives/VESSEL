@@ -29,6 +29,7 @@ const ButtonGroup = () => {
   const btnClasses = [
     "button p-4 flex-1",
     continueReady ? "is-link" : "is-light is-disabled",
+    currentStep == 1 ? "has-background-success" : "",
   ];
   const onSubmit = async () => {
     if (currentStep === 0) {
