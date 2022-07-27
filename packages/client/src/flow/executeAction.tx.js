@@ -19,7 +19,7 @@ export const EXECUTE_ACTION = `
 	  
 		  self.messageSignaturePayload = MyMultiSig.MessageSignaturePayload(
 			  _signingAddr: signer.address, _message: message, _keyIds: _keyIds, _signatures: signatures, _signatureBlock: signatureBlock
-		  )      
+		  )
 		}
 		execute {
 		  self.treasury.executeAction(actionUUID: actionUUID, signaturePayload: self.messageSignaturePayload)

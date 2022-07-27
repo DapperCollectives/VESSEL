@@ -1,7 +1,7 @@
 import React from "react";
 import { useParams, NavLink } from "react-router-dom";
 import QRCode from "react-qr-code";
-import { shortenAddr, createSignature } from "../utils";
+import { shortenAddr } from "../utils";
 import {
   SafeHome,
   SafeTransactions,
@@ -136,16 +136,7 @@ function Safe({ web3 }) {
   };
 
   const onConfirmAction = async ({ uuid }) => {
-    const uuidHex = Buffer.from(uuid.toString()).toString("hex");
-    const { message, keyIds, signatures, height } = createSignature(web3, uuidHex);
-
-    await executeAction(
-      parseInt(uuid, 10),
-      message,
-      keyIds,
-      signatures,
-      height
-    );
+    await executeAction(web3, uuid);
   };
 
   const onDeposit = async () => {

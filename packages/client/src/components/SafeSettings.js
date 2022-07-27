@@ -8,7 +8,6 @@ import {
   getProgressPercentageForSignersAmount,
   isAddr,
   formatAddress,
-  createSignature
 } from "../utils";
 
 const SignatureBar = ({ threshold, safeOwners }) => (
@@ -448,29 +447,11 @@ function SafeSettings({ address, web3, name, threshold, safeOwners }) {
     const thresholdToPersist = newThreshold ?? threshold;
 
     if (newOwner) {
-      const intent = `Add account ${newOwner.address} as a signer.`;
-      const { message, keyIds, signatures, height } = createSignature(web3, intent);
-
-      await proposeAddSigner(
-        formatAddress(newOwner.address),
-        message,
-        keyIds,
-        signatures,
-        height
-      );
+      await proposeAddSigner(web3, formatAddress(newOwner.address));
     }
 
     if (thresholdToPersist !== threshold) {
-      const intent = `Update the threshold of signers to ${thresholdToPersist}.`;
-      const { message, keyIds, signatures, height } = createSignature(web3, intent);
-
-      await updateThreshold(
-        thresholdToPersist,
-        message,
-        keyIds,
-        signatures,
-        height
-      );
+      await updateThreshold(web3, thresholdToPersist);
     }
     setTreasury(address, {
       threshold: thresholdToPersist,
@@ -483,16 +464,7 @@ function SafeSettings({ address, web3, name, threshold, safeOwners }) {
 
   const onRemoveSafeOwnerSubmit = async (ownerToBeRemoved) => {
     if (ownerToBeRemoved) {
-      const intent = `Remove ${ownerToBeRemoved.address} as a signer.`;
-      const { message, keyIds, signatures, height } = createSignature(web3, intent);
-
-      await proposeRemoveSigner(
-        formatAddress(ownerToBeRemoved.address),
-        message,
-        keyIds,
-        signatures,
-        height
-      );
+      await proposeRemoveSigner(web3, formatAddress(ownerToBeRemoved.address));
     }
 
     modalContext.closeModal();

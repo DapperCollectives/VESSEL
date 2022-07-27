@@ -3,7 +3,7 @@ import { flatten } from "lodash";
 import { useHistory } from "react-router-dom";
 import { useModalContext } from "../contexts";
 import { useAddressValidation } from "../hooks";
-import { isAddr, shortenAddr, createSignature } from "../utils";
+import { isAddr, shortenAddr } from "../utils";
 import { Check } from "./Svg";
 
 const SendTokens = ({ name, address, web3, initialState }) => {
@@ -35,35 +35,17 @@ const SendTokens = ({ name, address, web3, initialState }) => {
     }
     if (step === 1) {
       if (assetType === "FLOW") {
-        const uFixAmount = String(parseFloat(amount).toFixed(8))
-        const tokenAddress = process.env.REACT_APP_FLOW_ENV === "emulator" ? "ee82856bf20e2aa6" : "9a0766d93b6608b7";
-        const recepientVault = `Capability<&AnyResource{A.${tokenAddress}.FungibleToken.Receiver}>`
-        const intent = `Transfer ${uFixAmount} ${recepientVault} tokens from the treasury to ${recipient}`;
-
-        const { message, keyIds, signatures, height } = createSignature(web3, intent);
-
         await web3.proposeTransfer(
+          web3,
           recipient,
           amount,
-          message,
-          keyIds,
-          signatures,
-          height
         );
       } else {
-        const treasuryVault = `Capability<&AnyResource{A.${address.replace("0x", "")}.NonFungibleToken.CollectionPublic}>`;
-        const intent = `Transfer a ${treasuryVault} NFT from the treasury to ${recipient}`;
-
-        const { message, keyIds, signatures, height } = createSignature(web3, intent);
-
         await web3.proposeNFTTransfer(
+          web3,
           address,
           recipient,
-          selectedNFT,
-          message,
-          keyIds,
-          signatures,
-          height
+          selectedNFT
         );
       }
       await web3.refreshTreasury();
