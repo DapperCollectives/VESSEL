@@ -1,7 +1,7 @@
 import { useEffect, useReducer } from "react";
 import { mutate, query, tx } from "@onflow/fcl";
 import reducer, { INITIAL_STATE } from "../reducers/nfts";
-import { REGULAR_LIMIT, SIGNED_LIMIT } from "../contexts/Web3";
+import { REGULAR_LIMIT, SIGNED_LIMIT, EXECUTE_ACTION_LIMIT } from "../contexts/Web3";
 import { createSignature } from "../utils";
 import {
   CHECK_TREASURY_NFT_COLLECTION,
@@ -24,11 +24,23 @@ const doSendNFTToTreasury = async (treasuryAddr, tokenId) => {
   });
 };
 
-const doSendCollectionToTreasury = async (treasuryAddr) => {
+const doSendCollectionToTreasury = async (
+  treasuryAddr,
+  message,
+  keyIds,
+  signatures,
+  height
+  ) => {
   return await mutate({
     cadence: SEND_COLLECTION_TO_TREASURY,
-    args: (arg, t) => [arg(treasuryAddr, t.Address)],
-    limit: REGULAR_LIMIT,
+      args: (arg, t) => [
+      arg(treasuryAddr, t.Address),
+      arg(message, t.String),
+      arg(keyIds, t.Array(t.UInt64)),
+      arg(signatures, t.Array(t.String)),
+      arg(height, t.UInt64)
+    ],
+    limit: EXECUTE_ACTION_LIMIT,
   });
 };
 
@@ -117,8 +129,20 @@ export default function useNFTs() {
     await tx(res).onceSealed();
   };
 
-  const sendCollectionToTreasury = async (treasuryAddr) => {
-    const res = await doSendCollectionToTreasury(treasuryAddr);
+  const sendCollectionToTreasury = async (
+    treasuryAddr,
+    message,
+    keyIds,
+    signatures,
+    height
+    ) => {
+    const res = await doSendCollectionToTreasury(
+      treasuryAddr,
+      message,
+      keyIds,
+      signatures,
+      height
+      );
     await tx(res).onceSealed();
     return res;
   };

@@ -54,14 +54,14 @@ func TestTreasurySetup(t *testing.T) {
 	})
 
 	t.Run("Treasury should be able to receive non-fungible tokens", func(t *testing.T) {
-		otu.CreateNFTCollection("account")
-		otu.MintNFT("account")
+		otu.CreateNFTCollection("signer1")
+		otu.MintNFT("signer1")
 
 		// Treasury must first have a collection to receive an NFT
 		otu.CreateNFTCollection("treasuryOwner")
-		otu.SendCollectionToTreasury("treasuryOwner", "treasuryOwner")
-
-		otu.SendNFTToTreasury("account", "treasuryOwner", 0)
+		// Only signers can send collection to treasury
+		otu.SendCollectionToTreasury("signer1", "treasuryOwner")
+		otu.SendNFTToTreasury("signer1", "treasuryOwner", 0)
 
 		// Assert that the NFT has been transfered into the treasury
 		collectionIds := otu.GetTreasuryIdentifiers("treasuryOwner")
@@ -76,14 +76,14 @@ func TestTransferFungibleTokensToAccountActions(t *testing.T) {
 
 	otu := NewOverflowTest(t)
 	otu.MintFlow("signer1", TransferAmount)
+	otu.CreateNFTCollection("signer1")
+	otu.MintNFT("signer1")
 	otu.SetupTreasury("treasuryOwner", Signers, DefaultThreshold)
-	otu.SendFlowToTreasury("signer1", "treasuryOwner", TransferAmount)
-	otu.CreateNFTCollection("account")
-	otu.MintNFT("account")
-
 	otu.CreateNFTCollection("treasuryOwner")
-	otu.SendCollectionToTreasury("treasuryOwner", "treasuryOwner")
-	otu.SendNFTToTreasury("account", "treasuryOwner", 0)
+
+	otu.SendFlowToTreasury("signer1", "treasuryOwner", TransferAmount)
+	otu.SendCollectionToTreasury("signer1", "treasuryOwner")
+	otu.SendNFTToTreasury("signer1", "treasuryOwner", 0)
 
 	t.Run("Signers should be able to propose a transfer of fungible tokens out of the Treasury", func(t *testing.T) {
 		otu.ProposeFungibleTokenTransferAction("treasuryOwner", Signers[0], RecipientAcct, TransferAmount)
@@ -132,14 +132,17 @@ func TestTransferTokensToAccountActionsWith20Signers(t *testing.T) {
 
 	otu := NewOverflowTest(t)
 	otu.MintFlow("signer1", TransferAmount)
-	otu.SetupTreasury("treasuryOwner", MaxSigners, uint64(MaxThreshold))
-	otu.SendFlowToTreasury("signer1", "treasuryOwner", TransferAmount)
-	otu.CreateNFTCollection("account")
-	otu.MintNFT("account")
+	otu.CreateNFTCollection("signer1")
+	otu.MintNFT("signer1")
 
+	otu.SetupTreasury("treasuryOwner", MaxSigners, uint64(MaxThreshold))
 	otu.CreateNFTCollection("treasuryOwner")
-	otu.SendCollectionToTreasury("treasuryOwner", "treasuryOwner")
-	otu.SendNFTToTreasury("account", "treasuryOwner", 0)
+
+	otu.SendFlowToTreasury("signer1", "treasuryOwner", TransferAmount)
+	otu.SendCollectionToTreasury("signer1", "treasuryOwner")
+	otu.SendNFTToTreasury("signer1", "treasuryOwner", 0)
+
+	otu.CreateNFTCollection("account")
 
 	t.Run("Signers should be able to propose a transfer of fungible tokens out of the Treasury", func(t *testing.T) {
 		otu.ProposeFungibleTokenTransferAction("treasuryOwner", MaxSigners[0], RecipientAcct, TransferAmount)
@@ -184,7 +187,6 @@ func TestTransferTokensToAccountActionsWith20Signers(t *testing.T) {
 	})
 
 	t.Run("Signers should be able to propose a transfer of a non-fungible token out of the Treasury", func(t *testing.T) {
-		// TODO: create collection in one of the signer accounts
 		otu.ProposeNonFungibleTokenTransferAction("treasuryOwner", MaxSigners[0], "account", uint64(0))
 	})
 
@@ -218,7 +220,9 @@ func TestTransferTokensToAccountActionsWith20Signers(t *testing.T) {
 		ownedNFTIds := otu.GetTreasuryCollection("treasuryOwner", collectionIds[1][0])
 		assert.Equal(otu.T, 0, len(ownedNFTIds))
 
-		// TODO: Assert that the NFT has been received by the recipient account
+		// Assert that the NFT has been received by the recipient account
+		ownedNFTIds = otu.GetAccountCollection("account")
+		assert.Contains(otu.T, ownedNFTIds, uint64(0))
 	})
 
 	t.Run("Destroy Treasury should be allowed if both vaults and collections are empty", func(t *testing.T) {
@@ -235,10 +239,10 @@ func TestTransferFungibleTokensToTreasuryActions(t *testing.T) {
 	otu.SetupTreasury("treasuryOwner", Signers, DefaultThreshold)
 	otu.SendFlowToTreasury("signer1", "treasuryOwner", TransferAmount)
 	otu.CreateNFTCollection("account")
+	otu.CreateNFTCollection("signer1")
 	otu.MintNFT("account")
 
-	otu.CreateNFTCollection("treasuryOwner")
-	otu.SendCollectionToTreasury("treasuryOwner", "treasuryOwner")
+	otu.SendCollectionToTreasury("signer1", "treasuryOwner")
 
 	otu.SendNFTToTreasury("account", "treasuryOwner", 0)
 
@@ -299,9 +303,9 @@ func TestTransferNonFungibleTokensToAccountActions(t *testing.T) {
 	otu.MintNFT("signer1")
 
 	//set up treasury and send nft from signer1 to treasuray
-	otu.SetupTreasury("treasuryOwner", Signers, uint64(DefaultThreshold))
+	otu.SetupTreasury("treasuryOwner", Signers, DefaultThreshold)
 	otu.CreateNFTCollection("treasuryOwner")
-	otu.SendCollectionToTreasury("treasuryOwner", "treasuryOwner")
+	otu.SendCollectionToTreasury("signer1", "treasuryOwner")
 	otu.SendNFTToTreasury("signer1", "treasuryOwner", 0)
 
 	//set up the account
@@ -361,8 +365,8 @@ func TestTransferNonFungibleTokensToTreasuryActions(t *testing.T) {
 	otu.CreateNFTCollection("account")
 	otu.MintNFT("account")
 
-	otu.CreateNFTCollection("treasuryOwner")
-	otu.SendCollectionToTreasury("treasuryOwner", "treasuryOwner")
+	otu.CreateNFTCollection("signer1")
+	otu.SendCollectionToTreasury("signer1", "treasuryOwner")
 	otu.SendNFTToTreasury("account", "treasuryOwner", 0)
 
 	// Recipient treasury
@@ -398,8 +402,8 @@ func TestTransferNonFungibleTokensToTreasuryActions(t *testing.T) {
 	t.Run(`A signer should be able to execute a proposed action to transfer a non-fungible token to a Treasury once it has received
 		the required threshold of signatures`, func(t *testing.T) {
 		// First, create an empty collection in the recipient's  account and transfer it to the treasury
-		otu.CreateNFTCollection("recipient")
-		otu.SendCollectionToTreasury("recipient", "recipient")
+		otu.CreateNFTCollection("signer1")
+		otu.SendCollectionToTreasury("signer1", "recipient")
 
 		otu.ExecuteAction("treasuryOwner", transferNFTActionUUID)
 
@@ -673,12 +677,12 @@ func TestTreasuryOwnerExploits(t *testing.T) {
 	otu.MintFlow("signer1", TransferAmount)
 	otu.SetupTreasury("treasuryOwner", Signers, DefaultThreshold)
 	otu.SendFlowToTreasury("signer1", "treasuryOwner", TransferAmount)
-	otu.CreateNFTCollection("account")
-	otu.MintNFT("account")
+	otu.CreateNFTCollection("signer1")
+	otu.MintNFT("signer1")
 
 	otu.CreateNFTCollection("treasuryOwner")
-	otu.SendCollectionToTreasury("treasuryOwner", "treasuryOwner")
-	otu.SendNFTToTreasury("account", "treasuryOwner", 0)
+	otu.SendCollectionToTreasury("signer1", "treasuryOwner")
+	otu.SendNFTToTreasury("signer1", "treasuryOwner", 0)
 
 	t.Run("Signers should be able to propose a transfer of fungible tokens out of the Treasury", func(t *testing.T) {
 		otu.ProposeFungibleTokenTransferAction("treasuryOwner", Signers[0], RecipientAcct, TransferAmount)
