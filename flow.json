@@ -50,6 +50,12 @@
 			"aliases": {
 				"testnet": "0x68a4fe55ec686656"
 			}
+		},
+		"OnChainMultiSig": {
+			"source": "./contracts/core/OnChainMultiSig.cdc",
+			"aliases": {
+				"testnet": "0xa983fecbed621163"
+			}
 		}
 	},
 	"networks": {
@@ -169,7 +175,8 @@
 				"ExampleNFT",
 				"MyMultiSig",
 				"DAOTreasury",
-				"TreasuryActions"
+				"TreasuryActions",
+				"OnChainMultiSig"
 			],
 			"emulator-recipient": [],
 			"emulator-signer1": [],
