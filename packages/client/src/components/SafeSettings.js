@@ -269,7 +269,7 @@ const AddSafeOwner = ({ web3, onCancel, onNext, safeOwners }) => {
   };
 
   const isAddressExisting = (safeOwners, newAddress) => {
-    const address = newAddress.startsWith("0x") ? newAddress : `0x${newAddress}`;
+    const address = formatAddress(newAddress);
     return safeOwners.filter(obj => obj.address === address).length !== 0;
   }
 
