@@ -10,7 +10,7 @@ transaction(signerToBeRemoved: Address) {
                     ?? panic("Could not borrow the DAOTreasury")
   }
   execute {
-    let action = TreasuryActions.RemoveSigner(signerToBeRemoved)
+    let action = TreasuryActions.RemoveSigner(_signer: signerToBeRemoved)
     self.Treasury.proposeAction(action: action)
   }
 }

@@ -11,7 +11,7 @@ transaction(treasuryAddr: Address, actionUUID: UInt64) {
                     ?? panic("A DAOTreasury doesn't exist here.")        
   }
   execute {
-    let action = TreasuryActions.DestroyAction(actionUUID)
+    let action = TreasuryActions.DestroyAction(_actionUUID: actionUUID)
     self.Treasury.proposeAction(action: action)
   }
 }

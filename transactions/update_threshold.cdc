@@ -10,7 +10,7 @@ transaction(newThreshold: UInt64) {
                     ?? panic("Could not borrow the DAOTreasury")
   }
   execute {
-    let action = TreasuryActions.UpdateThreshold(newThreshold)
+    let action = TreasuryActions.UpdateThreshold(_threshold: newThreshold)
     self.Treasury.proposeAction(action: action)
   }
 }
