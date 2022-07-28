@@ -71,8 +71,6 @@ const doProposeTransfer = async (
   const intent = `Transfer ${uFixAmount} ${recepientVault} tokens from the treasury to ${recipientAddr}`;
 
   const { message, keyIds, signatures, height } = await createSignature(intent);
-  console.log(message)
-  console.log(recipientAddr)
 
   return await mutate({
     cadence: PROPOSE_TRANSFER,
