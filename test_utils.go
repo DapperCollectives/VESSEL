@@ -15,7 +15,7 @@ import (
 
 type OverflowTestUtils struct {
 	T *testing.T
-	O *overflow.Overflow
+	O *overflow.OverflowState
 }
 
 const ServiceAddress = "0xf8d6e0586b0a20c7"
@@ -591,12 +591,12 @@ func (otu *OverflowTestUtils) GetVerifiedSignersForAction(treasuryAcct string, a
 			UInt64(actionUUID)).
 		RunReturnsJsonString()
 
-	var _signers map[string]string
+	var _signers map[string]bool
 	var signers map[string]bool = map[string]bool{}
 	json.Unmarshal([]byte(verifiedSigners), &_signers)
 
 	for k, v := range _signers {
-		signers[k] = (v == "true")
+		signers[k] = (v == true)
 	}
 
 	return signers
@@ -844,14 +844,17 @@ func (otu *OverflowTestUtils) AttemptBorrowActionExecuteExploit(account string, 
 }
 
 func (otu *OverflowTestUtils) GetAccountAddress(name string) string {
-	return fmt.Sprintf("0x%s", otu.O.Account(name).Address().String())
+	account, _ := otu.O.State.Accounts().ByName(fmt.Sprintf("emulator-%s", name))
+
+	return fmt.Sprintf("0x%s", account.Address().String())
 }
 
 func (otu *OverflowTestUtils) GetAccount(name string) *flow.Account {
-	rawAddress := otu.O.Account(name).Address()
-	account, _ := otu.O.Services.Accounts.Get(rawAddress)
+	account, _ := otu.O.State.Accounts().ByName(fmt.Sprintf("emulator-%s", name))
 
-	return account
+	flowAccount, _ := otu.O.Services.Accounts.Get(account.Address())
+
+	return flowAccount
 }
 func (otu *OverflowTestUtils) GetAccountCollection(account string) []uint64 {
 	val := otu.O.ScriptFromFile("get_account_collection").
