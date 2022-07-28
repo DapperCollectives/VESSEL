@@ -20,6 +20,12 @@
 				"testnet": "0x7e60df042a9c0868"
 			}
 		},
+		"FUSD": {
+			"source": "./contracts/core/FUSD.cdc",
+			"aliases": {
+				"testnet": "0xe223d8a629e49c68"
+			}
+		},
 		"NonFungibleToken": {
 			"source": "./contracts/core/NonFungibleToken.cdc",
 			"aliases": {
@@ -170,6 +176,7 @@
 	"deployments": {
 		"emulator": {
 			"emulator-account": [
+				"FUSD",
 				"NonFungibleToken",
 				"MetadataViews",
 				"ExampleNFT",

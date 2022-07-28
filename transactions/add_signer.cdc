@@ -10,7 +10,7 @@ transaction(additionalSigner: Address) {
                     ?? panic("Could not borrow the DAOTreasury")
   }
   execute {
-    let action = TreasuryActions.AddSigner(additionalSigner)
+    let action = TreasuryActions.AddSigner(_signer: additionalSigner)
     self.Treasury.proposeAction(action: action)
   }
 }
