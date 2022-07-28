@@ -7,10 +7,10 @@ import { isAddr, formatAddress } from "utils";
 const AddressInput = () => {
   const [sendModalState, setSendModalState] = useContext(SendTokensContext);
   const web3 = useContext(Web3Context);
-  const { receipient, receipientValid } = sendModalState;
+  const { recipient, recipientValid } = sendModalState;
   const { isAddressValid } = useAddressValidation(web3.injectedProvider);
 
-  const onReceipientChange = async (e) => {
+  const onrecipientChange = async (e) => {
     let newValue = e.target.value;
     let isValid = isAddr(e.target.value);
     if (isValid) {
@@ -18,8 +18,8 @@ const AddressInput = () => {
     }
     setSendModalState((prevState) => ({
       ...prevState,
-      receipient: newValue,
-      receipientValid: isValid,
+      recipient: newValue,
+      recipientValid: isValid,
     }));
   };
 
@@ -35,10 +35,10 @@ const AddressInput = () => {
             style={{ height: 48 }}
             className="border-light rounded-sm column is-full p-2 mt-2"
             type="text"
-            value={receipient}
-            onChange={onReceipientChange}
+            value={recipient}
+            onChange={onrecipientChange}
           />
-          {receipientValid && (
+          {recipientValid && (
             <div style={{ position: "absolute", right: 17, top: 20 }}>
               <Check />
             </div>

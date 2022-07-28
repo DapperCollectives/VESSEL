@@ -4,7 +4,7 @@ import { SendTokensContext } from "../sendTokensContext";
 import { ASSET_TYPES } from "constants/enums";
 const TransactionDetails = () => {
   const [sendModalState] = useContext(SendTokensContext);
-  const { assetType, tokenAmount, selectedNFTUrl, receipient } = sendModalState;
+  const { assetType, tokenAmount, selectedNFTUrl, recipient } = sendModalState;
   return (
     <div>
       {assetType === ASSET_TYPES.TOKEN && (
@@ -32,7 +32,7 @@ const TransactionDetails = () => {
       <div className="mt-5">
         <div className="border-light-top is-flex is-justify-content-space-between py-5">
           <span className="has-text-grey">Sending to</span>
-          <span>{shortenAddr(receipient)}</span>
+          <span>{shortenAddr(recipient)}</span>
         </div>
         <div className="border-light-top is-flex is-justify-content-space-between py-5">
           <span className="has-text-grey">Network fee</span>

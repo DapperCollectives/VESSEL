@@ -17,13 +17,13 @@ const ButtonGroup = () => {
     currentStep,
     assetType,
     tokenAmount,
-    receipient,
-    receipientValid,
+    recipient,
+    recipientValid,
     selectedNFT,
   } = sendModalState;
 
   const continueReady =
-    receipientValid &&
+    recipientValid &&
     (assetType === ASSET_TYPES.TOKEN ? tokenAmount > 0 : selectedNFT);
   const btnText = continueReady ? "Sign & Deploy" : "Next";
   const btnClasses = [
@@ -40,11 +40,11 @@ const ButtonGroup = () => {
     }
     if (currentStep === 1) {
       if (assetType === ASSET_TYPES.TOKEN) {
-        await web3.proposeTransfer(formatAddress(receipient), tokenAmount);
+        await web3.proposeTransfer(formatAddress(recipient), tokenAmount);
       } else {
         await web3.proposeNFTTransfer(
           formatAddress(address),
-          formatAddress(receipient),
+          formatAddress(recipient),
           selectedNFT
         );
       }
