@@ -447,11 +447,11 @@ function SafeSettings({ address, web3, name, threshold, safeOwners }) {
     const thresholdToPersist = newThreshold ?? threshold;
 
     if (newOwner) {
-      await proposeAddSigner(web3, formatAddress(newOwner.address));
+      await proposeAddSigner(formatAddress(newOwner.address));
     }
 
     if (thresholdToPersist !== threshold) {
-      await updateThreshold(web3, thresholdToPersist);
+      await updateThreshold(thresholdToPersist);
     }
     setTreasury(address, {
       threshold: thresholdToPersist,
@@ -464,7 +464,7 @@ function SafeSettings({ address, web3, name, threshold, safeOwners }) {
 
   const onRemoveSafeOwnerSubmit = async (ownerToBeRemoved) => {
     if (ownerToBeRemoved) {
-      await proposeRemoveSigner(web3, formatAddress(ownerToBeRemoved.address));
+      await proposeRemoveSigner(formatAddress(ownerToBeRemoved.address));
     }
 
     modalContext.closeModal();

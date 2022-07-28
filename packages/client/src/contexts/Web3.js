@@ -119,3 +119,31 @@ export function Web3Consumer(Component) {
     );
   };
 }
+
+export const createSignature = async (intent) => {
+  try {
+    const latestBlock = await fcl
+      .send([fcl.getBlock(true)])
+      .then(fcl.decode);
+
+    const { height, id } = latestBlock;
+    const intentHex = Buffer.from(intent).toString("hex");
+
+    const message = `${intentHex}${id}`;
+    const messageHex = Buffer.from(message).toString("hex");
+
+    let sigResponse = await fcl
+      .currentUser()
+      .signUserMessage(messageHex);
+    const sigMessage =
+      sigResponse[0]?.signature?.signature ?? sigResponse[0]?.signature;
+    const keyIds = [sigResponse[0]?.keyId];
+    const signatures = [sigMessage];
+
+    return {
+      message, keyIds, signatures, height
+    }
+  } catch (error) {
+    console.log("error in creating a signature", error)
+  }
+}

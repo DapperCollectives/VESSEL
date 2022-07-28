@@ -1,8 +1,7 @@
 import { useEffect, useReducer } from "react";
 import { mutate, query, tx } from "@onflow/fcl";
 import reducer, { INITIAL_STATE } from "../reducers/nfts";
-import { REGULAR_LIMIT, SIGNED_LIMIT, EXECUTE_ACTION_LIMIT } from "../contexts/Web3";
-import { createSignature } from "../utils";
+import { REGULAR_LIMIT, SIGNED_LIMIT, EXECUTE_ACTION_LIMIT, createSignature } from "../contexts/Web3";
 import {
   CHECK_TREASURY_NFT_COLLECTION,
   PROPOSE_NFT_TRANSFER,
@@ -148,7 +147,6 @@ export default function useNFTs() {
   };
 
   const proposeNFTTransfer = async (
-    web3,
     treasuryAddr,
     recipient,
     selectedNFT
@@ -156,7 +154,7 @@ export default function useNFTs() {
     const treasuryVault = `Capability<&AnyResource{A.${treasuryAddr.replace("0x", "")}.NonFungibleToken.CollectionPublic}>`;
     const intent = `Transfer a ${treasuryVault} NFT from the treasury to ${recipient}`;
 
-    const { message, keyIds, signatures, height } = await createSignature(web3, intent);
+    const { message, keyIds, signatures, height } = await createSignature(intent);
 
     const tokenId = selectedNFT.split("-")[1];
     const res = await doProposeNFTTransfer(

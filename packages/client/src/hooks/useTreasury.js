@@ -1,6 +1,6 @@
 import { useEffect, useReducer } from "react";
 import { mutate, query, tx } from "@onflow/fcl";
-import { syncSafeOwnersWithSigners, createSignature } from "../utils";
+import { syncSafeOwnersWithSigners } from "../utils";
 
 import reducer, { INITIAL_STATE } from "../reducers/treasuries";
 import {
@@ -9,7 +9,8 @@ import {
   REGULAR_LIMIT,
   SIGNED_LIMIT,
   SIGNER_APPROVE_LIMIT,
-  UPDATE_SIGNER_LIMIT
+  UPDATE_SIGNER_LIMIT,
+  createSignature
 } from "../contexts/Web3";
 import {
   GET_SIGNERS,
@@ -60,7 +61,6 @@ const doSendFlowToTreasury = async (treasuryAddr, amount) => {
 };
 
 const doProposeTransfer = async (
-  web3,
   treasuryAddr,
   recipientAddr,
   amount
@@ -70,7 +70,9 @@ const doProposeTransfer = async (
   const recepientVault = `Capability<&AnyResource{A.${tokenAddress}.FungibleToken.Receiver}>`;
   const intent = `Transfer ${uFixAmount} ${recepientVault} tokens from the treasury to ${recipientAddr}`;
 
-  const { message, keyIds, signatures, height } = await createSignature(web3, intent);
+  const { message, keyIds, signatures, height } = await createSignature(intent);
+  console.log(message)
+  console.log(recipientAddr)
 
   return await mutate({
     cadence: PROPOSE_TRANSFER,
@@ -109,12 +111,8 @@ const doSignApprove = async (
   });
 };
 
-const doExecuteAction = async (
-  web3,
-  treasuryAddr,
-  actionUUID
-) => {
-  const { message, keyIds, signatures, height } = await createSignature(web3, actionUUID.toString());
+const doExecuteAction = async (treasuryAddr, actionUUID) => {
+  const { message, keyIds, signatures, height } = await createSignature(actionUUID.toString());
 
   return await mutate({
     cadence: EXECUTE_ACTION,
@@ -130,9 +128,9 @@ const doExecuteAction = async (
   });
 };
 
-const doUpdateThreshold = async (web3, newThreshold) => {
+const doUpdateThreshold = async (newThreshold) => {
   const intent = `Update the threshold of signers to ${newThreshold}.`;
-  const { message, keyIds, signatures, height } = await createSignature(web3, intent);
+  const { message, keyIds, signatures, height } = await createSignature(intent);
 
   return await mutate({
     cadence: UPDATE_THRESHOLD,
@@ -147,9 +145,9 @@ const doUpdateThreshold = async (web3, newThreshold) => {
   });
 };
 
-const doProposeAddSigner = async (web3, newSignerAddress) => {
+const doProposeAddSigner = async (newSignerAddress) => {
   const intent = `Add account ${newSignerAddress} as a signer.`;
-  const { message, keyIds, signatures, height } = await createSignature(web3, intent);
+  const { message, keyIds, signatures, height } = await createSignature(intent);
 
   return await mutate({
     cadence: ADD_SIGNER,
@@ -175,9 +173,9 @@ const doUpdateSigner = async (oldSignerAddress, newSignerAddress) => {
   });
 };
 
-const doProposeRemoveSigner = async (web3, signerToBeRemovedAddress) => {
+const doProposeRemoveSigner = async (signerToBeRemovedAddress) => {
   const intent = `Remove ${signerToBeRemovedAddress} as a signer.`;
-  const { message, keyIds, signatures, height } = await createSignature(web3, intent);
+  const { message, keyIds, signatures, height } = await createSignature(intent);
 
   return await mutate({
     cadence: REMOVE_SIGNER,
@@ -340,6 +338,7 @@ export default function useTreasury(treasuryAddr) {
       },
     });
   };
+
   const fetchTreasury = async (treasuryAddr) => {
     const signers = await getSigners(treasuryAddr);
     if (signers) {
@@ -359,13 +358,8 @@ export default function useTreasury(treasuryAddr) {
     await refreshTreasury();
   };
 
-  const proposeTransfer = async (
-    web3,
-    recipientAddr,
-    amount
-  ) => {
+  const proposeTransfer = async (recipientAddr, amount) => {
     const res = await doProposeTransfer(
-      web3,
       treasuryAddr,
       recipientAddr,
       parseFloat(amount).toFixed(8)
@@ -392,25 +386,21 @@ export default function useTreasury(treasuryAddr) {
     await refreshTreasury();
   };
 
-  const executeAction = async (web3, actionUUID) => {
-    const res = await doExecuteAction(
-      web3,
-      treasuryAddr,
-      actionUUID
-    );
+  const executeAction = async (actionUUID) => {
+    const res = await doExecuteAction(treasuryAddr, actionUUID);
     await tx(res).onceSealed();
     await refreshTreasury();
     await updateOwnerList(treasuryAddr);
   };
 
-  const updateThreshold = async (web3, newThreshold) => {
-    const res = await doUpdateThreshold(web3, newThreshold);
+  const updateThreshold = async (newThreshold) => {
+    const res = await doUpdateThreshold(newThreshold);
     await tx(res).onceSealed();
     await refreshTreasury();
   };
 
-  const proposeAddSigner = async (web3, newSignerAddress) => {
-    const res = await doProposeAddSigner(web3, newSignerAddress);
+  const proposeAddSigner = async (newSignerAddress) => {
+    const res = await doProposeAddSigner(newSignerAddress);
     await tx(res).onceSealed();
     await refreshTreasury();
   };
@@ -421,11 +411,12 @@ export default function useTreasury(treasuryAddr) {
     await refreshTreasury();
   };
 
-  const proposeRemoveSigner = async (web3, signerToBeRemovedAddress) => {
-    const res = await doProposeRemoveSigner(web3, signerToBeRemovedAddress);
+  const proposeRemoveSigner = async (signerToBeRemovedAddress) => {
+    const res = await doProposeRemoveSigner(signerToBeRemovedAddress);
     await tx(res).onceSealed();
     await refreshTreasury();
   };
+
   return {
     ...state,
     refreshTreasury,

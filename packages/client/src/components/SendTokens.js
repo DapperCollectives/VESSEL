@@ -36,13 +36,11 @@ const SendTokens = ({ name, address, web3, initialState }) => {
     if (step === 1) {
       if (assetType === "FLOW") {
         await web3.proposeTransfer(
-          web3,
           recipient,
           amount,
         );
       } else {
         await web3.proposeNFTTransfer(
-          web3,
           address,
           recipient,
           selectedNFT

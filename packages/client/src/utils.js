@@ -102,31 +102,3 @@ export const syncSafeOwnersWithSigners = (signers, safeOwners) => {
   });
   return updatedOwners;
 };
-
-export const createSignature = async (web3, intent) => {
-  try {
-    const latestBlock = await web3.injectedProvider
-      .send([web3.injectedProvider.getBlock(true)])
-      .then(web3.injectedProvider.decode);
-
-    const { height, id } = latestBlock;
-    const intentHex = Buffer.from(intent).toString("hex");
-
-    const message = `${intentHex}${id}`;
-    const messageHex = Buffer.from(message).toString("hex");
-
-    let sigResponse = await web3.injectedProvider
-      .currentUser()
-      .signUserMessage(messageHex);
-    const sigMessage =
-      sigResponse[0]?.signature?.signature ?? sigResponse[0]?.signature;
-    const keyIds = [sigResponse[0]?.keyId];
-    const signatures = [sigMessage];
-
-    return {
-      message, keyIds, signatures, height
-    }
-  } catch (error) {
-    console.log("error in creating a signature", error)
-  }
-}
