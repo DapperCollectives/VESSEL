@@ -29,15 +29,15 @@ const doSendCollectionToTreasury = async (
   keyIds,
   signatures,
   height
-  ) => {
+) => {
   return await mutate({
     cadence: SEND_COLLECTION_TO_TREASURY,
-      args: (arg, t) => [
+    args: (arg, t) => [
       arg(treasuryAddr, t.Address),
       arg(message, t.String),
       arg(keyIds, t.Array(t.UInt64)),
       arg(signatures, t.Array(t.String)),
-      arg(height, t.UInt64)
+      arg(height, t.UInt64),
     ],
     limit: EXECUTE_ACTION_LIMIT,
   });
@@ -92,7 +92,7 @@ export default function useNFTs() {
       console.log("fcl error", e);
     }
 
-    const tokens = result?.map(res => ({
+    const tokens = result?.map((res) => ({
       tokenId: res.id,
       name: res.name,
       description: res.description,
@@ -134,14 +134,14 @@ export default function useNFTs() {
     keyIds,
     signatures,
     height
-    ) => {
+  ) => {
     const res = await doSendCollectionToTreasury(
       treasuryAddr,
       message,
       keyIds,
       signatures,
       height
-      );
+    );
     await tx(res).onceSealed();
     return res;
   };

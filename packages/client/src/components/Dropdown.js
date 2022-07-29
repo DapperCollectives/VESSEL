@@ -80,17 +80,20 @@ const Dropdown = ({ value, values, setValue, style }) => {
         role="menu"
       >
         <div className="dropdown-content py-0">
-          {values.map((itemValue, index) => (
-            <button
-              className={`button is-white dropdown-item has-text-grey${
-                itemValue === value ? " is-active" : ""
-              }`}
-              onMouseDown={() => setValue(itemValue)}
-              key={`drop-down-${index}`}
-            >
-              {itemValue}
-            </button>
-          ))}
+          {values.map((item, index) => {
+            const { itemValue, displayText } = item;
+            return (
+              <button
+                className={`button is-white dropdown-item has-text-grey${
+                  itemValue === value ? " is-active" : ""
+                }`}
+                onMouseDown={() => setValue(itemValue)}
+                key={`drop-down-${index}`}
+              >
+                {displayText}
+              </button>
+            );
+          })}
         </div>
       </div>
     </div>

@@ -29,6 +29,7 @@ const AuthorizeTreasury = ({
     ).every((isValid) => isValid);
 
     if (everyOwnerHasName && everyOwnerHasValidAddress) {
+      safeOwners.map((so) => (so.verified = true));
       isAuthorizeReady = true;
     }
   }
@@ -104,7 +105,9 @@ function CreateSafe({ web3 }) {
     submittedTransaction,
     createTreasury,
   } = web3;
-  const [safeOwners, setSafeOwners] = useState([{ name: "", address }]);
+  const [safeOwners, setSafeOwners] = useState([
+    { name: "", address, verified: true },
+  ]);
   const [safeOwnersValidByAddress, setSafeOwnersValidByAddress] = useState({});
   const { isAddressValid } = useAddressValidation(injectedProvider);
 
