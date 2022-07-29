@@ -197,6 +197,10 @@ pub contract MyMultiSig {
         }
             
         access(account) fun addSigner(signer: Address) {
+            pre {
+                self.signers[signer] == nil : "Cannot add an already existing signer."
+            }
+            
             // Checks if the signer exists, get account key will fail otherwise
             getAccount(signer).keys.get(keyIndex: 0)
 
