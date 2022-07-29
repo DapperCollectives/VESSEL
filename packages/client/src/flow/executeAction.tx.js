@@ -1,17 +1,28 @@
 export const EXECUTE_ACTION = `
 	import DAOTreasury from 0xDAOTreasury
+	import MyMultiSig from 0xMyMultiSig
 
-	transaction(treasuryAddr: Address, actionUUID: UInt64) {
+	transaction(treasuryAddr: Address, actionUUID: UInt64, message: String, keyIds: [UInt64], signatures: [String], signatureBlock: UInt64) {
 
-		let Treasury: &DAOTreasury.Treasury{DAOTreasury.TreasuryPublic}
+		let treasury: &DAOTreasury.Treasury{DAOTreasury.TreasuryPublic}
+		let messageSignaturePayload: MyMultiSig.MessageSignaturePayload
 		
 		prepare(signer: AuthAccount) {
-		  self.Treasury = getAccount(treasuryAddr).getCapability(DAOTreasury.TreasuryPublicPath)
+		  self.treasury = getAccount(treasuryAddr).getCapability(DAOTreasury.TreasuryPublicPath)
 						  .borrow<&DAOTreasury.Treasury{DAOTreasury.TreasuryPublic}>()
-						  ?? panic("A DAOTreasury doesn't exist here.")        
+						  ?? panic("A DAOTreasury doesn't exist here.")
+		  var _keyIds: [Int] = []
+	  
+		  for keyId in keyIds {
+			  _keyIds.append(Int(keyId))
+		  }
+	  
+		  self.messageSignaturePayload = MyMultiSig.MessageSignaturePayload(
+			  _signingAddr: signer.address, _message: message, _keyIds: _keyIds, _signatures: signatures, _signatureBlock: signatureBlock
+		  )
 		}
 		execute {
-		  self.Treasury.executeAction(actionUUID: actionUUID)
+		  self.treasury.executeAction(actionUUID: actionUUID, signaturePayload: self.messageSignaturePayload)
 		}
 	  }
 `;

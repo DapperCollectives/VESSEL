@@ -60,6 +60,7 @@ pub contract TreasuryActions {
   // Transfers `amount` tokens from the treasury to `recipientVault`
   pub struct TransferToken: MyMultiSig.Action {
     pub let intent: String
+    pub let proposer: Address
     pub let recipientVault: Capability<&{FungibleToken.Receiver}>
     pub let amount: UFix64
 
@@ -77,7 +78,7 @@ pub contract TreasuryActions {
       )
     }
 
-    init(_recipientVault: Capability<&{FungibleToken.Receiver}>, _amount: UFix64) {
+    init(_recipientVault: Capability<&{FungibleToken.Receiver}>, _amount: UFix64, _proposer: Address) {
       pre {
         _amount > 0.0 : "Amount should be higher than 0.0"  
       }
@@ -90,6 +91,7 @@ pub contract TreasuryActions {
                         .concat(_recipientVault.borrow()!.owner!.address.toString())
       self.recipientVault = _recipientVault
       self.amount = _amount
+      self.proposer = _proposer
 
       emit TransferTokenToAccountActionCreated(
         recipientAddr: _recipientVault.borrow()!.owner!.address,
@@ -102,6 +104,7 @@ pub contract TreasuryActions {
   // Transfers `amount` of `identifier` tokens from the treasury to another treasury
   pub struct TransferTokenToTreasury: MyMultiSig.Action {
     pub let intent: String
+    pub let proposer: Address
     pub let identifier: String
     pub let recipientTreasury: Capability<&{DAOTreasury.TreasuryPublic}>
     pub let amount: UFix64
@@ -121,7 +124,7 @@ pub contract TreasuryActions {
       )
     }
 
-    init(_recipientTreasury: Capability<&{DAOTreasury.TreasuryPublic}>, _identifier: String, _amount: UFix64) {
+    init(_recipientTreasury: Capability<&{DAOTreasury.TreasuryPublic}>, _identifier: String, _amount: UFix64, _proposer: Address) {
       pre {
         _amount > 0.0 : "Amount should be higher than 0.0"  
       }
@@ -133,6 +136,7 @@ pub contract TreasuryActions {
                         .concat(_identifier)
                         .concat(" tokens from the treasury to ")
                         .concat(recipientAddr.toString())
+      self.proposer = _proposer
       self.identifier = _identifier
       self.recipientTreasury = _recipientTreasury
       self.amount = _amount
@@ -148,6 +152,7 @@ pub contract TreasuryActions {
   // Transfers an NFT from the treasury to `recipientCollection`
   pub struct TransferNFT: MyMultiSig.Action {
     pub let intent: String
+    pub let proposer: Address
     pub let recipientCollection: Capability<&{NonFungibleToken.CollectionPublic}>
     pub let withdrawID: UInt64
 
@@ -167,7 +172,7 @@ pub contract TreasuryActions {
       )
     }
 
-    init(_recipientCollection: Capability<&{NonFungibleToken.CollectionPublic}>, _nftID: UInt64) {
+    init(_recipientCollection: Capability<&{NonFungibleToken.CollectionPublic}>, _nftID: UInt64, _proposer: Address) {
       let recipientAddr = _recipientCollection.borrow()!.owner!.address
       let collectionID = _recipientCollection.getType().identifier
 
@@ -175,6 +180,7 @@ pub contract TreasuryActions {
                         .concat(collectionID)
                         .concat(" NFT from the treasury to ")
                         .concat(recipientAddr.toString())
+      self.proposer = _proposer
       self.recipientCollection = _recipientCollection
       self.withdrawID = _nftID
       emit TransferNFTToAccountActionCreated(
@@ -185,9 +191,10 @@ pub contract TreasuryActions {
     }
   }
 
-    // Transfers an NFT from the treasury to another treasury
+  // Transfers an NFT from the treasury to another treasury
   pub struct TransferNFTToTreasury: MyMultiSig.Action {
     pub let intent: String
+    pub let proposer: Address
     pub let identifier: String
     pub let recipientTreasury: Capability<&{DAOTreasury.TreasuryPublic}>
     pub let withdrawID: UInt64
@@ -207,7 +214,7 @@ pub contract TreasuryActions {
       )
     }
 
-    init(_recipientTreasury: Capability<&{DAOTreasury.TreasuryPublic}>, _identifier: String, _nftID: UInt64) {
+    init(_recipientTreasury: Capability<&{DAOTreasury.TreasuryPublic}>, _identifier: String, _nftID: UInt64, _proposer: Address) {
       let recipientAddr = _recipientTreasury.borrow()!.owner!.address
       self.intent = "Transfer an NFT from collection"
                         .concat(" ")
@@ -215,11 +222,12 @@ pub contract TreasuryActions {
                         .concat(" with ID ")
                         .concat(_nftID.toString())
                         .concat(" ")
-                        .concat(" from this Treasury to Treasury at address ")
+                        .concat("from this Treasury to Treasury at address ")
                         .concat(recipientAddr.toString())
       self.identifier = _identifier
       self.recipientTreasury = _recipientTreasury
-      self.withdrawID= _nftID
+      self.withdrawID = _nftID
+      self.proposer = _proposer
 
       emit TransferNFTToTreasuryActionCreated(
         recipientAddr: recipientAddr,
@@ -233,6 +241,7 @@ pub contract TreasuryActions {
   pub struct AddSigner: MyMultiSig.Action {
     pub let signer: Address
     pub let intent: String
+    pub let proposer: Address
 
     access(account) fun execute(_ params: {String: AnyStruct}) {
       let treasuryRef: &DAOTreasury.Treasury = params["treasury"]! as! &DAOTreasury.Treasury
@@ -243,7 +252,8 @@ pub contract TreasuryActions {
       emit AddSignerActionExecuted(address: self.signer, treasuryAddr: treasuryRef.owner!.address)
     }
 
-    init(_signer: Address) {
+    init(_signer: Address, _proposer: Address) {
+      self.proposer = _proposer
       self.signer = _signer
       self.intent = "Add account "
                       .concat(_signer.toString())
@@ -256,6 +266,7 @@ pub contract TreasuryActions {
   pub struct RemoveSigner: MyMultiSig.Action {
     pub let signer: Address
     pub let intent: String
+    pub let proposer: Address
 
     access(account) fun execute(_ params: {String: AnyStruct}) {
       let treasuryRef: &DAOTreasury.Treasury = params["treasury"]! as! &DAOTreasury.Treasury
@@ -265,7 +276,8 @@ pub contract TreasuryActions {
       emit RemoveSignerActionExecuted(address: self.signer, treasuryAddr: treasuryRef.owner!.address)
     }
 
-    init(_signer: Address) {
+    init(_signer: Address, _proposer: Address) {
+      self.proposer = _proposer
       self.signer = _signer
       self.intent = "Remove "
                       .concat(_signer.toString())
@@ -278,6 +290,7 @@ pub contract TreasuryActions {
   pub struct UpdateThreshold: MyMultiSig.Action {
     pub let threshold: UInt64
     pub let intent: String
+    pub let proposer: Address
 
     access(account) fun execute(_ params: {String: AnyStruct}) {
       let treasuryRef: &DAOTreasury.Treasury = params["treasury"]! as! &DAOTreasury.Treasury
@@ -288,9 +301,10 @@ pub contract TreasuryActions {
       emit UpdateThresholdActionExecuted(oldThreshold: oldThreshold, newThreshold: self.threshold, treasuryAddr: treasuryRef.owner!.address)
     }
 
-    init(_threshold: UInt64) {
+    init(_threshold: UInt64, _proposer: Address) {
       self.threshold = _threshold
-      self.intent = "Update the threshold of signers needed to execute an action in the Treasury."
+      self.proposer = _proposer
+      self.intent = "Update the threshold of signers to ".concat(_threshold.toString()).concat(".")
       emit UpdateThresholdActionCreated(threshold: _threshold)
     }
   }
@@ -299,6 +313,7 @@ pub contract TreasuryActions {
   pub struct DestroyAction: MyMultiSig.Action {
     pub let actionUUID: UInt64
     pub let intent: String
+    pub let proposer: Address
 
     access(account) fun execute(_ params: {String: AnyStruct}) {
       let treasuryRef: &DAOTreasury.Treasury = params["treasury"]! as! &DAOTreasury.Treasury
@@ -308,9 +323,12 @@ pub contract TreasuryActions {
       emit DestroyActionActionExecuted(actionUUID: self.actionUUID, treasuryAddr: treasuryRef.owner!.address)
     }
 
-    init(_actionUUID: UInt64) {
+    init(_actionUUID: UInt64, _proposer: Address) {
       self.actionUUID = _actionUUID
-      self.intent = "Remove the action from the Treasury."
+      self.proposer = _proposer
+      self.intent = "Remove the action "
+                      .concat(_actionUUID.toString())
+                      .concat(" from the Treasury.")
       emit DestroyActionActionCreated(actionUUID: _actionUUID)
     }
   }

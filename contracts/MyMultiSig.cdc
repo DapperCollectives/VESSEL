@@ -28,6 +28,7 @@ pub contract MyMultiSig {
 
     pub struct interface Action {
         pub let intent: String
+        pub let proposer: Address
         access(account) fun execute(_ params: {String: AnyStruct})
     }
 

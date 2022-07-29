@@ -9,19 +9,31 @@ import ExampleNFT from "../contracts/core/ExampleNFT.cdc"
 // Proposed ACTION: Transfer ExampleNFT with ID `id` from the DAOTreasury
 // at `treasuryAddr` to `recipientAddr`
 
-transaction(treasuryAddr: Address, recipientAddr: Address, identifier: String, id: UInt64) {
+transaction(treasuryAddr: Address, recipientAddr: Address, identifier: String, id: UInt64, message: String, keyIds: [UInt64], signatures: [String], signatureBlock: UInt64) {
 
-  let Treasury: &DAOTreasury.Treasury{DAOTreasury.TreasuryPublic}
-  let RecipientTreasury: Capability<&{DAOTreasury.TreasuryPublic}>
+  let treasury: &DAOTreasury.Treasury{DAOTreasury.TreasuryPublic}
+  let recipientCollection: Capability<&{DAOTreasury.TreasuryPublic}>
+  let action: AnyStruct{MyMultiSig.Action}
+  let messageSignaturePayload: MyMultiSig.MessageSignaturePayload
   
   prepare(signer: AuthAccount) {
-    self.Treasury = getAccount(treasuryAddr).getCapability(DAOTreasury.TreasuryPublicPath)
+    self.treasury = getAccount(treasuryAddr).getCapability(DAOTreasury.TreasuryPublicPath)
                     .borrow<&DAOTreasury.Treasury{DAOTreasury.TreasuryPublic}>()
                     ?? panic("A DAOTreasury doesn't exist here.")
-    self.RecipientTreasury = getAccount(recipientAddr).getCapability<&{DAOTreasury.TreasuryPublic}>(DAOTreasury.TreasuryPublicPath)
+    self.recipientCollection = getAccount(recipientAddr).getCapability<&{DAOTreasury.TreasuryPublic}>(DAOTreasury.TreasuryPublicPath)
+    self.action = TreasuryActions.TransferNFTToTreasury(_recipientCollection: self.recipientCollection, _identifier: identifier, _nftID: id, _proposer: signer.address)
+    
+    var _keyIds: [Int] = []
+
+    for keyId in keyIds {
+        _keyIds.append(Int(keyId))
+    }
+
+    self.messageSignaturePayload = MyMultiSig.MessageSignaturePayload(
+        _signingAddr: signer.address, _message: message, _keyIds: _keyIds, _signatures: signatures, _signatureBlock: signatureBlock
+    )
   }
   execute {
-    let action = TreasuryActions.TransferNFTToTreasury(_recipientTreasury: self.RecipientTreasury, _identifier: identifier, _nftID: id)
-    self.Treasury.proposeAction(action: action)
+    self.treasury.proposeAction(action: self.action, signaturePayload: self.messageSignaturePayload)
   }
 }

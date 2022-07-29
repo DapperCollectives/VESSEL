@@ -4,6 +4,15 @@ import { syncSafeOwnersWithSigners } from "../utils";
 
 import reducer, { INITIAL_STATE } from "../reducers/treasuries";
 import {
+  CREATE_TREASURY_LIMIT,
+  EXECUTE_ACTION_LIMIT,
+  REGULAR_LIMIT,
+  SIGNED_LIMIT,
+  SIGNER_APPROVE_LIMIT,
+  UPDATE_SIGNER_LIMIT,
+  createSignature
+} from "../contexts/Web3";
+import {
   GET_SIGNERS,
   GET_THRESHOLD,
   INITIALIZE_TREASURY,
@@ -39,7 +48,7 @@ const doCreateTreasury = async (signerAddresses, threshold) => {
       arg(signerAddresses, t.Array(t.Address)),
       arg(threshold, t.UInt64),
     ],
-    limit: 80,
+    limit: CREATE_TREASURY_LIMIT,
   });
 };
 
@@ -47,19 +56,34 @@ const doSendFlowToTreasury = async (treasuryAddr, amount) => {
   return await mutate({
     cadence: SEND_FLOW_TO_TREASURY,
     args: (arg, t) => [arg(treasuryAddr, t.Address), arg(amount, t.UFix64)],
-    limit: 55,
+    limit: REGULAR_LIMIT,
   });
 };
 
-const doProposeTransfer = async (treasuryAddr, recipientAddr, amount) => {
+const doProposeTransfer = async (
+  treasuryAddr,
+  recipientAddr,
+  amount
+) => {
+  const uFixAmount = String(parseFloat(amount).toFixed(8));
+  const tokenAddress = process.env.REACT_APP_FLOW_ENV === "emulator" ? "ee82856bf20e2aa6" : "9a0766d93b6608b7";
+  const recepientVault = `Capability<&AnyResource{A.${tokenAddress}.FungibleToken.Receiver}>`;
+  const intent = `Transfer ${uFixAmount} ${recepientVault} tokens from the treasury to ${recipientAddr}`;
+
+  const { message, keyIds, signatures, height } = await createSignature(intent);
+
   return await mutate({
     cadence: PROPOSE_TRANSFER,
     args: (arg, t) => [
       arg(treasuryAddr, t.Address),
       arg(recipientAddr, t.Address),
       arg(amount, t.UFix64),
+      arg(message, t.String),
+      arg(keyIds, t.Array(t.UInt64)),
+      arg(signatures, t.Array(t.String)),
+      arg(height, t.UInt64),
     ],
-    limit: 55,
+    limit: SIGNED_LIMIT,
   });
 };
 
@@ -81,31 +105,58 @@ const doSignApprove = async (
       arg(signatures, t.Array(t.String)),
       arg(signatureBlock, t.UInt64),
     ],
-    limit: 310,
+    limit: SIGNER_APPROVE_LIMIT,
   });
 };
 
 const doExecuteAction = async (treasuryAddr, actionUUID) => {
+  const { message, keyIds, signatures, height } = await createSignature(actionUUID.toString());
+
   return await mutate({
     cadence: EXECUTE_ACTION,
-    args: (arg, t) => [arg(treasuryAddr, t.Address), arg(actionUUID, t.UInt64)],
-    limit: 110,
+    args: (arg, t) => [
+      arg(treasuryAddr, t.Address),
+      arg(actionUUID, t.UInt64),
+      arg(message, t.String),
+      arg(keyIds, t.Array(t.UInt64)),
+      arg(signatures, t.Array(t.String)),
+      arg(height, t.UInt64)
+    ],
+    limit: EXECUTE_ACTION_LIMIT,
   });
 };
 
 const doUpdateThreshold = async (newThreshold) => {
+  const intent = `Update the threshold of signers to ${newThreshold}.`;
+  const { message, keyIds, signatures, height } = await createSignature(intent);
+
   return await mutate({
     cadence: UPDATE_THRESHOLD,
-    args: (arg, t) => [arg(newThreshold, t.UInt64)],
-    limit: 55,
+    args: (arg, t) => [
+      arg(newThreshold, t.UInt64),
+      arg(message, t.String),
+      arg(keyIds, t.Array(t.UInt64)),
+      arg(signatures, t.Array(t.String)),
+      arg(height, t.UInt64)
+    ],
+    limit: SIGNED_LIMIT,
   });
 };
 
 const doProposeAddSigner = async (newSignerAddress) => {
+  const intent = `Add account ${newSignerAddress} as a signer.`;
+  const { message, keyIds, signatures, height } = await createSignature(intent);
+
   return await mutate({
     cadence: ADD_SIGNER,
-    args: (arg, t) => [arg(newSignerAddress, t.Address)],
-    limit: 55,
+    args: (arg, t) => [
+      arg(newSignerAddress, t.Address),
+      arg(message, t.String),
+      arg(keyIds, t.Array(t.UInt64)),
+      arg(signatures, t.Array(t.String)),
+      arg(height, t.UInt64)
+    ],
+    limit: SIGNED_LIMIT,
   });
 };
 
@@ -116,15 +167,24 @@ const doUpdateSigner = async (oldSignerAddress, newSignerAddress) => {
       arg(oldSignerAddress, t.Address),
       arg(newSignerAddress, t.Address),
     ],
-    limit: 110,
+    limit: UPDATE_SIGNER_LIMIT,
   });
 };
 
 const doProposeRemoveSigner = async (signerToBeRemovedAddress) => {
+  const intent = `Remove ${signerToBeRemovedAddress} as a signer.`;
+  const { message, keyIds, signatures, height } = await createSignature(intent);
+
   return await mutate({
     cadence: REMOVE_SIGNER,
-    args: (arg, t) => [arg(signerToBeRemovedAddress, t.Address)],
-    limit: 110,
+    args: (arg, t) => [
+      arg(signerToBeRemovedAddress, t.Address),
+      arg(message, t.String),
+      arg(keyIds, t.Array(t.UInt64)),
+      arg(signatures, t.Array(t.String)),
+      arg(height, t.UInt64)
+    ],
+    limit: SIGNED_LIMIT,
   });
 };
 
@@ -276,6 +336,7 @@ export default function useTreasury(treasuryAddr) {
       },
     });
   };
+
   const fetchTreasury = async (treasuryAddr) => {
     const signers = await getSigners(treasuryAddr);
     if (signers) {
@@ -299,7 +360,7 @@ export default function useTreasury(treasuryAddr) {
     const res = await doProposeTransfer(
       treasuryAddr,
       recipientAddr,
-      String(parseFloat(amount).toFixed(8))
+      parseFloat(amount).toFixed(8)
     );
     await tx(res).onceSealed();
   };
@@ -353,6 +414,7 @@ export default function useTreasury(treasuryAddr) {
     await tx(res).onceSealed();
     await refreshTreasury();
   };
+
   return {
     ...state,
     refreshTreasury,
