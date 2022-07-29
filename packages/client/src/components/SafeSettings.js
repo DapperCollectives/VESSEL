@@ -270,7 +270,7 @@ const AddSafeOwner = ({ web3, onCancel, onNext, safeOwners }) => {
 
   const isAddressExisting = (safeOwners, newAddress) => {
     const address = formatAddress(newAddress);
-    return safeOwners.filter(obj => obj.address === address).length !== 0;
+    return safeOwners.filter(obj => obj.address === address && obj.verified).length !== 0;
   }
 
   const onNextClick = () => {
