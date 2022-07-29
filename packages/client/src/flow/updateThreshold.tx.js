@@ -3,15 +3,16 @@ export const UPDATE_THRESHOLD = `
   import TreasuryActions from 0xTreasuryActions
   import MyMultiSig from 0xMyMultiSig
 
-  transaction(newThreshold: UInt64, message: String, keyIds: [UInt64], signatures: [String], signatureBlock: UInt64) {
-    
+  transaction(treasuryAddr: Address, newThreshold: UInt64, message: String, keyIds: [UInt64], signatures: [String], signatureBlock: UInt64) {
+  
     let treasury: &DAOTreasury.Treasury{DAOTreasury.TreasuryPublic}
     let action: AnyStruct{MyMultiSig.Action}
     let messageSignaturePayload: MyMultiSig.MessageSignaturePayload
   
     prepare(signer: AuthAccount) {
-      self.treasury = signer.borrow<&DAOTreasury.Treasury>(from: DAOTreasury.TreasuryStoragePath)
-                      ?? panic("Could not borrow the DAOTreasury")
+          self.treasury = getAccount(treasuryAddr).getCapability(DAOTreasury.TreasuryPublicPath)
+                      .borrow<&DAOTreasury.Treasury{DAOTreasury.TreasuryPublic}>()
+                      ?? panic("A DAOTreasury doesn't exist here.")
       self.action = TreasuryActions.UpdateThreshold(newThreshold, signer.address)
   
       var _keyIds: [Int] = []
