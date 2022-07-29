@@ -483,7 +483,7 @@ func TestAddSignerAction(t *testing.T) {
 	otu.SetupTreasury("treasuryOwner", signers, uint64(len(signers)))
 
 	t.Run("User should be able to propose a signer to be added", func(t *testing.T) {
-		otu.ProposeAddSignerAction("treasuryOwner", "signer4")
+		otu.ProposeAddSignerAction("treasuryOwner", "treasuryOwner", "signer4")
 	})
 
 	t.Run("Signers should be able to sign to approve a proposed action to add a new signer", func(t *testing.T) {
@@ -525,7 +525,7 @@ func TestRemoveSignerAction(t *testing.T) {
 	otu.SetupTreasury("treasuryOwner", Signers, 3)
 
 	t.Run("User should be able to propose a signer to be removed", func(t *testing.T) {
-		otu.ProposeRemoveSignerAction("treasuryOwner", "signer4")
+		otu.ProposeRemoveSignerAction("treasuryOwner", "treasuryOwner", "signer4")
 	})
 
 	t.Run("Signers should be able to sign to approve a proposed action to remove a signer", func(t *testing.T) {
@@ -566,7 +566,7 @@ func TestRemoveSignerActionErrors(t *testing.T) {
 	otu.SetupTreasury("treasuryOwner", Signers, DefaultThreshold)
 
 	t.Run("User should be able to propose a signer to be removed", func(t *testing.T) {
-		otu.ProposeRemoveSignerAction("treasuryOwner", "signer4")
+		otu.ProposeRemoveSignerAction("treasuryOwner", "treasuryOwner", "signer4")
 	})
 
 	t.Run("Signers should be able to sign to approve a proposed action to remove a signer", func(t *testing.T) {
@@ -608,7 +608,7 @@ func TestUpdateThreshold(t *testing.T) {
 	otu.SetupTreasury("treasuryOwner", Signers, 2)
 
 	t.Run("User should be able to propose an update to the threshold", func(t *testing.T) {
-		otu.ProposeNewThreshold("treasuryOwner", DefaultThreshold)
+		otu.ProposeNewThreshold("treasuryOwner", "treasuryOwner", DefaultThreshold)
 	})
 
 	t.Run("Signers should be able to sign to approve a proposed action to update the threshold", func(t *testing.T) {
@@ -642,7 +642,7 @@ func TestUpdateThreshold(t *testing.T) {
 	})
 
 	t.Run("User shouldn't be able to propose an update to the threshold which is bigger than the number of signers", func(t *testing.T) {
-		otu.ProposeNewThreshold("treasuryOwner", 10)
+		otu.ProposeNewThreshold("treasuryOwner", "treasuryOwner", 10)
 
 		actions := otu.GetProposedActions("treasuryOwner")
 		keys := make([]uint64, 0, len(actions))
@@ -713,7 +713,7 @@ func TestDestroyAction(t *testing.T) {
 	otu.SetupTreasury("treasuryOwner", Signers, 2)
 
 	t.Run("User should be able to propose an action", func(t *testing.T) {
-		otu.ProposeNewThreshold("treasuryOwner", DefaultThreshold)
+		otu.ProposeNewThreshold("treasuryOwner", "treasuryOwner", DefaultThreshold)
 	})
 
 	t.Run("User should be able to propose to destroy the action", func(t *testing.T) {
