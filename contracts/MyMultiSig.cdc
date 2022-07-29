@@ -28,6 +28,7 @@ pub contract MyMultiSig {
 
     pub struct interface Action {
         pub let intent: String
+        pub let proposer: Address
         access(account) fun execute(_ params: {String: AnyStruct})
     }
 
@@ -71,76 +72,6 @@ pub contract MyMultiSig {
         pub var accountsVerified: {Address: Bool}
         access(contract) let action: {Action}
 
-        // Explanation: 
-        // Verifies that `acctAddress` is the one that signed the `message` (producing `signatures`) 
-        // with the `keyIds` (that are hopefully in its account, or its false) during `signatureBlock`
-        //
-        // Parameters:
-        // acctAddress: the address of the account we're verifying
-        // message: {blockId}{uuid of this resource}
-        // keyIds: the keyIds that the acctAddress theoretically signed with
-        // signatures: the signature that was theoretically produced from the `acctAddress` signing `message` with `keyIds`.
-        // can be multiple because you can sign with multiple keys, thus creating multiple signatures.
-        // signatureBlock: when the signature was produced
-        //
-        // Returns:
-        // Whether or not this signature is valid
-        // Cumulative weight of keys if signature is valid
-
-        pub fun validateSignature(payload: MessageSignaturePayload): ValidateSignatureResponse {
-            pre {
-                payload.keyIds.length == payload.signatures.length: "keyIds and signatures must be the same length"
-            }
-
-            let keyList = Crypto.KeyList()
-            let signingAddr = payload.signingAddr
-            let account = getAccount(signingAddr)
-
-            let keyIds = payload.keyIds
-            let uniqueKeys: {Int: Bool} = {}
-            for id in keyIds {
-                assert(uniqueKeys[id] == nil, message: "Duplicate keyId found for signatures")
-                uniqueKeys[id] = true
-            }
-
-            // In verify we need a [KeyListSignature] so we do that here
-            let signatureSet: [Crypto.KeyListSignature] = []
-            var totalWeight = 0.0
-
-            var i = 0
-            while (i < keyIds.length) {
-                let accountKey: AccountKey = account.keys.get(keyIndex: keyIds[i]) ?? panic("Provided key signature does not exist")
-                
-                let keyWeight = accountKey.weight
-                totalWeight = totalWeight + keyWeight
-
-                keyList.add(
-                    PublicKey(
-                        publicKey: accountKey.publicKey.publicKey,
-                        signatureAlgorithm: UInt(accountKey.publicKey.signatureAlgorithm.rawValue) == 2 ? SignatureAlgorithm.ECDSA_secp256k1  : SignatureAlgorithm.ECDSA_P256
-                    ),
-                    hashAlgorithm: HashAlgorithm.SHA3_256,
-                    weight: keyWeight
-                )
-
-                var signature = payload.signatures[i]
-                signatureSet.append(
-                    Crypto.KeyListSignature(
-                        keyIndex: keyIds[i],
-                        signature: signature.decodeHex()
-                    )
-                )
-                i = i + 1
-            }
-
-            let signatureValid = keyList.verify(
-                signatureSet: signatureSet,
-                signedData: payload.message.utf8
-            )
-
-            return ValidateSignatureResponse(_isValid: signatureValid, _totalWeight: totalWeight)
-        }
-
         pub fun signerApproveAction(_messageSignaturePayload: MessageSignaturePayload): Bool {
             pre {
                 self.accountsVerified[_messageSignaturePayload.signingAddr] != nil:
@@ -156,7 +87,7 @@ pub contract MyMultiSig {
             )
         
             // Validate Signature
-            var signatureValidationResponse = self.validateSignature(payload: _messageSignaturePayload)
+            var signatureValidationResponse = MyMultiSig.validateSignature(payload: _messageSignaturePayload)
             assert(signatureValidationResponse.isValid == true, message: "Invalid Signatures")
             assert(signatureValidationResponse.totalWeight >= 1000.0, message: "Total weight of combined signatures did not satisfy 1000 key weight requirement.")
 
@@ -181,7 +112,7 @@ pub contract MyMultiSig {
             )
         
             // Validate Signature
-            var signatureValidationResponse = self.validateSignature(payload: _messageSignaturePayload)
+            var signatureValidationResponse = MyMultiSig.validateSignature(payload: _messageSignaturePayload)
             assert(signatureValidationResponse.isValid == true, message: "Invalid Signatures")
             assert(signatureValidationResponse.totalWeight >= 1000.0, message: "Total weight of combined signatures did not satisfy 1000 key weight requirement.")
 
@@ -383,6 +314,76 @@ pub contract MyMultiSig {
     // 
     // ------- Functions --------
     //
+
+    // Explanation: 
+    // Verifies that `acctAddress` is the one that signed the `message` (producing `signatures`) 
+    // with the `keyIds` (that are hopefully in its account, or its false) during `signatureBlock`
+    //
+    // Parameters:
+    // acctAddress: the address of the account we're verifying
+    // message: {blockId}{uuid of this resource}
+    // keyIds: the keyIds that the acctAddress theoretically signed with
+    // signatures: the signature that was theoretically produced from the `acctAddress` signing `message` with `keyIds`.
+    // can be multiple because you can sign with multiple keys, thus creating multiple signatures.
+    // signatureBlock: when the signature was produced
+    //
+    // Returns:
+    // Whether or not this signature is valid
+    // Cumulative weight of keys if signature is valid
+
+    pub fun validateSignature(payload: MessageSignaturePayload): ValidateSignatureResponse {
+        pre {
+            payload.keyIds.length == payload.signatures.length: "keyIds and signatures must be the same length"
+        }
+
+        let keyList = Crypto.KeyList()
+        let signingAddr = payload.signingAddr
+        let account = getAccount(signingAddr)
+
+        let keyIds = payload.keyIds
+        let uniqueKeys: {Int: Bool} = {}
+        for id in keyIds {
+            assert(uniqueKeys[id] == nil, message: "Duplicate keyId found for signatures")
+            uniqueKeys[id] = true
+        }
+
+        // In verify we need a [KeyListSignature] so we do that here
+        let signatureSet: [Crypto.KeyListSignature] = []
+        var totalWeight = 0.0
+
+        var i = 0
+        while (i < keyIds.length) {
+            let accountKey: AccountKey = account.keys.get(keyIndex: keyIds[i]) ?? panic("Provided key signature does not exist")
+            
+            let keyWeight = accountKey.weight
+            totalWeight = totalWeight + keyWeight
+
+            keyList.add(
+                PublicKey(
+                    publicKey: accountKey.publicKey.publicKey,
+                    signatureAlgorithm: UInt(accountKey.publicKey.signatureAlgorithm.rawValue) == 2 ? SignatureAlgorithm.ECDSA_secp256k1  : SignatureAlgorithm.ECDSA_P256
+                ),
+                hashAlgorithm: HashAlgorithm.SHA3_256,
+                weight: keyWeight
+            )
+
+            var signature = payload.signatures[i]
+            signatureSet.append(
+                Crypto.KeyListSignature(
+                    keyIndex: keyIds[i],
+                    signature: signature.decodeHex()
+                )
+            )
+            i = i + 1
+        }
+
+        let signatureValid = keyList.verify(
+            signatureSet: signatureSet,
+            signedData: payload.message.utf8
+        )
+
+        return ValidateSignatureResponse(_isValid: signatureValid, _totalWeight: totalWeight)
+    }
         
     pub fun createMultiSigManager(signers: [Address], threshold: UInt64): @Manager {
         return <- create Manager(_initialSigners: signers, _initialThreshold: threshold)

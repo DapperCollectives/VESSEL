@@ -3,24 +3,31 @@ import DAOTreasury from "../contracts/DAOTreasury.cdc"
 import FungibleToken from "../contracts/core/FungibleToken.cdc"
 import MyMultiSig from "../contracts/MyMultiSig.cdc"
 
-// An example of proposing an action.
-//
-// Proposed ACTION: Transfer `amount` FlowToken from the DAOTreasury
-// at `treasuryAddr` to `recipientAddr`
+transaction(treasuryAddr: Address, recipientAddr: Address, amount: UFix64, message: String, keyIds: [UInt64], signatures: [String], signatureBlock: UInt64) {
 
-transaction(treasuryAddr: Address, recipientAddr: Address, amount: UFix64) {
-
-  let Treasury: &DAOTreasury.Treasury{DAOTreasury.TreasuryPublic}
-  let RecipientVault: Capability<&{FungibleToken.Receiver}>
+  let treasury: &DAOTreasury.Treasury{DAOTreasury.TreasuryPublic}
+  let recipientVault: Capability<&{FungibleToken.Receiver}>
+  let action: AnyStruct{MyMultiSig.Action}
+  let messageSignaturePayload: MyMultiSig.MessageSignaturePayload
   
   prepare(signer: AuthAccount) {
-    self.Treasury = getAccount(treasuryAddr).getCapability(DAOTreasury.TreasuryPublicPath)
+    self.treasury = getAccount(treasuryAddr).getCapability(DAOTreasury.TreasuryPublicPath)
                     .borrow<&DAOTreasury.Treasury{DAOTreasury.TreasuryPublic}>()
                     ?? panic("A DAOTreasury doesn't exist here.")
-    self.RecipientVault = getAccount(recipientAddr).getCapability<&{FungibleToken.Receiver}>(/public/flowTokenReceiver)
+    self.recipientVault = getAccount(recipientAddr).getCapability<&{FungibleToken.Receiver}>(/public/flowTokenReceiver)
+    self.action = TreasuryActions.TransferToken(_recipientVault: self.recipientVault, _amount: amount, _proposer: signer.address)
+
+    var _keyIds: [Int] = []
+
+    for keyId in keyIds {
+        _keyIds.append(Int(keyId))
+    }
+
+    self.messageSignaturePayload = MyMultiSig.MessageSignaturePayload(
+        _signingAddr: signer.address, _message: message, _keyIds: _keyIds, _signatures: signatures, _signatureBlock: signatureBlock
+    )
   }
   execute {
-    let action = TreasuryActions.TransferToken(_recipientVault: self.RecipientVault, _amount: amount)
-    self.Treasury.proposeAction(action: action)
+    self.treasury.proposeAction(action: self.action, signaturePayload: self.messageSignaturePayload)
   }
 }

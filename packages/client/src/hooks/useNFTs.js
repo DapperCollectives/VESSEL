@@ -1,6 +1,7 @@
 import { useEffect, useReducer } from "react";
 import { mutate, query, tx } from "@onflow/fcl";
 import reducer, { INITIAL_STATE } from "../reducers/nfts";
+import { REGULAR_LIMIT, SIGNED_LIMIT, EXECUTE_ACTION_LIMIT, createSignature } from "../contexts/Web3";
 import {
   CHECK_TREASURY_NFT_COLLECTION,
   PROPOSE_NFT_TRANSFER,
@@ -18,27 +19,51 @@ const doSendNFTToTreasury = async (treasuryAddr, tokenId) => {
       arg(treasuryAddr, t.Address),
       arg(parseInt(tokenId), t.UInt64),
     ],
-    limit: 55,
+    limit: REGULAR_LIMIT,
   });
 };
 
-const doSendCollectionToTreasury = async (treasuryAddr) => {
+const doSendCollectionToTreasury = async (
+  treasuryAddr,
+  message,
+  keyIds,
+  signatures,
+  height
+) => {
   return await mutate({
     cadence: SEND_COLLECTION_TO_TREASURY,
-    args: (arg, t) => [arg(treasuryAddr, t.Address)],
-    limit: 55,
+    args: (arg, t) => [
+      arg(treasuryAddr, t.Address),
+      arg(message, t.String),
+      arg(keyIds, t.Array(t.UInt64)),
+      arg(signatures, t.Array(t.String)),
+      arg(height, t.UInt64),
+    ],
+    limit: EXECUTE_ACTION_LIMIT,
   });
 };
 
-const doProposeNFTTransfer = async (treasuryAddr, recipient, tokenId) => {
+const doProposeNFTTransfer = async (
+  treasuryAddr,
+  recipient,
+  tokenId,
+  message,
+  keyIds,
+  signatures,
+  height
+) => {
   return await mutate({
     cadence: PROPOSE_NFT_TRANSFER,
     args: (arg, t) => [
       arg(treasuryAddr, t.Address),
       arg(recipient, t.Address),
       arg(parseInt(tokenId), t.UInt64),
+      arg(message, t.String),
+      arg(keyIds, t.Array(t.UInt64)),
+      arg(signatures, t.Array(t.String)),
+      arg(height, t.UInt64)
     ],
-    limit: 55,
+    limit: SIGNED_LIMIT,
   });
 };
 
@@ -67,7 +92,7 @@ export default function useNFTs() {
       console.log("fcl error", e);
     }
 
-    const tokens = result?.map(res => ({
+    const tokens = result?.map((res) => ({
       tokenId: res.id,
       name: res.name,
       description: res.description,
@@ -103,15 +128,44 @@ export default function useNFTs() {
     await tx(res).onceSealed();
   };
 
-  const sendCollectionToTreasury = async (treasuryAddr) => {
-    const res = await doSendCollectionToTreasury(treasuryAddr);
+  const sendCollectionToTreasury = async (
+    treasuryAddr,
+    message,
+    keyIds,
+    signatures,
+    height
+  ) => {
+    const res = await doSendCollectionToTreasury(
+      treasuryAddr,
+      message,
+      keyIds,
+      signatures,
+      height
+    );
     await tx(res).onceSealed();
     return res;
   };
 
-  const proposeNFTTransfer = async (treasuryAddr, recipient, selectedNFT) => {
+  const proposeNFTTransfer = async (
+    treasuryAddr,
+    recipient,
+    selectedNFT
+  ) => {
+    const treasuryVault = `Capability<&AnyResource{A.${treasuryAddr.replace("0x", "")}.NonFungibleToken.CollectionPublic}>`;
+    const intent = `Transfer a ${treasuryVault} NFT from the treasury to ${recipient}`;
+
+    const { message, keyIds, signatures, height } = await createSignature(intent);
+
     const tokenId = selectedNFT.split("-")[1];
-    const res = await doProposeNFTTransfer(treasuryAddr, recipient, tokenId);
+    const res = await doProposeNFTTransfer(
+      treasuryAddr,
+      recipient,
+      tokenId,
+      message,
+      keyIds,
+      signatures,
+      height
+    );
     await tx(res).onceSealed();
     return res;
   };

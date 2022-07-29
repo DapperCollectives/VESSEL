@@ -4,6 +4,13 @@ import networks from "../networks";
 import { useRouteMatch } from "react-router-dom";
 import { useFclUser, useTreasury, useNFTs } from "../hooks";
 
+export const REGULAR_LIMIT = 55;
+export const CREATE_TREASURY_LIMIT = 80;
+export const UPDATE_SIGNER_LIMIT = 110;
+export const SIGNED_LIMIT = 300;
+export const SIGNER_APPROVE_LIMIT = 310;
+export const EXECUTE_ACTION_LIMIT = 350;
+
 // create our app context
 export const Web3Context = React.createContext({});
 
@@ -111,4 +118,32 @@ export function Web3Consumer(Component) {
       </Web3Context.Consumer>
     );
   };
+}
+
+export const createSignature = async (intent) => {
+  try {
+    const latestBlock = await fcl
+      .send([fcl.getBlock(true)])
+      .then(fcl.decode);
+
+    const { height, id } = latestBlock;
+    const intentHex = Buffer.from(intent).toString("hex");
+
+    const message = `${intentHex}${id}`;
+    const messageHex = Buffer.from(message).toString("hex");
+
+    let sigResponse = await fcl
+      .currentUser()
+      .signUserMessage(messageHex);
+    const sigMessage =
+      sigResponse[0]?.signature?.signature ?? sigResponse[0]?.signature;
+    const keyIds = [sigResponse[0]?.keyId];
+    const signatures = [sigMessage];
+
+    return {
+      message, keyIds, signatures, height
+    }
+  } catch (error) {
+    console.log("error in creating a signature", error)
+  }
 }
