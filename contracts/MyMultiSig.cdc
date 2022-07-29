@@ -1,7 +1,7 @@
 import Crypto
 import FungibleToken from "./core/FungibleToken.cdc"
 
-pub contract MyMultiSig {
+pub contract MyMultiSigV2 {
 
     // Events
     pub event ActionExecutedByManager(uuid: UInt64)
@@ -87,7 +87,7 @@ pub contract MyMultiSig {
             )
         
             // Validate Signature
-            var signatureValidationResponse = MyMultiSig.validateSignature(payload: _messageSignaturePayload)
+            var signatureValidationResponse = MyMultiSigV2.validateSignature(payload: _messageSignaturePayload)
             assert(signatureValidationResponse.isValid == true, message: "Invalid Signatures")
             assert(signatureValidationResponse.totalWeight >= 1000.0, message: "Total weight of combined signatures did not satisfy 1000 key weight requirement.")
 
@@ -112,7 +112,7 @@ pub contract MyMultiSig {
             )
         
             // Validate Signature
-            var signatureValidationResponse = MyMultiSig.validateSignature(payload: _messageSignaturePayload)
+            var signatureValidationResponse = MyMultiSigV2.validateSignature(payload: _messageSignaturePayload)
             assert(signatureValidationResponse.isValid == true, message: "Invalid Signatures")
             assert(signatureValidationResponse.totalWeight >= 1000.0, message: "Total weight of combined signatures did not satisfy 1000 key weight requirement.")
 

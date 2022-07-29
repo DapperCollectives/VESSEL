@@ -1,19 +1,19 @@
 export const UPDATE_THRESHOLD = `
-	import DAOTreasury from 0xDAOTreasury
-  import TreasuryActions from 0xTreasuryActions
-  import MyMultiSig from 0xMyMultiSig
+	import DAOTreasuryV2 from 0xDAOTreasuryV2
+  import TreasuryActionsV2 from 0xTreasuryActionsV2
+  import MyMultiSigV2 from 0xMyMultiSigV2
 
   transaction(treasuryAddr: Address, newThreshold: UInt64, message: String, keyIds: [UInt64], signatures: [String], signatureBlock: UInt64) {
   
-    let treasury: &DAOTreasury.Treasury{DAOTreasury.TreasuryPublic}
-    let action: AnyStruct{MyMultiSig.Action}
-    let messageSignaturePayload: MyMultiSig.MessageSignaturePayload
+    let treasury: &DAOTreasuryV2.Treasury{DAOTreasuryV2.TreasuryPublic}
+    let action: AnyStruct{MyMultiSigV2.Action}
+    let messageSignaturePayload: MyMultiSigV2.MessageSignaturePayload
   
     prepare(signer: AuthAccount) {
-          self.treasury = getAccount(treasuryAddr).getCapability(DAOTreasury.TreasuryPublicPath)
-                      .borrow<&DAOTreasury.Treasury{DAOTreasury.TreasuryPublic}>()
-                      ?? panic("A DAOTreasury doesn't exist here.")
-      self.action = TreasuryActions.UpdateThreshold(_threshold: newThreshold, _proposer: signer.address)
+          self.treasury = getAccount(treasuryAddr).getCapability(DAOTreasuryV2.TreasuryPublicPath)
+                      .borrow<&DAOTreasuryV2.Treasury{DAOTreasuryV2.TreasuryPublic}>()
+                      ?? panic("A DAOTreasuryV2 doesn't exist here.")
+      self.action = TreasuryActionsV2.UpdateThreshold(_threshold: newThreshold, _proposer: signer.address)
   
       var _keyIds: [Int] = []
   
@@ -21,7 +21,7 @@ export const UPDATE_THRESHOLD = `
           _keyIds.append(Int(keyId))
       }
   
-      self.messageSignaturePayload = MyMultiSig.MessageSignaturePayload(
+      self.messageSignaturePayload = MyMultiSigV2.MessageSignaturePayload(
           _signingAddr: signer.address, _message: message, _keyIds: _keyIds, _signatures: signatures, _signatureBlock: signatureBlock
       )
     }
