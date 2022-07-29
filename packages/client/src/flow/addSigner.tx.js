@@ -13,7 +13,7 @@ export const ADD_SIGNER = `
       self.treasury = getAccount(treasuryAddr).getCapability(DAOTreasury.TreasuryPublicPath)
                       .borrow<&DAOTreasury.Treasury{DAOTreasury.TreasuryPublic}>()
                       ?? panic("A DAOTreasury doesn't exist here.")
-      self.action = TreasuryActions.AddSigner(additionalSigner, signer.address)
+      self.action = TreasuryActions.AddSigner(_signer: additionalSigner, _proposer: signer.address)
       
       var _keyIds: [Int] = []
   

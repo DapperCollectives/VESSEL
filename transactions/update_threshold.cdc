@@ -9,10 +9,10 @@ transaction(treasuryAddr: Address, newThreshold: UInt64, message: String, keyIds
   let messageSignaturePayload: MyMultiSig.MessageSignaturePayload
 
   prepare(signer: AuthAccount) {
-        self.treasury = getAccount(treasuryAddr).getCapability(DAOTreasury.TreasuryPublicPath)
+    self.treasury = getAccount(treasuryAddr).getCapability(DAOTreasury.TreasuryPublicPath)
                     .borrow<&DAOTreasury.Treasury{DAOTreasury.TreasuryPublic}>()
                     ?? panic("A DAOTreasury doesn't exist here.")
-    self.action = TreasuryActions.UpdateThreshold(newThreshold, signer.address)
+    self.action = TreasuryActions.UpdateThreshold(_threshold: newThreshold, _proposer: signer.address)
 
     var _keyIds: [Int] = []
 

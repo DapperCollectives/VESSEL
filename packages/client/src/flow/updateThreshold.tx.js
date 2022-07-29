@@ -13,7 +13,7 @@ export const UPDATE_THRESHOLD = `
           self.treasury = getAccount(treasuryAddr).getCapability(DAOTreasury.TreasuryPublicPath)
                       .borrow<&DAOTreasury.Treasury{DAOTreasury.TreasuryPublic}>()
                       ?? panic("A DAOTreasury doesn't exist here.")
-      self.action = TreasuryActions.UpdateThreshold(newThreshold, signer.address)
+      self.action = TreasuryActions.UpdateThreshold(_threshold: newThreshold, _proposer: signer.address)
   
       var _keyIds: [Int] = []
   

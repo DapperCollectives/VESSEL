@@ -13,7 +13,7 @@ transaction(treasuryAddr: Address, signerToBeRemoved: Address, message: String, 
         self.treasury = getAccount(treasuryAddr).getCapability(DAOTreasury.TreasuryPublicPath)
                     .borrow<&DAOTreasury.Treasury{DAOTreasury.TreasuryPublic}>()
                     ?? panic("A DAOTreasury doesn't exist here.")
-    self.action = TreasuryActions.RemoveSigner(signerToBeRemoved, signer.address)
+    self.action = TreasuryActions.RemoveSigner(_signer: signerToBeRemoved, _proposer: signer.address)
     var _keyIds: [Int] = []
 
     for keyId in keyIds {
