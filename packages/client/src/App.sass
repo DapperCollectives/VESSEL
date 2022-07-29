@@ -35,7 +35,6 @@ $body-font-size: 14px
 $modal-background-background-color: rgba(1, 1, 1, 0.5)
 $modal-content-width: 430px
 
-
 // Import only what you need from Bulma
 @import '~bulma/sass/utilities/_all.sass'
 @import '~bulma/sass/base/_all.sass'
@@ -149,6 +148,10 @@ input
 input,
 input:focus
   border-width: 1px
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button 
+  -webkit-appearance: none
+  margin: 0
 input:focus-visible
   outline: none
 .dropdown-item
