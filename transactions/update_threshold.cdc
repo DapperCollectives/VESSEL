@@ -11,7 +11,7 @@ transaction(newThreshold: UInt64, message: String, keyIds: [UInt64], signatures:
   prepare(signer: AuthAccount) {
     self.treasury = signer.borrow<&DAOTreasury.Treasury>(from: DAOTreasury.TreasuryStoragePath)
                     ?? panic("Could not borrow the DAOTreasury")
-    self.action = TreasuryActions.UpdateThreshold(_threshold: newThreshold, _proposer: signer.address)
+    self.action = TreasuryActions.UpdateThreshold(threshold: newThreshold, proposer: signer.address)
 
     var _keyIds: [Int] = []
 
@@ -20,7 +20,7 @@ transaction(newThreshold: UInt64, message: String, keyIds: [UInt64], signatures:
     }
 
     self.messageSignaturePayload = MyMultiSig.MessageSignaturePayload(
-        _signingAddr: signer.address, _message: message, _keyIds: _keyIds, _signatures: signatures, _signatureBlock: signatureBlock
+        signingAddr: signer.address, message: message, keyIds: _keyIds, signatures: signatures, signatureBlock: signatureBlock
     )
   }
   execute {

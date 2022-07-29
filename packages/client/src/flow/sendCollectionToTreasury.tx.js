@@ -26,7 +26,7 @@ export const SEND_COLLECTION_TO_TREASURY = `
 			}
 	
 			let messageSignaturePayload = MyMultiSig.MessageSignaturePayload(
-				_signingAddr: signer.address, _message: message, _keyIds: _keyIds, _signatures: signatures, _signatureBlock: signatureBlock
+				signingAddr: signer.address, message: message, keyIds: _keyIds, signatures: signatures, signatureBlock: signatureBlock
 			)
 			// Deposit the NFT in the treasury's collection
 			treasury.signerDepositCollection(collection: <-collection, signaturePayload: messageSignaturePayload)

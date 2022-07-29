@@ -16,7 +16,7 @@ export const PROPOSE_TRANSFER = `
 						.borrow<&DAOTreasury.Treasury{DAOTreasury.TreasuryPublic}>()
 						?? panic("A DAOTreasury doesn't exist here.")
 		self.recipientVault = getAccount(recipientAddr).getCapability<&{FungibleToken.Receiver}>(/public/flowTokenReceiver)
-		self.action = TreasuryActions.TransferToken(_recipientVault: self.recipientVault, _amount: amount, _proposer: signer.address)
+		self.action = TreasuryActions.TransferToken(recipientVault: self.recipientVault, amount: amount, proposer: signer.address)
 	
 		var _keyIds: [Int] = []
 	
@@ -25,7 +25,7 @@ export const PROPOSE_TRANSFER = `
 		}
 	
 		self.messageSignaturePayload = MyMultiSig.MessageSignaturePayload(
-			_signingAddr: signer.address, _message: message, _keyIds: _keyIds, _signatures: signatures, _signatureBlock: signatureBlock
+			signingAddr: signer.address, message: message, keyIds: _keyIds, signatures: signatures, signatureBlock: signatureBlock
 		)
 	  }
 	  execute {
