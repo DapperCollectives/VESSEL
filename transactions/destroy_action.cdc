@@ -12,7 +12,7 @@ transaction(treasuryAddr: Address, actionUUID: UInt64, message: String, keyIds: 
     self.treasury = getAccount(treasuryAddr).getCapability(DAOTreasury.TreasuryPublicPath)
                     .borrow<&DAOTreasury.Treasury{DAOTreasury.TreasuryPublic}>()
                     ?? panic("A DAOTreasury doesn't exist here.")        
-    self.action = TreasuryActions.DestroyAction(actionUUID, signer.address)
+    self.action = TreasuryActions.DestroyAction(_actionUUID: actionUUID, _proposer: signer.address)
         
     var _keyIds: [Int] = []
 

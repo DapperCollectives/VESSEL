@@ -12,7 +12,7 @@ transaction(signerToBeRemoved: Address, message: String, keyIds: [UInt64], signa
   prepare(signer: AuthAccount) {
     self.treasury = signer.borrow<&DAOTreasury.Treasury>(from: DAOTreasury.TreasuryStoragePath)
                     ?? panic("Could not borrow the DAOTreasury")
-    self.action = TreasuryActions.RemoveSigner(signerToBeRemoved, signer.address)
+    self.action = TreasuryActions.RemoveSigner(_signer: signerToBeRemoved, _proposer: signer.address)
     var _keyIds: [Int] = []
 
     for keyId in keyIds {

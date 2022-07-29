@@ -12,7 +12,7 @@ export const ADD_SIGNER = `
     prepare(signer: AuthAccount) {
       self.treasury = signer.borrow<&DAOTreasury.Treasury>(from: DAOTreasury.TreasuryStoragePath)
                       ?? panic("Could not borrow the DAOTreasury")
-      self.action = TreasuryActions.AddSigner(additionalSigner, signer.address)
+      self.action = TreasuryActions.AddSigner(_signer: additionalSigner, _proposer: signer.address)
       
       var _keyIds: [Int] = []
   

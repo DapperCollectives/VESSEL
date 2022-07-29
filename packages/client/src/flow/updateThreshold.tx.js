@@ -12,7 +12,7 @@ export const UPDATE_THRESHOLD = `
     prepare(signer: AuthAccount) {
       self.treasury = signer.borrow<&DAOTreasury.Treasury>(from: DAOTreasury.TreasuryStoragePath)
                       ?? panic("Could not borrow the DAOTreasury")
-      self.action = TreasuryActions.UpdateThreshold(newThreshold, signer.address)
+      self.action = TreasuryActions.UpdateThreshold(_threshold: newThreshold, _proposer: signer.address)
   
       var _keyIds: [Int] = []
   
