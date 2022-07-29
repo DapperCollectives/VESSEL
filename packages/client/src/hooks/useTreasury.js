@@ -1,14 +1,13 @@
 import { useEffect, useReducer } from "react";
 import { mutate, query, tx } from "@onflow/fcl";
 import { syncSafeOwnersWithSigners } from "../utils";
-
+import { COIN_TYPE_TO_META } from "constants/maps";
 import reducer, { INITIAL_STATE } from "../reducers/treasuries";
 import {
   GET_SIGNERS,
   GET_THRESHOLD,
   INITIALIZE_TREASURY,
   SEND_FLOW_TO_TREASURY,
-  PROPOSE_TRANSFER,
   GET_PROPOSED_ACTIONS,
   SIGNER_APPROVE,
   GET_SIGNERS_FOR_ACTION,
@@ -51,9 +50,14 @@ const doSendFlowToTreasury = async (treasuryAddr, amount) => {
   });
 };
 
-const doProposeTransfer = async (treasuryAddr, recipientAddr, amount) => {
+const doProposeTransfer = async (
+  treasuryAddr,
+  recipientAddr,
+  amount,
+  coinType
+) => {
   return await mutate({
-    cadence: PROPOSE_TRANSFER,
+    cadence: COIN_TYPE_TO_META[coinType].actions.proposeTransfer,
     args: (arg, t) => [
       arg(treasuryAddr, t.Address),
       arg(recipientAddr, t.Address),
@@ -295,11 +299,12 @@ export default function useTreasury(treasuryAddr) {
     await refreshTreasury();
   };
 
-  const proposeTransfer = async (recipientAddr, amount) => {
+  const proposeTransfer = async (recipientAddr, amount, coinType) => {
     const res = await doProposeTransfer(
       treasuryAddr,
       recipientAddr,
-      String(parseFloat(amount).toFixed(8))
+      String(parseFloat(amount).toFixed(8)),
+      coinType
     );
     await tx(res).onceSealed();
   };

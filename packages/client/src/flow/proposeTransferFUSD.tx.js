@@ -1,4 +1,4 @@
-export const PROPOSE_TRANSFER = `
+export const PROPOSE_TRANSFER_FUSD = `
 	import TreasuryActions from 0xTreasuryActions
 	import DAOTreasury from 0xDAOTreasury
 	import FungibleToken from 0xFungibleToken
