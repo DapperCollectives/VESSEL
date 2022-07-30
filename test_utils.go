@@ -21,8 +21,8 @@ type OverflowTestUtils struct {
 const ServiceAddress = "0xf8d6e0586b0a20c7"
 
 func NewOverflowTest(t *testing.T) *OverflowTestUtils {
-	// return &OverflowTestUtils{T: t, O: overflow.NewTestingEmulator().Start()}
-	return &OverflowTestUtils{T: t, O: overflow.NewOverflowEmulator().Start()}
+	return &OverflowTestUtils{T: t, O: overflow.NewTestingEmulator().Start()}
+	// return &OverflowTestUtils{T: t, O: overflow.NewOverflowEmulator().Start()}
 }
 
 func (otu *OverflowTestUtils) SetupTreasury(name string, signers []string, threshold uint64) *OverflowTestUtils {
