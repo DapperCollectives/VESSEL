@@ -9,8 +9,8 @@ pub contract DAOTreasury {
 
   // Events
   pub event TreasuryInitialized(initialSigners: [Address], initialThreshold: UInt64)
-  pub event ProposeAction(actionUUID: UInt64)
-  pub event ExecuteAction(actionUUID: UInt64)
+  pub event ProposeAction(actionUUID: UInt64, proposer: Address)
+  pub event ExecuteAction(actionUUID: UInt64, proposer: Address)
   pub event DepositVault(vaultID: String)
   pub event DepositCollection(collectionID: String)
   pub event DepositTokens(identifier: String)
@@ -21,8 +21,8 @@ pub contract DAOTreasury {
 
   // Interfaces + Resources
   pub resource interface TreasuryPublic {
-    pub fun proposeAction(action: {MyMultiSig.Action}): UInt64
-    pub fun executeAction(actionUUID: UInt64)
+    pub fun proposeAction(action: {MyMultiSig.Action}, signaturePayload: MyMultiSig.MessageSignaturePayload): UInt64
+    pub fun executeAction(actionUUID: UInt64, signaturePayload: MyMultiSig.MessageSignaturePayload)
     pub fun signerDepositCollection(collection: @NonFungibleToken.Collection, signaturePayload: MyMultiSig.MessageSignaturePayload)
     pub fun depositTokens(identifier: String, vault: @FungibleToken.Vault)
     pub fun depositNFT(identifier: String, nft: @NonFungibleToken.NFT)
@@ -39,8 +39,11 @@ pub contract DAOTreasury {
     access(self) var collections: @{String: NonFungibleToken.Collection}
 
     // ------- Manager -------   
-    pub fun proposeAction(action: {MyMultiSig.Action}): UInt64 {
+    pub fun proposeAction(action: {MyMultiSig.Action}, signaturePayload: MyMultiSig.MessageSignaturePayload): UInt64 {
+      self.validateTreasurySigner(identifier: action.intent, signaturePayload: signaturePayload)
+
       let uuid = self.multiSignManager.createMultiSign(action: action)
+      emit ProposeAction(actionUUID: uuid, proposer: action.proposer)
       return uuid
     }
 
@@ -50,10 +53,57 @@ pub contract DAOTreasury {
       wants. This means it's very imporant for the signers
       to know what they are signing.
     */
-    pub fun executeAction(actionUUID: UInt64) {
+    pub fun executeAction(actionUUID: UInt64, signaturePayload: MyMultiSig.MessageSignaturePayload) {
+      self.validateTreasurySigner(identifier: actionUUID.toString(), signaturePayload: signaturePayload)
+
       let selfRef: &Treasury = &self as &Treasury
       self.multiSignManager.executeAction(actionUUID: actionUUID, {"treasury": selfRef})
-      emit ExecuteAction(actionUUID: actionUUID)
+      emit ExecuteAction(actionUUID: actionUUID, proposer: signaturePayload.signingAddr)
+    }
+
+    access(self) fun validateTreasurySigner(identifier: String, signaturePayload: MyMultiSig.MessageSignaturePayload) {
+      // ------- Validate Address is a Signer on the Treasury -----
+      let signers = self.multiSignManager.getSigners()
+      assert(signers[signaturePayload.signingAddr] == true, message: "Address is not a signer on this Treasury")
+
+      // ------- Validate Message --------
+      // message format: {identifier hex}{blockId}
+      var counter = 0
+      let signingBlock = getBlock(at: signaturePayload.signatureBlock)!
+      let blockId = signingBlock.id
+      let blockIds: [UInt8] = []
+
+      while (counter < blockId.length) {
+          blockIds.append(blockId[counter])
+          counter = counter + 1
+      }
+
+      let blockIdHex = String.encodeHex(blockIds)
+      let identifierHex = String.encodeHex(identifier.utf8)
+
+      let message = signaturePayload.message
+      // Identifier
+      assert(
+        identifierHex == message.slice(from: 0, upTo: identifierHex.length),
+        message: "Invalid Message: incorrect identifier"
+      )
+      // Block ID
+      assert(
+        blockIdHex == message.slice(from: identifierHex.length, upTo: message.length),
+        message: "Invalid Message: invalid blockId"
+      )
+
+      // ------ Validate Signature -------
+      var signatureValidationResponse = MyMultiSig.validateSignature(payload: signaturePayload)
+
+      assert(
+        signatureValidationResponse.isValid == true,
+        message: "Invalid Signature"
+      )
+      assert(
+        signatureValidationResponse.totalWeight >= 1000.0,
+        message: "Insufficient Key Weights: sum of total signing key weights must be >= 1000.0"
+      )
     }
 
     // Reference to Manager //

@@ -4,14 +4,14 @@ import { useClipboard } from "../hooks";
 
 function SafeContacts({ safeOwners = [] }) {
   const clipboard = useClipboard();
-
+  const verifiedSafeOwners = safeOwners.filter((so) => so.verified);
   return (
     <>
       <div className="column p-0 mt-5 is-flex is-full">
         <h4 className="is-size-5">Saved addresses</h4>
       </div>
       <div className="column p-0 mt-4 is-flex is-flex-direction-column is-full rounded-sm border-light has-shadow">
-        {safeOwners.map((so, i) => (
+        {verifiedSafeOwners.map((so, i) => (
           <div
             className="is-flex is-align-items-center is-justify-content-space-between column is-full p-5 border-light-bottom"
             key={i}

@@ -136,7 +136,7 @@ function Safe({ web3 }) {
   };
 
   const onConfirmAction = async ({ uuid }) => {
-    await executeAction(parseInt(uuid, 10));
+    await executeAction(uuid);
   };
 
   const onDeposit = async () => {
@@ -144,13 +144,14 @@ function Safe({ web3 }) {
   };
 
   const onDepositCollection = async () => {
-    
     const latestBlock = await injectedProvider
       .send([injectedProvider.getBlock(true)])
       .then(injectedProvider.decode);
 
     const { height, id } = latestBlock;
-    const collectionIdHex = Buffer.from(`A.${address.replace("0x", "")}.ExampleNFT.Collection`).toString("hex");
+    const collectionIdHex = Buffer.from(
+      `A.${address.replace("0x", "")}.ExampleNFT.Collection`
+    ).toString("hex");
 
     const message = `${collectionIdHex}${id}`;
     const messageHex = Buffer.from(message).toString("hex");
@@ -169,7 +170,7 @@ function Safe({ web3 }) {
       keyIds,
       signatures,
       height
-      );
+    );
   };
 
   const onDepositNFT = async () => {
@@ -221,12 +222,7 @@ function Safe({ web3 }) {
 
   const onSend = () => {
     modalContext.openModal(
-      <SendTokens
-        name={safeData.name}
-        address={address}
-        web3={web3}
-        balance={balance}
-      />
+      <SendTokens name={safeData.name} address={address} balance={balance} />
     );
   };
 

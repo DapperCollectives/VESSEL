@@ -193,7 +193,6 @@ const EditSignatureThreshold = ({
 
 const RemoveSafeOwner = ({ web3, safeOwner, onCancel, onSubmit }) => {
   const { isAddressValid } = useAddressValidation(web3.injectedProvider);
-  const name = useState(safeOwner.name);
   const [address, setAddress] = useState(safeOwner.address);
   const [addressValid, setAddressValid] = useState(true);
   const isFormValid = addressValid;
@@ -204,7 +203,7 @@ const RemoveSafeOwner = ({ web3, safeOwner, onCancel, onSubmit }) => {
   };
 
   const onSubmitClick = () => {
-    onSubmit({ name, address });
+    onSubmit({ name: safeOwner.name, address });
   };
 
   const submitButtonClasses = [
@@ -257,7 +256,7 @@ const RemoveSafeOwner = ({ web3, safeOwner, onCancel, onSubmit }) => {
   );
 };
 
-const AddSafeOwner = ({ web3, onCancel, onNext }) => {
+const AddSafeOwner = ({ web3, onCancel, onNext, safeOwners }) => {
   const { isAddressValid } = useAddressValidation(web3.injectedProvider);
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
@@ -266,8 +265,13 @@ const AddSafeOwner = ({ web3, onCancel, onNext }) => {
 
   const onAddressChange = async (newAddress) => {
     setAddress(newAddress);
-    setAddressValid(isAddr(newAddress) && (await isAddressValid(newAddress)));
+    setAddressValid(isAddr(newAddress) && (await isAddressValid(newAddress)) && !isAddressExisting(safeOwners, newAddress));
   };
+
+  const isAddressExisting = (safeOwners, newAddress) => {
+    const address = formatAddress(newAddress);
+    return safeOwners.filter(obj => obj.address === address && obj.verified).length !== 0;
+  }
 
   const onNextClick = () => {
     onNext({
@@ -438,6 +442,7 @@ function SafeSettings({ address, web3, name, threshold, safeOwners }) {
     updateThreshold,
     proposeRemoveSigner,
   } = web3;
+  const verifiedSafeOwners = safeOwners.filter((so) => so.verified);
   const onEditNameSubmit = (newName) => {
     modalContext.closeModal();
     setTreasury(address, { name: newName });
@@ -475,7 +480,7 @@ function SafeSettings({ address, web3, name, threshold, safeOwners }) {
     modalContext.closeModal();
     modalContext.openModal(
       <ReviewSafeEdits
-        safeOwners={safeOwners}
+        safeOwners={verifiedSafeOwners}
         threshold={threshold}
         newOwner={newOwner}
         newThreshold={newThreshold}
@@ -498,7 +503,7 @@ function SafeSettings({ address, web3, name, threshold, safeOwners }) {
   const openEditSignatureThresholdModal = (newOwner) => {
     modalContext.openModal(
       <EditSignatureThreshold
-        safeOwners={safeOwners}
+        safeOwners={verifiedSafeOwners}
         threshold={threshold}
         newOwner={newOwner}
         onCancel={() => modalContext.closeModal()}
@@ -528,6 +533,7 @@ function SafeSettings({ address, web3, name, threshold, safeOwners }) {
         web3={web3}
         onCancel={() => modalContext.closeModal()}
         onNext={openEditSignatureThresholdModal}
+        safeOwners={safeOwners}
       />
     );
   };
@@ -574,11 +580,11 @@ function SafeSettings({ address, web3, name, threshold, safeOwners }) {
       </div>
       <div className="column p-5 mt-4 mb-5 is-flex is-full rounded-sm border-light has-shadow">
         <div className="mr-5 is-flex">
-          <SignatureBar threshold={threshold} safeOwners={safeOwners} />
+          <SignatureBar threshold={threshold} safeOwners={verifiedSafeOwners} />
         </div>
         <div className="flex-1">
-          {threshold} out of {safeOwners?.length} signatures are required to
-          confirm a new transaction
+          {threshold} out of {verifiedSafeOwners?.length} signatures are
+          required to confirm a new transaction
         </div>
         <div>
           <span
@@ -593,36 +599,34 @@ function SafeSettings({ address, web3, name, threshold, safeOwners }) {
         <h4 className="is-size-5">Owners</h4>
       </div>
       <div className="column p-0 mt-4 is-flex is-flex-direction-column is-full rounded-sm border-light has-shadow">
-        {Array.isArray(safeOwners) &&
-          safeOwners
-            .filter((so) => so.verified)
-            .map((so, idx) => (
-              <div
-                className="is-flex column is-full p-5 border-light-bottom"
-                key={idx}
-              >
-                <div className="px-2 mr-6" style={{ minWidth: 120 }}>
-                  {so.name ?? `Signer #${idx + 1}`}
-                </div>
-                <div className="flex-1">{so.address}</div>
-                <div>
-                  <span
-                    className="is-underlined mr-5 pointer"
-                    onClick={() => ownersAddressClipboard.copy(so.address)}
-                  >
-                    {ownersAddressClipboard.textJustCopied === so.address
-                      ? "Copied"
-                      : "Copy Address"}
-                  </span>
-                  <span
-                    className="is-underlined pointer"
-                    onClick={() => openRemoveOwnerModal(so)}
-                  >
-                    Remove
-                  </span>
-                </div>
+        {Array.isArray(verifiedSafeOwners) &&
+          verifiedSafeOwners.map((so, idx) => (
+            <div
+              className="is-flex column is-full p-5 border-light-bottom"
+              key={idx}
+            >
+              <div className="px-2 mr-6" style={{ minWidth: 120 }}>
+                {so.name ?? `Signer #${idx + 1}`}
               </div>
-            ))}
+              <div className="flex-1">{so.address}</div>
+              <div>
+                <span
+                  className="is-underlined mr-5 pointer"
+                  onClick={() => ownersAddressClipboard.copy(so.address)}
+                >
+                  {ownersAddressClipboard.textJustCopied === so.address
+                    ? "Copied"
+                    : "Copy Address"}
+                </span>
+                <span
+                  className="is-underlined pointer"
+                  onClick={() => openRemoveOwnerModal(so)}
+                >
+                  Remove
+                </span>
+              </div>
+            </div>
+          ))}
       </div>
       <button
         className="button mt-4 is-full p-4 border-light"
