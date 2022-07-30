@@ -62,6 +62,12 @@
 			"aliases": {
 				"testnet": "0xa983fecbed621163"
 			}
+		},
+		"FiatToken": {
+			"source": "./contracts/core/FiatToken.cdc",
+			"aliases": {
+				"testnet": "0xa983fecbed621163"
+			}
 		}
 	},
 	"networks": {

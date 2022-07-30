@@ -4,34 +4,35 @@ import (
 	"bytes"
 	"encoding/hex"
 	"fmt"
-	"html/template"
 	"io/ioutil"
+	"os/exec"
+	"strings"
+	"text/template"
 
 	"github.com/bjartek/overflow/overflow"
 	"github.com/onflow/cadence"
 )
 
-type OverflowTestUtils struct {
+type OverflowUtils struct {
 	O *overflow.OverflowState
 }
 
 type Addresses struct {
-	FungibleToken      string
-	FiatTokenInterface string
-	FiatToken          string
-	OnChainMultiSig    string
+	FungibleToken   string
+	OnChainMultiSig string
 }
 
 func main() {
 	otu := DeployOverflow()
 	otu.DeployFiatTokenContract("treasuryOwner", "USDC", "0.1.0")
+	UpdateContractAddresses()
 }
 
-func DeployOverflow() *OverflowTestUtils {
-	return &OverflowTestUtils{O: overflow.NewOverflowEmulator().Start()}
+func DeployOverflow() *OverflowUtils {
+	return &OverflowUtils{O: overflow.NewOverflowEmulator().Start()}
 }
 
-func (otu *OverflowTestUtils) DeployFiatTokenContract(ownerAcct string, tokenName string, version string) {
+func (otu *OverflowUtils) DeployFiatTokenContract(ownerAcct string, tokenName string, version string) {
 	signer1, _ := otu.O.State.Accounts().ByName(fmt.Sprintf("emulator-%s", "signer1"))
 	signer2, _ := otu.O.State.Accounts().ByName(fmt.Sprintf("emulator-%s", "signer2"))
 	signer3, _ := otu.O.State.Accounts().ByName(fmt.Sprintf("emulator-%s", "signer3"))
@@ -76,9 +77,7 @@ func (otu *OverflowTestUtils) DeployFiatTokenContract(ownerAcct string, tokenNam
 		panic(err)
 	}
 
-	ownerAccount, _ := otu.O.State.Accounts().ByName(fmt.Sprintf("emulator-%s", ownerAcct))
-
-	addresses := Addresses{ownerAccount.Address().String(), ownerAccount.Address().String(), ownerAccount.Address().String(), ownerAccount.Address().String()}
+	addresses := Addresses{"ee82856bf20e2aa6", "f8d6e0586b0a20c7"}
 
 	buf := &bytes.Buffer{}
 	err = tmpl.Execute(buf, addresses)
@@ -90,43 +89,72 @@ func (otu *OverflowTestUtils) DeployFiatTokenContract(ownerAcct string, tokenNam
 		overflow.SignProposeAndPayAs("account"),
 		overflow.Arg("contractName", "FiatToken"),
 		overflow.Arg("code", hex.EncodeToString(buf.Bytes())),
-		overflow.Arg("VaultStoragePath", cadence.Path{Domain: "storage", Identifier: "USDCVault"}),
-		overflow.Arg("VaultProviderPrivPath", cadence.Path{Domain: "private", Identifier: "USDCVaultBalance"}),
+		overflow.Arg("VaultStoragePath", cadence.NewPath("storage", "USDCVault")),
 		overflow.Arg("VaultBalancePubPath", cadence.Path{Domain: "public", Identifier: "USDCVaultBalance"}),
 		overflow.Arg("VaultUUIDPubPath", cadence.Path{Domain: "public", Identifier: "USDCVaultUUID"}),
-		overflow.Arg("VaultAllowancePubPath", cadence.Path{Domain: "public", Identifier: "USDCVaultAllowance"}),
 		overflow.Arg("VaultReceiverPubPath", cadence.Path{Domain: "public", Identifier: "USDCVaultReceiver"}),
-		overflow.Arg("VaultPubSigner", cadence.Path{Domain: "public", Identifier: "USDCVaultPublicSigner"}),
 		overflow.Arg("BlocklistExecutorStoragePath", cadence.Path{Domain: "storage", Identifier: "USDCBlocklistExe"}),
-		overflow.Arg("BlocklistExecutorPrivPath", cadence.Path{Domain: "private", Identifier: "USDCBlocklistExeCap"}),
+		overflow.Arg("BlocklisterUUIDPubPath", cadence.Path{Domain: "public", Identifier: "USDCBlocklistExeCap"}),
 		overflow.Arg("BlocklisterStoragePath", cadence.Path{Domain: "storage", Identifier: "USDCBlocklister"}),
 		overflow.Arg("BlocklisterCapReceiverPubPath", cadence.Path{Domain: "public", Identifier: "USDCBlocklisterCapReceiver"}),
 		overflow.Arg("BlocklisterPubSigner", cadence.Path{Domain: "public", Identifier: "USDCBlocklisterPublicSigner"}),
 		overflow.Arg("PauseExecutorStoragePath", cadence.Path{Domain: "storage", Identifier: "USDCPauseExe"}),
-		overflow.Arg("PauseExecutorPrivPath", cadence.Path{Domain: "private", Identifier: "USDCPauseExeCap"}),
+		overflow.Arg("PauserUUIDPubPath", cadence.Path{Domain: "public", Identifier: "USDCPauseExeCap"}),
 		overflow.Arg("PauserStoragePath", cadence.Path{Domain: "storage", Identifier: "USDCPauser"}),
 		overflow.Arg("PauserCapReceiverPubPath", cadence.Path{Domain: "public", Identifier: "USDCPauserCapReceiver"}),
 		overflow.Arg("PauserPubSigner", cadence.Path{Domain: "public", Identifier: "USDCPauserPublicSigner"}),
 		overflow.Arg("AdminStoragePath", cadence.Path{Domain: "storage", Identifier: "USDCAdmin"}),
 		overflow.Arg("AdminPubSigner", cadence.Path{Domain: "public", Identifier: "USDCAdminPublicSigner"}),
+		overflow.Arg("AdminExecutorStoragePath", cadence.Path{Domain: "storage", Identifier: "USDCAdmin"}),
+		overflow.Arg("AdminCapReceiverPubPath", cadence.Path{Domain: "public", Identifier: "USDCAdminCapReciever"}),
+		overflow.Arg("AdminUUIDPubPath", cadence.Path{Domain: "public", Identifier: "USDCAdminPub"}),
 		overflow.Arg("OwnerStoragePath", cadence.Path{Domain: "storage", Identifier: "USDCOwner"}),
-		overflow.Arg("OwnerPrivPath", cadence.Path{Domain: "private", Identifier: "USDCOwnerCap"}),
+		overflow.Arg("OwnerUUIDPubPath", cadence.Path{Domain: "public", Identifier: "USDCOwnerCap"}),
+		overflow.Arg("OwnerExecutorStoragePath", cadence.Path{Domain: "storage", Identifier: "USDCOwnerExecutor"}),
+		overflow.Arg("OwnerCapReceiverPubPath", cadence.Path{Domain: "public", Identifier: "USDCOwnerCapReceiver"}),
+		overflow.Arg("OwnerPubSigner", cadence.Path{Domain: "public", Identifier: "USDCOwnerPubSigner"}),
 		overflow.Arg("MasterMinterStoragePath", cadence.Path{Domain: "storage", Identifier: "USDCMasterMinter"}),
-		overflow.Arg("MasterMinterPrivPath", cadence.Path{Domain: "private", Identifier: "USDCMasterMinterCap"}),
 		overflow.Arg("MasterMinterPubSigner", cadence.Path{Domain: "public", Identifier: "USDCMasterMinterPublicSigner"}),
 		overflow.Arg("MasterMinterUUIDPubPath", cadence.Path{Domain: "public", Identifier: "USDCMasterMinterUUID"}),
+		overflow.Arg("MasterMinterExecutorStoragePath", cadence.Path{Domain: "storage", Identifier: "USDCMasterMinterExecutor"}),
+		overflow.Arg("MasterMinterCapReceiverPubPath", cadence.Path{Domain: "public", Identifier: "USDCMasterMinterCapReceiver"}),
 		overflow.Arg("MinterControllerStoragePath", cadence.Path{Domain: "storage", Identifier: "USDCMinterController"}),
 		overflow.Arg("MinterControllerUUIDPubPath", cadence.Path{Domain: "public", Identifier: "USDCMinterControllerUUID"}),
 		overflow.Arg("MinterControllerPubSigner", cadence.Path{Domain: "public", Identifier: "USDCMinterControllerPublicSigner"}),
 		overflow.Arg("MinterStoragePath", cadence.Path{Domain: "storage", Identifier: "USDCMinter"}),
 		overflow.Arg("MinterUUIDPubPath", cadence.Path{Domain: "public", Identifier: "USDCMinterUUID"}),
-		overflow.Arg("MinterPubSigner", cadence.Path{Domain: "public", Identifier: "USDCMinterPublicSigner"}),
+		overflow.Arg("initialAdminCapabilityPrivPath", cadence.Path{Domain: "private", Identifier: "USDCAdminPrivPath"}),
+		overflow.Arg("initialOwnerCapabilityPrivPath", cadence.Path{Domain: "private", Identifier: "USDCOwnerPrivPath"}),
+		overflow.Arg("initialMasterMinterCapabilityPrivPath", cadence.Path{Domain: "private", Identifier: "USDCMasterMinterPrivPath"}),
+		overflow.Arg("initialPauserCapabilityPrivPath", cadence.Path{Domain: "private", Identifier: "USDCPauserPrivPath"}),
+		overflow.Arg("initialBlocklisterCapabilityPrivPath", cadence.Path{Domain: "private", Identifier: "USDCBlocklisterPrivPath"}),
 		overflow.Arg("tokenName", tokenName),
 		overflow.Arg("version", version),
 		overflow.Arg("initTotalSupply", 1000000000.00000000),
 		overflow.Arg("initPaused", false),
-		overflow.Arg("ownerAccountPubKeys", cadence.NewArray(multisigPubKeys)),
-		overflow.Arg("ownerAccountKeyWeights", cadence.NewArray(multiSigKeyWeights)),
-		overflow.Arg("ownerAccountKeyAlgos", cadence.NewArray(multiSigAlgos))).Print()
+		overflow.Arg("adminPubKeys", cadence.NewArray(multisigPubKeys)),
+		overflow.Arg("adminPubKeysWeights", cadence.NewArray(multiSigKeyWeights)),
+		overflow.Arg("adminPubKeysAlgos", cadence.NewArray(multiSigAlgos)),
+		overflow.Arg("ownerPubKeys", cadence.NewArray(multisigPubKeys)),
+		overflow.Arg("ownerPubKeysWeights", cadence.NewArray(multiSigKeyWeights)),
+		overflow.Arg("ownerPubKeysAlgos", cadence.NewArray(multiSigAlgos)),
+		overflow.Arg("masterMinterPubKeys", cadence.NewArray(multisigPubKeys)),
+		overflow.Arg("masterMinterPubKeysWeights", cadence.NewArray(multiSigKeyWeights)),
+		overflow.Arg("masterMinterPubKeysAlgos", cadence.NewArray(multiSigAlgos)),
+		overflow.Arg("blocklisterPubKeys", cadence.NewArray(multisigPubKeys)),
+		overflow.Arg("blocklisterPubKeysWeights", cadence.NewArray(multiSigKeyWeights)),
+		overflow.Arg("blocklisterPubKeysAlgos", cadence.NewArray(multiSigAlgos)),
+		overflow.Arg("pauserPubKeys", cadence.NewArray(multisigPubKeys)),
+		overflow.Arg("pauserPubKeysWeights", cadence.NewArray(multiSigKeyWeights)),
+		overflow.Arg("pauserPubKeysAlgos", cadence.NewArray(multiSigAlgos)),
+	).Print()
+}
 
+func UpdateContractAddresses() {
+	command := "node updateContractAddresses.js emulator"
+	parts := strings.Fields(command)
+	_, err := exec.Command(parts[0], parts[1:]...).Output()
+	if err != nil {
+		panic(err)
+	}
 }

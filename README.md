@@ -69,10 +69,10 @@ To start a local blockchain with dev wallet use:
 yarn chain
 ```
 
-To deploy all contracts in `./packages/cadence/contracts`:
+To deploy all contracts in `./contracts`:
 
 ```bash
-yarn deploy
+go run go/deploy.go
 ```
 
 #### Seeding Emulator with NFT
