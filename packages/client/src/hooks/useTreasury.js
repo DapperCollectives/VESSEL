@@ -1,6 +1,6 @@
 import { useEffect, useReducer } from "react";
 import { mutate, query, tx } from "@onflow/fcl";
-import { syncSafeOwnersWithSigners } from "../utils";
+import { syncSafeOwnersWithSigners, getVaultId } from "../utils";
 import { COIN_TYPE_TO_META } from "constants/maps";
 import reducer, { INITIAL_STATE } from "../reducers/treasuries";
 import {
@@ -18,7 +18,9 @@ import {
   UPDATE_SIGNER,
   REMOVE_SIGNER,
   GET_VAULT_BALANCE,
+  PROPOSE_TRANSFER,
 } from "../flow";
+import { COIN_TYPES } from "constants/enums";
 
 const storageKey = "vessel-treasuries";
 
@@ -57,11 +59,12 @@ const doProposeTransfer = async (
   coinType
 ) => {
   return await mutate({
-    cadence: COIN_TYPE_TO_META[coinType].actions.proposeTransfer,
+    cadence: PROPOSE_TRANSFER,
     args: (arg, t) => [
       arg(treasuryAddr, t.Address),
       arg(recipientAddr, t.Address),
       arg(amount, t.UFix64),
+      arg(COIN_TYPE_TO_META[coinType].publicReceiverPath, t.Path),
     ],
     limit: 55,
   });
@@ -151,9 +154,9 @@ const getSignersForAction = async (address, actionUUID) => {
   }).catch(console.error);
 };
 
-const getVaultBalance = async (address) => {
+const getVaultBalance = async (address, coinType = COIN_TYPES.FLOW) => {
   const identifiers = await doQuery(GET_TREASURY_IDENTIFIERS, address);
-  const vaultId = identifiers?.[0]?.[0];
+  const vaultId = getVaultId(identifiers, coinType);
   if (vaultId) {
     return await query({
       cadence: GET_VAULT_BALANCE,
@@ -372,5 +375,6 @@ export default function useTreasury(treasuryAddr) {
     proposeAddSigner,
     updateSigner,
     proposeRemoveSigner,
+    getVaultBalance,
   };
 }

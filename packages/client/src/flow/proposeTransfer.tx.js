@@ -1,10 +1,10 @@
-export const PROPOSE_TRANSFER_FUSD = `
+export const PROPOSE_TRANSFER = `
 	import TreasuryActions from 0xTreasuryActions
 	import DAOTreasury from 0xDAOTreasury
 	import FungibleToken from 0xFungibleToken
 	import MyMultiSig from 0xMyMultiSig
 
-	transaction(treasuryAddr: Address, recipientAddr: Address, amount: UFix64) {
+	transaction(treasuryAddr: Address, recipientAddr: Address, amount: UFix64, publicReceiverPath: PublicPath) {
 
 		let Treasury: &DAOTreasury.Treasury{DAOTreasury.TreasuryPublic}
 		let RecipientVault: Capability<&{FungibleToken.Receiver}>
@@ -13,7 +13,7 @@ export const PROPOSE_TRANSFER_FUSD = `
 			self.Treasury = getAccount(treasuryAddr).getCapability(DAOTreasury.TreasuryPublicPath)
 											.borrow<&DAOTreasury.Treasury{DAOTreasury.TreasuryPublic}>()
 											?? panic("A DAOTreasury doesn't exist here.")
-			self.RecipientVault = getAccount(recipientAddr).getCapability<&{FungibleToken.Receiver}>(/public/flowTokenReceiver)
+			self.RecipientVault = getAccount(recipientAddr).getCapability<&{FungibleToken.Receiver}>(publicReceiverPath)
 		}
 		execute {
 			let action = TreasuryActions.TransferToken(_recipientVault: self.RecipientVault, _amount: amount)

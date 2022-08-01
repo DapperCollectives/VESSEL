@@ -1,5 +1,4 @@
 import { ASSET_TYPES, COIN_TYPES, SAFE_TYPES } from "./enums";
-import { PROPOSE_TRANSFER_FLOW, PROPOSE_TRANSFER_FUSD } from "flow";
 export const ASSET_TYPE_TO_META = {
   [ASSET_TYPES.TOKEN]: {
     displayName: "Coins",
@@ -12,18 +11,18 @@ export const ASSET_TYPE_TO_META = {
 export const COIN_TYPE_TO_META = {
   [COIN_TYPES.FLOW]: {
     displayName: "FLOW",
-    actions: {
-      proposeTransfer: PROPOSE_TRANSFER_FLOW,
-    },
+    vaultName: "FlowToken.Vault",
+    publicReceiverPath: { domain: "public", identifier: "flowTokenReceiver" },
   },
   [COIN_TYPES.FUSD]: {
     displayName: "FUSD",
-    actions: {
-      proposeTransfer: PROPOSE_TRANSFER_FUSD,
-    },
+    vaultName: "FUSD.Vault",
+    publicReceiverPath: { domain: "public", identifier: "fusdReceiver" },
   },
   [COIN_TYPES.USDC]: {
     displayName: "USDC",
+    vaultName: "USDC.Vault",
+    publicReceiverPath: { domain: "public", identifier: "USDCVaultReceiver" },
   },
 };
 
