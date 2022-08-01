@@ -12,7 +12,7 @@ import ExampleNFT from "../contracts/core/ExampleNFT.cdc"
 transaction(treasuryAddr: Address, recipientAddr: Address, identifier: String, id: UInt64, message: String, keyIds: [UInt64], signatures: [String], signatureBlock: UInt64) {
 
   let treasury: &DAOTreasury.Treasury{DAOTreasury.TreasuryPublic}
-  let recipientCollection: Capability<&{DAOTreasury.TreasuryPublic}>
+  let recipientTreasury: Capability<&{DAOTreasury.TreasuryPublic}>
   let action: AnyStruct{MyMultiSig.Action}
   let messageSignaturePayload: MyMultiSig.MessageSignaturePayload
   
@@ -20,8 +20,8 @@ transaction(treasuryAddr: Address, recipientAddr: Address, identifier: String, i
     self.treasury = getAccount(treasuryAddr).getCapability(DAOTreasury.TreasuryPublicPath)
                     .borrow<&DAOTreasury.Treasury{DAOTreasury.TreasuryPublic}>()
                     ?? panic("A DAOTreasury doesn't exist here.")
-    self.recipientCollection = getAccount(recipientAddr).getCapability<&{DAOTreasury.TreasuryPublic}>(DAOTreasury.TreasuryPublicPath)
-    self.action = TreasuryActions.TransferNFTToTreasury(_recipientCollection: self.recipientCollection, _identifier: identifier, _nftID: id, _proposer: signer.address)
+    self.recipientTreasury = getAccount(recipientAddr).getCapability<&{DAOTreasury.TreasuryPublic}>(DAOTreasury.TreasuryPublicPath)
+    self.action = TreasuryActions.TransferNFTToTreasury(recipientTreasury: self.recipientTreasury, identifier: identifier, nftID: id, proposer: signer.address)
     
     var _keyIds: [Int] = []
 
@@ -30,7 +30,7 @@ transaction(treasuryAddr: Address, recipientAddr: Address, identifier: String, i
     }
 
     self.messageSignaturePayload = MyMultiSig.MessageSignaturePayload(
-        _signingAddr: signer.address, _message: message, _keyIds: _keyIds, _signatures: signatures, _signatureBlock: signatureBlock
+        signingAddr: signer.address, message: message, keyIds: _keyIds, signatures: signatures, signatureBlock: signatureBlock
     )
   }
   execute {

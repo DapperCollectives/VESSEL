@@ -11,7 +11,7 @@ transaction(signerToBeRemoved: Address, message: String, keyIds: [UInt64], signa
   prepare(signer: AuthAccount) {
     self.treasury = signer.borrow<&DAOTreasury.Treasury>(from: DAOTreasury.TreasuryStoragePath)
                     ?? panic("Could not borrow the DAOTreasury")
-    self.action = TreasuryActions.RemoveSigner(signerToBeRemoved, signer.address)
+    self.action = TreasuryActions.RemoveSigner(signer: signerToBeRemoved, proposer: signer.address)
     var _keyIds: [Int] = []
 
     for keyId in keyIds {
@@ -19,7 +19,7 @@ transaction(signerToBeRemoved: Address, message: String, keyIds: [UInt64], signa
     }
 
     self.messageSignaturePayload = MyMultiSig.MessageSignaturePayload(
-        _signingAddr: signer.address, _message: message, _keyIds: _keyIds, _signatures: signatures, _signatureBlock: signatureBlock
+        signingAddr: signer.address, message: message, keyIds: _keyIds, signatures: signatures, signatureBlock: signatureBlock
     )
   }
   execute {
