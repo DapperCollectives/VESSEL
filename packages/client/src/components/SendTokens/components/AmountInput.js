@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { Web3Context } from "contexts/Web3";
 import { SendTokensContext } from "../sendTokensContext";
 const AmountInput = () => {

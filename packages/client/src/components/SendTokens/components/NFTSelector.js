@@ -1,6 +1,6 @@
 import React from "react";
 const NFTSelector = ({ nftsToDisplay, selectedNFT, setSelectedNFT }) => {
-  if (nftsToDisplay.length == 0) {
+  if (nftsToDisplay.length === 0) {
     return (
       <div className="border-light p-1 mb-4 rounded-sm pl-2">
         No NFT to select

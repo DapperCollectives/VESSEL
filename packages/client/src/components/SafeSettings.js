@@ -193,7 +193,7 @@ const EditSignatureThreshold = ({
 
 const RemoveSafeOwner = ({ web3, safeOwner, onCancel, onSubmit }) => {
   const { isAddressValid } = useAddressValidation(web3.injectedProvider);
-  const [name, setName] = useState(safeOwner.name);
+  const [name] = useState(safeOwner.name);
   const [address, setAddress] = useState(safeOwner.address);
   const [addressValid, setAddressValid] = useState(true);
   const isFormValid = addressValid;
