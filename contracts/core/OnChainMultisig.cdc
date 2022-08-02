@@ -1,8 +1,7 @@
 /**
-    Copied from: https://github.com/flow-usdc/flow-usdc/blob/main/contracts/FiatToken.cdc
-    Commit: https://github.com/flow-usdc/flow-usdc/commit/5b984d68e6116a5d619ded8738939c341c000010
-    Changes: Added addresses to import
- */
+    Copied from: https://github.com/flow-usdc/flow-usdc/blob/main/contracts/OnChainMultiSig.cdc
+    Commit: https://github.com/flow-usdc/flow-usdc/commit/436bf52640b3f5ab6d4785808a570674c91f9a15
+*/ 
 
 import Crypto
 import FungibleToken from "./FungibleToken.cdc"
