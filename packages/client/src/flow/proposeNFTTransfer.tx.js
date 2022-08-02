@@ -17,7 +17,7 @@ export const PROPOSE_NFT_TRANSFER = `
 						.borrow<&DAOTreasury.Treasury{DAOTreasury.TreasuryPublic}>()
 						?? panic("A DAOTreasury doesn't exist here.")
 		self.recipientCollection = getAccount(recipientAddr).getCapability<&{NonFungibleToken.CollectionPublic}>(ExampleNFT.CollectionPublicPath)
-		self.action = TreasuryActions.TransferNFT(_recipientCollection: self.recipientCollection, _nftID: id, _proposer: signer.address)
+		self.action = TreasuryActions.TransferNFT(recipientCollection: self.recipientCollection, nftID: id, proposer: signer.address)
 		
 		var _keyIds: [Int] = []
 	
@@ -26,7 +26,7 @@ export const PROPOSE_NFT_TRANSFER = `
 		}
 	
 		self.messageSignaturePayload = MyMultiSig.MessageSignaturePayload(
-			_signingAddr: signer.address, _message: message, _keyIds: _keyIds, _signatures: signatures, _signatureBlock: signatureBlock
+			signingAddr: signer.address, message: message, keyIds: _keyIds, signatures: signatures, signatureBlock: signatureBlock
 		)
 	  }
 	  execute {

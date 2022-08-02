@@ -12,7 +12,7 @@ export const ADD_SIGNER = `
     prepare(signer: AuthAccount) {
       self.treasury = signer.borrow<&DAOTreasury.Treasury>(from: DAOTreasury.TreasuryStoragePath)
                       ?? panic("Could not borrow the DAOTreasury")
-      self.action = TreasuryActions.AddSigner(additionalSigner, signer.address)
+      self.action = TreasuryActions.AddSigner(signer: additionalSigner, proposer: signer.address)
       
       var _keyIds: [Int] = []
   
@@ -21,7 +21,7 @@ export const ADD_SIGNER = `
       }
   
       self.messageSignaturePayload = MyMultiSig.MessageSignaturePayload(
-          _signingAddr: signer.address, _message: message, _keyIds: _keyIds, _signatures: signatures, _signatureBlock: signatureBlock
+          signingAddr: signer.address, message: message, keyIds: _keyIds, signatures: signatures, signatureBlock: signatureBlock
       )
     }
     execute {

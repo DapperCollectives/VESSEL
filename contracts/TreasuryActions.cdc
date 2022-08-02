@@ -8,7 +8,7 @@ pub contract TreasuryActions {
   ///////////
   // Events
   ///////////
-
+x
   // TransferToken
   pub event TransferTokenToAccountActionCreated(
     recipientAddr: Address, vaultID: String, amount: UFix64
@@ -78,25 +78,25 @@ pub contract TreasuryActions {
       )
     }
 
-    init(_recipientVault: Capability<&{FungibleToken.Receiver}>, _amount: UFix64, _proposer: Address) {
+    init(recipientVault: Capability<&{FungibleToken.Receiver}>, amount: UFix64, proposer: Address) {
       pre {
-        _amount > 0.0 : "Amount should be higher than 0.0"  
+        amount > 0.0 : "Amount should be higher than 0.0"  
       }
 
       self.intent = "Transfer "
-                        .concat(_amount.toString())
+                        .concat(amount.toString())
                         .concat(" ")
-                        .concat(_recipientVault.getType().identifier)
+                        .concat(recipientVault.getType().identifier)
                         .concat(" tokens from the treasury to ")
-                        .concat(_recipientVault.borrow()!.owner!.address.toString())
-      self.recipientVault = _recipientVault
-      self.amount = _amount
-      self.proposer = _proposer
+                        .concat(recipientVault.borrow()!.owner!.address.toString())
+      self.recipientVault = recipientVault
+      self.amount = amount
+      self.proposer = proposer
 
       emit TransferTokenToAccountActionCreated(
-        recipientAddr: _recipientVault.borrow()!.owner!.address,
-        vaultID: _recipientVault.getType().identifier,
-        amount: _amount
+        recipientAddr: recipientVault.borrow()!.owner!.address,
+        vaultID: recipientVault.getType().identifier,
+        amount: amount
       )
     }
   }
@@ -124,27 +124,27 @@ pub contract TreasuryActions {
       )
     }
 
-    init(_recipientTreasury: Capability<&{DAOTreasury.TreasuryPublic}>, _identifier: String, _amount: UFix64, _proposer: Address) {
+    init(recipientTreasury: Capability<&{DAOTreasury.TreasuryPublic}>, identifier: String, amount: UFix64, proposer: Address) {
       pre {
-        _amount > 0.0 : "Amount should be higher than 0.0"  
+        amount > 0.0 : "Amount should be higher than 0.0"  
       }
       
-      let recipientAddr = _recipientTreasury.borrow()!.owner!.address
+      let recipientAddr = recipientTreasury.borrow()!.owner!.address
       self.intent = "Transfer "
-                        .concat(_amount.toString())
+                        .concat(amount.toString())
                         .concat(" ")
-                        .concat(_identifier)
+                        .concat(identifier)
                         .concat(" tokens from the treasury to ")
                         .concat(recipientAddr.toString())
-      self.proposer = _proposer
-      self.identifier = _identifier
-      self.recipientTreasury = _recipientTreasury
-      self.amount = _amount
+      self.proposer = proposer
+      self.identifier = identifier
+      self.recipientTreasury = recipientTreasury
+      self.amount = amount
 
       emit TransferTokenToTreasuryActionCreated(
         recipientAddr: recipientAddr,
-        vaultID: _identifier,
-        amount: _amount
+        vaultID: identifier,
+        amount: amount
       )
     }
   }
@@ -172,21 +172,21 @@ pub contract TreasuryActions {
       )
     }
 
-    init(_recipientCollection: Capability<&{NonFungibleToken.CollectionPublic}>, _nftID: UInt64, _proposer: Address) {
-      let recipientAddr = _recipientCollection.borrow()!.owner!.address
-      let collectionID = _recipientCollection.getType().identifier
+    init(recipientCollection: Capability<&{NonFungibleToken.CollectionPublic}>, nftID: UInt64, proposer: Address) {
+      let recipientAddr = recipientCollection.borrow()!.owner!.address
+      let collectionID = recipientCollection.getType().identifier
 
       self.intent = "Transfer a "
                         .concat(collectionID)
                         .concat(" NFT from the treasury to ")
                         .concat(recipientAddr.toString())
-      self.proposer = _proposer
-      self.recipientCollection = _recipientCollection
-      self.withdrawID = _nftID
+      self.proposer = proposer
+      self.recipientCollection = recipientCollection
+      self.withdrawID = nftID
       emit TransferNFTToAccountActionCreated(
         recipientAddr: recipientAddr,
         collectionID: collectionID,
-        nftID: _nftID
+        nftID: nftID
       )
     }
   }
@@ -214,25 +214,25 @@ pub contract TreasuryActions {
       )
     }
 
-    init(_recipientTreasury: Capability<&{DAOTreasury.TreasuryPublic}>, _identifier: String, _nftID: UInt64, _proposer: Address) {
-      let recipientAddr = _recipientTreasury.borrow()!.owner!.address
+    init(recipientTreasury: Capability<&{DAOTreasury.TreasuryPublic}>, identifier: String, nftID: UInt64, proposer: Address) {
+      let recipientAddr = recipientTreasury.borrow()!.owner!.address
       self.intent = "Transfer an NFT from collection"
                         .concat(" ")
-                        .concat(_identifier)
+                        .concat(identifier)
                         .concat(" with ID ")
-                        .concat(_nftID.toString())
+                        .concat(nftID.toString())
                         .concat(" ")
                         .concat("from this Treasury to Treasury at address ")
                         .concat(recipientAddr.toString())
-      self.identifier = _identifier
-      self.recipientTreasury = _recipientTreasury
-      self.withdrawID = _nftID
-      self.proposer = _proposer
+      self.identifier = identifier
+      self.recipientTreasury = recipientTreasury
+      self.withdrawID = nftID
+      self.proposer = proposer
 
       emit TransferNFTToTreasuryActionCreated(
         recipientAddr: recipientAddr,
-        collectionID: _identifier,
-        nftID: _nftID
+        collectionID: identifier,
+        nftID: nftID
       )
     }
   }
@@ -252,13 +252,13 @@ pub contract TreasuryActions {
       emit AddSignerActionExecuted(address: self.signer, treasuryAddr: treasuryRef.owner!.address)
     }
 
-    init(_signer: Address, _proposer: Address) {
-      self.proposer = _proposer
-      self.signer = _signer
+    init(signer: Address, proposer: Address) {
+      self.proposer = proposer
+      self.signer = signer
       self.intent = "Add account "
-                      .concat(_signer.toString())
+                      .concat(signer.toString())
                       .concat(" as a signer.")
-      emit AddSignerActionCreated(address: _signer)
+      emit AddSignerActionCreated(address: signer)
     }
   }
 
@@ -276,13 +276,13 @@ pub contract TreasuryActions {
       emit RemoveSignerActionExecuted(address: self.signer, treasuryAddr: treasuryRef.owner!.address)
     }
 
-    init(_signer: Address, _proposer: Address) {
-      self.proposer = _proposer
-      self.signer = _signer
+    init(signer: Address, proposer: Address) {
+      self.proposer = proposer
+      self.signer = signer
       self.intent = "Remove "
-                      .concat(_signer.toString())
+                      .concat(signer.toString())
                       .concat(" as a signer.")
-      emit RemoveSignerActionCreated(address: _signer)
+      emit RemoveSignerActionCreated(address: signer)
     }
   }
 
@@ -301,11 +301,11 @@ pub contract TreasuryActions {
       emit UpdateThresholdActionExecuted(oldThreshold: oldThreshold, newThreshold: self.threshold, treasuryAddr: treasuryRef.owner!.address)
     }
 
-    init(_threshold: UInt64, _proposer: Address) {
-      self.threshold = _threshold
-      self.proposer = _proposer
-      self.intent = "Update the threshold of signers to ".concat(_threshold.toString()).concat(".")
-      emit UpdateThresholdActionCreated(threshold: _threshold)
+    init(threshold: UInt64, proposer: Address) {
+      self.threshold = threshold
+      self.proposer = proposer
+      self.intent = "Update the threshold of signers to ".concat(threshold.toString()).concat(".")
+      emit UpdateThresholdActionCreated(threshold: threshold)
     }
   }
 
@@ -323,13 +323,13 @@ pub contract TreasuryActions {
       emit DestroyActionActionExecuted(actionUUID: self.actionUUID, treasuryAddr: treasuryRef.owner!.address)
     }
 
-    init(_actionUUID: UInt64, _proposer: Address) {
-      self.actionUUID = _actionUUID
-      self.proposer = _proposer
+    init(actionUUID: UInt64, proposer: Address) {
+      self.actionUUID = actionUUID
+      self.proposer = proposer
       self.intent = "Remove the action "
-                      .concat(_actionUUID.toString())
+                      .concat(actionUUID.toString())
                       .concat(" from the Treasury.")
-      emit DestroyActionActionCreated(actionUUID: _actionUUID)
+      emit DestroyActionActionCreated(actionUUID: actionUUID)
     }
   }
 }

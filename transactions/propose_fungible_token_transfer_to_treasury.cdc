@@ -18,7 +18,7 @@ transaction(treasuryAddr: Address, recipientAddr: Address, identifier: String, a
                     .borrow<&DAOTreasury.Treasury{DAOTreasury.TreasuryPublic}>()
                     ?? panic("A DAOTreasury doesn't exist at the treasuryAddr")
     self.recipientTreasury = getAccount(recipientAddr).getCapability<&{DAOTreasury.TreasuryPublic}>(DAOTreasury.TreasuryPublicPath)
-    self.action = TreasuryActions.TransferTokenToTreasury(_recipientTreasury: self.recipientTreasury, _identifier: identifier, _amount: amount, _proposer: signer.address)
+    self.action = TreasuryActions.TransferTokenToTreasury(recipientTreasury: self.recipientTreasury, identifier: identifier, amount: amount, proposer: signer.address)
 
     var _keyIds: [Int] = []
 
@@ -27,7 +27,7 @@ transaction(treasuryAddr: Address, recipientAddr: Address, identifier: String, a
     }
 
     self.messageSignaturePayload = MyMultiSig.MessageSignaturePayload(
-        _signingAddr: signer.address, _message: message, _keyIds: _keyIds, _signatures: signatures, _signatureBlock: signatureBlock
+        signingAddr: signer.address, message: message, keyIds: _keyIds, signatures: signatures, signatureBlock: signatureBlock
     )
   }
   execute {
