@@ -11,7 +11,7 @@ export const CHECK_TREASURY_NFT_COLLECTION = `
     let ids = collection.getIDs()
     let nftRefs: [&NonFungibleToken.NFT] = []
     for id in ids  {
-      let nftRef: &NonFungibleToken.NFT  = collection.borrowNFT(id: id)
+      let nftRef: &NonFungibleToken.NFT = collection.borrowNFT(id: id)
       nftRefs.append(nftRef)
     }
     return nftRefs

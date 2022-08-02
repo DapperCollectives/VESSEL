@@ -516,6 +516,30 @@ func TestAddSignerAction(t *testing.T) {
 
 		assert.Contains(otu.T, signers, otu.GetAccountAddress("signer4"))
 	})
+
+	t.Run("User shouldn't be able to add a same signer twice", func(t *testing.T) {
+		otu.ProposeAddSignerAction("treasuryOwner", "treasuryOwner", "signer4")
+		actions := otu.GetProposedActions("treasuryOwner")
+		keys := make([]uint64, 0, len(actions))
+		for k := range actions {
+			keys = append(keys, k)
+		}
+		addSignerActionUUID = keys[0]
+
+		// Each signer submits an approval signature
+		for _, signer := range signers {
+			otu.ExecuteActionFailed("treasuryOwner", addSignerActionUUID, "This action has not received a signature from every signer yet.")
+			otu.SignerApproveAction("treasuryOwner", addSignerActionUUID, signer)
+		}
+
+		// Assert that the signatures were registered
+		signersMap := otu.GetVerifiedSignersForAction("treasuryOwner", addSignerActionUUID)
+		for _, signer := range signers {
+			assert.True(otu.T, signersMap[otu.GetAccountAddress(signer)])
+		}
+
+		otu.ExecuteActionFailed("treasuryOwner", addSignerActionUUID, "Cannot add an already existing signer.")
+	})
 }
 
 func TestRemoveSignerAction(t *testing.T) {

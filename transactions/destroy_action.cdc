@@ -11,8 +11,8 @@ transaction(treasuryAddr: Address, actionUUID: UInt64, message: String, keyIds: 
   prepare(signer: AuthAccount) {
     self.treasury = getAccount(treasuryAddr).getCapability(DAOTreasuryV2.TreasuryPublicPath)
                     .borrow<&DAOTreasuryV2.Treasury{DAOTreasuryV2.TreasuryPublic}>()
-                    ?? panic("A DAOTreasuryV2 doesn't exist here.")        
-    self.action = TreasuryActionsV2.DestroyAction(_actionUUID: actionUUID, _proposer: signer.address)
+                    ?? panic("A DAOTreasury doesn't exist here.")        
+    self.action = TreasuryActionsV2.DestroyAction(actionUUID: actionUUID, proposer: signer.address)
         
     var _keyIds: [Int] = []
 
@@ -21,7 +21,7 @@ transaction(treasuryAddr: Address, actionUUID: UInt64, message: String, keyIds: 
     }
 
     self.messageSignaturePayload = MyMultiSigV2.MessageSignaturePayload(
-        _signingAddr: signer.address, _message: message, _keyIds: _keyIds, _signatures: signatures, _signatureBlock: signatureBlock
+        signingAddr: signer.address, message: message, keyIds: _keyIds, signatures: signatures, signatureBlock: signatureBlock
     )
   }
   execute {

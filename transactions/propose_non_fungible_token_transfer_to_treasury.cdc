@@ -21,7 +21,7 @@ transaction(treasuryAddr: Address, recipientAddr: Address, identifier: String, i
                     .borrow<&DAOTreasuryV2.Treasury{DAOTreasuryV2.TreasuryPublic}>()
                     ?? panic("A DAOTreasuryV2 doesn't exist here.")
     self.recipientTreasury = getAccount(recipientAddr).getCapability<&{DAOTreasuryV2.TreasuryPublic}>(DAOTreasuryV2.TreasuryPublicPath)
-    self.action = TreasuryActionsV2.TransferNFTToTreasury(_recipientTreasury: self.recipientTreasury, _identifier: identifier, _nftID: id, _proposer: signer.address)
+    self.action = TreasuryActionsV2.TransferNFTToTreasury(recipientTreasury: self.recipientTreasury, identifier: identifier, nftID: id, proposer: signer.address)
     
     var _keyIds: [Int] = []
 
@@ -30,7 +30,7 @@ transaction(treasuryAddr: Address, recipientAddr: Address, identifier: String, i
     }
 
     self.messageSignaturePayload = MyMultiSigV2.MessageSignaturePayload(
-        _signingAddr: signer.address, _message: message, _keyIds: _keyIds, _signatures: signatures, _signatureBlock: signatureBlock
+        signingAddr: signer.address, message: message, keyIds: _keyIds, signatures: signatures, signatureBlock: signatureBlock
     )
   }
   execute {

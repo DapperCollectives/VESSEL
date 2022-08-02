@@ -235,8 +235,8 @@ pub contract DAOTreasuryV2 {
       return self.collections.keys
     }
 
-    init(_initialSigners: [Address], _initialThreshold: UInt64) {
-      self.multiSignManager <- MyMultiSigV2.createMultiSigManager(signers: _initialSigners, threshold: _initialThreshold)
+    init(initialSigners: [Address], initialThreshold: UInt64) {
+      self.multiSignManager <- MyMultiSigV2.createMultiSigManager(signers: initialSigners, threshold: initialThreshold)
       self.vaults <- {}
       self.collections <- {}
     }
@@ -262,7 +262,7 @@ pub contract DAOTreasuryV2 {
   }
   
   pub fun createTreasury(initialSigners: [Address], initialThreshold: UInt64): @Treasury {
-    return <- create Treasury(_initialSigners: initialSigners, _initialThreshold: initialThreshold)
+    return <- create Treasury(initialSigners: initialSigners, initialThreshold: initialThreshold)
   }
 
   init() {

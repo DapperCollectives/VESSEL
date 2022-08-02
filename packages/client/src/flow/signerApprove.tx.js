@@ -24,12 +24,12 @@ export const SIGNER_APPROVE = `
 		  }
 	  
 		  self.messageSignaturePayload = MyMultiSigV2.MessageSignaturePayload(
-			_signingAddr: signer.address, _message: message, _keyIds: _keyIds, _signatures: signatures, _signatureBlock: signatureBlock
+			signingAddr: signer.address, message: message, keyIds: _keyIds, signatures: signatures, signatureBlock: signatureBlock
 		  )
-	  
 		}
+		
 		execute {
-		  self.isValid = self.action.signerApproveAction(_messageSignaturePayload: self.messageSignaturePayload)
+		  self.isValid = self.action.signerApproveAction(messageSignaturePayload: self.messageSignaturePayload)
 		}
 	  
 		post {

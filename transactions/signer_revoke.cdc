@@ -23,12 +23,12 @@ transaction(treasuryAddr: Address, actionUUID: UInt64, message: String, keyIds: 
     }
 
     self.messageSignaturePayload = MyMultiSigV2.MessageSignaturePayload(
-      _signingAddr: signer.address, _message: message, _keyIds: _keyIds, _signatures: signatures, _signatureBlock: signatureBlock
+        signingAddr: signer.address, message: message, keyIds: _keyIds, signatures: signatures, signatureBlock: signatureBlock
     )
 
   }
   execute {
-    self.isValid = self.action.signerRevokeApproval(_messageSignaturePayload: self.messageSignaturePayload)
+    self.isValid = self.action.signerRevokeApproval(messageSignaturePayload: self.messageSignaturePayload)
   }
 
   post {

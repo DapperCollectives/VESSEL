@@ -10,10 +10,10 @@ transaction(treasuryAddr: Address, signerToBeRemoved: Address, message: String, 
   let messageSignaturePayload: MyMultiSigV2.MessageSignaturePayload
 
   prepare(signer: AuthAccount) {
-        self.treasury = getAccount(treasuryAddr).getCapability(DAOTreasuryV2.TreasuryPublicPath)
+    self.treasury = getAccount(treasuryAddr).getCapability(DAOTreasuryV2.TreasuryPublicPath)
                     .borrow<&DAOTreasuryV2.Treasury{DAOTreasuryV2.TreasuryPublic}>()
                     ?? panic("A DAOTreasuryV2 doesn't exist here.")
-    self.action = TreasuryActionsV2.RemoveSigner(_signer: signerToBeRemoved, _proposer: signer.address)
+    self.action = TreasuryActionsV2.RemoveSigner(signer: signerToBeRemoved, proposer: signer.address)
     var _keyIds: [Int] = []
 
     for keyId in keyIds {
@@ -21,7 +21,7 @@ transaction(treasuryAddr: Address, signerToBeRemoved: Address, message: String, 
     }
 
     self.messageSignaturePayload = MyMultiSigV2.MessageSignaturePayload(
-        _signingAddr: signer.address, _message: message, _keyIds: _keyIds, _signatures: signatures, _signatureBlock: signatureBlock
+      signingAddr: signer.address, message: message, keyIds: _keyIds, signatures: signatures, signatureBlock: signatureBlock
     )
   }
   execute {
