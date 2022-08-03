@@ -1,9 +1,9 @@
-import MyMultiSig from "./MyMultiSig.cdc"
-import DAOTreasury from "./DAOTreasury.cdc"
+import MyMultiSigV2 from "./MyMultiSig.cdc"
+import DAOTreasuryV2 from "./DAOTreasury.cdc"
 import FungibleToken from "./core/FungibleToken.cdc"
 import NonFungibleToken from "./core/NonFungibleToken.cdc"
 
-pub contract TreasuryActions {
+pub contract TreasuryActionsV2 {
 
   ///////////
   // Events
@@ -58,14 +58,14 @@ x
   pub event DestroyActionActionExecuted(actionUUID: UInt64, treasuryAddr: Address)
 
   // Transfers `amount` tokens from the treasury to `recipientVault`
-  pub struct TransferToken: MyMultiSig.Action {
+  pub struct TransferToken: MyMultiSigV2.Action {
     pub let intent: String
     pub let proposer: Address
     pub let recipientVault: Capability<&{FungibleToken.Receiver}>
     pub let amount: UFix64
 
     access(account) fun execute(_ params: {String: AnyStruct}) {
-      let treasuryRef: &DAOTreasury.Treasury = params["treasury"]! as! &DAOTreasury.Treasury
+      let treasuryRef: &DAOTreasuryV2.Treasury = params["treasury"]! as! &DAOTreasuryV2.Treasury
       let vaultID: String = self.recipientVault.borrow()!.getType().identifier
       let withdrawnTokens <- treasuryRef.withdrawTokens(identifier: vaultID, amount: self.amount)
       self.recipientVault.borrow()!.deposit(from: <- withdrawnTokens)
@@ -102,15 +102,15 @@ x
   }
 
   // Transfers `amount` of `identifier` tokens from the treasury to another treasury
-  pub struct TransferTokenToTreasury: MyMultiSig.Action {
+  pub struct TransferTokenToTreasury: MyMultiSigV2.Action {
     pub let intent: String
     pub let proposer: Address
     pub let identifier: String
-    pub let recipientTreasury: Capability<&{DAOTreasury.TreasuryPublic}>
+    pub let recipientTreasury: Capability<&{DAOTreasuryV2.TreasuryPublic}>
     pub let amount: UFix64
 
     access(account) fun execute(_ params: {String: AnyStruct}) {
-      let treasuryRef: &DAOTreasury.Treasury = params["treasury"]! as! &DAOTreasury.Treasury
+      let treasuryRef: &DAOTreasuryV2.Treasury = params["treasury"]! as! &DAOTreasuryV2.Treasury
       let withdrawnTokens <- treasuryRef.withdrawTokens(identifier: self.identifier, amount: self.amount)
 
       let recipientAddr = self.recipientTreasury.borrow()!.owner!.address
@@ -124,7 +124,7 @@ x
       )
     }
 
-    init(recipientTreasury: Capability<&{DAOTreasury.TreasuryPublic}>, identifier: String, amount: UFix64, proposer: Address) {
+    init(recipientTreasury: Capability<&{DAOTreasuryV2.TreasuryPublic}>, identifier: String, amount: UFix64, proposer: Address) {
       pre {
         amount > 0.0 : "Amount should be higher than 0.0"  
       }
@@ -150,14 +150,14 @@ x
   }
 
   // Transfers an NFT from the treasury to `recipientCollection`
-  pub struct TransferNFT: MyMultiSig.Action {
+  pub struct TransferNFT: MyMultiSigV2.Action {
     pub let intent: String
     pub let proposer: Address
     pub let recipientCollection: Capability<&{NonFungibleToken.CollectionPublic}>
     pub let withdrawID: UInt64
 
     access(account) fun execute(_ params: {String: AnyStruct}) {
-      let treasuryRef: &DAOTreasury.Treasury = params["treasury"]! as! &DAOTreasury.Treasury
+      let treasuryRef: &DAOTreasuryV2.Treasury = params["treasury"]! as! &DAOTreasuryV2.Treasury
       let collectionID = self.recipientCollection.borrow()!.getType().identifier
       
       let nft <- treasuryRef.withdrawNFT(identifier: collectionID, id: self.withdrawID)
@@ -192,15 +192,15 @@ x
   }
 
   // Transfers an NFT from the treasury to another treasury
-  pub struct TransferNFTToTreasury: MyMultiSig.Action {
+  pub struct TransferNFTToTreasury: MyMultiSigV2.Action {
     pub let intent: String
     pub let proposer: Address
     pub let identifier: String
-    pub let recipientTreasury: Capability<&{DAOTreasury.TreasuryPublic}>
+    pub let recipientTreasury: Capability<&{DAOTreasuryV2.TreasuryPublic}>
     pub let withdrawID: UInt64
 
     access(account) fun execute(_ params: {String: AnyStruct}) {
-      let treasuryRef: &DAOTreasury.Treasury = params["treasury"]! as! &DAOTreasury.Treasury
+      let treasuryRef: &DAOTreasuryV2.Treasury = params["treasury"]! as! &DAOTreasuryV2.Treasury
       let nft <- treasuryRef.withdrawNFT(identifier: self.identifier, id: self.withdrawID)
 
       let recipientCollectionRef: &{NonFungibleToken.CollectionPublic} = self.recipientTreasury.borrow()!.borrowCollectionPublic(identifier: self.identifier)
@@ -214,7 +214,7 @@ x
       )
     }
 
-    init(recipientTreasury: Capability<&{DAOTreasury.TreasuryPublic}>, identifier: String, nftID: UInt64, proposer: Address) {
+    init(recipientTreasury: Capability<&{DAOTreasuryV2.TreasuryPublic}>, identifier: String, nftID: UInt64, proposer: Address) {
       let recipientAddr = recipientTreasury.borrow()!.owner!.address
       self.intent = "Transfer an NFT from collection"
                         .concat(" ")
@@ -238,13 +238,13 @@ x
   }
 
   // Add a new signer to the treasury
-  pub struct AddSigner: MyMultiSig.Action {
+  pub struct AddSigner: MyMultiSigV2.Action {
     pub let signer: Address
     pub let intent: String
     pub let proposer: Address
 
     access(account) fun execute(_ params: {String: AnyStruct}) {
-      let treasuryRef: &DAOTreasury.Treasury = params["treasury"]! as! &DAOTreasury.Treasury
+      let treasuryRef: &DAOTreasuryV2.Treasury = params["treasury"]! as! &DAOTreasuryV2.Treasury
 
       let manager = treasuryRef.borrowManager()
       manager.addSigner(signer: self.signer)
@@ -263,13 +263,13 @@ x
   }
 
   // Remove a signer from the treasury
-  pub struct RemoveSigner: MyMultiSig.Action {
+  pub struct RemoveSigner: MyMultiSigV2.Action {
     pub let signer: Address
     pub let intent: String
     pub let proposer: Address
 
     access(account) fun execute(_ params: {String: AnyStruct}) {
-      let treasuryRef: &DAOTreasury.Treasury = params["treasury"]! as! &DAOTreasury.Treasury
+      let treasuryRef: &DAOTreasuryV2.Treasury = params["treasury"]! as! &DAOTreasuryV2.Treasury
 
       let manager = treasuryRef.borrowManager()
       manager.removeSigner(signer: self.signer)
@@ -287,13 +287,13 @@ x
   }
 
   // Update the threshold of signers
-  pub struct UpdateThreshold: MyMultiSig.Action {
+  pub struct UpdateThreshold: MyMultiSigV2.Action {
     pub let threshold: UInt64
     pub let intent: String
     pub let proposer: Address
 
     access(account) fun execute(_ params: {String: AnyStruct}) {
-      let treasuryRef: &DAOTreasury.Treasury = params["treasury"]! as! &DAOTreasury.Treasury
+      let treasuryRef: &DAOTreasuryV2.Treasury = params["treasury"]! as! &DAOTreasuryV2.Treasury
 
       let manager = treasuryRef.borrowManager()
       let oldThreshold = manager.threshold
@@ -310,13 +310,13 @@ x
   }
 
   // Destroy the action
-  pub struct DestroyAction: MyMultiSig.Action {
+  pub struct DestroyAction: MyMultiSigV2.Action {
     pub let actionUUID: UInt64
     pub let intent: String
     pub let proposer: Address
 
     access(account) fun execute(_ params: {String: AnyStruct}) {
-      let treasuryRef: &DAOTreasury.Treasury = params["treasury"]! as! &DAOTreasury.Treasury
+      let treasuryRef: &DAOTreasuryV2.Treasury = params["treasury"]! as! &DAOTreasuryV2.Treasury
 
       let manager = treasuryRef.borrowManager()
       manager.destroyAction(actionUUID: self.actionUUID)

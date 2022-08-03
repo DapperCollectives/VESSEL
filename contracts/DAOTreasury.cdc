@@ -1,8 +1,8 @@
-import MyMultiSig from "./MyMultiSig.cdc"
+import MyMultiSigV2 from "./MyMultiSig.cdc"
 import FungibleToken from "./core/FungibleToken.cdc"
 import NonFungibleToken from "./core/NonFungibleToken.cdc"
 
-pub contract DAOTreasury {
+pub contract DAOTreasuryV2 {
 
   pub let TreasuryStoragePath: StoragePath
   pub let TreasuryPublicPath: PublicPath
@@ -21,25 +21,25 @@ pub contract DAOTreasury {
 
   // Interfaces + Resources
   pub resource interface TreasuryPublic {
-    pub fun proposeAction(action: {MyMultiSig.Action}, signaturePayload: MyMultiSig.MessageSignaturePayload): UInt64
-    pub fun executeAction(actionUUID: UInt64, signaturePayload: MyMultiSig.MessageSignaturePayload)
-    pub fun signerDepositCollection(collection: @NonFungibleToken.Collection, signaturePayload: MyMultiSig.MessageSignaturePayload)
+    pub fun proposeAction(action: {MyMultiSigV2.Action}, signaturePayload: MyMultiSigV2.MessageSignaturePayload): UInt64
+    pub fun executeAction(actionUUID: UInt64, signaturePayload: MyMultiSigV2.MessageSignaturePayload)
+    pub fun signerDepositCollection(collection: @NonFungibleToken.Collection, signaturePayload: MyMultiSigV2.MessageSignaturePayload)
     pub fun depositTokens(identifier: String, vault: @FungibleToken.Vault)
     pub fun depositNFT(identifier: String, nft: @NonFungibleToken.NFT)
-    pub fun borrowManagerPublic(): &MyMultiSig.Manager{MyMultiSig.ManagerPublic}
+    pub fun borrowManagerPublic(): &MyMultiSigV2.Manager{MyMultiSigV2.ManagerPublic}
     pub fun borrowVaultPublic(identifier: String): &{FungibleToken.Balance}
     pub fun borrowCollectionPublic(identifier: String): &{NonFungibleToken.CollectionPublic}
     pub fun getVaultIdentifiers(): [String]
     pub fun getCollectionIdentifiers(): [String]
   }
 
-  pub resource Treasury: MyMultiSig.MultiSign, TreasuryPublic {
-    access(contract) let multiSignManager: @MyMultiSig.Manager
+  pub resource Treasury: MyMultiSigV2.MultiSign, TreasuryPublic {
+    access(contract) let multiSignManager: @MyMultiSigV2.Manager
     access(self) var vaults: @{String: FungibleToken.Vault}
     access(self) var collections: @{String: NonFungibleToken.Collection}
 
     // ------- Manager -------   
-    pub fun proposeAction(action: {MyMultiSig.Action}, signaturePayload: MyMultiSig.MessageSignaturePayload): UInt64 {
+    pub fun proposeAction(action: {MyMultiSigV2.Action}, signaturePayload: MyMultiSigV2.MessageSignaturePayload): UInt64 {
       self.validateTreasurySigner(identifier: action.intent, signaturePayload: signaturePayload)
 
       let uuid = self.multiSignManager.createMultiSign(action: action)
@@ -53,7 +53,7 @@ pub contract DAOTreasury {
       wants. This means it's very imporant for the signers
       to know what they are signing.
     */
-    pub fun executeAction(actionUUID: UInt64, signaturePayload: MyMultiSig.MessageSignaturePayload) {
+    pub fun executeAction(actionUUID: UInt64, signaturePayload: MyMultiSigV2.MessageSignaturePayload) {
       self.validateTreasurySigner(identifier: actionUUID.toString(), signaturePayload: signaturePayload)
 
       let selfRef: &Treasury = &self as &Treasury
@@ -61,7 +61,7 @@ pub contract DAOTreasury {
       emit ExecuteAction(actionUUID: actionUUID, proposer: signaturePayload.signingAddr)
     }
 
-    access(self) fun validateTreasurySigner(identifier: String, signaturePayload: MyMultiSig.MessageSignaturePayload) {
+    access(self) fun validateTreasurySigner(identifier: String, signaturePayload: MyMultiSigV2.MessageSignaturePayload) {
       // ------- Validate Address is a Signer on the Treasury -----
       let signers = self.multiSignManager.getSigners()
       assert(signers[signaturePayload.signingAddr] == true, message: "Address is not a signer on this Treasury")
@@ -94,7 +94,7 @@ pub contract DAOTreasury {
       )
 
       // ------ Validate Signature -------
-      var signatureValidationResponse = MyMultiSig.validateSignature(payload: signaturePayload)
+      var signatureValidationResponse = MyMultiSigV2.validateSignature(payload: signaturePayload)
 
       assert(
         signatureValidationResponse.isValid == true,
@@ -107,12 +107,12 @@ pub contract DAOTreasury {
     }
 
     // Reference to Manager //
-    access(account) fun borrowManager(): &MyMultiSig.Manager {
-      return &self.multiSignManager as &MyMultiSig.Manager
+    access(account) fun borrowManager(): &MyMultiSigV2.Manager {
+      return &self.multiSignManager as &MyMultiSigV2.Manager
     }
 
-    pub fun borrowManagerPublic(): &MyMultiSig.Manager{MyMultiSig.ManagerPublic} {
-      return &self.multiSignManager as &MyMultiSig.Manager{MyMultiSig.ManagerPublic}
+    pub fun borrowManagerPublic(): &MyMultiSigV2.Manager{MyMultiSigV2.ManagerPublic} {
+      return &self.multiSignManager as &MyMultiSigV2.Manager{MyMultiSigV2.ManagerPublic}
     }
 
     // ------- Vaults ------- 
@@ -147,7 +147,7 @@ pub contract DAOTreasury {
 
     // ------- Collections ------- 
 
-    pub fun signerDepositCollection(collection: @NonFungibleToken.Collection, signaturePayload: MyMultiSig.MessageSignaturePayload) {
+    pub fun signerDepositCollection(collection: @NonFungibleToken.Collection, signaturePayload: MyMultiSigV2.MessageSignaturePayload) {
       // ------- Validate Address is a Signer on the Treasury -----
       let signers = self.multiSignManager.getSigners()
       assert(signers[signaturePayload.signingAddr] == true, message: "Address is not a signer on this Treasury")
@@ -180,7 +180,7 @@ pub contract DAOTreasury {
       )
 
       // ------ Validate Signature -------
-      var signatureValidationResponse = MyMultiSig.validateSignature(payload: signaturePayload)
+      var signatureValidationResponse = MyMultiSigV2.validateSignature(payload: signaturePayload)
 
       assert(
         signatureValidationResponse.isValid == true,
@@ -236,7 +236,7 @@ pub contract DAOTreasury {
     }
 
     init(initialSigners: [Address], initialThreshold: UInt64) {
-      self.multiSignManager <- MyMultiSig.createMultiSigManager(signers: initialSigners, threshold: initialThreshold)
+      self.multiSignManager <- MyMultiSigV2.createMultiSigManager(signers: initialSigners, threshold: initialThreshold)
       self.vaults <- {}
       self.collections <- {}
     }
