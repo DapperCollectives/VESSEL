@@ -136,7 +136,7 @@ function Safe({ web3 }) {
   };
 
   const onConfirmAction = async ({ uuid }) => {
-    await executeAction(parseInt(uuid, 10));
+    await executeAction(uuid);
   };
 
   const onDeposit = async () => {

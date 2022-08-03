@@ -1,15 +1,26 @@
-import DAOTreasury from "../contracts/DAOTreasury.cdc"
+import DAOTreasuryV2 from "../contracts/DAOTreasury.cdc"
+import MyMultiSigV2 from "../contracts/MyMultiSig.cdc"
 
-transaction(treasuryAddr: Address, actionUUID: UInt64) {
+transaction(treasuryAddr: Address, actionUUID: UInt64, message: String, keyIds: [UInt64], signatures: [String], signatureBlock: UInt64) {
 
-  let Treasury: &DAOTreasury.Treasury{DAOTreasury.TreasuryPublic}
+  let treasury: &DAOTreasuryV2.Treasury{DAOTreasuryV2.TreasuryPublic}
+  let messageSignaturePayload: MyMultiSigV2.MessageSignaturePayload
   
   prepare(signer: AuthAccount) {
-    self.Treasury = getAccount(treasuryAddr).getCapability(DAOTreasury.TreasuryPublicPath)
-                    .borrow<&DAOTreasury.Treasury{DAOTreasury.TreasuryPublic}>()
-                    ?? panic("A DAOTreasury doesn't exist here.")        
+    self.treasury = getAccount(treasuryAddr).getCapability(DAOTreasuryV2.TreasuryPublicPath)
+                    .borrow<&DAOTreasuryV2.Treasury{DAOTreasuryV2.TreasuryPublic}>()
+                    ?? panic("A DAOTreasuryV2 doesn't exist here.")
+    var _keyIds: [Int] = []
+
+    for keyId in keyIds {
+        _keyIds.append(Int(keyId))
+    }
+
+    self.messageSignaturePayload = MyMultiSigV2.MessageSignaturePayload(
+        signingAddr: signer.address, message: message, keyIds: _keyIds, signatures: signatures, signatureBlock: signatureBlock
+    )      
   }
   execute {
-    self.Treasury.executeAction(actionUUID: actionUUID)
+    self.treasury.executeAction(actionUUID: actionUUID, signaturePayload: self.messageSignaturePayload)
   }
 }

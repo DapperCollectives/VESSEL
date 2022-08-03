@@ -1,18 +1,32 @@
 export const ADD_SIGNER = `
-import DAOTreasury from 0xDAOTreasury
-import TreasuryActions from 0xTreasuryActions
+  import DAOTreasuryV2 from 0xDAOTreasuryV2
+  import TreasuryActionsV2 from 0xTreasuryActionsV2
+  import MyMultiSigV2 from 0xMyMultiSigV2
 
-  transaction(additionalSigner: Address) {
-    
-    let Treasury: &DAOTreasury.Treasury{DAOTreasury.TreasuryPublic}
-
+  transaction(treasuryAddr: Address, additionalSigner: Address, message: String, keyIds: [UInt64], signatures: [String], signatureBlock: UInt64) {
+  
+    let treasury: &DAOTreasuryV2.Treasury{DAOTreasuryV2.TreasuryPublic}
+    let action: AnyStruct{MyMultiSigV2.Action}
+    let messageSignaturePayload: MyMultiSigV2.MessageSignaturePayload
+  
     prepare(signer: AuthAccount) {
-      self.Treasury = signer.borrow<&DAOTreasury.Treasury>(from: DAOTreasury.TreasuryStoragePath)
-                      ?? panic("Could not borrow the DAOTreasury")
+      self.treasury = getAccount(treasuryAddr).getCapability(DAOTreasuryV2.TreasuryPublicPath)
+                      .borrow<&DAOTreasuryV2.Treasury{DAOTreasuryV2.TreasuryPublic}>()
+                      ?? panic("A DAOTreasuryV2 doesn't exist here.")
+      self.action = TreasuryActionsV2.AddSigner(signer: additionalSigner, proposer: signer.address)
+      
+      var _keyIds: [Int] = []
+  
+      for keyId in keyIds {
+          _keyIds.append(Int(keyId))
+      }
+  
+      self.messageSignaturePayload = MyMultiSigV2.MessageSignaturePayload(
+          signingAddr: signer.address, message: message, keyIds: _keyIds, signatures: signatures, signatureBlock: signatureBlock
+      )
     }
     execute {
-      let action = TreasuryActions.AddSigner(_signer: additionalSigner)
-      self.Treasury.proposeAction(action: action)
+      self.treasury.proposeAction(action: self.action, signaturePayload: self.messageSignaturePayload)
     }
   }
 `;
