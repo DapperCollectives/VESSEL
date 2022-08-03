@@ -8,7 +8,7 @@ pub contract TreasuryActionsV2 {
   ///////////
   // Events
   ///////////
-x
+
   // TransferToken
   pub event TransferTokenToAccountActionCreated(
     recipientAddr: Address, vaultID: String, amount: UFix64
