@@ -69,7 +69,10 @@ const Dropdown = ({ value, values, setValue, style, renderItemAddOn }) => {
           <TooltipWrapper isOpen={isOpen}>
             <div className="is-flex is-flex-grow-1 is-align-items-center is-justify-content-space-between has-text-grey small-text">
               {value}
-              <CaretDown className="has-text-black" />
+              <span>
+                {renderItemAddOn && renderItemAddOn(value)}
+                <CaretDown className="has-text-black" />
+              </span>
             </div>
           </TooltipWrapper>
         </button>
@@ -90,8 +93,10 @@ const Dropdown = ({ value, values, setValue, style, renderItemAddOn }) => {
                 onMouseDown={() => setValue(itemValue)}
                 key={`drop-down-${index}`}
               >
-                {displayText}
-                {renderItemAddOn && renderItemAddOn(item)}
+                <span className="is-flex is-flex-grow-1 is-align-items-center is-justify-content-space-between">
+                  {displayText}
+                  {renderItemAddOn && renderItemAddOn(itemValue)}
+                </span>
               </button>
             );
           })}

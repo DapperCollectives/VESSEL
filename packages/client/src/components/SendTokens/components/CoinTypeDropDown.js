@@ -13,7 +13,8 @@ const CoinTypeDropDown = ({ coinType, setCoinType, address }) => {
   useEffect(() => {
     const fetchBalances = () => {
       coinTypes.forEach(async (type) => {
-        const balance = await getVaultBalance(address, coinType);
+        const typeId = type.itemValue;
+        const balance = await getVaultBalance(address, typeId);
         setBalanceMap((prevState) => ({
           ...prevState,
           [type.itemValue]: Number(balance).toFixed(2),
@@ -32,11 +33,11 @@ const CoinTypeDropDown = ({ coinType, setCoinType, address }) => {
       values={coinTypes}
       setValue={setCoinType}
       style={{ height: "45px" }}
-      renderItemAddOn={(item) => {
-        const { itemValue } = item;
+      renderItemAddOn={(itemValue) => {
         return (
-          <span style={{ float: "right" }}>
-            <span>{balanceMap[itemValue]}</span>Qty
+          <span>
+            <span className="has-text-black mr-1">{balanceMap[itemValue]}</span>
+            Qty
           </span>
         );
       }}
