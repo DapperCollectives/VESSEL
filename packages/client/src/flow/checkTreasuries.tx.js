@@ -1,11 +1,11 @@
 const treasury = `
-	let treasury = getAccount(treasuryAddr).getCapability(DAOTreasury.TreasuryPublicPath)
-										.borrow<&DAOTreasury.Treasury{DAOTreasury.TreasuryPublic}>()
-										?? panic("A DAOTreasury doesn't exist here.")
+	let treasury = getAccount(treasuryAddr).getCapability(DAOTreasuryV2.TreasuryPublicPath)
+										.borrow<&DAOTreasuryV2.Treasury{DAOTreasuryV2.TreasuryPublic}>()
+										?? panic("A DAOTreasuryV2 doesn't exist here.")
 `;
 
 export const GET_SIGNERS = `
-	import DAOTreasury from 0xDAOTreasury
+	import DAOTreasuryV2 from 0xDAOTreasuryV2
 	pub fun main(treasuryAddr: Address): {Address: Bool} {
 		${treasury}
 		return treasury.borrowManagerPublic().getSigners()
@@ -13,7 +13,7 @@ export const GET_SIGNERS = `
 `;
 
 export const GET_THRESHOLD = `
-	import DAOTreasury from 0xDAOTreasury
+	import DAOTreasuryV2 from 0xDAOTreasuryV2
 
 	pub fun main(treasuryAddr: Address): UInt64 {
 		${treasury}

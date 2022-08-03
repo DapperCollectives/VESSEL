@@ -1,22 +1,22 @@
 export const PROPOSE_TRANSFER = `
-	import TreasuryActions from 0xTreasuryActions
-	import DAOTreasury from 0xDAOTreasury
+	import TreasuryActionsV2 from 0xTreasuryActionsV2
+	import DAOTreasuryV2 from 0xDAOTreasuryV2
 	import FungibleToken from 0xFungibleToken
-	import MyMultiSig from 0xMyMultiSig
+	import MyMultiSigV2 from 0xMyMultiSigV2
 	
 	transaction(treasuryAddr: Address, recipientAddr: Address, amount: UFix64, message: String, keyIds: [UInt64], signatures: [String], signatureBlock: UInt64) {
 	
-	  let treasury: &DAOTreasury.Treasury{DAOTreasury.TreasuryPublic}
+	  let treasury: &DAOTreasuryV2.Treasury{DAOTreasuryV2.TreasuryPublic}
 	  let recipientVault: Capability<&{FungibleToken.Receiver}>
-	  let action: AnyStruct{MyMultiSig.Action}
-	  let messageSignaturePayload: MyMultiSig.MessageSignaturePayload
+	  let action: AnyStruct{MyMultiSigV2.Action}
+	  let messageSignaturePayload: MyMultiSigV2.MessageSignaturePayload
 	  
 	  prepare(signer: AuthAccount) {
-		self.treasury = getAccount(treasuryAddr).getCapability(DAOTreasury.TreasuryPublicPath)
-						.borrow<&DAOTreasury.Treasury{DAOTreasury.TreasuryPublic}>()
-						?? panic("A DAOTreasury doesn't exist here.")
+		self.treasury = getAccount(treasuryAddr).getCapability(DAOTreasuryV2.TreasuryPublicPath)
+						.borrow<&DAOTreasuryV2.Treasury{DAOTreasuryV2.TreasuryPublic}>()
+						?? panic("A DAOTreasuryV2 doesn't exist here.")
 		self.recipientVault = getAccount(recipientAddr).getCapability<&{FungibleToken.Receiver}>(/public/flowTokenReceiver)
-		self.action = TreasuryActions.TransferToken(recipientVault: self.recipientVault, amount: amount, proposer: signer.address)
+		self.action = TreasuryActionsV2.TransferToken(recipientVault: self.recipientVault, amount: amount, proposer: signer.address)
 	
 		var _keyIds: [Int] = []
 	
@@ -24,7 +24,7 @@ export const PROPOSE_TRANSFER = `
 			_keyIds.append(Int(keyId))
 		}
 	
-		self.messageSignaturePayload = MyMultiSig.MessageSignaturePayload(
+		self.messageSignaturePayload = MyMultiSigV2.MessageSignaturePayload(
 			signingAddr: signer.address, message: message, keyIds: _keyIds, signatures: signatures, signatureBlock: signatureBlock
 		)
 	  }

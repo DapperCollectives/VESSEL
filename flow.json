@@ -39,19 +39,19 @@
 			}
 		},
 		"ExampleNFT": "./contracts/core/ExampleNFT.cdc",
-		"MyMultiSig": {
+		"MyMultiSigV2": {
 			"source": "./contracts/MyMultiSig.cdc",
 			"aliases": {
 				"testnet": "0x68a4fe55ec686656"
 			}
 		},
-		"DAOTreasury": {
+		"DAOTreasuryV2": {
 			"source": "./contracts/DAOTreasury.cdc",
 			"aliases": {
 				"testnet": "0x68a4fe55ec686656"
 			}
 		},
-		"TreasuryActions": {
+		"TreasuryActionsV2": {
 			"source": "./contracts/TreasuryActions.cdc",
 			"aliases": {
 				"testnet": "0x68a4fe55ec686656"
@@ -188,9 +188,9 @@
 				"NonFungibleToken",
 				"MetadataViews",
 				"ExampleNFT",
-				"MyMultiSig",
-				"DAOTreasury",
-				"TreasuryActions",
+				"MyMultiSigV2",
+				"DAOTreasuryV2",
+				"TreasuryActionsV2",
 				"OnChainMultiSig"
 			],
 			"emulator-recipient": [],
@@ -219,9 +219,9 @@
 		},
 		"testnet": {
 			"testnet-account": [
-				"MyMultiSig",
-				"DAOTreasury",
-				"TreasuryActions"
+				"MyMultiSigV2",
+				"DAOTreasuryV2",
+				"TreasuryActionsV2"
 			]
 		}
 	}
