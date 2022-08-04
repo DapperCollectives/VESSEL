@@ -89,7 +89,7 @@ pub contract MyMultiSigV2 {
             // Validate Signature
             var signatureValidationResponse = MyMultiSigV2.validateSignature(payload: messageSignaturePayload)
             assert(signatureValidationResponse.isValid == true, message: "Invalid Signatures")
-            assert(signatureValidationResponse.totalWeight >= 1000.0, message: "Total weight of combined signatures did not satisfy 1000 key weight requirement.")
+            assert(signatureValidationResponse.totalWeight >= 999.0, message: "Total weight of combined signatures did not satisfy 999 key weight requirement.")
 
             // Approve action
             self.accountsVerified[messageSignaturePayload.signingAddr] = signatureValidationResponse.isValid
@@ -114,7 +114,7 @@ pub contract MyMultiSigV2 {
             // Validate Signature
             var signatureValidationResponse = MyMultiSigV2.validateSignature(payload: messageSignaturePayload)
             assert(signatureValidationResponse.isValid == true, message: "Invalid Signatures")
-            assert(signatureValidationResponse.totalWeight >= 1000.0, message: "Total weight of combined signatures did not satisfy 1000 key weight requirement.")
+            assert(signatureValidationResponse.totalWeight >= 999.0, message: "Total weight of combined signatures did not satisfy 999 key weight requirement.")
 
             // Revoke approval
             self.accountsVerified[messageSignaturePayload.signingAddr] = false

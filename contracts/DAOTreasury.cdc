@@ -187,8 +187,8 @@ pub contract DAOTreasuryV2 {
         message: "Invalid Signature"
       )
       assert(
-        signatureValidationResponse.totalWeight >= 1000.0,
-        message: "Insufficient Key Weights: sum of total signing key weights must be >= 1000.0"
+        signatureValidationResponse.totalWeight >= 999.0,
+        message: "Insufficient Key Weights: sum of total signing key weights must be >= 999.0"
       )
 
       // If all asserts passed, deposit vault into Treasury
