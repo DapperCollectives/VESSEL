@@ -212,6 +212,11 @@ const getSignersForAction = async (address, actionUUID) => {
 
 const getVaultBalance = async (address) => {
   const identifiers = await doQuery(GET_TREASURY_IDENTIFIERS, address);
+  // vault on index 0 is FLOW token
+  // vault on index 1 is FUSD token
+  // vault on index 2 is USDC token (FiatToken)
+  console.log(identifiers);
+
   const vaultId = identifiers?.[0]?.[0];
   if (vaultId) {
     return await query({

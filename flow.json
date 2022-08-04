@@ -61,6 +61,20 @@
 			"aliases": {
 				"testnet": "0x68a4fe55ec686656"
 			}
+		},
+		"OnChainMultiSig": {
+			"source": "./contracts/core/OnChainMultiSig.cdc",
+			"aliases": {
+				"emulator": "0xf8d6e0586b0a20c7",
+				"testnet": "0xa983fecbed621163"
+			}
+		},
+		"FiatToken": {
+			"source": "./contracts/core/FiatToken.cdc",
+			"aliases": {
+				"emulator": "0xf8d6e0586b0a20c7",
+				"testnet": "0xa983fecbed621163"
+			}
 		}
 	},
 	"networks": {
@@ -181,7 +195,8 @@
 				"ExampleNFT",
 				"MyMultiSigV2",
 				"DAOTreasuryV2",
-				"TreasuryActionsV2"
+				"TreasuryActionsV2",
+				"OnChainMultiSig"
 			],
 			"emulator-recipient": [],
 			"emulator-signer1": [],
