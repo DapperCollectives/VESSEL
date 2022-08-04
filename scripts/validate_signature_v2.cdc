@@ -42,7 +42,7 @@ pub fun main(
       ) {
         // this key is good, add weight to total weight
         totalWeight = totalWeight + key.weight
-        if totalWeight >= 1000.0 {
+        if totalWeight >= 999.0 {
             return true
         }
       }
