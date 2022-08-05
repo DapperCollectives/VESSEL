@@ -5,7 +5,7 @@ export const SEND_FLOW_TO_TREASURY = `
 	transaction(treasuryAddr: Address, amount: UFix64) {
   
 		prepare(signer: AuthAccount) {
-			
+		  
 			let vault = signer.borrow<&FungibleToken.Vault>(from: /storage/flowTokenVault)!
 			let tokens <- vault.withdraw(amount: amount)
 		
@@ -14,8 +14,8 @@ export const SEND_FLOW_TO_TREASURY = `
 						?? panic("A DAOTreasuryV2 doesn't exist here.")
 		
 			let identifier: String = vault.getType().identifier
-		
+	  
 			treasury.depositTokens(identifier: identifier, vault: <- tokens)
 		}
-	}
+	  }
 `;
