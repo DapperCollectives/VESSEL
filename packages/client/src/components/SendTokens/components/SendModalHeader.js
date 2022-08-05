@@ -6,7 +6,7 @@ import { shortenAddr } from "../../../utils";
 const SendModalHeader = () => {
   const [sendModalState] = useContext(SendTokensContext);
   const { currentStep, address } = sendModalState;
-  const titleText = currentStep == 0 ? "Send" : "Review";
+  const titleText = currentStep === 0 ? "Send" : "Review";
   return (
     <React.Fragment>
       <h2 className="is-size-4">{titleText}</h2>

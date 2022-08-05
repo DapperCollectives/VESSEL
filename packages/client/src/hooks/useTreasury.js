@@ -1,7 +1,7 @@
 import { useEffect, useReducer } from "react";
 import { mutate, query, tx } from "@onflow/fcl";
-import { syncSafeOwnersWithSigners } from "../utils";
-
+import { syncSafeOwnersWithSigners, getVaultId } from "../utils";
+import { COIN_TYPE_TO_META } from "constants/maps";
 import reducer, { INITIAL_STATE } from "../reducers/treasuries";
 import {
   CREATE_TREASURY_LIMIT,
@@ -29,7 +29,9 @@ import {
   UPDATE_SIGNER,
   REMOVE_SIGNER,
   GET_VAULT_BALANCE,
+  PROPOSE_TRANSFER,
 } from "../flow";
+import { COIN_TYPES } from "constants/enums";
 
 const storageKey = "vessel-treasuries";
 
@@ -60,14 +62,13 @@ const doSendFlowToTreasury = async (treasuryAddr, amount) => {
     limit: REGULAR_LIMIT,
   });
 };
-const doSendFusdToTreasury = async (treasuryAddr, amount) => {
-  return await mutate({
-    cadence: SEND_FUSD_TO_TREASURY,
-    args: (arg, t) => [arg(treasuryAddr, t.Address), arg(amount, t.UFix64)],
-    limit: REGULAR_LIMIT,
-  });
-};
-const doProposeTransfer = async (treasuryAddr, recipientAddr, amount) => {
+
+const doProposeTransfer = async (
+  treasuryAddr,
+  recipientAddr,
+  amount,
+  coinType
+) => {
   const uFixAmount = String(parseFloat(amount).toFixed(8));
   const tokenAddress =
     process.env.REACT_APP_FLOW_ENV === "emulator"
@@ -88,6 +89,7 @@ const doProposeTransfer = async (treasuryAddr, recipientAddr, amount) => {
       arg(keyIds, t.Array(t.UInt64)),
       arg(signatures, t.Array(t.String)),
       arg(height, t.UInt64),
+      arg(COIN_TYPE_TO_META[coinType].publicReceiverPath, t.Path),
     ],
     limit: SIGNED_LIMIT,
   });
@@ -221,14 +223,9 @@ const getSignersForAction = async (address, actionUUID) => {
   }).catch(console.error);
 };
 
-const getVaultBalance = async (address) => {
+const getVaultBalance = async (address, coinType = COIN_TYPES.FLOW) => {
   const identifiers = await doQuery(GET_TREASURY_IDENTIFIERS, address);
-  // vault on index 0 is FLOW token
-  // vault on index 1 is FUSD token
-  // vault on index 2 is USDC token (FiatToken)
-  console.log(identifiers);
-
-  const vaultId = identifiers?.[0]?.[0];
+  const vaultId = getVaultId(identifiers, coinType);
   if (vaultId) {
     return await query({
       cadence: GET_VAULT_BALANCE,
@@ -383,11 +380,12 @@ export default function useTreasury(treasuryAddr) {
     await refreshTreasury();
   };
 
-  const proposeTransfer = async (recipientAddr, amount) => {
+  const proposeTransfer = async (recipientAddr, amount, coinType) => {
     const res = await doProposeTransfer(
       treasuryAddr,
       recipientAddr,
-      parseFloat(amount).toFixed(8)
+      parseFloat(amount).toFixed(8),
+      coinType
     );
     await tx(res).onceSealed();
   };
@@ -460,5 +458,6 @@ export default function useTreasury(treasuryAddr) {
     proposeAddSigner,
     updateSigner,
     proposeRemoveSigner,
+    getVaultBalance,
   };
 }

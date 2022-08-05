@@ -11,12 +11,18 @@ export const ASSET_TYPE_TO_META = {
 export const COIN_TYPE_TO_META = {
   [COIN_TYPES.FLOW]: {
     displayName: "FLOW",
+    vaultName: "FlowToken.Vault",
+    publicReceiverPath: { domain: "public", identifier: "flowTokenReceiver" },
   },
   [COIN_TYPES.FUSD]: {
     displayName: "FUSD",
+    vaultName: "FUSD.Vault",
+    publicReceiverPath: { domain: "public", identifier: "fusdReceiver" },
   },
   [COIN_TYPES.USDC]: {
     displayName: "USDC",
+    vaultName: "FiatToken.Vault",
+    publicReceiverPath: { domain: "public", identifier: "USDCVaultReceiver" },
   },
 };
 

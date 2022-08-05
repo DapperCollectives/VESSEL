@@ -10,7 +10,7 @@ import NFTSelector from "./NFTSelector";
 const AssetSelector = () => {
   const [sendModalState, setSendModalState] = useContext(SendTokensContext);
   const web3 = useContext(Web3Context);
-  const { assetType, coinType, selectedNFT } = sendModalState;
+  const { assetType, coinType, selectedNFT, address } = sendModalState;
   const userAddr = web3?.user?.addr;
   const userNFTs = web3?.NFTs?.[userAddr] ?? [];
   const nftsToDisplay = flatten(
@@ -58,6 +58,7 @@ const AssetSelector = () => {
       </div>
       {assetType === ASSET_TYPES.TOKEN && (
         <CoinTypeDropDown
+          address={address}
           coinType={coinType}
           setCoinType={(itemValue) => {
             setSendModalState((prevState) => ({

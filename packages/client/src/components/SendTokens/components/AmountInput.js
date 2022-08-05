@@ -1,8 +1,18 @@
-import { useContext, useState } from "react";
+import { useContext } from "react";
+import { Web3Context } from "contexts/Web3";
 import { SendTokensContext } from "../sendTokensContext";
 const AmountInput = () => {
   const [sendModalState, setSendModalState] = useContext(SendTokensContext);
-  const { tokenAmount } = sendModalState;
+  const web3 = useContext(Web3Context);
+  const { getVaultBalance } = web3;
+  const { tokenAmount, coinType, address } = sendModalState;
+  const handleMaxButtonClick = async () => {
+    const balance = await getVaultBalance(address, coinType);
+    setSendModalState((prevState) => ({
+      ...prevState,
+      tokenAmount: balance,
+    }));
+  };
   return (
     <div>
       <label className="has-text-grey">
@@ -21,10 +31,14 @@ const AmountInput = () => {
           }
         />
 
-        {/* <div style={{ position: "absolute", top: "20px", right: "0px" }}>
-          <button className="button mr-1 border-light p-2">Max</button>
-          <button className="button mr-1 border-light p-2">exch</button>
-        </div> */}
+        <div style={{ position: "absolute", top: "5px", right: "0px" }}>
+          <button
+            className="button mr-1 border-light p-2"
+            onClick={handleMaxButtonClick}
+          >
+            Max
+          </button>
+        </div>
       </div>
     </div>
   );
