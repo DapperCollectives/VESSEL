@@ -84,8 +84,9 @@ export const getProgressPercentageForSignersAmount = (signersAmount) => {
 };
 
 export const getFlowscanUrlForTransaction = (hash) => {
-  return `https://${process.env.REACT_APP_FLOW_ENV === "mainnet" ? "" : "testnet."
-    }flowscan.org/transaction/${hash}`;
+  return `https://${
+    process.env.REACT_APP_FLOW_ENV === "mainnet" ? "" : "testnet."
+  }flowscan.org/transaction/${hash}`;
 };
 
 export const syncSafeOwnersWithSigners = (signers, safeOwners) => {
