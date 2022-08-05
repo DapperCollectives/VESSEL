@@ -103,6 +103,7 @@ function Safe({ web3 }) {
     signerApprove,
     executeAction,
     sendFlowToTreasury,
+    sendFusdToTreasury,
     sendNFTToTreasury,
     sendCollectionToTreasury,
     getTreasuryCollections,
@@ -140,7 +141,8 @@ function Safe({ web3 }) {
   };
 
   const onDeposit = async () => {
-    await sendFlowToTreasury(10);
+    // await sendFlowToTreasury(10);
+    await sendFusdToTreasury(10);
   };
 
   const onDepositCollection = async () => {
@@ -252,7 +254,7 @@ function Safe({ web3 }) {
             {clipboard.textJustCopied === address ? "Copied" : "Copy address"}
           </span>
           <span className="is-underlined ml-4 pointer" onClick={onDeposit}>
-            Deposit FLOW
+            Deposit Tokens
           </span>
           <span
             className="is-underlined ml-4 pointer"

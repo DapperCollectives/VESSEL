@@ -10,13 +10,14 @@ import {
   SIGNED_LIMIT,
   SIGNER_APPROVE_LIMIT,
   UPDATE_SIGNER_LIMIT,
-  createSignature
+  createSignature,
 } from "../contexts/Web3";
 import {
   GET_SIGNERS,
   GET_THRESHOLD,
   INITIALIZE_TREASURY,
   SEND_FLOW_TO_TREASURY,
+  SEND_FUSD_TO_TREASURY,
   PROPOSE_TRANSFER,
   GET_PROPOSED_ACTIONS,
   SIGNER_APPROVE,
@@ -59,14 +60,19 @@ const doSendFlowToTreasury = async (treasuryAddr, amount) => {
     limit: REGULAR_LIMIT,
   });
 };
-
-const doProposeTransfer = async (
-  treasuryAddr,
-  recipientAddr,
-  amount
-) => {
+const doSendFusdToTreasury = async (treasuryAddr, amount) => {
+  return await mutate({
+    cadence: SEND_FUSD_TO_TREASURY,
+    args: (arg, t) => [arg(treasuryAddr, t.Address), arg(amount, t.UFix64)],
+    limit: REGULAR_LIMIT,
+  });
+};
+const doProposeTransfer = async (treasuryAddr, recipientAddr, amount) => {
   const uFixAmount = String(parseFloat(amount).toFixed(8));
-  const tokenAddress = process.env.REACT_APP_FLOW_ENV === "emulator" ? "ee82856bf20e2aa6" : "9a0766d93b6608b7";
+  const tokenAddress =
+    process.env.REACT_APP_FLOW_ENV === "emulator"
+      ? "ee82856bf20e2aa6"
+      : "9a0766d93b6608b7";
   const recepientVault = `Capability<&AnyResource{A.${tokenAddress}.FungibleToken.Receiver}>`;
   const intent = `Transfer ${uFixAmount} ${recepientVault} tokens from the treasury to ${recipientAddr}`;
 
@@ -110,7 +116,9 @@ const doSignApprove = async (
 };
 
 const doExecuteAction = async (treasuryAddr, actionUUID) => {
-  const { message, keyIds, signatures, height } = await createSignature(actionUUID.toString());
+  const { message, keyIds, signatures, height } = await createSignature(
+    actionUUID.toString()
+  );
 
   return await mutate({
     cadence: EXECUTE_ACTION,
@@ -120,7 +128,7 @@ const doExecuteAction = async (treasuryAddr, actionUUID) => {
       arg(message, t.String),
       arg(keyIds, t.Array(t.UInt64)),
       arg(signatures, t.Array(t.String)),
-      arg(height, t.UInt64)
+      arg(height, t.UInt64),
     ],
     limit: EXECUTE_ACTION_LIMIT,
   });
@@ -138,7 +146,7 @@ const doUpdateThreshold = async (treasuryAddr, newThreshold) => {
       arg(message, t.String),
       arg(keyIds, t.Array(t.UInt64)),
       arg(signatures, t.Array(t.String)),
-      arg(height, t.UInt64)
+      arg(height, t.UInt64),
     ],
     limit: SIGNED_LIMIT,
   });
@@ -156,7 +164,7 @@ const doProposeAddSigner = async (treasuryAddr, newSignerAddress) => {
       arg(message, t.String),
       arg(keyIds, t.Array(t.UInt64)),
       arg(signatures, t.Array(t.String)),
-      arg(height, t.UInt64)
+      arg(height, t.UInt64),
     ],
     limit: SIGNED_LIMIT,
   });
@@ -173,7 +181,10 @@ const doUpdateSigner = async (oldSignerAddress, newSignerAddress) => {
   });
 };
 
-const doProposeRemoveSigner = async (treasuryAddr, signerToBeRemovedAddress) => {
+const doProposeRemoveSigner = async (
+  treasuryAddr,
+  signerToBeRemovedAddress
+) => {
   const intent = `Remove ${signerToBeRemovedAddress} as a signer.`;
   const { message, keyIds, signatures, height } = await createSignature(intent);
 
@@ -185,7 +196,7 @@ const doProposeRemoveSigner = async (treasuryAddr, signerToBeRemovedAddress) => 
       arg(message, t.String),
       arg(keyIds, t.Array(t.UInt64)),
       arg(signatures, t.Array(t.String)),
-      arg(height, t.UInt64)
+      arg(height, t.UInt64),
     ],
     limit: SIGNED_LIMIT,
   });
@@ -358,6 +369,14 @@ export default function useTreasury(treasuryAddr) {
     await tx(res).onceSealed();
     await refreshTreasury();
   };
+  const sendFusdToTreasury = async (amount) => {
+    const res = await doSendFusdToTreasury(
+      treasuryAddr,
+      String(parseFloat(amount).toFixed(8))
+    );
+    await tx(res).onceSealed();
+    await refreshTreasury();
+  };
 
   const proposeTransfer = async (recipientAddr, amount) => {
     const res = await doProposeTransfer(
@@ -413,7 +432,10 @@ export default function useTreasury(treasuryAddr) {
   };
 
   const proposeRemoveSigner = async (signerToBeRemovedAddress) => {
-    const res = await doProposeRemoveSigner(treasuryAddr, signerToBeRemovedAddress);
+    const res = await doProposeRemoveSigner(
+      treasuryAddr,
+      signerToBeRemovedAddress
+    );
     await tx(res).onceSealed();
     await refreshTreasury();
   };
@@ -425,6 +447,7 @@ export default function useTreasury(treasuryAddr) {
     fetchTreasury,
     setTreasury,
     sendFlowToTreasury,
+    sendFusdToTreasury,
     proposeTransfer,
     signerApprove,
     executeAction,
