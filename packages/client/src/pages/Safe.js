@@ -9,6 +9,7 @@ import {
   SafeContacts,
   SafeSettings,
   SendTokens,
+  TestToolBox,
 } from "../components";
 import { ArrowDown, ArrowUp } from "../components/Svg";
 import { Web3Consumer, useModalContext } from "../contexts";
@@ -60,7 +61,7 @@ function Safe({ web3 }) {
 
   const safeData = web3?.treasuries?.[address];
   const actions = web3?.actions?.[address];
-  const balance = web3?.balances?.[address] ?? 0;
+  const allBalance = web3?.balances?.[address];
 
   if (!safeData) {
     return (
@@ -102,8 +103,7 @@ function Safe({ web3 }) {
     injectedProvider,
     signerApprove,
     executeAction,
-    sendFlowToTreasury,
-    sendFusdToTreasury,
+    initDepositTokensToTreasury,
     sendNFTToTreasury,
     sendCollectionToTreasury,
     getTreasuryCollections,
@@ -140,52 +140,12 @@ function Safe({ web3 }) {
     await executeAction(uuid);
   };
 
-  const onDeposit = async () => {
-    // await sendFlowToTreasury(10);
-    await sendFusdToTreasury(10);
-  };
-
-  const onDepositCollection = async () => {
-    const latestBlock = await injectedProvider
-      .send([injectedProvider.getBlock(true)])
-      .then(injectedProvider.decode);
-
-    const { height, id } = latestBlock;
-    const collectionIdHex = Buffer.from(
-      `A.${address.replace("0x", "")}.ExampleNFT.Collection`
-    ).toString("hex");
-
-    const message = `${collectionIdHex}${id}`;
-    const messageHex = Buffer.from(message).toString("hex");
-
-    let sigResponse = await injectedProvider
-      .currentUser()
-      .signUserMessage(messageHex);
-    const sigMessage =
-      sigResponse[0]?.signature?.signature ?? sigResponse[0]?.signature;
-    const keyIds = [sigResponse[0]?.keyId];
-    const signatures = [sigMessage];
-
-    await sendCollectionToTreasury(
-      address,
-      message,
-      keyIds,
-      signatures,
-      height
-    );
-  };
-
-  const onDepositNFT = async () => {
-    await sendNFTToTreasury(address, 0);
-    await getTreasuryCollections(address);
-  };
-
   const tabMap = {
     home: (
       <SafeHome
         key="safe-home"
         safeData={safeData}
-        balance={balance}
+        allBalance={allBalance}
         actions={actions}
         address={address}
         onSign={onSignAction}
@@ -224,7 +184,11 @@ function Safe({ web3 }) {
 
   const onSend = () => {
     modalContext.openModal(
-      <SendTokens name={safeData.name} address={address} balance={balance} />
+      <SendTokens
+        name={safeData.name}
+        address={address}
+        allBalance={allBalance}
+      />
     );
   };
 
@@ -242,6 +206,9 @@ function Safe({ web3 }) {
       }}
     >
       <div className="column is-full p-0 is-flex is-flex-direction-column mb-5">
+        {process.env.REACT_APP_FLOW_ENV !== "mainnet" && (
+          <TestToolBox address={address} />
+        )}
         <h2 className="is-size-4 mb-2">{safeData.name}</h2>
         <p>
           <span className="has-text-grey">
@@ -252,18 +219,6 @@ function Safe({ web3 }) {
             onClick={() => clipboard.copy(address)}
           >
             {clipboard.textJustCopied === address ? "Copied" : "Copy address"}
-          </span>
-          <span className="is-underlined ml-4 pointer" onClick={onDeposit}>
-            Deposit Tokens
-          </span>
-          <span
-            className="is-underlined ml-4 pointer"
-            onClick={onDepositCollection}
-          >
-            Deposit Collection
-          </span>
-          <span className="is-underlined ml-4 pointer" onClick={onDepositNFT}>
-            Deposit NFT
           </span>
         </p>
       </div>

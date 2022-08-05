@@ -4,28 +4,12 @@ import { COIN_TYPE_TO_META } from "constants/maps";
 import { Web3Context } from "contexts/Web3";
 const CoinTypeDropDown = ({ coinType, setCoinType, address }) => {
   const web3 = useContext(Web3Context);
-  const { getVaultBalance } = web3;
-  const [balanceMap, setBalanceMap] = useState({});
+  const { balances } = web3;
+  const balanceMap = balances[address];
   const coinTypes = Object.entries(COIN_TYPE_TO_META).map((type) => ({
     itemValue: type[0],
     displayText: type[1].displayName,
   }));
-  useEffect(() => {
-    const fetchBalances = () => {
-      coinTypes.forEach(async (type) => {
-        const typeId = type.itemValue;
-        const balance = await getVaultBalance(address, typeId);
-        setBalanceMap((prevState) => ({
-          ...prevState,
-          [type.itemValue]: Number(balance).toFixed(2),
-        }));
-      });
-    };
-    fetchBalances();
-    return () => {
-      setBalanceMap({});
-    };
-  }, []);
 
   return (
     <Dropdown
@@ -36,7 +20,9 @@ const CoinTypeDropDown = ({ coinType, setCoinType, address }) => {
       renderItemAddOn={(itemValue) => {
         return (
           <span>
-            <span className="has-text-black mr-1">{balanceMap[itemValue]}</span>
+            <span className="has-text-black mr-1">
+              {Number(balanceMap[itemValue]).toFixed(2)}
+            </span>
             Qty
           </span>
         );

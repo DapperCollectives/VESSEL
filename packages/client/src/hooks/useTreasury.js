@@ -16,9 +16,7 @@ import {
   GET_SIGNERS,
   GET_THRESHOLD,
   INITIALIZE_TREASURY,
-  SEND_FLOW_TO_TREASURY,
-  SEND_FUSD_TO_TREASURY,
-  PROPOSE_TRANSFER,
+  SEND_TOKENS_TO_TREASURY,
   GET_PROPOSED_ACTIONS,
   SIGNER_APPROVE,
   GET_SIGNERS_FOR_ACTION,
@@ -30,6 +28,7 @@ import {
   REMOVE_SIGNER,
   GET_VAULT_BALANCE,
   PROPOSE_TRANSFER,
+  GET_USER_FUSD_BALANCE,
 } from "../flow";
 import { COIN_TYPES } from "constants/enums";
 
@@ -55,10 +54,15 @@ const doCreateTreasury = async (signerAddresses, threshold) => {
   });
 };
 
-const doSendFlowToTreasury = async (treasuryAddr, amount) => {
+const doSendTokensToTreasury = async (treasuryAddr, amount, coinType) => {
+  const vaultPath = COIN_TYPE_TO_META[coinType].storageVaultPath;
   return await mutate({
-    cadence: SEND_FLOW_TO_TREASURY,
-    args: (arg, t) => [arg(treasuryAddr, t.Address), arg(amount, t.UFix64)],
+    cadence: SEND_TOKENS_TO_TREASURY,
+    args: (arg, t) => [
+      arg(treasuryAddr, t.Address),
+      arg(amount, t.UFix64),
+      arg(vaultPath, t.Path),
+    ],
     limit: REGULAR_LIMIT,
   });
 };
@@ -235,7 +239,14 @@ const getVaultBalance = async (address, coinType = COIN_TYPES.FLOW) => {
 
   return 0;
 };
-
+const getAllVaultBalance = async (address) => {
+  const allBalance = Object.assign({}, COIN_TYPES);
+  for await (const coinType of Object.keys(COIN_TYPES)) {
+    const balance = await getVaultBalance(address, coinType);
+    allBalance[coinType] = balance;
+  }
+  return allBalance;
+};
 export default function useTreasury(treasuryAddr) {
   const [state, dispatch] = useReducer(reducer, [], (initial) => ({
     ...initial,
@@ -262,12 +273,13 @@ export default function useTreasury(treasuryAddr) {
       },
     });
 
-    const balance = await getVaultBalance(treasuryAddr);
-    if (balance) {
+    const allBalance = await getAllVaultBalance(treasuryAddr);
+
+    if (allBalance) {
       dispatch({
         type: "SET_BALANCE",
         payload: {
-          [treasuryAddr]: balance,
+          [treasuryAddr]: allBalance,
         },
       });
     }
@@ -363,20 +375,19 @@ export default function useTreasury(treasuryAddr) {
     return null;
   };
 
-  const sendFlowToTreasury = async (amount) => {
-    const res = await doSendFlowToTreasury(
+  const initDepositTokensToTreasury = async () => {
+    const flowRes = await doSendTokensToTreasury(
       treasuryAddr,
-      String(parseFloat(amount).toFixed(8))
+      String(parseFloat(10).toFixed(8)),
+      COIN_TYPES.FLOW
     );
-    await tx(res).onceSealed();
-    await refreshTreasury();
-  };
-  const sendFusdToTreasury = async (amount) => {
-    const res = await doSendFusdToTreasury(
+    const fusdRes = await doSendTokensToTreasury(
       treasuryAddr,
-      String(parseFloat(amount).toFixed(8))
+      String(parseFloat(10).toFixed(8)),
+      COIN_TYPES.FUSD
     );
-    await tx(res).onceSealed();
+    await tx(flowRes).onceSealed();
+    await tx(fusdRes).onceSealed();
     await refreshTreasury();
   };
 
@@ -442,15 +453,20 @@ export default function useTreasury(treasuryAddr) {
     await tx(res).onceSealed();
     await refreshTreasury();
   };
-
+  const getUserFUSDBalance = async (address) => {
+    const balance = await query({
+      cadence: GET_USER_FUSD_BALANCE,
+      args: (arg, t) => [arg(address, t.Address)],
+    }).catch(console.error);
+    return balance;
+  };
   return {
     ...state,
     refreshTreasury,
     createTreasury,
     fetchTreasury,
     setTreasury,
-    sendFlowToTreasury,
-    sendFusdToTreasury,
+    initDepositTokensToTreasury,
     proposeTransfer,
     signerApprove,
     executeAction,
@@ -459,5 +475,6 @@ export default function useTreasury(treasuryAddr) {
     updateSigner,
     proposeRemoveSigner,
     getVaultBalance,
+    getUserFUSDBalance,
   };
 }

@@ -13,16 +13,19 @@ export const COIN_TYPE_TO_META = {
     displayName: "FLOW",
     vaultName: "FlowToken.Vault",
     publicReceiverPath: { domain: "public", identifier: "flowTokenReceiver" },
+    storageVaultPath: { domain: "storage", identifier: "flowTokenVault" },
   },
   [COIN_TYPES.FUSD]: {
     displayName: "FUSD",
     vaultName: "FUSD.Vault",
     publicReceiverPath: { domain: "public", identifier: "fusdReceiver" },
+    storageVaultPath: { domain: "storage", identifier: "fusdVault" },
   },
   [COIN_TYPES.USDC]: {
     displayName: "USDC",
     vaultName: "FiatToken.Vault",
     publicReceiverPath: { domain: "public", identifier: "USDCVaultReceiver" },
+    storageVaultPath: { domain: "storage", identifier: "USDCVault" },
   },
 };
 
