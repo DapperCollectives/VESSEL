@@ -1,3 +1,8 @@
+/**
+    Copied from: https://github.com/onflow/fusd/blob/main/contracts/FUSD.cdc
+    Commit: https://github.com/onflow/fusd/commit/c6a21044e507d839c271bc899a99b49c6bd25ad7
+*/
+
 import FungibleToken from "./FungibleToken.cdc"
 
 pub contract FUSD: FungibleToken {
