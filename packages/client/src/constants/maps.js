@@ -21,7 +21,7 @@ export const COIN_TYPE_TO_META = {
   },
   [COIN_TYPES.USDC]: {
     displayName: "USDC",
-    vaultName: "USDC.Vault",
+    vaultName: "FiatToken.Vault",
     publicReceiverPath: { domain: "public", identifier: "USDCVaultReceiver" },
   },
 };
