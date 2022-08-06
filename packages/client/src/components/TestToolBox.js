@@ -4,6 +4,7 @@ import { COIN_TYPES } from "constants/enums";
 const TestToolBox = ({ address }) => {
   const [showToolBox, setShowToolBox] = useState(false);
   const [userFUSDBalance, setUserFUSDBalance] = useState(0);
+  const [userFlowBalance, setUserFlowBalance] = useState(0);
   const web3 = useContext(Web3Context);
   const {
     injectedProvider,
@@ -12,11 +13,11 @@ const TestToolBox = ({ address }) => {
     sendCollectionToTreasury,
     getTreasuryCollections,
     getUserFUSDBalance,
+    getUserFlowBalance,
     balances,
     user,
   } = web3;
   const treasuryBalances = balances[address];
-  const userFlowBalance = user.balance;
   const onDeposit = async () => {
     await initDepositTokensToTreasury();
   };
@@ -54,8 +55,11 @@ const TestToolBox = ({ address }) => {
     await getTreasuryCollections(address);
   };
   const updateUserBalance = async () => {
-    const balance = await getUserFUSDBalance(user.addr);
-    setUserFUSDBalance(balance);
+    const fusdBalance = await getUserFUSDBalance(user.addr);
+    const flowBalance = await getUserFlowBalance(user.addr);
+
+    setUserFUSDBalance(fusdBalance);
+    setUserFlowBalance(flowBalance);
   };
   useEffect(() => {
     updateUserBalance();

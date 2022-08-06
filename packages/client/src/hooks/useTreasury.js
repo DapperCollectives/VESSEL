@@ -29,6 +29,7 @@ import {
   GET_VAULT_BALANCE,
   PROPOSE_TRANSFER,
   GET_USER_FUSD_BALANCE,
+  GET_USER_FLOW_BALANCE,
 } from "../flow";
 import { COIN_TYPES } from "constants/enums";
 
@@ -460,6 +461,13 @@ export default function useTreasury(treasuryAddr) {
     }).catch(console.error);
     return balance;
   };
+  const getUserFlowBalance = async (address) => {
+    const balance = await query({
+      cadence: GET_USER_FLOW_BALANCE,
+      args: (arg, t) => [arg(address, t.Address)],
+    }).catch(console.error);
+    return balance;
+  };
   return {
     ...state,
     refreshTreasury,
@@ -476,5 +484,6 @@ export default function useTreasury(treasuryAddr) {
     proposeRemoveSigner,
     getVaultBalance,
     getUserFUSDBalance,
+    getUserFlowBalance,
   };
 }
