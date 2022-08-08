@@ -65,7 +65,7 @@ const TestToolBox = ({ address }) => {
     updateUserBalance();
   }, []);
   return (
-    <div style={{ position: "absolute", left: "50%", zIndex: 10000 }}>
+    <div style={{ position: "absolute", left: "35%", zIndex: 10000 }}>
       <div className="is-flex is-flex-direction-column">
         <a
           className="has-background-warning has-text-black p-1"
