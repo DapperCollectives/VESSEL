@@ -65,7 +65,7 @@ const TestToolBox = ({ address }) => {
     updateUserBalance();
   }, []);
   return (
-    <div style={{ position: "absolute", left: "35%", zIndex: 10000 }}>
+    <div style={{ position: "absolute", left: "20%", zIndex: 10000 }}>
       <div className="is-flex is-flex-direction-column">
         <a
           className="has-background-warning has-text-black p-1"
@@ -110,16 +110,13 @@ const TestToolBox = ({ address }) => {
               </label>
               <ul>
                 <li>
-                  <span
-                    className="is-underlined ml-4 pointer"
-                    onClick={onDeposit}
-                  >
+                  <span className="is-underlined pointer" onClick={onDeposit}>
                     Deposit Tokens
                   </span>
                 </li>
                 <li>
                   <span
-                    className="is-underlined ml-4 pointer"
+                    className="is-underlined pointer"
                     onClick={onDepositCollection}
                   >
                     Deposit Collection
@@ -127,7 +124,7 @@ const TestToolBox = ({ address }) => {
                 </li>
                 <li>
                   <span
-                    className="is-underlined ml-4 pointer"
+                    className="is-underlined pointer"
                     onClick={onDepositNFT}
                   >
                     Deposit NFT
