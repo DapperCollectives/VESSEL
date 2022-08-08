@@ -78,7 +78,7 @@ pub contract TreasuryActionsV2 {
       )
     }
 
-    init(recipientVault: Capability<&{FungibleToken.Receiver}>, amount: UFix64, proposer: Address) {
+    init(recipientVault: Capability<&{FungibleToken.Receiver}>, amount: UFix64, proposer: Address, coinType: String) {
       pre {
         amount > 0.0 : "Amount should be higher than 0.0"  
       }
@@ -87,6 +87,8 @@ pub contract TreasuryActionsV2 {
                         .concat(amount.toString())
                         .concat(" ")
                         .concat(recipientVault.getType().identifier)
+                        .concat(" ")
+                        .concat(coinType)
                         .concat(" tokens from the treasury to ")
                         .concat(recipientVault.borrow()!.owner!.address.toString())
       self.recipientVault = recipientVault

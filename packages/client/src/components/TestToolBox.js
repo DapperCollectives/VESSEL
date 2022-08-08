@@ -17,6 +17,7 @@ const TestToolBox = ({ address }) => {
     balances,
     user,
   } = web3;
+
   const treasuryBalances = balances[address];
   const onDeposit = async () => {
     await initDepositTokensToTreasury();

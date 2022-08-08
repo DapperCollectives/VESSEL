@@ -80,8 +80,7 @@ const doProposeTransfer = async (
       ? "ee82856bf20e2aa6"
       : "9a0766d93b6608b7";
   const recepientVault = `Capability<&AnyResource{A.${tokenAddress}.FungibleToken.Receiver}>`;
-  const intent = `Transfer ${uFixAmount} ${recepientVault} tokens from the treasury to ${recipientAddr}`;
-
+  const intent = `Transfer ${uFixAmount} ${recepientVault} ${coinType} tokens from the treasury to ${recipientAddr}`;
   const { message, keyIds, signatures, height } = await createSignature(intent);
 
   return await mutate({
@@ -95,6 +94,7 @@ const doProposeTransfer = async (
       arg(signatures, t.Array(t.String)),
       arg(height, t.UInt64),
       arg(COIN_TYPE_TO_META[coinType].publicReceiverPath, t.Path),
+      arg(coinType, t.String),
     ],
     limit: SIGNED_LIMIT,
   });

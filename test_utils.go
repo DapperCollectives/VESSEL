@@ -187,7 +187,6 @@ func (otu *OverflowTestUtils) ProposeFungibleTokenTransferAction(treasuryAcct st
 	message := fmt.Sprintf("%s%s", hexCollectionID, latestBlock.ID)
 	// signature
 	signature := otu.SignMessage(proposingAcct, message)
-
 	otu.O.TransactionFromFile("propose_fungible_token_transfer").
 		SignProposeAndPayAs(proposingAcct).
 		Args(otu.O.Arguments().
@@ -197,7 +196,9 @@ func (otu *OverflowTestUtils) ProposeFungibleTokenTransferAction(treasuryAcct st
 			String(message).
 			UInt64Array(0).
 			StringArray(signature).
-			UInt64(latestBlock.Height)).
+			UInt64(latestBlock.Height).
+			PublicPath("flowTokenReceiver").
+			String("FLOW")).
 		Test(otu.T).
 		AssertSuccess()
 
@@ -227,7 +228,9 @@ func (otu *OverflowTestUtils) ProposeFungibleTokenTransferActionFail(treasuryAcc
 			String(message).
 			UInt64Array(0).
 			StringArray(signature).
-			UInt64(latestBlock.Height)).
+			UInt64(latestBlock.Height).
+			PublicPath("flowTokenReceiver").
+			String("FLOW")).
 		Test(otu.T).
 		AssertFailure(PROPOSE_TOKEN_TRANSFER_ERROR)
 

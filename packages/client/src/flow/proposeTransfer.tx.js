@@ -4,7 +4,7 @@ export const PROPOSE_TRANSFER = `
 	import FungibleToken from 0xFungibleToken
 	import MyMultiSigV2 from 0xMyMultiSigV2
 	
-	transaction(treasuryAddr: Address, recipientAddr: Address, amount: UFix64, message: String, keyIds: [UInt64], signatures: [String], signatureBlock: UInt64, publicReceiverPath: PublicPath) {
+	transaction(treasuryAddr: Address, recipientAddr: Address, amount: UFix64, message: String, keyIds: [UInt64], signatures: [String], signatureBlock: UInt64, publicReceiverPath: PublicPath, coinType: String) {
 	
 	  let treasury: &DAOTreasuryV2.Treasury{DAOTreasuryV2.TreasuryPublic}
 	  let recipientVault: Capability<&{FungibleToken.Receiver}>
@@ -16,7 +16,7 @@ export const PROPOSE_TRANSFER = `
 						.borrow<&DAOTreasuryV2.Treasury{DAOTreasuryV2.TreasuryPublic}>()
 						?? panic("A DAOTreasuryV2 doesn't exist here.")
 		self.recipientVault = getAccount(recipientAddr).getCapability<&{FungibleToken.Receiver}>(publicReceiverPath)
-		self.action = TreasuryActionsV2.TransferToken(recipientVault: self.recipientVault, amount: amount, proposer: signer.address)
+		self.action = TreasuryActionsV2.TransferToken(recipientVault: self.recipientVault, amount: amount, proposer: signer.address, coinType: coinType)
 	
 		var _keyIds: [Int] = []
 	
@@ -29,7 +29,11 @@ export const PROPOSE_TRANSFER = `
 		)
 	  }
 	  execute {
-		self.treasury.proposeAction(action: self.action, signaturePayload: self.messageSignaturePayload)
+		log("------------------action intent---------------------")
+		log(self.action)
+		log("------------------message---------------------")
+		log(self.messageSignaturePayload)
+		//self.treasury.proposeAction(action: self.action, signaturePayload: self.messageSignaturePayload)
 	  }
 	}
 `;

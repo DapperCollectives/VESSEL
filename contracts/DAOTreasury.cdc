@@ -82,6 +82,7 @@ pub contract DAOTreasuryV2 {
       let identifierHex = String.encodeHex(identifier.utf8)
 
       let message = signaturePayload.message
+
       // Identifier
       assert(
         identifierHex == message.slice(from: 0, upTo: identifierHex.length),
