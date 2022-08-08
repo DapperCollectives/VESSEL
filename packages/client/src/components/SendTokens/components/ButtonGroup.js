@@ -20,6 +20,7 @@ const ButtonGroup = () => {
     recipient,
     recipientValid,
     selectedNFT,
+    coinType,
   } = sendModalState;
 
   const continueReady =
@@ -29,7 +30,7 @@ const ButtonGroup = () => {
   const btnClasses = [
     "button p-4 flex-1",
     continueReady ? "is-link" : "is-light is-disabled",
-    currentStep == 1 ? "has-background-success" : "",
+    currentStep === 1 ? "has-background-success" : "",
   ];
   const onSubmit = async () => {
     if (currentStep === 0) {
@@ -40,7 +41,11 @@ const ButtonGroup = () => {
     }
     if (currentStep === 1) {
       if (assetType === ASSET_TYPES.TOKEN) {
-        await web3.proposeTransfer(formatAddress(recipient), tokenAmount);
+        await web3.proposeTransfer(
+          formatAddress(recipient),
+          tokenAmount,
+          coinType
+        );
       } else {
         await web3.proposeNFTTransfer(
           formatAddress(address),

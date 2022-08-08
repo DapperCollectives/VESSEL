@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { SendTokensContextProvider } from "./sendTokensContext";
 import Steps from "./steps";
 

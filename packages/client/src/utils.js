@@ -1,4 +1,5 @@
 import { isNaN } from "lodash";
+import { COIN_TYPE_TO_META } from "constants/maps";
 
 export const checkResponse = async (response) => {
   if (!response.ok) {
@@ -101,4 +102,10 @@ export const syncSafeOwnersWithSigners = (signers, safeOwners) => {
     };
   });
   return updatedOwners;
+};
+export const getVaultId = (identifiers, coinType) => {
+  const vaultIdentifiers = identifiers[0] ?? [];
+  return vaultIdentifiers.find(
+    (id) => id.indexOf(COIN_TYPE_TO_META[coinType].vaultName) >= 0
+  );
 };
