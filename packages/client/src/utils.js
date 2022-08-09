@@ -59,10 +59,6 @@ export const formatActionString = (str) => {
     }
     const float = parseFloat(word);
     if (isNaN(float) || word.startsWith("0x")) {
-      // add FLOW to token transfers
-      // if (isFungibleTransfer && word === "tokens") {
-      //   newStr += "FLOW ";
-      // }
       newStr += word;
     } else {
       newStr += float;
