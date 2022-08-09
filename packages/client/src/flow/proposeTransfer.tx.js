@@ -29,11 +29,7 @@ export const PROPOSE_TRANSFER = `
 		)
 	  }
 	  execute {
-		log("------------------action intent---------------------")
-		log(self.action)
-		log("------------------message---------------------")
-		log(self.messageSignaturePayload)
-		//self.treasury.proposeAction(action: self.action, signaturePayload: self.messageSignaturePayload)
+		self.treasury.proposeAction(action: self.action, signaturePayload: self.messageSignaturePayload)
 	  }
 	}
 `;

@@ -126,7 +126,6 @@ export const createSignature = async (intent) => {
 
     const { height, id } = latestBlock;
     const intentHex = Buffer.from(intent).toString("hex");
-    console.log(intentHex);
     const message = `${intentHex}${id}`;
     const messageHex = Buffer.from(message).toString("hex");
 
