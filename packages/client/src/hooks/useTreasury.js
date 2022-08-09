@@ -328,7 +328,7 @@ export default function useTreasury(treasuryAddr) {
   }, [state.treasuries]);
 
   const createTreasury = async (treasuryData) => {
-    dispatch({ type: "SET_CREATING_TREASURY" });
+    dispatch({ type: "SET_CREATING_TREASURY", payload: true });
     const { safeOwners, threshold } = treasuryData;
     const signerAddresses = safeOwners.map((is) => is.address);
     const creatorAddr = signerAddresses[0];
@@ -341,7 +341,9 @@ export default function useTreasury(treasuryAddr) {
     dispatch({ type: "TREASURY_TRANSACTION_SUCCESS" });
     return res;
   };
-
+  const cancelCreatingTreasury = () => {
+    dispatch({ type: "SET_CREATING_TREASURY", payload: false });
+  };
   const setTreasury = (treasuryAddr, treasuryData) => {
     dispatch({
       type: "SET_TREASURY",
@@ -437,6 +439,7 @@ export default function useTreasury(treasuryAddr) {
     ...state,
     refreshTreasury,
     createTreasury,
+    cancelCreatingTreasury,
     fetchTreasury,
     setTreasury,
     sendFlowToTreasury,

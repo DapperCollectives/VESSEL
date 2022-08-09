@@ -53,7 +53,7 @@ const reducer = (state, action) => {
     case "SET_CREATING_TREASURY":
       return {
         ...state,
-        creatingTreasury: true,
+        creatingTreasury: action.payload,
       };
     case "SUBMITTED_TREASURY_TRANSACTION":
       return {

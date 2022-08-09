@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { useHistory, NavLink } from "react-router-dom";
 import {
   WalletPrompt,
   Loading,
@@ -17,11 +17,13 @@ const AuthorizeTreasury = ({
   safeOwners,
   safeOwnersValidByAddress,
   createTreasury,
+  cancelCreatingTreasury,
   creatingTreasury,
   createdTreasury,
   signersAmount,
 }) => {
   let isAuthorizeReady = false;
+  const history = useHistory();
   if (safeName.trim().length && safeType) {
     const everyOwnerHasName = safeOwners.every((so) => so?.name?.trim().length);
     const everyOwnerHasValidAddress = Object.values(
@@ -47,7 +49,10 @@ const AuthorizeTreasury = ({
       threshold: signersAmount,
     });
   };
-
+  const onCancelCreatingSafe = () => {
+    history.push("/");
+    cancelCreatingTreasury();
+  };
   let stepMessage = "Create a new safe";
   if (creatingTreasury) stepMessage = "Your safe is being created...";
   if (createdTreasury) stepMessage = "Your safe is ready.";
@@ -72,9 +77,9 @@ const AuthorizeTreasury = ({
         </div>
         {!createdTreasury && (
           <div className="is-flex is-align-items-center">
-            <NavLink to="/">
-              <button className="button p-4 mr-2">Cancel</button>
-            </NavLink>
+            <button onClick={onCancelCreatingSafe} className="button p-4 mr-2">
+              Cancel
+            </button>
             <button className={authorizeClases.join(" ")} onClick={onAuthorize}>
               {stepBtnText}
             </button>
@@ -104,6 +109,7 @@ function CreateSafe({ web3 }) {
     createdTreasury,
     submittedTransaction,
     createTreasury,
+    cancelCreatingTreasury,
   } = web3;
   const [safeOwners, setSafeOwners] = useState([
     { name: "", address, verified: true },
@@ -136,7 +142,6 @@ function CreateSafe({ web3 }) {
   if (loadingTreasuries) {
     return <Loading message={loadingTreasuries} />;
   }
-
   const BodyComponents = creatingTreasury ? (
     <>
       <div className="columns column is-full p-0 mt-5">
@@ -255,6 +260,7 @@ function CreateSafe({ web3 }) {
         signersAmount={signersAmount}
         createTreasury={createTreasury}
         creatingTreasury={creatingTreasury}
+        cancelCreatingTreasury={cancelCreatingTreasury}
         createdTreasury={createdTreasury}
       />
       {BodyComponents}
