@@ -206,8 +206,12 @@ pub contract DAOTreasuryV2 {
     pub fun depositTokens(identifier: String, vault: @FungibleToken.Vault) {
       emit DepositTokens(identifier: identifier)
 
-      let vaultRef = (&self.vaults[identifier] as &FungibleToken.Vault?)!
-      vaultRef.deposit(from: <- vault)
+      if(self.vaults[identifier] == nil) {
+        self.vaults[identifier] <-! vault
+      } else {
+        let vaultRef = (&self.vaults[identifier] as &FungibleToken.Vault?)!
+        vaultRef.deposit(from: <- vault)
+      }
     }
 
 

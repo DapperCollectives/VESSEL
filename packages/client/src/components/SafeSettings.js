@@ -349,6 +349,131 @@ const AddSafeOwner = ({ web3, onCancel, onNext, safeOwners }) => {
   );
 };
 
+const AddVault = ({ onCancel, onNext }) => {
+  const [contractName, setContractName] = useState("");
+  const isFormValid = contractName?.trim().length > 0;
+
+  const onNextClick = () => {
+    onNext({
+      contractName,
+    });
+  };
+
+  const nextButtonClasses = [
+    "button flex-1 p-4",
+    isFormValid ? "is-link" : "is-light is-disabled",
+  ];
+
+  return (
+    <>
+      <div className="p-5">
+        <h2 className="is-size-4 has-text-black">Add Vault</h2>
+      </div>
+      <div className="border-light-top p-5 has-text-grey">
+        <div className="flex-1 is-flex is-flex-direction-column">
+          <label className="has-text-grey mb-2">
+            Contract Name
+          </label>
+          <input
+            className="p-4 rounded-sm border-light"
+            type="text"
+            value={contractName}
+            onChange={(e) => setContractName(e.target.value)}
+          />
+        </div>
+        <div className="is-flex is-align-items-center mt-6">
+          <button className="button flex-1 p-4 mr-2" onClick={onCancel}>
+            Cancel
+          </button>
+          <button
+            disabled={!isFormValid}
+            className={nextButtonClasses.join(" ")}
+            onClick={onNextClick}
+          >
+            Next
+          </button>
+        </div>
+      </div>
+    </>
+  );
+};
+
+const AddCollection = ({ web3, onCancel, onNext }) => {
+  const { isAddressValid } = useAddressValidation(web3.injectedProvider);
+  const [contractName, setContractName] = useState("");
+  const [address, setAddress] = useState("");
+  const [addressValid, setAddressValid] = useState(false);
+  const isFormValid = contractName?.trim().length > 0 && addressValid;
+
+  const onAddressChange = async (newAddress) => {
+    setAddress(newAddress);
+    setAddressValid(isAddr(newAddress) && (await isAddressValid(newAddress)));
+  };
+
+  const onNextClick = () => {
+    onNext({
+      contractName,
+      address,
+    });
+  };
+
+  const nextButtonClasses = [
+    "button flex-1 p-4",
+    isFormValid ? "is-link" : "is-light is-disabled",
+  ];
+
+  return (
+    <>
+      <div className="p-5">
+        <h2 className="is-size-4 has-text-black">Add Collection</h2>
+      </div>
+      <div className="border-light-top p-5 has-text-grey">
+        <div className="flex-1 is-flex is-flex-direction-column">
+          <label className="has-text-grey mb-2">
+            Contract Name
+          </label>
+          <input
+            className="p-4 rounded-sm border-light"
+            type="text"
+            value={contractName}
+            onChange={(e) => setContractName(e.target.value)}
+          />
+          <div className="flex-1 is-flex is-flex-direction-column mt-4">
+            <label className="has-text-grey mb-2">
+              Contract Address
+            </label>
+            <div style={{ position: "relative" }}>
+              <input
+                className="p-4 rounded-sm column is-full border-light"
+                type="text"
+                value={address}
+                onChange={(e) => onAddressChange(e.target.value)}
+              />
+              {addressValid && (
+                <div style={{ position: "absolute", right: 17, top: 14 }}>
+                  <Check />
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+        <div className="is-flex is-align-items-center mt-6">
+          <button className="button flex-1 p-4 mr-2" onClick={onCancel}>
+            Cancel
+          </button>
+          <button
+            disabled={!isFormValid}
+            className={nextButtonClasses.join(" ")}
+            onClick={onNextClick}
+          >
+            Next
+          </button>
+        </div>
+      </div>
+    </>
+  );
+};
+
 const ReviewSafeEdits = ({
   safeOwners,
   threshold,
@@ -448,6 +573,8 @@ function SafeSettings({ address, web3, name, threshold, safeOwners }) {
     proposeAddSigner,
     updateThreshold,
     proposeRemoveSigner,
+    proposeAddVault,
+    proposeAddCollection
   } = web3;
   const verifiedSafeOwners = safeOwners.filter((so) => so.verified);
   const onEditNameSubmit = (newName) => {
@@ -478,6 +605,21 @@ function SafeSettings({ address, web3, name, threshold, safeOwners }) {
     if (ownerToBeRemoved) {
       await proposeRemoveSigner(formatAddress(ownerToBeRemoved.address));
     }
+
+    modalContext.closeModal();
+    history.push(`/safe/${address}`);
+  };
+
+  const onAddVaultSubmit = async (form) => {
+    await proposeAddVault(form.contractName);
+
+    modalContext.closeModal();
+    history.push(`/safe/${address}`);
+  };
+
+  const onAddCollectionSubmit = async (form) => {
+    console.log(form)
+    await proposeAddCollection(form.contractName, formatAddress(form.address));
 
     modalContext.closeModal();
     history.push(`/safe/${address}`);
@@ -541,6 +683,25 @@ function SafeSettings({ address, web3, name, threshold, safeOwners }) {
         onCancel={() => modalContext.closeModal()}
         onNext={openEditSignatureThresholdModal}
         safeOwners={safeOwners}
+      />
+    );
+  };
+
+  const openAddVaultModal = () => {
+    modalContext.openModal(
+      <AddVault
+        onCancel={() => modalContext.closeModal()}
+        onNext={onAddVaultSubmit}
+      />
+    );
+  };
+
+  const openAddCollectionModal = () => {
+    modalContext.openModal(
+      <AddCollection
+        web3={web3}
+        onCancel={() => modalContext.closeModal()}
+        onNext={onAddCollectionSubmit}
       />
     );
   };
@@ -641,6 +802,23 @@ function SafeSettings({ address, web3, name, threshold, safeOwners }) {
       >
         Add new owner
       </button>
+      <div className="p-0 mt-5">
+        <h4 className="is-size-5">Assets</h4>
+        <button
+          className="button mt-4 is-full p-4 border-light is-align-self-flex-end"
+          onClick={openAddVaultModal}
+        >
+          Add Vault
+          <Plus style={{ position: "relative", left: 5 }} />
+        </button>
+        <button
+          className="button mt-4 is-full p-4 border-light is-align-self-flex-end"
+          onClick={openAddCollectionModal}
+        >
+          Add Collection
+          <Plus style={{ position: "relative", left: 5 }} />
+        </button>
+      </div>
     </>
   );
 }

@@ -28,6 +28,8 @@ import {
   REMOVE_SIGNER,
   GET_VAULT_BALANCE,
   PROPOSE_TRANSFER,
+  ADD_VAULT,
+  ADD_COLLECTION
 } from "../flow";
 import { COIN_TYPES } from "constants/enums";
 
@@ -197,6 +199,40 @@ const doProposeRemoveSigner = async (
       arg(keyIds, t.Array(t.UInt64)),
       arg(signatures, t.Array(t.String)),
       arg(height, t.UInt64),
+    ],
+    limit: SIGNED_LIMIT,
+  });
+};
+
+const doProposeAddVault = async (treasuryAddr, contractName) => {
+  // const intent = `Remove ${signerToBeRemovedAddress} as a signer.`;
+  // const { message, keyIds, signatures, height } = await createSignature(intent);
+
+  return await mutate({
+    cadence: ADD_VAULT(contractName),
+    args: (arg, t) => [
+      arg(treasuryAddr, t.Address),
+      // arg(message, t.String),
+      // arg(keyIds, t.Array(t.UInt64)),
+      // arg(signatures, t.Array(t.String)),
+      // arg(height, t.UInt64)
+    ],
+    limit: REGULAR_LIMIT,
+  });
+};
+
+const doProposeAddCollection = async (treasuryAddr, contractName, contractAddress) => {
+  const intent = `A.${contractAddress.replace("0x", "")}.${contractName}.Collection`;
+  const { message, keyIds, signatures, height } = await createSignature(intent);
+
+  return await mutate({
+    cadence: ADD_COLLECTION(contractName, contractAddress),
+    args: (arg, t) => [
+      arg(treasuryAddr, t.Address),
+      arg(message, t.String),
+      arg(keyIds, t.Array(t.UInt64)),
+      arg(signatures, t.Array(t.String)),
+      arg(height, t.UInt64)
     ],
     limit: SIGNED_LIMIT,
   });
@@ -435,6 +471,18 @@ export default function useTreasury(treasuryAddr) {
     await refreshTreasury();
   };
 
+  const proposeAddVault = async (contractName) => {
+    const res = await doProposeAddVault(treasuryAddr, contractName);
+    await tx(res).onceSealed();
+    await refreshTreasury();
+  };
+
+  const proposeAddCollection = async (contractName, contractAddress) => {
+    const res = await doProposeAddCollection(treasuryAddr, contractName, contractAddress);
+    await tx(res).onceSealed();
+    await refreshTreasury();
+  };
+
   return {
     ...state,
     refreshTreasury,
@@ -451,5 +499,7 @@ export default function useTreasury(treasuryAddr) {
     updateSigner,
     proposeRemoveSigner,
     getVaultBalance,
+    proposeAddVault,
+    proposeAddCollection
   };
 }
