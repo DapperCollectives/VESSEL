@@ -38,7 +38,7 @@
 				"testnet": "0x631e88ae7f1d7c20"
 			}
 		},
-		"ExampleNFT": { 
+		"ExampleNFT": {
 			"source": "./contracts/core/ExampleNFT.cdc",
 			"aliases": {
 				"testnet": "0x48bc5b54d3728e9e"
@@ -74,6 +74,21 @@
 			"aliases": {
 				"emulator": "0xf8d6e0586b0a20c7",
 				"testnet": "0xa983fecbed621163"
+			}
+		},
+		"BloctoToken": {
+			"aliases": {
+				"testnet": "0x6e0797ac987005f5"
+			}
+		},
+		"StarlyToken": {
+			"aliases": {
+				"testnet": "0xf63219072aaddd50"
+			}
+		},
+		"REVV": {
+			"aliases": {
+				"testnet": "0x14ca72fa4d45d2c3"
 			}
 		}
 	},
@@ -178,11 +193,11 @@
 		"testnet-account": {
 			"address": "68a4fe55ec686656",
 			"key": {
-					"type": "google-kms",
-					"index": 0,
-					"signatureAlgorithm": "ECDSA_P256",
-					"hashAlgorithm": "SHA2_256",
-					"resourceID":"projects/dl-dapper-collectives-staging/locations/global/keyRings/flow-testnet-cosigners/cryptoKeys/signer/cryptoKeyVersions/1"
+				"type": "google-kms",
+				"index": 0,
+				"signatureAlgorithm": "ECDSA_P256",
+				"hashAlgorithm": "SHA2_256",
+				"resourceID": "projects/dl-dapper-collectives-staging/locations/global/keyRings/flow-testnet-cosigners/cryptoKeys/signer/cryptoKeyVersions/1"
 			}
 		}
 	},
@@ -219,7 +234,6 @@
 			"emulator-signer18": [],
 			"emulator-signer19": [],
 			"emulator-signer20": [],
-
 			"emulator-treasuryOwner": []
 		},
 		"testnet": {

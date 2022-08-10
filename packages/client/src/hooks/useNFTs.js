@@ -46,12 +46,12 @@ const doSendCollectionToTreasury = async (
 const doProposeNFTTransfer = async (
   treasuryAddr,
   recipient,
-  tokenId,
-  message,
-  keyIds,
-  signatures,
-  height
+  tokenId
 ) => {
+  const treasuryVault = `A.${treasuryAddr.replace("0x", "")}.ExampleNFT.Collection`;
+  const intent = `Transfer ${treasuryVault} NFT from the treasury to ${recipient}`;
+  const { message, keyIds, signatures, height } = await createSignature(intent);
+
   return await mutate({
     cadence: PROPOSE_NFT_TRANSFER,
     args: (arg, t) => [
@@ -151,20 +151,11 @@ export default function useNFTs() {
     recipient,
     selectedNFT
   ) => {
-    const treasuryVault = `Capability<&AnyResource{A.${treasuryAddr.replace("0x", "")}.NonFungibleToken.CollectionPublic}>`;
-    const intent = `Transfer a ${treasuryVault} NFT from the treasury to ${recipient}`;
-
-    const { message, keyIds, signatures, height } = await createSignature(intent);
-
     const tokenId = selectedNFT.split("-")[1];
     const res = await doProposeNFTTransfer(
       treasuryAddr,
       recipient,
       tokenId,
-      message,
-      keyIds,
-      signatures,
-      height
     );
     await tx(res).onceSealed();
     return res;

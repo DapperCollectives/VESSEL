@@ -47,23 +47,23 @@ export const formatAddress = (addr) => {
   return addr.startsWith("0x") ? addr : `0x${addr}`;
 };
 export const formatActionString = (str) => {
-  const isFungibleTransfer = str.includes("FungibleToken.Receiver");
-  let newStr = "";
-  const words = str.split(" ");
-  words.forEach((word) => {
-    if (word.includes("FlowToken")) {
-      word = "FLOW";
-    } else if (word.includes("FUSD")) {
-      word = "FUSD";
-    } else if (word.includes("FiatToken")) {
-      word = "USDC";
-    }
-  });
-
-  // remove "from the treasury" as thats implied
-  newStr = newStr.replace("from the treasury ", "");
-
-  return newStr;
+  const vaultRegex = /A\..*\.Vault/g;
+  const collectionRegex = /A\..*\.Collection/g;
+  const floatRegex = /[0-9]*[.][0-9]+/;
+  const isTokenTransfer = vaultRegex.test(str);
+  const isNFTTransfer = collectionRegex.test(str);
+  let contractName;
+  let result;
+  if (isTokenTransfer) {
+    contractName = str.match(vaultRegex)[0].split(".")[2];
+    result = str.replace(floatRegex, parseFloat(str.match(floatRegex)[0]));
+    return result.replace(vaultRegex, contractName);
+  }
+  if (isNFTTransfer) {
+    contractName = str.match(collectionRegex)[0].split(".")[2];
+    return str.replace(collectionRegex, contractName);
+  }
+  return str;
 };
 
 export const getProgressPercentageForSignersAmount = (signersAmount) => {

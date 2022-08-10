@@ -1,9 +1,11 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useModalContext } from "../contexts";
 import { useClipboard, useAddressValidation } from "../hooks";
 import { useHistory } from "react-router-dom";
+import Dropdown from "components/Dropdown";
 import ProgressBar from "./ProgressBar";
 import { Person, Minus, Plus, Check } from "./Svg";
+import { COIN_TYPE_TO_META } from "constants/maps";
 import {
   getProgressPercentageForSignersAmount,
   isAddr,
@@ -267,8 +269,8 @@ const AddSafeOwner = ({ web3, onCancel, onNext, safeOwners }) => {
     setAddress(newAddress);
     setAddressValid(
       isAddr(newAddress) &&
-        (await isAddressValid(newAddress)) &&
-        !isAddressExisting(safeOwners, newAddress)
+      (await isAddressValid(newAddress)) &&
+      !isAddressExisting(safeOwners, newAddress)
     );
   };
 
@@ -364,6 +366,19 @@ const AddVault = ({ onCancel, onNext }) => {
     isFormValid ? "is-link" : "is-light is-disabled",
   ];
 
+  const coinTypes = Object.entries(COIN_TYPE_TO_META).map((type) => ({
+    itemValue: type[0],
+    displayText: type[1].displayName,
+  }));
+
+  console.log(coinTypes);
+
+  const [coinType, setCoinType] = useState(coinTypes[0].displayText);
+
+  useEffect(() => {
+    setContractName(COIN_TYPE_TO_META[coinType].contract)
+  }, [coinType])
+
   return (
     <>
       <div className="p-5">
@@ -374,11 +389,11 @@ const AddVault = ({ onCancel, onNext }) => {
           <label className="has-text-grey mb-2">
             Contract Name
           </label>
-          <input
-            className="p-4 rounded-sm border-light"
-            type="text"
-            value={contractName}
-            onChange={(e) => setContractName(e.target.value)}
+          <Dropdown
+            value={coinType}
+            values={coinTypes}
+            setValue={setCoinType}
+            style={{ height: "45px" }}
           />
         </div>
         <div className="is-flex is-align-items-center mt-6">
