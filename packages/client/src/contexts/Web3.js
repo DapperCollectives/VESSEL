@@ -5,7 +5,7 @@ import { useRouteMatch } from "react-router-dom";
 import { useFclUser, useTreasury, useNFTs } from "../hooks";
 
 export const REGULAR_LIMIT = 55;
-export const CREATE_TREASURY_LIMIT = 80;
+export const CREATE_TREASURY_LIMIT = 100;
 export const UPDATE_SIGNER_LIMIT = 110;
 export const SIGNED_LIMIT = 300;
 export const SIGNER_APPROVE_LIMIT = 310;
