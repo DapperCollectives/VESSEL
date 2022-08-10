@@ -177,7 +177,7 @@ func (otu *OverflowTestUtils) SendCollectionToTreasury(from string, to string) *
 
 func (otu *OverflowTestUtils) ProposeFungibleTokenTransferAction(treasuryAcct string, proposingAcct, recipientAcct string, amount float64) *OverflowTestUtils {
 	recipient, _ := otu.O.State.Accounts().ByName(fmt.Sprintf("emulator-%s", recipientAcct))
-	src := []byte(fmt.Sprintf("Transfer %.8f %s FLOW tokens from the treasury to 0x%s", amount, "Capability<&AnyResource{A.ee82856bf20e2aa6.FungibleToken.Receiver}>", recipient.Address()))
+	src := []byte(fmt.Sprintf("Transfer %.8f %s from the treasury to 0x%s", amount, "A.0ae53cb6e3f42a79.FlowToken.Vault", recipient.Address()))
 	hexCollectionID := make([]byte, hex.EncodedLen(len(src)))
 	hex.Encode(hexCollectionID, src)
 
@@ -197,8 +197,7 @@ func (otu *OverflowTestUtils) ProposeFungibleTokenTransferAction(treasuryAcct st
 			UInt64Array(0).
 			StringArray(signature).
 			UInt64(latestBlock.Height).
-			PublicPath("flowTokenReceiver").
-			String("FLOW")).
+			PublicPath("flowTokenReceiver")).
 		Test(otu.T).
 		AssertSuccess()
 
@@ -229,8 +228,7 @@ func (otu *OverflowTestUtils) ProposeFungibleTokenTransferActionFail(treasuryAcc
 			UInt64Array(0).
 			StringArray(signature).
 			UInt64(latestBlock.Height).
-			PublicPath("flowTokenReceiver").
-			String("FLOW")).
+			PublicPath("flowTokenReceiver")).
 		Test(otu.T).
 		AssertFailure(PROPOSE_TOKEN_TRANSFER_ERROR)
 

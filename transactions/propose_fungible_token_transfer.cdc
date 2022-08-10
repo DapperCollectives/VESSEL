@@ -3,7 +3,7 @@ import DAOTreasuryV2 from "../contracts/DAOTreasury.cdc"
 import FungibleToken from "../contracts/core/FungibleToken.cdc"
 import MyMultiSigV2 from "../contracts/MyMultiSig.cdc"
 
-	transaction(treasuryAddr: Address, recipientAddr: Address, amount: UFix64, message: String, keyIds: [UInt64], signatures: [String], signatureBlock: UInt64, publicReceiverPath: PublicPath, coinType: String) {
+	transaction(treasuryAddr: Address, recipientAddr: Address, amount: UFix64, message: String, keyIds: [UInt64], signatures: [String], signatureBlock: UInt64, publicReceiverPath: PublicPath) {
 	
 	  let treasury: &DAOTreasuryV2.Treasury{DAOTreasuryV2.TreasuryPublic}
 	  let recipientVault: Capability<&{FungibleToken.Receiver}>
@@ -15,7 +15,7 @@ import MyMultiSigV2 from "../contracts/MyMultiSig.cdc"
 						.borrow<&DAOTreasuryV2.Treasury{DAOTreasuryV2.TreasuryPublic}>()
 						?? panic("A DAOTreasuryV2 doesn't exist here.")
 		self.recipientVault = getAccount(recipientAddr).getCapability<&{FungibleToken.Receiver}>(publicReceiverPath)
-		self.action = TreasuryActionsV2.TransferToken(recipientVault: self.recipientVault, amount: amount, proposer: signer.address, coinType: coinType)
+		self.action = TreasuryActionsV2.TransferToken(recipientVault: self.recipientVault, amount: amount, proposer: signer.address)
 	
 		var _keyIds: [Int] = []
 	

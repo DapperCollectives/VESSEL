@@ -94,7 +94,6 @@ const doProposeTransfer = async (
       arg(signatures, t.Array(t.String)),
       arg(height, t.UInt64),
       arg(COIN_TYPE_TO_META[coinType].publicReceiverPath, t.Path),
-      arg(coinType, t.String),
     ],
     limit: SIGNED_LIMIT,
   });
