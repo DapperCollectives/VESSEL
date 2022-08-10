@@ -4,12 +4,12 @@ export const ADD_VAULT = (contractName) => `
 
     transaction(treasuryAddr: Address) {
 
-    let treasury: &DAOTreasuryV2.Treasury{DAOTreasuryV2.TreasuryPublic}
-    
-    prepare(signer: AuthAccount) {
-        self.treasury = getAccount(treasuryAddr).getCapability(DAOTreasuryV2.TreasuryPublicPath)
-						.borrow<&DAOTreasuryV2.Treasury{DAOTreasuryV2.TreasuryPublic}>()
-						?? panic("A DAOTreasuryV2 doesn't exist here.")        
+        let treasury: &DAOTreasuryV2.Treasury{DAOTreasuryV2.TreasuryPublic}
+        
+        prepare(signer: AuthAccount) {
+            self.treasury = getAccount(treasuryAddr).getCapability(DAOTreasuryV2.TreasuryPublicPath)
+                            .borrow<&DAOTreasuryV2.Treasury{DAOTreasuryV2.TreasuryPublic}>()
+                                ?? panic("A DAOTreasuryV2 doesn't exist here.")
         }
 
         execute {

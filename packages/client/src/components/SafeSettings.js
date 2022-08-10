@@ -618,7 +618,6 @@ function SafeSettings({ address, web3, name, threshold, safeOwners }) {
   };
 
   const onAddCollectionSubmit = async (form) => {
-    console.log(form)
     await proposeAddCollection(form.contractName, formatAddress(form.address));
 
     modalContext.closeModal();

@@ -6,13 +6,14 @@ export const ADD_COLLECTION = (contractName, contractAddress) => `
 
 	transaction(treasuryAddr: Address, message: String, keyIds: [UInt64], signatures: [String], signatureBlock: UInt64) {
 
+		let treasury: &DAOTreasuryV2.Treasury{DAOTreasuryV2.TreasuryPublic}
+		let messageSignaturePayload: MyMultiSigV2.MessageSignaturePayload
+
 		prepare(signer: AuthAccount) {
 			
-			let treasury = getAccount(treasuryAddr).getCapability(DAOTreasuryV2.TreasuryPublicPath)
+			self.treasury = getAccount(treasuryAddr).getCapability(DAOTreasuryV2.TreasuryPublicPath)
 						.borrow<&DAOTreasuryV2.Treasury{DAOTreasuryV2.TreasuryPublic}>()
 						?? panic("A DAOTreasuryV2 doesn't exist here.")
-	
-			let collection <- ${contractName}.createEmptyCollection()
 	
 			var _keyIds: [Int] = []
 	
@@ -20,11 +21,14 @@ export const ADD_COLLECTION = (contractName, contractAddress) => `
 				_keyIds.append(Int(keyId))
 			}
 	
-			let messageSignaturePayload = MyMultiSigV2.MessageSignaturePayload(
+			self.messageSignaturePayload = MyMultiSigV2.MessageSignaturePayload(
 				signingAddr: signer.address, message: message, keyIds: _keyIds, signatures: signatures, signatureBlock: signatureBlock
 			)
-
-            treasury.signerDepositCollection(collection: <- collection, signaturePayload: messageSignaturePayload)
+		}
+		
+		execute {
+			let collection <- ${contractName}.createEmptyCollection()
+			self.treasury.signerDepositCollection(collection: <- collection, signaturePayload: self.messageSignaturePayload)
 		}
 	}
 `;

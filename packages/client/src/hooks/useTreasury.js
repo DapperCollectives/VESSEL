@@ -1,5 +1,5 @@
 import { useEffect, useReducer } from "react";
-import { mutate, query, tx } from "@onflow/fcl";
+import { mutate, query, tx, config } from "@onflow/fcl";
 import { syncSafeOwnersWithSigners, getVaultId } from "../utils";
 import { COIN_TYPE_TO_META } from "constants/maps";
 import reducer, { INITIAL_STATE } from "../reducers/treasuries";
@@ -70,11 +70,9 @@ const doProposeTransfer = async (
   coinType
 ) => {
   const uFixAmount = String(parseFloat(amount).toFixed(8));
-  const tokenAddress =
-    process.env.REACT_APP_FLOW_ENV === "emulator"
-      ? "ee82856bf20e2aa6"
-      : "9a0766d93b6608b7";
-  const recepientVault = `Capability<&AnyResource{A.${tokenAddress}.FungibleToken.Receiver}>`;
+  const contractAddress = await config().get(COIN_TYPE_TO_META[coinType].contract);
+
+  const recepientVault = `A.${contractAddress.replace("0x", "")}.${COIN_TYPE_TO_META[coinType].vaultName}`;
   const intent = `Transfer ${uFixAmount} ${recepientVault} tokens from the treasury to ${recipientAddr}`;
 
   const { message, keyIds, signatures, height } = await createSignature(intent);
@@ -205,17 +203,10 @@ const doProposeRemoveSigner = async (
 };
 
 const doProposeAddVault = async (treasuryAddr, contractName) => {
-  // const intent = `Remove ${signerToBeRemovedAddress} as a signer.`;
-  // const { message, keyIds, signatures, height } = await createSignature(intent);
-
   return await mutate({
     cadence: ADD_VAULT(contractName),
     args: (arg, t) => [
       arg(treasuryAddr, t.Address),
-      // arg(message, t.String),
-      // arg(keyIds, t.Array(t.UInt64)),
-      // arg(signatures, t.Array(t.String)),
-      // arg(height, t.UInt64)
     ],
     limit: REGULAR_LIMIT,
   });

@@ -50,26 +50,13 @@ export const formatActionString = (str) => {
   const isFungibleTransfer = str.includes("FungibleToken.Receiver");
   let newStr = "";
   const words = str.split(" ");
-  words.forEach((word, idx) => {
-    const noLength = !word?.trim().length;
-    //remove class names like Capability<&AnyResource{A.0x.FungibleToken.Receiver}>
-    const isClass = word.startsWith("Capability<");
-    if (noLength || isClass) {
-      return;
-    }
-    const float = parseFloat(word);
-    if (isNaN(float) || word.startsWith("0x")) {
-      // add FLOW to token transfers
-      if (isFungibleTransfer && word === "tokens") {
-        newStr += "FLOW ";
-      }
-      newStr += word;
-    } else {
-      newStr += float;
-    }
-    // add space if not done
-    if (idx < words.length - 1) {
-      newStr += " ";
+  words.forEach((word) => {
+    if (word.includes("FlowToken")) {
+      word = "FLOW";
+    } else if (word.includes("FUSD")) {
+      word = "FUSD";
+    } else if (word.includes("FiatToken")) {
+      word = "USDC";
     }
   });
 
