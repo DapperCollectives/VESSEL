@@ -86,7 +86,7 @@ pub contract TreasuryActionsV2 {
       self.intent = "Transfer "
                         .concat(amount.toString())
                         .concat(" ")
-                        .concat(recipientVault.getType().identifier)
+                        .concat(recipientVault.borrow()!.getType().identifier)
                         .concat(" tokens from the treasury to ")
                         .concat(recipientVault.borrow()!.owner!.address.toString())
       self.recipientVault = recipientVault
