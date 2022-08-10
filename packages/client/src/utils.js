@@ -46,6 +46,7 @@ export const isAddr = (addr) => {
 export const formatAddress = (addr) => {
   return addr.startsWith("0x") ? addr : `0x${addr}`;
 };
+
 export const formatActionString = (str) => {
   const vaultRegex = /A\..*\.Vault/g;
   const collectionRegex = /A\..*\.Collection/g;
@@ -56,8 +57,9 @@ export const formatActionString = (str) => {
   let result;
   if (isTokenTransfer) {
     contractName = str.match(vaultRegex)[0].split(".")[2];
-    result = str.replace(floatRegex, parseFloat(str.match(floatRegex)[0]));
-    return result.replace(vaultRegex, contractName);
+    const tokenName = getTokenName(contractName);
+      result = str.replace(floatRegex, parseFloat(str.match(floatRegex)[0]));
+    return result.replace(vaultRegex, tokenName);
   }
   if (isNFTTransfer) {
     contractName = str.match(collectionRegex)[0].split(".")[2];
@@ -65,6 +67,25 @@ export const formatActionString = (str) => {
   }
   return str;
 };
+
+export const getTokenName = (contractName) => {
+  switch (contractName) {
+    case "FlowToken":
+      return "FLOW";
+    case "FUSD":
+      return "FUSD";
+    case "FiatToken":
+      return "USDC";
+    case "BloctoToken":
+      return "BLT";
+    case "StarlyToken":
+      return "STARLY";
+    case "REVV":
+      return "REVV";
+    default:
+      return contractName;
+  }
+}
 
 export const getProgressPercentageForSignersAmount = (signersAmount) => {
   return Math.min(60 + signersAmount * 10, 100);
