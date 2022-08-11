@@ -488,15 +488,23 @@ export default function useTreasury(treasuryAddr) {
 
   const proposeAddVault = async (coinType) => {
     const contractName = COIN_TYPE_TO_META[coinType].contractName;
-    const res = await doProposeAddVault(treasuryAddr, contractName);
-    await tx(res).onceSealed();
-    await refreshTreasury();
+    try {
+      const res = await doProposeAddVault(treasuryAddr, contractName);
+      await tx(res).onceSealed();
+      await refreshTreasury();
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const proposeAddCollection = async (contractName, contractAddress) => {
-    const res = await doProposeAddCollection(treasuryAddr, contractName, contractAddress);
-    await tx(res).onceSealed();
-    await refreshTreasury();
+    try {
+      const res = await doProposeAddCollection(treasuryAddr, contractName, contractAddress);
+      await tx(res).onceSealed();
+      await refreshTreasury();
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const getUserFUSDBalance = async (address) => {
