@@ -1,3 +1,4 @@
+import { COIN_TYPES } from "constants/enums";
 import React from "react";
 
 const BalanceBar = ({ progress = 0 }) => {
@@ -31,7 +32,7 @@ const BalanceBar = ({ progress = 0 }) => {
   );
 };
 
-function SafeOverview({ balance }) {
+function SafeOverview({ allBalance }) {
   const balanceClasses = [
     "is-flex is-flex-direction-column flex-1",
     "rounded-sm has-safe-gradient has-shadow has-text-white",
@@ -41,7 +42,7 @@ function SafeOverview({ balance }) {
   const moneyClasses = [
     "is-flex is-flex-direction-column is-justify-content-space-between flex-1",
   ];
-
+  const flowBalance = allBalance?.[COIN_TYPES.FLOW] ?? 0;
   return (
     <>
       <div className="column p-0 mt-5 is-flex is-full">
@@ -54,11 +55,11 @@ function SafeOverview({ balance }) {
             <div>FLOW</div>
           </div>
           <div className="column is-full p-0 mb-2">
-            <h2 className="is-size-4">{balance}</h2>
+            <h2 className="is-size-4">{flowBalance}</h2>
           </div>
           <BalanceBar progress={100} />
           <div className="column is-full p-0 is-flex is-justify-content-space-between mt-2 is-size-6">
-            {balance > 0 ? (
+            {flowBalance > 0 ? (
               <div>100% FLOW</div>
             ) : (
               <>

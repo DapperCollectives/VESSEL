@@ -120,11 +120,25 @@ func (otu *OverflowTestUtils) ProposeNewThresholdFail(proposingAcct string, newT
 }
 
 func (otu *OverflowTestUtils) SendFlowToTreasury(from string, to string, amount float64) *OverflowTestUtils {
-	otu.O.TransactionFromFile("send_flow_to_treasury").
+	otu.O.TransactionFromFile("send_tokens_to_treasury").
 		SignProposeAndPayAs(from).
 		Args(otu.O.Arguments().
 			Account(to).
-			UFix64(amount)).
+			UFix64(amount).
+			StoragePath("flowTokenVault")).
+		Test(otu.T).
+		AssertSuccess()
+
+	return otu
+}
+
+func (otu *OverflowTestUtils) SendFUSDToTreasury(from string, to string, amount float64) *OverflowTestUtils {
+	otu.O.TransactionFromFile("send_tokens_to_treasury").
+		SignProposeAndPayAs(from).
+		Args(otu.O.Arguments().
+			Account(to).
+			UFix64(amount).
+			StoragePath("fusdVault")).
 		Test(otu.T).
 		AssertSuccess()
 
@@ -175,9 +189,9 @@ func (otu *OverflowTestUtils) SendCollectionToTreasury(from string, to string) *
 	return otu
 }
 
-func (otu *OverflowTestUtils) ProposeFungibleTokenTransferAction(treasuryAcct string, proposingAcct, recipientAcct string, amount float64) *OverflowTestUtils {
+func (otu *OverflowTestUtils) ProposeFungibleTokenTransferAction(treasuryAcct string, proposingAcct, recipientAcct string, amount float64, publicReceiverPathId string, vaultId string) *OverflowTestUtils {
 	recipient, _ := otu.O.State.Accounts().ByName(fmt.Sprintf("emulator-%s", recipientAcct))
-	src := []byte(fmt.Sprintf("Transfer %.8f %s tokens from the treasury to 0x%s", amount, "A.0ae53cb6e3f42a79.FlowToken.Vault", recipient.Address()))
+	src := []byte(fmt.Sprintf("Transfer %.8f %s tokens from the treasury to 0x%s", amount, vaultId, recipient.Address()))
 	hexCollectionID := make([]byte, hex.EncodedLen(len(src)))
 	hex.Encode(hexCollectionID, src)
 
@@ -187,7 +201,6 @@ func (otu *OverflowTestUtils) ProposeFungibleTokenTransferAction(treasuryAcct st
 	message := fmt.Sprintf("%s%s", hexCollectionID, latestBlock.ID)
 	// signature
 	signature := otu.SignMessage(proposingAcct, message)
-
 	otu.O.TransactionFromFile("propose_fungible_token_transfer").
 		SignProposeAndPayAs(proposingAcct).
 		Args(otu.O.Arguments().
@@ -197,14 +210,15 @@ func (otu *OverflowTestUtils) ProposeFungibleTokenTransferAction(treasuryAcct st
 			String(message).
 			UInt64Array(0).
 			StringArray(signature).
-			UInt64(latestBlock.Height)).
+			UInt64(latestBlock.Height).
+			PublicPath(publicReceiverPathId)).
 		Test(otu.T).
 		AssertSuccess()
 
 	return otu
 }
 
-func (otu *OverflowTestUtils) ProposeFungibleTokenTransferActionFail(treasuryAcct string, proposingAcct, recipientAcct string, amount float64) *OverflowTestUtils {
+func (otu *OverflowTestUtils) ProposeFungibleTokenTransferActionFail(treasuryAcct string, proposingAcct, recipientAcct string, amount float64, publicReceiverPathId string) *OverflowTestUtils {
 	PROPOSE_TOKEN_TRANSFER_ERROR := "Amount should be higher than 0.0"
 
 	src := []byte("no action id")
@@ -227,7 +241,8 @@ func (otu *OverflowTestUtils) ProposeFungibleTokenTransferActionFail(treasuryAcc
 			String(message).
 			UInt64Array(0).
 			StringArray(signature).
-			UInt64(latestBlock.Height)).
+			UInt64(latestBlock.Height).
+			PublicPath(publicReceiverPathId)).
 		Test(otu.T).
 		AssertFailure(PROPOSE_TOKEN_TRANSFER_ERROR)
 
@@ -298,7 +313,6 @@ func (otu *OverflowTestUtils) ProposeFungibleTokenTransferToTreasuryActionFail(t
 }
 
 func (otu *OverflowTestUtils) ProposeNonFungibleTokenTransferAction(treasuryAcct string, proposingAcct, recipientAcct string, id uint64) *OverflowTestUtils {
-
 	recipient, _ := otu.O.State.Accounts().ByName(fmt.Sprintf("emulator-%s", recipientAcct))
 	src := []byte(fmt.Sprintf("Transfer A.f8d6e0586b0a20c7.ExampleNFT.Collection NFT from the treasury to 0x%s", recipient.Address()))
 
@@ -896,4 +910,52 @@ func (otu *OverflowTestUtils) DestroyTreasuryShoudBeAllowed(account string) *Ove
 		Test(otu.T).
 		AssertSuccess()
 	return otu
+}
+func (otu *OverflowTestUtils) SetupFUSDVault(account string) *OverflowTestUtils {
+	otu.O.TransactionFromFile("setup_fusd_vault").
+		SignProposeAndPayAs(account).
+		Test(otu.T).
+		AssertSuccess()
+	return otu
+}
+func (otu *OverflowTestUtils) SetupFUSDMinter(account string) *OverflowTestUtils {
+	otu.O.TransactionFromFile("setup_fusd_minter").
+		SignProposeAndPayAs(account).
+		Test(otu.T).
+		AssertSuccess()
+	return otu
+}
+func (otu *OverflowTestUtils) DepositFUSDMinter(account string) *OverflowTestUtils {
+	otu.O.TransactionFromFile("deposit_fusd_minter").
+		SignProposeAndPayAs(account).
+		Args(otu.O.Arguments().
+			Address(account)).
+		Test(otu.T).
+		AssertSuccess()
+	return otu
+}
+func (otu *OverflowTestUtils) MintFUSD(account string, amount float64) *OverflowTestUtils {
+	otu.O.TransactionFromFile("mint_fusd").
+		SignProposeAndPayAs(account).
+		Args(otu.O.Arguments().
+			UFix64(amount).
+			Address(account)).
+		Test(otu.T).
+		AssertSuccess()
+	return otu
+}
+
+func (otu *OverflowTestUtils) SetupFUSD(account string) *OverflowTestUtils {
+	otu.SetupFUSDVault(account)
+	otu.SetupFUSDMinter(account)
+	otu.DepositFUSDMinter(account)
+	return otu
+}
+func (otu *OverflowTestUtils) GetAccountFUSDBalance(account string) uint64 {
+	val, _ := otu.O.ScriptFromFile("get_fusd_balance").
+		Args(otu.O.Arguments().
+			Address(account)).
+		RunReturns()
+
+	return val.ToGoValue().(uint64)
 }

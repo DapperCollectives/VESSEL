@@ -7,6 +7,7 @@ import (
 )
 
 var FlowTokenVaultID = "A.0ae53cb6e3f42a79.FlowToken.Vault"
+var FUSDTokenVaultID = "A.f8d6e0586b0a20c7.FUSD.Vault"
 var NonFungibleTokenCollectionID = "A.f8d6e0586b0a20c7.ExampleNFT.Collection"
 var DefaultAccountBalance uint64 = 1e5
 var TransferAmount float64 = 100
@@ -16,6 +17,8 @@ var DefaultThreshold = uint64(len(Signers))
 var MaxSigners = append(GenerateSigners(20), "treasuryOwner")
 var MaxThreshold = 20
 var RecipientAcct = "recipient"
+var FLOWPublicReceiverPathId = "flowTokenReceiver"
+var FUSDPublicReceiverPathId = "fusdReceiver"
 
 func TestTreasurySetup(t *testing.T) {
 	otu := NewOverflowTest(t)
@@ -75,6 +78,7 @@ func TestTransferFungibleTokensToAccountActions(t *testing.T) {
 	var transferTokenActionUUID uint64
 
 	otu := NewOverflowTest(t)
+
 	otu.MintFlow("signer1", TransferAmount)
 	otu.CreateNFTCollection("signer1")
 	otu.MintNFT("signer1")
@@ -86,7 +90,7 @@ func TestTransferFungibleTokensToAccountActions(t *testing.T) {
 	otu.SendNFTToTreasury("signer1", "treasuryOwner", 0)
 
 	t.Run("Signers should be able to propose a transfer of fungible tokens out of the Treasury", func(t *testing.T) {
-		otu.ProposeFungibleTokenTransferAction("treasuryOwner", Signers[0], RecipientAcct, TransferAmount)
+		otu.ProposeFungibleTokenTransferAction("treasuryOwner", Signers[0], RecipientAcct, TransferAmount, FLOWPublicReceiverPathId, FlowTokenVaultID)
 	})
 
 	t.Run("Signers should be able to sign to approve a proposed action to transfer tokens", func(t *testing.T) {
@@ -126,6 +130,56 @@ func TestTransferFungibleTokensToAccountActions(t *testing.T) {
 	})
 }
 
+func TestTransferFUSDToAccountActions(t *testing.T) {
+	var transferTokenActionUUID uint64
+
+	otu := NewOverflowTest(t)
+	otu.SetupTreasury("treasuryOwner", Signers, DefaultThreshold)
+	otu.SetupFUSD("account")
+	otu.MintFUSD("account", TransferAmount)
+	otu.SendFUSDToTreasury("account", "treasuryOwner", TransferAmount)
+
+	t.Run("Signers should be able to propose a transfer of FUSD tokens out of the Treasury", func(t *testing.T) {
+		otu.ProposeFungibleTokenTransferAction("treasuryOwner", Signers[0], "account", TransferAmount, FUSDPublicReceiverPathId, FUSDTokenVaultID)
+	})
+
+	t.Run("Signers should be able to sign to approve a proposed action to transfer tokens", func(t *testing.T) {
+		// Get first ID of proposed action
+		actions := otu.GetProposedActions("treasuryOwner")
+		keys := make([]uint64, 0, len(actions))
+		for k := range actions {
+			keys = append(keys, k)
+		}
+		transferTokenActionUUID = keys[0]
+
+		// Each signer submits an approval signature
+		for _, signer := range Signers {
+			// Test if the action fails without all signer approvals
+			otu.ExecuteActionFailed("treasuryOwner", transferTokenActionUUID, "This action has not received a signature from every signer yet.")
+			otu.SignerApproveAction("treasuryOwner", transferTokenActionUUID, signer)
+		}
+
+		// Assert that the signatures were registered
+		signersMap := otu.GetVerifiedSignersForAction("treasuryOwner", transferTokenActionUUID)
+		for _, signer := range Signers {
+			assert.True(otu.T, signersMap[otu.GetAccountAddress(signer)])
+		}
+	})
+
+	t.Run(`A signer should be able to execute a proposed action to transfer tokens once it has received
+		the required threshold of signatures`, func(t *testing.T) {
+		otu.ExecuteAction("treasuryOwner", transferTokenActionUUID)
+
+		// Assert that all funds have been transfered out of the treasury vault
+		treasuryBalance := otu.GetTreasuryVaultBalance("treasuryOwner", FlowTokenVaultID)
+		assert.Equal(otu.T, uint64(0), treasuryBalance)
+
+		// Assert that all funds have been received by the recipient account
+		recipientBalance := otu.GetAccountFUSDBalance("account")
+		assert.Equal(otu.T, TransferAmountUInt64, recipientBalance)
+	})
+}
+
 func TestTransferTokensToAccountActionsWith20Signers(t *testing.T) {
 	var transferTokenActionUUID uint64
 	var transferNFTActionUUID uint64
@@ -145,7 +199,7 @@ func TestTransferTokensToAccountActionsWith20Signers(t *testing.T) {
 	otu.CreateNFTCollection("account")
 
 	t.Run("Signers should be able to propose a transfer of fungible tokens out of the Treasury", func(t *testing.T) {
-		otu.ProposeFungibleTokenTransferAction("treasuryOwner", MaxSigners[0], RecipientAcct, TransferAmount)
+		otu.ProposeFungibleTokenTransferAction("treasuryOwner", MaxSigners[0], RecipientAcct, TransferAmount, FLOWPublicReceiverPathId, FlowTokenVaultID)
 	})
 
 	t.Run("Signers should be able to sign to approve a proposed action to transfer tokens", func(t *testing.T) {
@@ -183,7 +237,7 @@ func TestTransferTokensToAccountActionsWith20Signers(t *testing.T) {
 	})
 
 	t.Run("Signers shouldn't be able to propose a transfer of 0.0 fungible tokens out of the Treasury", func(t *testing.T) {
-		otu.ProposeFungibleTokenTransferActionFail("treasuryOwner", Signers[0], RecipientAcct, 0.0)
+		otu.ProposeFungibleTokenTransferActionFail("treasuryOwner", Signers[0], RecipientAcct, 0.0, FLOWPublicReceiverPathId)
 	})
 
 	t.Run("Signers should be able to propose a transfer of a non-fungible token out of the Treasury", func(t *testing.T) {
@@ -428,7 +482,7 @@ func TestSignerRevokeApproval(t *testing.T) {
 	otu.SendFlowToTreasury("signer1", "treasuryOwner", TransferAmount)
 
 	// Propose action
-	otu.ProposeFungibleTokenTransferAction("treasuryOwner", Signers[0], RecipientAcct, TransferAmount)
+	otu.ProposeFungibleTokenTransferAction("treasuryOwner", Signers[0], RecipientAcct, TransferAmount, FLOWPublicReceiverPathId, FlowTokenVaultID)
 
 	t.Run("Signers should be able to sign to approve a proposed action to transfer tokens", func(t *testing.T) {
 		// Get first ID of proposed action
@@ -709,7 +763,7 @@ func TestTreasuryOwnerExploits(t *testing.T) {
 	otu.SendNFTToTreasury("signer1", "treasuryOwner", 0)
 
 	t.Run("Signers should be able to propose a transfer of fungible tokens out of the Treasury", func(t *testing.T) {
-		otu.ProposeFungibleTokenTransferAction("treasuryOwner", Signers[0], RecipientAcct, TransferAmount)
+		otu.ProposeFungibleTokenTransferAction("treasuryOwner", Signers[0], RecipientAcct, TransferAmount, FLOWPublicReceiverPathId, FlowTokenVaultID)
 	})
 
 	t.Run("Treasury owner should not be able to unilaterally manipulate actions or resources in the Treasury", func(t *testing.T) {
