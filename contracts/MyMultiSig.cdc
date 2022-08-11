@@ -159,7 +159,7 @@ pub contract MyMultiSigV2 {
             return true
         }
 
-        init(signers: [Address], intent: String, action: {Action}) {
+        init(signers: [Address], action: {Action}) {
             self.totalVerified = 0
             self.accountsVerified = {}
             self.action = action
@@ -189,7 +189,7 @@ pub contract MyMultiSigV2 {
         access(self) var actions: @{UInt64: MultiSignAction}
 
         pub fun createMultiSign(action: {Action}): UInt64 {
-            let newAction <- create MultiSignAction(signers: self.signers.keys, intent: action.intent, action: action)
+            let newAction <- create MultiSignAction(signers: self.signers.keys, action: action)
             let uuid = newAction.uuid
             self.actions[newAction.uuid] <-! newAction
             emit ActionCreated(uuid: uuid, intent: action.intent)
