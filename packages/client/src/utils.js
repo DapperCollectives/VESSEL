@@ -59,10 +59,6 @@ export const formatActionString = (str) => {
     }
     const float = parseFloat(word);
     if (isNaN(float) || word.startsWith("0x")) {
-      // add FLOW to token transfers
-      if (isFungibleTransfer && word === "tokens") {
-        newStr += "FLOW ";
-      }
       newStr += word;
     } else {
       newStr += float;
@@ -84,8 +80,9 @@ export const getProgressPercentageForSignersAmount = (signersAmount) => {
 };
 
 export const getFlowscanUrlForTransaction = (hash) => {
-  return `https://${process.env.REACT_APP_FLOW_ENV === "mainnet" ? "" : "testnet."
-    }flowscan.org/transaction/${hash}`;
+  return `https://${
+    process.env.REACT_APP_FLOW_ENV === "mainnet" ? "" : "testnet."
+  }flowscan.org/transaction/${hash}`;
 };
 
 export const syncSafeOwnersWithSigners = (signers, safeOwners) => {

@@ -1,12 +1,11 @@
-export const SEND_FLOW_TO_TREASURY = `
-	import DAOTreasuryV2 from 0xDAOTreasuryV2
-	import FungibleToken from 0xFungibleToken
+import DAOTreasuryV2 from "../contracts/DAOTreasury.cdc"
+import FungibleToken from "../contracts/core/FungibleToken.cdc"
 
-	transaction(treasuryAddr: Address, amount: UFix64) {
+transaction(treasuryAddr: Address, amount: UFix64, vaultPath: StoragePath ) {
   
 		prepare(signer: AuthAccount) {
 		  
-			let vault = signer.borrow<&FungibleToken.Vault>(from: /storage/flowTokenVault)!
+			let vault = signer.borrow<&FungibleToken.Vault>(from: vaultPath)!
 			let tokens <- vault.withdraw(amount: amount)
 		
 			let treasury = getAccount(treasuryAddr).getCapability(DAOTreasuryV2.TreasuryPublicPath)
@@ -18,4 +17,3 @@ export const SEND_FLOW_TO_TREASURY = `
 			treasury.depositTokens(identifier: identifier, vault: <- tokens)
 		}
 	  }
-`;
