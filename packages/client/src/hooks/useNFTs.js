@@ -46,10 +46,12 @@ const doSendCollectionToTreasury = async (
 const doProposeNFTTransfer = async (
   treasuryAddr,
   recipient,
-  tokenId
+  nft
 ) => {
-  const treasuryVault = `A.${treasuryAddr.replace("0x", "")}.ExampleNFT.Collection`;
-  const intent = `Transfer ${treasuryVault} NFT from the treasury to ${recipient}`;
+  // Example: A.f8d6e0586b0a20c7.ExampleNFT.Collection-0
+  // First part will contain the collection identifier, and the second will contain the tokenId
+  const tokenInfo = nft.split("-");
+  const intent = `Transfer ${tokenInfo[0]} NFT from the treasury to ${recipient}`;
   const { message, keyIds, signatures, height } = await createSignature(intent);
 
   return await mutate({
@@ -57,7 +59,7 @@ const doProposeNFTTransfer = async (
     args: (arg, t) => [
       arg(treasuryAddr, t.Address),
       arg(recipient, t.Address),
-      arg(parseInt(tokenId), t.UInt64),
+      arg(parseInt(tokenInfo[1]), t.UInt64),
       arg(message, t.String),
       arg(keyIds, t.Array(t.UInt64)),
       arg(signatures, t.Array(t.String)),
@@ -150,12 +152,11 @@ export default function useNFTs() {
     treasuryAddr,
     recipient,
     selectedNFT
-  ) => {
-    const tokenId = selectedNFT.split("-")[1];
+  ) => {   
     const res = await doProposeNFTTransfer(
       treasuryAddr,
       recipient,
-      tokenId,
+      selectedNFT,
     );
     await tx(res).onceSealed();
     return res;

@@ -70,7 +70,7 @@ const doProposeTransfer = async (
   coinType
 ) => {
   const uFixAmount = String(parseFloat(amount).toFixed(8));
-  const contractAddress = await config().get(`0x${COIN_TYPE_TO_META[coinType].contract}`);
+  const contractAddress = await config().get(`0x${COIN_TYPE_TO_META[coinType].contractName}`);
 
   const recepientVault = `A.${contractAddress.replace("0x", "")}.${COIN_TYPE_TO_META[coinType].vaultName}`;
   const intent = `Transfer ${uFixAmount} ${recepientVault} tokens from the treasury to ${recipientAddr}`;
@@ -462,7 +462,8 @@ export default function useTreasury(treasuryAddr) {
     await refreshTreasury();
   };
 
-  const proposeAddVault = async (contractName) => {
+  const proposeAddVault = async (coinType) => {
+    const contractName = COIN_TYPE_TO_META[coinType].contractName;
     const res = await doProposeAddVault(treasuryAddr, contractName);
     await tx(res).onceSealed();
     await refreshTreasury();

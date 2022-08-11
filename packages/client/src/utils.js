@@ -1,5 +1,4 @@
-import { isNaN } from "lodash";
-import { COIN_TYPE_TO_META } from "constants/maps";
+import { COIN_TYPE_TO_META, CONTRACT_NAME_TO_COIN_TYPE } from "constants/maps";
 
 export const checkResponse = async (response) => {
   if (!response.ok) {
@@ -57,8 +56,8 @@ export const formatActionString = (str) => {
   let result;
   if (isTokenTransfer) {
     contractName = str.match(vaultRegex)[0].split(".")[2];
-    const tokenName = getTokenName(contractName);
-      result = str.replace(floatRegex, parseFloat(str.match(floatRegex)[0]));
+    const tokenName = CONTRACT_NAME_TO_COIN_TYPE(contractName);
+    result = str.replace(floatRegex, parseFloat(str.match(floatRegex)[0]));
     return result.replace(vaultRegex, tokenName);
   }
   if (isNFTTransfer) {
@@ -67,25 +66,6 @@ export const formatActionString = (str) => {
   }
   return str;
 };
-
-export const getTokenName = (contractName) => {
-  switch (contractName) {
-    case "FlowToken":
-      return "FLOW";
-    case "FUSD":
-      return "FUSD";
-    case "FiatToken":
-      return "USDC";
-    case "BloctoToken":
-      return "BLT";
-    case "StarlyToken":
-      return "STARLY";
-    case "REVV":
-      return "REVV";
-    default:
-      return contractName;
-  }
-}
 
 export const getProgressPercentageForSignersAmount = (signersAmount) => {
   return Math.min(60 + signersAmount * 10, 100);

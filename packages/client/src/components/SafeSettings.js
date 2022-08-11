@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useModalContext } from "../contexts";
 import { useClipboard, useAddressValidation } from "../hooks";
 import { useHistory } from "react-router-dom";
@@ -352,18 +352,15 @@ const AddSafeOwner = ({ web3, onCancel, onNext, safeOwners }) => {
 };
 
 const AddVault = ({ onCancel, onNext }) => {
-  const [contractName, setContractName] = useState("");
-  const isFormValid = contractName?.trim().length > 0;
-
   const onNextClick = () => {
     onNext({
-      contractName,
+      coinType,
     });
   };
 
   const nextButtonClasses = [
     "button flex-1 p-4",
-    isFormValid ? "is-link" : "is-light is-disabled",
+    "is-link"
   ];
 
   const coinTypes = Object.entries(COIN_TYPE_TO_META).map((type) => ({
@@ -372,10 +369,6 @@ const AddVault = ({ onCancel, onNext }) => {
   }));
 
   const [coinType, setCoinType] = useState(coinTypes[0].displayText);
-
-  useEffect(() => {
-    setContractName(COIN_TYPE_TO_META[coinType].contract)
-  }, [coinType])
 
   return (
     <>
@@ -399,7 +392,6 @@ const AddVault = ({ onCancel, onNext }) => {
             Cancel
           </button>
           <button
-            disabled={!isFormValid}
             className={nextButtonClasses.join(" ")}
             onClick={onNextClick}
           >
@@ -624,7 +616,7 @@ function SafeSettings({ address, web3, name, threshold, safeOwners }) {
   };
 
   const onAddVaultSubmit = async (form) => {
-    await proposeAddVault(form.contractName);
+    await proposeAddVault(form.coinType);
 
     modalContext.closeModal();
     history.push(`/safe/${address}`);
