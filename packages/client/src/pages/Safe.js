@@ -99,15 +99,7 @@ function Safe({ web3 }) {
     );
   });
 
-  const {
-    injectedProvider,
-    signerApprove,
-    executeAction,
-    initDepositTokensToTreasury,
-    sendNFTToTreasury,
-    sendCollectionToTreasury,
-    getTreasuryCollections,
-  } = web3;
+  const { injectedProvider, signerApprove, executeAction } = web3;
 
   const onSignAction = async ({ uuid, intent }) => {
     const latestBlock = await injectedProvider

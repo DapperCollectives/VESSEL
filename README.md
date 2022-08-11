@@ -75,6 +75,16 @@ To deploy all contracts in `./contracts`:
 go run go/deploy.go
 ```
 
+#### Seeding Emulator account with FUSD
+
+After deploying all contracts, run
+
+```bash
+go run go/deploy.go
+```
+
+This will seed 9999999 FUSD tokens to the emulator account for testing purposes (emulator account address can be found in `flow.json`)
+
 #### Seeding Emulator with NFT
 
 after creating a treasury with the service account, run

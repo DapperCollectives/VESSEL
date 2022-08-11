@@ -375,6 +375,8 @@ export default function useTreasury(treasuryAddr) {
     return null;
   };
 
+  //FOR TESTING UTILS ONLY, calling this method deposits tokens to treasury
+  //should only be used for testing
   const initDepositTokensToTreasury = async () => {
     const flowRes = await doSendTokensToTreasury(
       treasuryAddr,
