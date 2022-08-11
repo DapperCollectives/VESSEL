@@ -66,7 +66,6 @@ function LoadSafe({ web3 }) {
   const [safeOwnersValidByAddress, setSafeOwnersValidByAddress] = useState({});
   const { injectedProvider, fetchTreasury, setTreasury, address } = web3;
   const { isAddressValid } = useAddressValidation(injectedProvider);
-
   if (!address) {
     return <WalletPrompt />;
   }
@@ -92,6 +91,7 @@ function LoadSafe({ web3 }) {
         (signerAddr) => ({
           name: "",
           address: signerAddr,
+          verified: true,
         })
       );
 
