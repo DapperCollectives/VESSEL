@@ -19,6 +19,5 @@ export { CHECK_NFT_COLLECTION } from "./checkNFTCollection.tx";
 export { CHECK_TREASURY_NFT_COLLECTION } from "./checkTreasuryNFTCollection.tx";
 export { SEND_NFT_TO_TREASURY } from "./sendNFTToTreasury.tx";
 export { PROPOSE_NFT_TRANSFER } from "./proposeNFTTransfer.tx";
-export { SEND_COLLECTION_TO_TREASURY } from "./sendCollectionToTreasury.tx";
 export { ADD_VAULT } from "./addVault.tx";
 export { ADD_COLLECTION } from "./addCollection.tx";

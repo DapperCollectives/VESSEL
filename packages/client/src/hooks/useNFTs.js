@@ -4,14 +4,12 @@ import reducer, { INITIAL_STATE } from "../reducers/nfts";
 import {
   REGULAR_LIMIT,
   SIGNED_LIMIT,
-  EXECUTE_ACTION_LIMIT,
   createSignature,
 } from "../contexts/Web3";
 import {
   CHECK_TREASURY_NFT_COLLECTION,
   PROPOSE_NFT_TRANSFER,
   SEND_NFT_TO_TREASURY,
-  SEND_COLLECTION_TO_TREASURY,
   GET_TREASURY_IDENTIFIERS,
 } from "../flow";
 
@@ -25,26 +23,6 @@ const doSendNFTToTreasury = async (treasuryAddr, tokenId) => {
       arg(parseInt(tokenId), t.UInt64),
     ],
     limit: REGULAR_LIMIT,
-  });
-};
-
-const doSendCollectionToTreasury = async (
-  treasuryAddr,
-  message,
-  keyIds,
-  signatures,
-  height
-) => {
-  return await mutate({
-    cadence: SEND_COLLECTION_TO_TREASURY,
-    args: (arg, t) => [
-      arg(treasuryAddr, t.Address),
-      arg(message, t.String),
-      arg(keyIds, t.Array(t.UInt64)),
-      arg(signatures, t.Array(t.String)),
-      arg(height, t.UInt64),
-    ],
-    limit: EXECUTE_ACTION_LIMIT,
   });
 };
 
@@ -135,24 +113,6 @@ export default function useNFTs() {
     await tx(res).onceSealed();
   };
 
-  const sendCollectionToTreasury = async (
-    treasuryAddr,
-    message,
-    keyIds,
-    signatures,
-    height
-  ) => {
-    const res = await doSendCollectionToTreasury(
-      treasuryAddr,
-      message,
-      keyIds,
-      signatures,
-      height
-    );
-    await tx(res).onceSealed();
-    return res;
-  };
-
   const proposeNFTTransfer = async (
     treasuryAddr,
     recipient,
@@ -172,6 +132,5 @@ export default function useNFTs() {
     getTreasuryCollections,
     proposeNFTTransfer,
     sendNFTToTreasury,
-    sendCollectionToTreasury,
   };
 }
