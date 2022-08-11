@@ -80,7 +80,7 @@ go run go/deploy.go
 After deploying all contracts, run
 
 ```bash
-go run go/deploy.go
+yarn fusd
 ```
 
 This will seed 9999999 FUSD tokens to the emulator account for testing purposes (emulator account address can be found in `flow.json`)
