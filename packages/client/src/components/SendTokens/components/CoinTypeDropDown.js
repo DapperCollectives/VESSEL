@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
 import Dropdown from "components/Dropdown";
 import { COIN_TYPE_TO_META } from "constants/maps";
 import { Web3Context } from "contexts/Web3";

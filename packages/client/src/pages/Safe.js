@@ -176,11 +176,7 @@ function Safe({ web3 }) {
 
   const onSend = () => {
     modalContext.openModal(
-      <SendTokens
-        name={safeData.name}
-        address={address}
-        allBalance={allBalance}
-      />
+      <SendTokens name={safeData.name} address={address} />
     );
   };
 
