@@ -371,8 +371,6 @@ const AddVault = ({ onCancel, onNext }) => {
     displayText: type[1].displayName,
   }));
 
-  console.log(coinTypes);
-
   const [coinType, setCoinType] = useState(coinTypes[0].displayText);
 
   useEffect(() => {
