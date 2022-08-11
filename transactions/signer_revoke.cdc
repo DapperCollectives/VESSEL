@@ -5,6 +5,7 @@ transaction(treasuryAddr: Address, actionUUID: UInt64, message: String, keyIds: 
 
   var isValid: Bool
   var action: &MyMultiSigV2.MultiSignAction
+  var manager: &MyMultiSigV2.Manager{MyMultiSigV2.ManagerPublic}
   var messageSignaturePayload: MyMultiSigV2.MessageSignaturePayload
   
   prepare(signer: AuthAccount) {
@@ -13,8 +14,8 @@ transaction(treasuryAddr: Address, actionUUID: UInt64, message: String, keyIds: 
                     .borrow<&DAOTreasuryV2.Treasury{DAOTreasuryV2.TreasuryPublic}>()
                     ?? panic("A DAOTreasuryV2 doesn't exist here.")
 
-    let manager = treasury.borrowManagerPublic()
-    self.action = manager.borrowAction(actionUUID: actionUUID)
+    self.manager = treasury.borrowManagerPublic()
+    self.action = self.manager.borrowAction(actionUUID: actionUUID)
 
     var _keyIds: [Int] = []
 
@@ -28,11 +29,10 @@ transaction(treasuryAddr: Address, actionUUID: UInt64, message: String, keyIds: 
 
   }
   execute {
-    self.isValid = self.action.signerRevokeApproval(messageSignaturePayload: self.messageSignaturePayload)
+    self.isValid = self.manager.signerRejectAction(actionUUID: actionUUID, messageSignaturePayload: self.messageSignaturePayload)
   }
 
   post {
     self.isValid == true: "Unable to revoke approval: invalid message or signature"
-    self.action.accountsVerified[self.messageSignaturePayload.signingAddr] == false: "Error: tx completed but signer approval not revoked"
   }
 }

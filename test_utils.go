@@ -28,7 +28,7 @@ func NewOverflowTest(t *testing.T) *OverflowTestUtils {
 	return otu
 }
 
-func (otu *OverflowTestUtils) SetupTreasury(name string, signers []string, threshold uint64) *OverflowTestUtils {
+func (otu *OverflowTestUtils) SetupTreasury(name string, signers []string, threshold int) *OverflowTestUtils {
 	addresses := make([]string, len(signers))
 
 	for i := 0; i < len(signers); i++ {
@@ -40,14 +40,14 @@ func (otu *OverflowTestUtils) SetupTreasury(name string, signers []string, thres
 		Args(otu.O.Arguments().
 			RawAddressArray(
 				addresses...).
-			UInt64(threshold)).
+			Int(threshold)).
 		Test(otu.T).
 		AssertSuccess()
 
 	return otu
 }
 
-func (otu *OverflowTestUtils) SetupTreasuryFail(name string, signers []string, threshold uint64, msg string) *OverflowTestUtils {
+func (otu *OverflowTestUtils) SetupTreasuryFail(name string, signers []string, threshold int, msg string) *OverflowTestUtils {
 	addresses := make([]string, len(signers))
 
 	for i := 0; i < len(signers); i++ {
@@ -59,14 +59,14 @@ func (otu *OverflowTestUtils) SetupTreasuryFail(name string, signers []string, t
 		Args(otu.O.Arguments().
 			RawAddressArray(
 				addresses...).
-			UInt64(threshold)).
+			Int(threshold)).
 		Test(otu.T).
 		AssertFailure(msg)
 
 	return otu
 }
 
-func (otu *OverflowTestUtils) ProposeNewThreshold(treasuryAddr, proposingAcct string, newThreshold uint64) *OverflowTestUtils {
+func (otu *OverflowTestUtils) ProposeNewThreshold(treasuryAddr, proposingAcct string, newThreshold int) *OverflowTestUtils {
 	src := []byte(fmt.Sprintf("Update the threshold of signers to %d.", newThreshold))
 	hexCollectionID := make([]byte, hex.EncodedLen(len(src)))
 	hex.Encode(hexCollectionID, src)
@@ -82,7 +82,7 @@ func (otu *OverflowTestUtils) ProposeNewThreshold(treasuryAddr, proposingAcct st
 		SignProposeAndPayAs(proposingAcct).
 		Args(otu.O.Arguments().
 			Address(treasuryAddr).
-			UInt64(newThreshold).
+			Int(newThreshold).
 			String(message).
 			UInt64Array(0).
 			StringArray(signature).
@@ -93,7 +93,7 @@ func (otu *OverflowTestUtils) ProposeNewThreshold(treasuryAddr, proposingAcct st
 	return otu
 }
 
-func (otu *OverflowTestUtils) ProposeNewThresholdFail(proposingAcct string, newThreshold uint64, msg string) *OverflowTestUtils {
+func (otu *OverflowTestUtils) ProposeNewThresholdFail(proposingAcct string, newThreshold int, msg string) *OverflowTestUtils {
 	src := []byte("no action id")
 	hexCollectionID := make([]byte, hex.EncodedLen(len(src)))
 	hex.Encode(hexCollectionID, src)
@@ -108,7 +108,7 @@ func (otu *OverflowTestUtils) ProposeNewThresholdFail(proposingAcct string, newT
 	otu.O.TransactionFromFile("update_threshold").
 		SignProposeAndPayAs(proposingAcct).
 		Args(otu.O.Arguments().
-			UInt64(newThreshold).
+			Int(newThreshold).
 			String(message).
 			UInt64Array(0).
 			StringArray(signature).
@@ -405,12 +405,14 @@ func (otu *OverflowTestUtils) GetTreasurySigners(account string) cadence.Value {
 	return signers
 }
 
-func (otu *OverflowTestUtils) GetTreasuryThreshold(account string) uint64 {
+func (otu *OverflowTestUtils) GetTreasuryThreshold(account string) int {
 	threshold := otu.O.ScriptFromFile("get_treasury_threshold").
 		Args(otu.O.Arguments().Account(account)).
 		RunFailOnError()
 
-	return threshold.ToGoValue().(uint64)
+	// returning uint64 and casting to int
+	// because of bug in Overflow
+	return int(threshold.ToGoValue().(uint64))
 }
 
 func (otu *OverflowTestUtils) ProposeAddSignerAction(treasuryAddr, proposingAcct, address string) *OverflowTestUtils {
@@ -622,16 +624,6 @@ func (otu *OverflowTestUtils) GetVerifiedSignersForAction(treasuryAcct string, a
 	return signers
 }
 
-func (otu *OverflowTestUtils) GetTotalVerifiedForAction(treasuryAcct string, actionUUID uint64) uint64 {
-	totalVerified, _ := otu.O.ScriptFromFile("get_total_verified_for_action").
-		Args(otu.O.Arguments().
-			Account(treasuryAcct).
-			UInt64(actionUUID)).
-		RunReturns()
-
-	return totalVerified.ToGoValue().(uint64)
-}
-
 func (otu *OverflowTestUtils) ExecuteAction(treasuryAcct string, actionUUID uint64) *OverflowTestUtils {
 	src := []byte(fmt.Sprint(actionUUID))
 	hexID := make([]byte, hex.EncodedLen(len(src)))
@@ -835,18 +827,6 @@ func (otu *OverflowTestUtils) AttemptWithdrawTokensExploit(account string) *Over
 		Args(otu.O.Arguments()).
 		Test(otu.T).
 		AssertFailure(WITHDRAW_TOKENS_ERROR_MSG)
-
-	return otu
-}
-
-func (otu *OverflowTestUtils) AttemptBorrowActionTotalVerifiedExploit(account string, actionUUID uint64) *OverflowTestUtils {
-	var ERROR_MSG = "cannot assign to `totalVerified`: field has public access"
-	otu.O.TransactionFromFile("attempt_borrow_action_total_verified_exploit").
-		SignProposeAndPayAs(account).
-		Args(otu.O.Arguments().
-			UInt64(actionUUID)).
-		Test(otu.T).
-		AssertFailure(ERROR_MSG)
 
 	return otu
 }

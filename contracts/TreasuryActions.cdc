@@ -50,8 +50,8 @@ pub contract TreasuryActionsV2 {
   pub event RemoveSignerActionExecuted(address: Address, treasuryAddr: Address)
 
   // Update Threshold
-  pub event UpdateThresholdActionCreated(threshold: UInt64)
-  pub event UpdateThresholdActionExecuted(oldThreshold: UInt64, newThreshold: UInt64, treasuryAddr: Address)
+  pub event UpdateThresholdActionCreated(threshold: Int)
+  pub event UpdateThresholdActionExecuted(oldThreshold: Int, newThreshold: Int, treasuryAddr: Address)
 
   // Destroy Action
   pub event DestroyActionActionCreated(actionUUID: UInt64)
@@ -288,7 +288,7 @@ pub contract TreasuryActionsV2 {
 
   // Update the threshold of signers
   pub struct UpdateThreshold: MyMultiSigV2.Action {
-    pub let threshold: UInt64
+    pub let threshold: Int
     pub let intent: String
     pub let proposer: Address
 
@@ -301,35 +301,11 @@ pub contract TreasuryActionsV2 {
       emit UpdateThresholdActionExecuted(oldThreshold: oldThreshold, newThreshold: self.threshold, treasuryAddr: treasuryRef.owner!.address)
     }
 
-    init(threshold: UInt64, proposer: Address) {
+    init(threshold: Int, proposer: Address) {
       self.threshold = threshold
       self.proposer = proposer
       self.intent = "Update the threshold of signers to ".concat(threshold.toString()).concat(".")
       emit UpdateThresholdActionCreated(threshold: threshold)
-    }
-  }
-
-  // Destroy the action
-  pub struct DestroyAction: MyMultiSigV2.Action {
-    pub let actionUUID: UInt64
-    pub let intent: String
-    pub let proposer: Address
-
-    access(account) fun execute(_ params: {String: AnyStruct}) {
-      let treasuryRef: &DAOTreasuryV2.Treasury = params["treasury"]! as! &DAOTreasuryV2.Treasury
-
-      let manager = treasuryRef.borrowManager()
-      manager.destroyAction(actionUUID: self.actionUUID)
-      emit DestroyActionActionExecuted(actionUUID: self.actionUUID, treasuryAddr: treasuryRef.owner!.address)
-    }
-
-    init(actionUUID: UInt64, proposer: Address) {
-      self.actionUUID = actionUUID
-      self.proposer = proposer
-      self.intent = "Remove the action "
-                      .concat(actionUUID.toString())
-                      .concat(" from the Treasury.")
-      emit DestroyActionActionCreated(actionUUID: actionUUID)
     }
   }
 }

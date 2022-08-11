@@ -2,7 +2,7 @@ import DAOTreasuryV2 from "../contracts/DAOTreasury.cdc"
 import TreasuryActionsV2 from "../contracts/TreasuryActions.cdc"
 import MyMultiSigV2 from "../contracts/MyMultiSig.cdc"
 
-transaction(treasuryAddr: Address, newThreshold: UInt64, message: String, keyIds: [UInt64], signatures: [String], signatureBlock: UInt64) {
+transaction(treasuryAddr: Address, newThreshold: Int, message: String, keyIds: [UInt64], signatures: [String], signatureBlock: UInt64) {
   
   let treasury: &DAOTreasuryV2.Treasury{DAOTreasuryV2.TreasuryPublic}
   let action: AnyStruct{MyMultiSigV2.Action}

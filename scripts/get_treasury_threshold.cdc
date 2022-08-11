@@ -5,5 +5,5 @@ pub fun main(treasuryAddr: Address): UInt64 {
                     .borrow<&DAOTreasuryV2.Treasury{DAOTreasuryV2.TreasuryPublic}>()
                     ?? panic("A DAOTreasuryV2 doesn't exist here.")
 
-  return treasury.borrowManagerPublic().getThreshold()
+  return UInt64(treasury.borrowManagerPublic().getThreshold())
 }
