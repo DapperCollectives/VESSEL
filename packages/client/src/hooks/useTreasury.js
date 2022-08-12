@@ -77,11 +77,10 @@ const doProposeTransfer = async (
   coinType
 ) => {
   const uFixAmount = String(parseFloat(amount).toFixed(8));
-  const contractAddress = await config().get(`0x${COIN_TYPE_TO_META[coinType].contractName}`);
-
-  const recepientVault = `A.${contractAddress.replace("0x", "")}.${COIN_TYPE_TO_META[coinType].vaultName}`;
+  const identifiers = await doQuery(GET_TREASURY_IDENTIFIERS, treasuryAddr);
+  const recepientVault = getVaultId(identifiers, coinType);
   const intent = `Transfer ${uFixAmount} ${recepientVault} tokens from the treasury to ${recipientAddr}`;
-
+  
   const { message, keyIds, signatures, height } = await createSignature(intent);
 
   return await mutate({
