@@ -450,7 +450,7 @@ function SafeSettings({ address, web3, name, threshold, safeOwners }) {
     proposeRemoveSigner,
   } = web3;
   const verifiedSafeOwners = safeOwners.filter((so) => so.verified);
-  const onlyOneOwnerLeft = verifiedSafeOwners.length === 1;
+  const canRemoveSigner = verifiedSafeOwners.length > threshold;
   const onEditNameSubmit = (newName) => {
     modalContext.closeModal();
     setTreasury(address, { name: newName });
@@ -626,7 +626,7 @@ function SafeSettings({ address, web3, name, threshold, safeOwners }) {
                     ? "Copied"
                     : "Copy Address"}
                 </span>
-                {!onlyOneOwnerLeft && (
+                {canRemoveSigner && (
                   <span
                     className="is-underlined pointer"
                     onClick={() => openRemoveOwnerModal(so)}
