@@ -210,12 +210,21 @@ const doProposeRemoveSigner = async (
 };
 
 const doProposeAddVault = async (treasuryAddr, contractName) => {
+  const contractAddress = await config().get(`0x${contractName}`);
+
+  const intent = `A.${contractAddress.replace("0x", "")}.${contractName}.Vault`;
+  const { message, keyIds, signatures, height } = await createSignature(intent);
+
   return await mutate({
     cadence: ADD_VAULT(contractName),
     args: (arg, t) => [
       arg(treasuryAddr, t.Address),
+      arg(message, t.String),
+      arg(keyIds, t.Array(t.UInt64)),
+      arg(signatures, t.Array(t.String)),
+      arg(height, t.UInt64)
     ],
-    limit: REGULAR_LIMIT,
+    limit: SIGNED_LIMIT,
   });
 };
 

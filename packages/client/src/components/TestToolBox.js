@@ -35,7 +35,8 @@ const TestToolBox = ({ address }) => {
 
   useEffect(() => {
     updateUserBalance();
-  });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div style={{ position: "absolute", left: "20%", zIndex: 10000 }}>

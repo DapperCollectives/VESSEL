@@ -368,7 +368,7 @@ const AddVault = ({ onCancel, onNext }) => {
     displayText: type[1].displayName,
   }));
 
-  const [coinType, setCoinType] = useState(coinTypes[0].displayText);
+  const [coinType, setCoinType] = useState(coinTypes[0].itemValue);
 
   return (
     <>
