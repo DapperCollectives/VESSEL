@@ -1,14 +1,14 @@
 import React, { useMemo, useState } from "react";
-import { useModalContext } from "../contexts";
-import { useClipboard, useAddressValidation } from "../hooks";
+import { useModalContext } from "../../contexts";
+import { useClipboard, useAddressValidation } from "../../hooks";
 import { useHistory } from "react-router-dom";
-import ProgressBar from "./ProgressBar";
-import { Person, Minus, Plus, Check } from "./Svg";
+import ProgressBar from "../ProgressBar";
+import { Person, Minus, Plus, Check } from "../Svg";
 import {
   getProgressPercentageForSignersAmount,
   isAddr,
   formatAddress,
-} from "../utils";
+} from "../../utils";
 
 const SignatureBar = ({ threshold, safeOwners }) => (
   <div className="is-flex column p-0 is-full">
