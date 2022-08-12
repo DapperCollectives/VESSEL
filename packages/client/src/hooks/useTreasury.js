@@ -79,8 +79,9 @@ const doProposeTransfer = async (
     process.env.REACT_APP_FLOW_ENV === "emulator"
       ? "ee82856bf20e2aa6"
       : "9a0766d93b6608b7";
-  const recepientVault = `Capability<&AnyResource{A.${tokenAddress}.FungibleToken.Receiver}>`;
-  const intent = `Transfer ${uFixAmount} ${recepientVault} ${coinType} tokens from the treasury to ${recipientAddr}`;
+  const identifiers = await doQuery(GET_TREASURY_IDENTIFIERS, treasuryAddr);
+  const recepientVault = getVaultId(identifiers, coinType);
+  const intent = `Transfer ${uFixAmount} ${recepientVault} tokens from the treasury to ${recipientAddr}`;
   const { message, keyIds, signatures, height } = await createSignature(intent);
 
   return await mutate({
