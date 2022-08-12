@@ -77,6 +77,7 @@
 			}
 		},
 		"BloctoToken": {
+			"source": "./contracts/core/BloctoToken.cdc",
 			"aliases": {
 				"testnet": "0x6e0797ac987005f5"
 			}
@@ -205,6 +206,7 @@
 		"emulator": {
 			"emulator-account": [
 				"FUSD",
+				"BloctoToken",
 				"NonFungibleToken",
 				"MetadataViews",
 				"ExampleNFT",
