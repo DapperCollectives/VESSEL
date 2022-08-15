@@ -1,5 +1,6 @@
-import { isNaN } from "lodash";
 import { COIN_TYPE_TO_META } from "constants/maps";
+import { isNaN } from "lodash";
+import { ErrorModal } from "modals";
 
 export const checkResponse = async (response) => {
   if (!response.ok) {
@@ -80,9 +81,8 @@ export const getProgressPercentageForSignersAmount = (signersAmount) => {
 };
 
 export const getFlowscanUrlForTransaction = (hash) => {
-  return `https://${
-    process.env.REACT_APP_FLOW_ENV === "mainnet" ? "" : "testnet."
-  }flowscan.org/transaction/${hash}`;
+  return `https://${process.env.REACT_APP_FLOW_ENV === "mainnet" ? "" : "testnet."
+    }flowscan.org/transaction/${hash}`;
 };
 
 export const syncSafeOwnersWithSigners = (signers, safeOwners) => {
@@ -106,3 +106,17 @@ export const getVaultId = (identifiers, coinType) => {
     (id) => id.indexOf(COIN_TYPE_TO_META[coinType].vaultName) >= 0
   );
 };
+
+export const showError = (modalContext, error) => {
+  modalContext.openModal(
+    <ErrorModal error={extractError(error)} />
+  );
+}
+
+function extractError(error) {
+  if (typeof error == "string" && error.includes("\n") && error.includes(": ")) {
+    const errorMessage = error.split("\n")[1];
+    return errorMessage.split(": ")[2];
+  }
+  return "Unknown error occured.";
+}

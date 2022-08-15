@@ -1,7 +1,7 @@
 import React from "react";
 import { useParams, NavLink } from "react-router-dom";
 import QRCode from "react-qr-code";
-import { shortenAddr } from "../utils";
+import { shortenAddr, showError } from "../utils";
 import {
   SafeHome,
   SafeTransactions,
@@ -125,11 +125,11 @@ function Safe({ web3 }) {
       keyIds,
       signatures,
       height
-    );
+    ).catch(error => showError(modalContext, error));
   };
 
   const onConfirmAction = async ({ uuid }) => {
-    await executeAction(uuid);
+    await executeAction(uuid).catch(error => showError(modalContext, error));
   };
 
   const tabMap = {
