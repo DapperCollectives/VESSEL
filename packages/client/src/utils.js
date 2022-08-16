@@ -56,7 +56,7 @@ export const formatActionString = (str) => {
   let result;
   if (isTokenTransfer) {
     contractName = str.match(vaultRegex)[0].split(".")[2];
-    const tokenName = CONTRACT_NAME_TO_COIN_TYPE(contractName);
+    const tokenName = CONTRACT_NAME_TO_COIN_TYPE[contractName];
     result = str.replace(floatRegex, parseFloat(str.match(floatRegex)[0]));
     return result.replace(vaultRegex, tokenName);
   }
@@ -93,6 +93,7 @@ export const syncSafeOwnersWithSigners = (signers, safeOwners) => {
   return updatedOwners;
 };
 export const getVaultId = (identifiers, coinType) => {
+  console.log(identifiers)
   const vaultIdentifiers = identifiers[0] ?? [];
   return vaultIdentifiers.find(
     (id) => id.indexOf(COIN_TYPE_TO_META[coinType].vaultName) >= 0
