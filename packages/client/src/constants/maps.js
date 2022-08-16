@@ -76,21 +76,11 @@ export const SAFE_TYPES_TO_META = {
  * For now every time the fungible token is added to flow.json, the token name should be added here 
  * (in case it is different from the contract name) 
 */
-export const CONTRACT_NAME_TO_COIN_TYPE = (contractName) => {
-  switch (contractName) {
-    case "FlowToken":
-      return "FLOW";
-    case "FUSD":
-      return "FUSD";
-    case "FiatToken":
-      return "USDC";
-    case "BloctoToken":
-      return "BLT";
-    case "StarlyToken":
-      return "STARLY";
-    case "REVV":
-      return "REVV";
-    default:
-      return contractName;
-  }
+export const CONTRACT_NAME_TO_COIN_TYPE = {
+  "FlowToken": "FLOW",
+  "FUSD": "FUSD",
+  "FiatToken": "USDC",
+  "BloctoToken": "BLT",
+  "StarlyToken": "STARLY",
+  "REVV": "REVV"
 }
