@@ -386,13 +386,19 @@ export default function useTreasury(treasuryAddr) {
       String(parseFloat(10).toFixed(8)),
       COIN_TYPES.FLOW
     );
-    const fusdRes = await doSendTokensToTreasury(
-      treasuryAddr,
-      String(parseFloat(10).toFixed(8)),
-      COIN_TYPES.FUSD
-    );
     await tx(flowRes).onceSealed();
-    await tx(fusdRes).onceSealed();
+
+    try {
+      const fusdRes = await doSendTokensToTreasury(
+        treasuryAddr,
+        String(parseFloat(10).toFixed(8)),
+        COIN_TYPES.FUSD
+      );
+      await tx(fusdRes).onceSealed();
+    } catch (err) {
+      console.log(`Failed to deposit FUSD, error: ${err}`)
+    }
+
     await refreshTreasury();
   };
 
@@ -458,13 +464,15 @@ export default function useTreasury(treasuryAddr) {
     await tx(res).onceSealed();
     await refreshTreasury();
   };
+
   const getUserFUSDBalance = async (address) => {
     const balance = await query({
       cadence: GET_USER_FUSD_BALANCE,
       args: (arg, t) => [arg(address, t.Address)],
-    }).catch(console.error);
+    });
     return balance;
   };
+
   const getUserFlowBalance = async (address) => {
     const balance = await query({
       cadence: GET_USER_FLOW_BALANCE,
@@ -472,6 +480,7 @@ export default function useTreasury(treasuryAddr) {
     }).catch(console.error);
     return balance;
   };
+  
   return {
     ...state,
     refreshTreasury,
