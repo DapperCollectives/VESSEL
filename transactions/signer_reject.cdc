@@ -33,6 +33,6 @@ transaction(treasuryAddr: Address, actionUUID: UInt64, message: String, keyIds: 
   }
 
   post {
-    self.isValid == true: "Unable to revoke approval: invalid message or signature"
+    self.isValid == true: "Unable to reject approval: invalid message or signature"
   }
 }

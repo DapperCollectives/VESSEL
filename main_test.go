@@ -496,12 +496,12 @@ func TestSignerRejectApproval(t *testing.T) {
 
 		transferTokenActionUUID = keys[0]
 
-		// All but one signer revokes approval so we dont delete the action
+		// All but one signer rejects approval so we dont delete the action
 		for i, signer := range Signers {
 			if i == len(Signers)-1 {
 				continue
 			}
-			otu.SignerRevokeApproval("treasuryOwner", transferTokenActionUUID, signer)
+			otu.SignerRejectApproval("treasuryOwner", transferTokenActionUUID, signer)
 		}
 
 		// Assert that the signatures were registered
@@ -515,8 +515,8 @@ func TestSignerRejectApproval(t *testing.T) {
 	})
 
 	t.Run("If inverse threshold of rejections is reached, action should be deleted", func(t *testing.T) {
-		// Last signer revokes approval
-		otu.SignerRevokeApproval("treasuryOwner", transferTokenActionUUID, Signers[len(Signers)-1])
+		// Last signer rejects approval
+		otu.SignerRejectApproval("treasuryOwner", transferTokenActionUUID, Signers[len(Signers)-1])
 		actionsMap := otu.GetProposedActions("treasuryOwner")
 		// Action should no longer exist under proposed actions
 		assert.Empty(otu.T, actionsMap[transferTokenActionUUID])
@@ -559,14 +559,14 @@ func TestSignerRevokeApproval(t *testing.T) {
 		}
 	})
 
-	t.Run("Signers should be able to sign to revoke their approval of a proposed action", func(t *testing.T) {
+	t.Run("Signers should be able to sign to reject their approval of a proposed action", func(t *testing.T) {
 
-		// All but one signer revokes approval so we dont delete the action
+		// All but one signer rejects approval so we dont delete the action
 		for i, signer := range Signers {
 			if i == len(Signers)-1 {
 				continue
 			}
-			otu.SignerRevokeApproval("treasuryOwner", transferTokenActionUUID, signer)
+			otu.SignerRejectApproval("treasuryOwner", transferTokenActionUUID, signer)
 		}
 
 		// Assert that the signatures were registered
@@ -580,8 +580,8 @@ func TestSignerRevokeApproval(t *testing.T) {
 	})
 
 	t.Run("If inverse threshold of rejections is reached, action should be deleted", func(t *testing.T) {
-		// Last signer revokes approval
-		otu.SignerRevokeApproval("treasuryOwner", transferTokenActionUUID, Signers[len(Signers)-1])
+		// Last signer rejects approval
+		otu.SignerRejectApproval("treasuryOwner", transferTokenActionUUID, Signers[len(Signers)-1])
 		actionsMap := otu.GetProposedActions("treasuryOwner")
 		// Action should no longer exist under proposed actions
 		assert.Empty(otu.T, actionsMap[transferTokenActionUUID])

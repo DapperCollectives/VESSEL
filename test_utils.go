@@ -516,7 +516,7 @@ func (otu *OverflowTestUtils) SignerApproveAction(treasuryAcct string, actionUUI
 	return otu
 }
 
-func (otu *OverflowTestUtils) SignerRevokeApproval(treasuryAcct string, actionUUID uint64, signingAccount string) *OverflowTestUtils {
+func (otu *OverflowTestUtils) SignerRejectApproval(treasuryAcct string, actionUUID uint64, signingAccount string) *OverflowTestUtils {
 	//////////////////////////////////////////////
 	// Generate message/signature for signer
 	// msg {actionUUID}{hexEncodedIntent}{blockID}
@@ -546,7 +546,7 @@ func (otu *OverflowTestUtils) SignerRevokeApproval(treasuryAcct string, actionUU
 	// Run Transaction
 	///////////////////
 
-	otu.O.TransactionFromFile("signer_revoke").
+	otu.O.TransactionFromFile("signer_reject").
 		SignProposeAndPayAs(signingAccount).
 		Args(otu.O.Arguments().
 			Account(treasuryAcct).       // treasuryAddr
@@ -561,7 +561,7 @@ func (otu *OverflowTestUtils) SignerRevokeApproval(treasuryAcct string, actionUU
 	return otu
 }
 
-func (otu *OverflowTestUtils) SignerRevokeApprovalFailed(treasuryAcct string, actionUUID uint64, signingAccount, msg string) *OverflowTestUtils {
+func (otu *OverflowTestUtils) SignerRejectApprovalFailed(treasuryAcct string, actionUUID uint64, signingAccount, msg string) *OverflowTestUtils {
 	//////////////////////////////////////////////
 	// Generate message/signature for signer
 	// msg {actionUUID}{hexEncodedIntent}{blockID}
@@ -591,7 +591,7 @@ func (otu *OverflowTestUtils) SignerRevokeApprovalFailed(treasuryAcct string, ac
 	// Run Transaction
 	///////////////////
 
-	otu.O.TransactionFromFile("signer_revoke").
+	otu.O.TransactionFromFile("signer_reject").
 		SignProposeAndPayAs(signingAccount).
 		Args(otu.O.Arguments().
 			Account(treasuryAcct).       // treasuryAddr

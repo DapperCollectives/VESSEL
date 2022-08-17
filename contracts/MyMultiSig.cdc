@@ -170,7 +170,7 @@ pub contract MyMultiSigV2 {
 
             // Validate Message
             assert(
-                MyMultiSigV2.approveOrRevokeActionMessageIsValid(action: action, messageSignaturePayload: messageSignaturePayload),
+                MyMultiSigV2.approveOrRejectActionMessageIsValid(action: action, messageSignaturePayload: messageSignaturePayload),
                 message: "Signed message is invalid"
             )
         
@@ -197,7 +197,7 @@ pub contract MyMultiSigV2 {
 
             // Validate Message
             assert(
-                MyMultiSigV2.approveOrRevokeActionMessageIsValid(action: self.borrowAction(actionUUID: actionUUID), messageSignaturePayload: messageSignaturePayload),
+                MyMultiSigV2.approveOrRejectActionMessageIsValid(action: self.borrowAction(actionUUID: actionUUID), messageSignaturePayload: messageSignaturePayload),
                 message: "Signed message is invalid"
             )
         
@@ -210,7 +210,7 @@ pub contract MyMultiSigV2 {
             let action = self.borrowAction(actionUUID: actionUUID)
 
 
-            // Revoke approval
+            // Reject action
             action.setAccountsVerified(signer: messageSignaturePayload.signingAddr, value: false)
 
             emit ActionRejectedBySigner(address: messageSignaturePayload.signingAddr, uuid: self.uuid)
@@ -382,8 +382,8 @@ pub contract MyMultiSigV2 {
         return ValidateSignatureResponse(isValid: signatureValid, totalWeight: totalWeight)
     }
 
-    // Validate the approve/revoke approval message
-    pub fun approveOrRevokeActionMessageIsValid(action: &MultiSignAction, messageSignaturePayload: MessageSignaturePayload): Bool {
+    // Validate the approve/reject approval message
+    pub fun approveOrRejectActionMessageIsValid(action: &MultiSignAction, messageSignaturePayload: MessageSignaturePayload): Bool {
         let signingBlock = getBlock(at: messageSignaturePayload.signatureBlock)!
         assert(signingBlock != nil, message: "Invalid blockId specified for signature block")
         let blockId = signingBlock.id
