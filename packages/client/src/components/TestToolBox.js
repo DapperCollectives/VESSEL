@@ -1,5 +1,5 @@
 import { useState, useContext, useEffect } from "react";
-import { Web3Context } from "contexts/Web3";
+import { createSignature, Web3Context } from "contexts/Web3";
 import { COIN_TYPES } from "constants/enums";
 const TestToolBox = ({ address }) => {
   const [showToolBox, setShowToolBox] = useState(false);
@@ -23,25 +23,10 @@ const TestToolBox = ({ address }) => {
     await initDepositTokensToTreasury();
   };
   const onDepositCollection = async () => {
-    const latestBlock = await injectedProvider
-      .send([injectedProvider.getBlock(true)])
-      .then(injectedProvider.decode);
 
-    const { height, id } = latestBlock;
-    const collectionIdHex = Buffer.from(
-      `A.${address.replace("0x", "")}.ExampleNFT.Collection`
-    ).toString("hex");
+    const collectionId = `A.${address.replace("0x", "")}.ExampleNFT.Collection`;
 
-    const message = `${collectionIdHex}${id}`;
-    const messageHex = Buffer.from(message).toString("hex");
-
-    let sigResponse = await injectedProvider
-      .currentUser()
-      .signUserMessage(messageHex);
-    const sigMessage =
-      sigResponse[0]?.signature?.signature ?? sigResponse[0]?.signature;
-    const keyIds = [sigResponse[0]?.keyId];
-    const signatures = [sigMessage];
+    const {message, keyIds, signatures, height} = await createSignature(collectionId);
 
     await sendCollectionToTreasury(
       address,
