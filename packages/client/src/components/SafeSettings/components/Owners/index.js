@@ -2,6 +2,7 @@ import React from "react";
 import { useHistory } from "react-router-dom";
 import { useModalContext } from "contexts";
 import { useClipboard, useTreasury } from "hooks";
+import EditThreshold from "../EditThreshold";
 import RemoveSafeOwner from "./RemoveSafeOwner";
 import AddSafeOwner from "./AddSafeOwner";
 import { formatAddress } from "utils";
@@ -42,20 +43,9 @@ const Owners = ({ treasury }) => {
   };
 
   const openEditSignatureThresholdModal = (newOwner) => {
-    console.log("open thrreshold");
-    // modalContext.openModal(
-    //   <EditSignatureThreshold
-    //     safeOwners={verifiedSafeOwners}
-    //     threshold={threshold}
-    //     newOwner={newOwner}
-    //     onCancel={() => modalContext.closeModal()}
-    //     onReview={(newOwner, newThreshold) =>
-    //       openReviewEditsModal(newOwner, newThreshold, () =>
-    //         openEditSignatureThresholdModal(newOwner)
-    //       )
-    //     }
-    //   />
-    // );
+    modalContext.openModal(
+      <EditThreshold treasury={treasury} newOwner={newOwner} />
+    );
   };
   return (
     <div>
@@ -93,7 +83,8 @@ const Owners = ({ treasury }) => {
           ))}
       </div>
       <button
-        className="button mt-4 is-full p-4 border-light"
+        style={{ width: "100%" }}
+        className="button mt-4 p-4 border-light is-full"
         onClick={openAddOwnerModal}
       >
         Add new owner

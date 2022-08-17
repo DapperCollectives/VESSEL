@@ -1,48 +1,15 @@
-import { useState, useContext } from "react";
 import { getProgressPercentageForSignersAmount } from "utils";
-import { useModalContext } from "contexts";
 import { Person, Minus, Plus } from "components/Svg";
 import ProgressBar from "components/ProgressBar";
-import ReviewSafeEdits from "../ReviewSafeEdits";
 
 const EditThresholdForm = ({
-  safeSettingState,
-  setSafeSettingState,
-  treasury,
+  newThreshold,
+  allSafeOwners,
+  canContinueToReview,
+  onReviewClick,
+  onChangeThreshold,
+  closeModal,
 }) => {
-  const { openModal, closeModal, isOpen } = useModalContext();
-  const { safeOwners, threshold } = treasury;
-  const { newOwner, newThreshold } = safeSettingState;
-  const verifiedSafeOwners = safeOwners.filter((o) => o.verified);
-  const allSafeOwners = newOwner
-    ? [...verifiedSafeOwners, newOwner]
-    : verifiedSafeOwners;
-  const currSignersAmount = newThreshold ?? threshold;
-  const onMinusSignerClick = () => {
-    setSafeSettingState((prevState) => ({
-      ...prevState,
-      newThreshold: prevState.newThreshold
-        ? prevState.newThreshold - 1
-        : threshold - 1,
-    }));
-  };
-
-  const onPlusSignerClick = () => {
-    setSafeSettingState((prevState) => ({
-      ...prevState,
-      newThreshold: prevState.newThreshold
-        ? prevState.newThreshold + 1
-        : threshold + 1,
-    }));
-  };
-
-  const onReviewClick = () => {
-    if (isOpen) closeModal();
-    openModal(<ReviewSafeEdits />);
-  };
-
-  const canContinueToReview = !!newOwner || currSignersAmount !== threshold;
-
   const signerClasses = [
     "is-flex",
     "is-justify-content-center",
@@ -51,11 +18,11 @@ const EditThresholdForm = ({
   const minusSignerClasses = [
     ...signerClasses,
     "border-light-right",
-    currSignersAmount > 1 ? "pointer has-text-black" : "is-disabled",
+    newThreshold > 1 ? "pointer has-text-black" : "is-disabled",
   ];
   const plusSignerClasses = [
     ...signerClasses,
-    currSignersAmount < allSafeOwners.length
+    newThreshold < allSafeOwners.length
       ? "pointer has-text-black"
       : "is-disabled",
   ];
@@ -63,7 +30,7 @@ const EditThresholdForm = ({
     "button flex-1 p-4",
     canContinueToReview ? "is-link" : "is-light is-disabled",
   ];
-  const progress = getProgressPercentageForSignersAmount(currSignersAmount);
+  const progress = getProgressPercentageForSignersAmount(newThreshold);
 
   return (
     <>
@@ -80,19 +47,19 @@ const EditThresholdForm = ({
             <Person />
           </div>
           <div className="flex-1 is-flex is-align-items-center px-5 border-light-right has-text-black">
-            {currSignersAmount} of {Math.max(allSafeOwners.length, 1)} owner(s)
+            {newThreshold} of {Math.max(allSafeOwners.length, 1)} owner(s)
           </div>
           <div
             className={minusSignerClasses.join(" ")}
             style={{ width: 48 }}
-            onClick={onMinusSignerClick}
+            onClick={() => onChangeThreshold(false)}
           >
             <Minus />
           </div>
           <div
             className={plusSignerClasses.join(" ")}
             style={{ width: 48 }}
-            onClick={onPlusSignerClick}
+            onClick={() => onChangeThreshold(true)}
           >
             <Plus />
           </div>

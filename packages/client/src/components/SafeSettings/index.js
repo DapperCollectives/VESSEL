@@ -14,7 +14,7 @@ const SafeSettings = () => {
     <React.Fragment>
       <SafeDetailsSetting treasury={treasury} />
       <SignatureThreshold treasury={treasury} />
-      {/* <Owners treasury={treasury} /> */}
+      <Owners treasury={treasury} />
     </React.Fragment>
   );
 };

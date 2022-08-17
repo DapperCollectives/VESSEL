@@ -4,7 +4,6 @@ import EditThreshold from "../EditThreshold";
 
 const SignatureThreshold = ({ treasury }) => {
   const { openModal, closeModal, isOpen } = useModalContext();
-  const { treasury } = contextValue;
   const { threshold, safeOwners } = treasury;
   const verifiedSafeOwners = safeOwners.filter((o) => o.verified);
 
