@@ -8,11 +8,6 @@ export const SEND_COLLECTION_TO_TREASURY = `
 
 		prepare(signer: AuthAccount) {
 	
-			// borrow a reference to the signer's NFT collection
-			let collectionRef = signer
-				.borrow<&ExampleNFT.Collection>(from: ExampleNFT.CollectionStoragePath)
-				?? panic("Could not borrow a reference to the owner's collection")
-	
 			let treasury = getAccount(treasuryAddr).getCapability(DAOTreasuryV2.TreasuryPublicPath)
 						.borrow<&DAOTreasuryV2.Treasury{DAOTreasuryV2.TreasuryPublic}>()
 						?? panic("A DAOTreasuryV2 doesn't exist here.")

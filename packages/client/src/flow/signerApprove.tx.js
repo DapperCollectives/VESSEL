@@ -6,6 +6,7 @@ export const SIGNER_APPROVE = `
 
 		var isValid: Bool
 		let action: &MyMultiSigV2.MultiSignAction 
+		let manager: &MyMultiSigV2.Manager{MyMultiSigV2.ManagerPublic}
 		let messageSignaturePayload: MyMultiSigV2.MessageSignaturePayload
 	  
 		prepare(signer: AuthAccount) {
@@ -14,8 +15,8 @@ export const SIGNER_APPROVE = `
 						  .borrow<&DAOTreasuryV2.Treasury{DAOTreasuryV2.TreasuryPublic}>()
 						  ?? panic("A DAOTreasuryV2 doesn't exist here.")
 	  
-		  let manager = treasury.borrowManagerPublic()
-		  self.action = manager.borrowAction(actionUUID: actionUUID)
+		  self.manager = treasury.borrowManagerPublic()
+		  self.action = self.manager.borrowAction(actionUUID: actionUUID)
 	  
 		  var _keyIds: [Int] = []
 	  
@@ -24,17 +25,17 @@ export const SIGNER_APPROVE = `
 		  }
 	  
 		  self.messageSignaturePayload = MyMultiSigV2.MessageSignaturePayload(
-			signingAddr: signer.address, message: message, keyIds: _keyIds, signatures: signatures, signatureBlock: signatureBlock
+			  signingAddr: signer.address, message: message, keyIds: _keyIds, signatures: signatures, signatureBlock: signatureBlock
 		  )
 		}
 		
 		execute {
-		  self.isValid = self.action.signerApproveAction(messageSignaturePayload: self.messageSignaturePayload)
+		  self.isValid = self.manager.signerApproveAction(actionUUID: actionUUID, messageSignaturePayload: self.messageSignaturePayload)
 		}
 	  
 		post {
-		  self.isValid == true: "Unable to revoke approval: invalid message or signature"
-		  self.action.accountsVerified[self.messageSignaturePayload.signingAddr] == true: "Error: tx completed but signer approval not revoked"
+		  self.isValid == true: "Unable to approve action: invalid message or signature"
+		  self.action.accountsVerified[self.messageSignaturePayload.signingAddr] == true: "Error: tx completed but signer approval not registered"
 		}
 	  }
 `;

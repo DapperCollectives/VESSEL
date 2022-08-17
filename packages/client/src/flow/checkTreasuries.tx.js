@@ -15,7 +15,7 @@ export const GET_SIGNERS = `
 export const GET_THRESHOLD = `
 	import DAOTreasuryV2 from 0xDAOTreasuryV2
 
-	pub fun main(treasuryAddr: Address): UInt64 {
+	pub fun main(treasuryAddr: Address): Int {
 		${treasury}
 		return treasury.borrowManagerPublic().getThreshold()
 	}

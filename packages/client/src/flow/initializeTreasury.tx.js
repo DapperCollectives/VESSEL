@@ -4,7 +4,7 @@ export const INITIALIZE_TREASURY = `
 	import FiatToken from 0xFiatToken
 	import FUSD from 0xFUSD
 	
-	transaction(initialSigners: [Address], initialThreshold: UInt64) {
+	transaction(initialSigners: [Address], initialThreshold: Int) {
 	  
 	  prepare(signer: AuthAccount) {
 		let treasury <- DAOTreasuryV2.createTreasury(initialSigners: initialSigners, initialThreshold: initialThreshold)
