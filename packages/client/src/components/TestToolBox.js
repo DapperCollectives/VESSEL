@@ -56,10 +56,13 @@ const TestToolBox = ({ address }) => {
     await getTreasuryCollections(address);
   };
   const updateUserBalance = async () => {
-    const fusdBalance = await getUserFUSDBalance(user.addr);
+    try {
+      const fusdBalance = await getUserFUSDBalance(user.addr);
+      setUserFUSDBalance(fusdBalance);
+    } catch (err) {
+      console.log(`Failed to get FUSD balance, error: ${err}`)
+    }
     const flowBalance = await getUserFlowBalance(user.addr);
-
-    setUserFUSDBalance(fusdBalance);
     setUserFlowBalance(flowBalance);
   };
   useEffect(() => {
