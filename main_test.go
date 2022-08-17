@@ -484,7 +484,7 @@ func TestSignerRejectApproval(t *testing.T) {
 	otu.SendFlowToTreasury("signer1", "treasuryOwner", TransferAmount)
 
 	// Propose action
-	otu.ProposeFungibleTokenTransferAction("treasuryOwner", Signers[0], RecipientAcct, TransferAmount)
+	otu.ProposeFungibleTokenTransferAction("treasuryOwner", Signers[0], RecipientAcct, TransferAmount, FLOWPublicReceiverPathId, FlowTokenVaultID)
 
 	t.Run("Signers should be able to sign to reject their approval of a proposed action", func(t *testing.T) {
 		// Get first ID of proposed action
