@@ -8,7 +8,7 @@ pub contract DAOTreasuryV2 {
   pub let TreasuryPublicPath: PublicPath
 
   // Events
-  pub event TreasuryInitialized(initialSigners: [Address], initialThreshold: UInt64)
+  pub event TreasuryInitialized(initialSigners: [Address], initialThreshold: UInt)
   pub event ProposeAction(actionUUID: UInt64, proposer: Address)
   pub event ExecuteAction(actionUUID: UInt64, proposer: Address)
   pub event DepositVault(vaultID: String)
@@ -235,7 +235,7 @@ pub contract DAOTreasuryV2 {
       return self.collections.keys
     }
 
-    init(initialSigners: [Address], initialThreshold: Int) {
+    init(initialSigners: [Address], initialThreshold: UInt) {
       self.multiSignManager <- MyMultiSigV2.createMultiSigManager(signers: initialSigners, threshold: initialThreshold)
       self.vaults <- {}
       self.collections <- {}
@@ -261,7 +261,7 @@ pub contract DAOTreasuryV2 {
     }
   }
   
-  pub fun createTreasury(initialSigners: [Address], initialThreshold: Int): @Treasury {
+  pub fun createTreasury(initialSigners: [Address], initialThreshold: UInt): @Treasury {
     return <- create Treasury(initialSigners: initialSigners, initialThreshold: initialThreshold)
   }
 

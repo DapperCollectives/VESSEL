@@ -3,7 +3,7 @@ import FlowToken from "../contracts/core/FlowToken.cdc"
 import FiatToken from "../contracts/core/FiatToken.cdc"
 import FUSD from "../contracts/core/FUSD.cdc"
 
-transaction(initialSigners: [Address], initialThreshold: Int) {
+transaction(initialSigners: [Address], initialThreshold: UInt) {
   
   prepare(signer: AuthAccount) {
     let treasury <- DAOTreasuryV2.createTreasury(initialSigners: initialSigners, initialThreshold: initialThreshold)

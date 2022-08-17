@@ -10,9 +10,9 @@ pub contract MyMultiSigV2 {
     pub event ActionCreated(uuid: UInt64, intent: String)
     pub event SignerAdded(address: Address)
     pub event SignerRemoved(address: Address)
-    pub event MultiSigThresholdUpdated(oldThreshold: Int, newThreshold: Int)
+    pub event MultiSigThresholdUpdated(oldThreshold: UInt, newThreshold: UInt)
     pub event ActionDestroyed(uuid: UInt64)
-    pub event ManagerInitialized(initialSigners: [Address], initialThreshold: Int)
+    pub event ManagerInitialized(initialSigners: [Address], initialThreshold: UInt)
 
     //
     // ------- Resource Interfaces ------- 
@@ -90,7 +90,7 @@ pub contract MyMultiSigV2 {
         pub fun getIDs(): [UInt64]
         pub fun getIntents(): {UInt64: String}
         pub fun getSigners(): {Address: Bool}
-        pub fun getThreshold(): Int
+        pub fun getThreshold(): UInt
         pub fun getVerifiedSignersForAction(actionUUID: UInt64): {Address: Bool}
         pub fun getTotalVerifiedForAction(actionUUID: UInt64): Int
         pub fun getTotalRejectedForAction(actionUUID: UInt64): Int
@@ -100,7 +100,7 @@ pub contract MyMultiSigV2 {
     
     pub resource Manager: ManagerPublic {
         access(account) let signers: {Address: Bool}
-        pub var threshold: Int
+        pub var threshold: UInt
 
         // Maps the `uuid` of the MultiSignAction
         // to the resource itself
@@ -120,7 +120,7 @@ pub contract MyMultiSigV2 {
 
         access(account) fun removeSigner(signer: Address) {
             post {
-                self.signers.length >= self.threshold:
+                self.signers.length >= Int(self.threshold):
                     "Cannot remove signer, number of signers must be equal or higher than the threshold."
             }
 
@@ -128,9 +128,9 @@ pub contract MyMultiSigV2 {
             emit SignerRemoved(address: signer)
         }
 
-        access(account) fun updateThreshold(newThreshold: Int) {
+        access(account) fun updateThreshold(newThreshold: UInt) {
             post {
-                self.signers.length >= self.threshold:
+                self.signers.length >= Int(self.threshold):
                     "Cannot update threshold, number of signers must be equal or higher than the threshold."
             }
 
@@ -247,7 +247,7 @@ pub contract MyMultiSigV2 {
             return self.signers
         }
 
-        pub fun getThreshold(): Int {
+        pub fun getThreshold(): UInt {
             return self.threshold
         }
 
@@ -277,7 +277,7 @@ pub contract MyMultiSigV2 {
             return total
         }
 
-        init(initialSigners: [Address], initialThreshold: Int) {
+        init(initialSigners: [Address], initialThreshold: UInt) {
 
             pre {
                 initialSigners.length >= Int(initialThreshold):
@@ -413,7 +413,7 @@ pub contract MyMultiSigV2 {
         return true
     }
     
-    pub fun createMultiSigManager(signers: [Address], threshold: Int): @Manager {
+    pub fun createMultiSigManager(signers: [Address], threshold: UInt): @Manager {
         return <- create Manager(initialSigners: signers, initialThreshold: threshold)
     }
 }

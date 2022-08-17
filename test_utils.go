@@ -40,7 +40,7 @@ func (otu *OverflowTestUtils) SetupTreasury(name string, signers []string, thres
 		Args(otu.O.Arguments().
 			RawAddressArray(
 				addresses...).
-			Int(threshold)).
+			UInt(uint(threshold))).
 		Test(otu.T).
 		AssertSuccess()
 
@@ -59,7 +59,7 @@ func (otu *OverflowTestUtils) SetupTreasuryFail(name string, signers []string, t
 		Args(otu.O.Arguments().
 			RawAddressArray(
 				addresses...).
-			Int(threshold)).
+			UInt(uint(threshold))).
 		Test(otu.T).
 		AssertFailure(msg)
 
@@ -82,7 +82,7 @@ func (otu *OverflowTestUtils) ProposeNewThreshold(treasuryAddr, proposingAcct st
 		SignProposeAndPayAs(proposingAcct).
 		Args(otu.O.Arguments().
 			Address(treasuryAddr).
-			Int(newThreshold).
+			UInt(uint(newThreshold)).
 			String(message).
 			UInt64Array(0).
 			StringArray(signature).
@@ -108,7 +108,7 @@ func (otu *OverflowTestUtils) ProposeNewThresholdFail(proposingAcct string, newT
 	otu.O.TransactionFromFile("update_threshold").
 		SignProposeAndPayAs(proposingAcct).
 		Args(otu.O.Arguments().
-			Int(newThreshold).
+			UInt(uint(newThreshold)).
 			String(message).
 			UInt64Array(0).
 			StringArray(signature).
@@ -926,8 +926,8 @@ func (otu *OverflowTestUtils) MintFUSD(account string, amount float64) *Overflow
 }
 
 func (otu *OverflowTestUtils) SetupFUSD(account string) *OverflowTestUtils {
-	otu.SetupFUSDVault(account);
-	otu.SetupFUSDMinter(account);
+	otu.SetupFUSDVault(account)
+	otu.SetupFUSDMinter(account)
 	otu.DepositFUSDMinter(account)
 	return otu
 }
@@ -939,4 +939,3 @@ func (otu *OverflowTestUtils) GetAccountFUSDBalance(account string) uint64 {
 
 	return val.ToGoValue().(uint64)
 }
-

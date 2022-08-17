@@ -50,8 +50,8 @@ pub contract TreasuryActionsV2 {
   pub event RemoveSignerActionExecuted(address: Address, treasuryAddr: Address)
 
   // Update Threshold
-  pub event UpdateThresholdActionCreated(threshold: Int)
-  pub event UpdateThresholdActionExecuted(oldThreshold: Int, newThreshold: Int, treasuryAddr: Address)
+  pub event UpdateThresholdActionCreated(threshold: UInt)
+  pub event UpdateThresholdActionExecuted(oldThreshold: UInt, newThreshold: UInt, treasuryAddr: Address)
 
   // Destroy Action
   pub event DestroyActionActionCreated(actionUUID: UInt64)
@@ -288,7 +288,7 @@ pub contract TreasuryActionsV2 {
 
   // Update the threshold of signers
   pub struct UpdateThreshold: MyMultiSigV2.Action {
-    pub let threshold: Int
+    pub let threshold: UInt
     pub let intent: String
     pub let proposer: Address
 
@@ -301,7 +301,7 @@ pub contract TreasuryActionsV2 {
       emit UpdateThresholdActionExecuted(oldThreshold: oldThreshold, newThreshold: self.threshold, treasuryAddr: treasuryRef.owner!.address)
     }
 
-    init(threshold: Int, proposer: Address) {
+    init(threshold: UInt, proposer: Address) {
       self.threshold = threshold
       self.proposer = proposer
       self.intent = "Update the threshold of signers to ".concat(threshold.toString()).concat(".")
