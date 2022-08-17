@@ -77,10 +77,10 @@ export const SAFE_TYPES_TO_META = {
  * (in case it is different from the contract name) 
 */
 export const CONTRACT_NAME_TO_COIN_TYPE = {
-  "FlowToken": "FLOW",
-  "FUSD": "FUSD",
-  "FiatToken": "USDC",
-  "BloctoToken": "BLT",
-  "StarlyToken": "STARLY",
-  "REVV": "REVV"
+  "FlowToken": COIN_TYPES.FLOW,
+  "FUSD": COIN_TYPES.FUSD,
+  "FiatToken": COIN_TYPES.USDC,
+  "BloctoToken": COIN_TYPES.BLT,
+  "StarlyToken": COIN_TYPES.STARLY,
+  "REVV": COIN_TYPES.REVV,
 }
