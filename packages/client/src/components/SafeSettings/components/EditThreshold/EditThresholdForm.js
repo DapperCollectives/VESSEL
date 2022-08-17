@@ -1,39 +1,48 @@
-import { useState, useMemo } from "react";
+import { useState, useContext } from "react";
 import { getProgressPercentageForSignersAmount } from "utils";
+import { useModalContext } from "contexts";
 import { Person, Minus, Plus } from "components/Svg";
 import ProgressBar from "components/ProgressBar";
+import ReviewSafeEdits from "../ReviewSafeEdits";
 
-const EditSignatureThreshold = ({
-  safeOwners,
-  threshold,
-  newOwner,
-  onCancel,
-  onReview,
+const EditThresholdForm = ({
+  safeSettingState,
+  setSafeSettingState,
+  treasury,
 }) => {
-  const [currSignersAmount, setCurrSignersAmount] = useState(threshold);
-  const allSafeOwners = useMemo(() => {
-    const owners = [...safeOwners];
-
-    if (newOwner) {
-      owners.push(newOwner);
-    }
-
-    return owners;
-  }, [safeOwners, newOwner]);
-
+  const { openModal, closeModal, isOpen } = useModalContext();
+  const { safeOwners, threshold } = treasury;
+  const { newOwner, newThreshold } = safeSettingState;
+  const verifiedSafeOwners = safeOwners.filter((o) => o.verified);
+  const allSafeOwners = newOwner
+    ? [...verifiedSafeOwners, newOwner]
+    : verifiedSafeOwners;
+  const currSignersAmount = newThreshold ?? threshold;
   const onMinusSignerClick = () => {
-    setCurrSignersAmount((curr) => Math.max(curr - 1, 1));
+    setSafeSettingState((prevState) => ({
+      ...prevState,
+      newThreshold: prevState.newThreshold
+        ? prevState.newThreshold - 1
+        : threshold - 1,
+    }));
   };
 
   const onPlusSignerClick = () => {
-    setCurrSignersAmount((curr) => Math.min(curr + 1, allSafeOwners.length));
+    setSafeSettingState((prevState) => ({
+      ...prevState,
+      newThreshold: prevState.newThreshold
+        ? prevState.newThreshold + 1
+        : threshold + 1,
+    }));
   };
 
   const onReviewClick = () => {
-    onReview(newOwner, currSignersAmount);
+    if (isOpen) closeModal();
+    openModal(<ReviewSafeEdits />);
   };
 
   const canContinueToReview = !!newOwner || currSignersAmount !== threshold;
+
   const signerClasses = [
     "is-flex",
     "is-justify-content-center",
@@ -103,7 +112,7 @@ const EditSignatureThreshold = ({
           </div>
         </div>
         <div className="is-flex is-align-items-center mt-6">
-          <button className="button flex-1 p-4 mr-2" onClick={onCancel}>
+          <button className="button flex-1 p-4 mr-2" onClick={closeModal}>
             Cancel
           </button>
           <button
@@ -118,4 +127,4 @@ const EditSignatureThreshold = ({
     </>
   );
 };
-export default EditSignatureThreshold;
+export default EditThresholdForm;

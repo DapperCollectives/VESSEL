@@ -1,3 +1,4 @@
+import React from "react";
 import { useModalContext } from "contexts";
 import { useClipboard, useTreasury } from "hooks";
 import EditSafeName from "./EditSafeName";

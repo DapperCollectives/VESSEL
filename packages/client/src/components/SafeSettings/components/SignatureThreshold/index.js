@@ -1,64 +1,16 @@
-import React from "react";
-import { useHistory } from "react-router-dom";
 import { useModalContext } from "contexts";
-import { useTreasury } from "hooks";
-import SignatureBar from "./SignatureBar";
-import EditSignatureThreshold from "./EditSignatureThreshold";
-import ReviewSafeEdits from "./ReviewSafeEdits";
-import { formatAddress } from "utils";
+import SignatureBar from "../SignatureBar/SignatureBar";
+import EditThreshold from "../EditThreshold";
 
 const SignatureThreshold = ({ treasury }) => {
-  const modalContext = useModalContext();
-  const history = useHistory();
-  const { threshold, safeOwners, address } = treasury;
+  const { openModal, closeModal, isOpen } = useModalContext();
+  const { treasury } = contextValue;
+  const { threshold, safeOwners } = treasury;
   const verifiedSafeOwners = safeOwners.filter((o) => o.verified);
-  const { proposeAddSigner, updateThreshold, setTreasury } =
-    useTreasury(address);
-  const openEditSignatureThresholdModal = (newOwner) => {
-    modalContext.openModal(
-      <EditSignatureThreshold
-        safeOwners={verifiedSafeOwners}
-        threshold={threshold}
-        newOwner={newOwner}
-        onCancel={() => modalContext.closeModal()}
-        onReview={(newOwner, newThreshold) =>
-          openReviewEditsModal(newOwner, newThreshold, () =>
-            openEditSignatureThresholdModal(newOwner)
-          )
-        }
-      />
-    );
-  };
-  const openReviewEditsModal = (newOwner, newThreshold, onBack) => {
-    modalContext.closeModal();
-    modalContext.openModal(
-      <ReviewSafeEdits
-        safeOwners={verifiedSafeOwners}
-        threshold={threshold}
-        newOwner={newOwner}
-        newThreshold={newThreshold}
-        onBack={onBack}
-        onSubmit={onReviewSafeEditsSubmit}
-      />
-    );
-  };
-  const onReviewSafeEditsSubmit = async (newOwner, newThreshold) => {
-    const thresholdToPersist = newThreshold ?? threshold;
 
-    if (newOwner) {
-      await proposeAddSigner(formatAddress(newOwner.address));
-    }
-
-    if (thresholdToPersist !== threshold) {
-      await updateThreshold(thresholdToPersist);
-    }
-    setTreasury(address, {
-      threshold: thresholdToPersist,
-      safeOwners: [...safeOwners, { ...newOwner, verified: false }],
-    });
-
-    modalContext.closeModal();
-    history.push(`/safe/${address}`);
+  const openEditSignatureThresholdModal = () => {
+    if (isOpen) closeModal();
+    openModal(<EditThreshold treasury={treasury} />);
   };
   return (
     <div>

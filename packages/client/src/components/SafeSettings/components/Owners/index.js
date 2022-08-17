@@ -42,19 +42,20 @@ const Owners = ({ treasury }) => {
   };
 
   const openEditSignatureThresholdModal = (newOwner) => {
-    modalContext.openModal(
-      <EditSignatureThreshold
-        safeOwners={verifiedSafeOwners}
-        threshold={threshold}
-        newOwner={newOwner}
-        onCancel={() => modalContext.closeModal()}
-        onReview={(newOwner, newThreshold) =>
-          openReviewEditsModal(newOwner, newThreshold, () =>
-            openEditSignatureThresholdModal(newOwner)
-          )
-        }
-      />
-    );
+    console.log("open thrreshold");
+    // modalContext.openModal(
+    //   <EditSignatureThreshold
+    //     safeOwners={verifiedSafeOwners}
+    //     threshold={threshold}
+    //     newOwner={newOwner}
+    //     onCancel={() => modalContext.closeModal()}
+    //     onReview={(newOwner, newThreshold) =>
+    //       openReviewEditsModal(newOwner, newThreshold, () =>
+    //         openEditSignatureThresholdModal(newOwner)
+    //       )
+    //     }
+    //   />
+    // );
   };
   return (
     <div>
