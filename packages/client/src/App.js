@@ -9,11 +9,8 @@ import { Logo, Navigation, Transactions } from "./components";
 const flowgraphClient = new GraphQLClient({
   url:
     process.env.REACT_APP_FLOW_ENV === "mainnet"
-      ? "https://query.flowgraph.co"
-      : "https://query.testnet.flowgraph.co",
-  headers: {
-    Authorization: `Bearer ${process.env.REACT_APP_FLOWGRAPH_API_KEY}`,
-  },
+      ? `https://query.flowgraph.co/?token=${process.env.REACT_APP_FLOWGRAPH_API_KEY}`
+      : `https://query.testnet.flowgraph.co/?token=${process.env.REACT_APP_FLOWGRAPH_API_KEY}`
 });
 
 const Wrapper = ({ children }) => <div className="App">{children}</div>;
