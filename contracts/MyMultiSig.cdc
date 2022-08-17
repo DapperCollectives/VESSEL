@@ -94,8 +94,8 @@ pub contract MyMultiSigV2 {
         pub fun getVerifiedSignersForAction(actionUUID: UInt64): {Address: Bool}
         pub fun getTotalVerifiedForAction(actionUUID: UInt64): Int
         pub fun getTotalRejectedForAction(actionUUID: UInt64): Int
-        pub fun signerApproveAction(actionUUID: UInt64, messageSignaturePayload: MessageSignaturePayload): Bool
-        pub fun signerRejectAction(actionUUID: UInt64, messageSignaturePayload: MessageSignaturePayload): Bool
+        pub fun signerApproveAction(actionUUID: UInt64, messageSignaturePayload: MessageSignaturePayload)
+        pub fun signerRejectAction(actionUUID: UInt64, messageSignaturePayload: MessageSignaturePayload)
     }
     
     pub resource Manager: ManagerPublic {
@@ -159,7 +159,7 @@ pub contract MyMultiSigV2 {
             return uuid
         }
 
-        pub fun signerApproveAction(actionUUID: UInt64, messageSignaturePayload: MessageSignaturePayload): Bool {
+        pub fun signerApproveAction(actionUUID: UInt64, messageSignaturePayload: MessageSignaturePayload) {
             pre {
                 self.signers[messageSignaturePayload.signingAddr] == true:
                     "This address is not allowed to sign for this."
@@ -183,10 +183,9 @@ pub contract MyMultiSigV2 {
             action.setAccountsVerified(signer: messageSignaturePayload.signingAddr, value: true)
 
             emit ActionApprovedBySigner(address: messageSignaturePayload.signingAddr, uuid: self.uuid)
-            return signatureValidationResponse.isValid
         }
 
-        pub fun signerRejectAction(actionUUID: UInt64, messageSignaturePayload: MessageSignaturePayload): Bool {
+        pub fun signerRejectAction(actionUUID: UInt64, messageSignaturePayload: MessageSignaturePayload) {
             pre {
                 self.actions[actionUUID] != nil: "Couldn't find action with UUID ".concat(actionUUID.toString())
                 self.borrowAction(actionUUID: actionUUID).accountsVerified[messageSignaturePayload.signingAddr] != false:
@@ -216,14 +215,11 @@ pub contract MyMultiSigV2 {
             emit ActionRejectedBySigner(address: messageSignaturePayload.signingAddr, uuid: self.uuid)
 
             // Check if we have enough rejections to delete the action
-            if  self.getTotalRejectedForAction(actionUUID: actionUUID) > (self.signers.length - Int(self.threshold)) {
+            if self.getTotalRejectedForAction(actionUUID: actionUUID) > (self.signers.length - Int(self.threshold)) {
                 let removedAction <- self.actions.remove(key: actionUUID)
                 destroy removedAction
                 emit ActionDestroyed(uuid: actionUUID)
-                return true
             }
-
-            return true
         }
 
         pub fun readyToExecute(actionUUID: UInt64): Bool {

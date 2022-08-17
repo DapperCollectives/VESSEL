@@ -30,11 +30,10 @@ export const SIGNER_APPROVE = `
 		}
 		
 		execute {
-		  self.isValid = self.manager.signerApproveAction(actionUUID: actionUUID, messageSignaturePayload: self.messageSignaturePayload)
+		  self.manager.signerApproveAction(actionUUID: actionUUID, messageSignaturePayload: self.messageSignaturePayload)
 		}
 	  
 		post {
-		  self.isValid == true: "Unable to approve action: invalid message or signature"
 		  self.action.accountsVerified[self.messageSignaturePayload.signingAddr] == true: "Error: tx completed but signer approval not registered"
 		}
 	  }

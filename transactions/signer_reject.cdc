@@ -29,10 +29,6 @@ transaction(treasuryAddr: Address, actionUUID: UInt64, message: String, keyIds: 
 
   }
   execute {
-    self.isValid = self.manager.signerRejectAction(actionUUID: actionUUID, messageSignaturePayload: self.messageSignaturePayload)
-  }
-
-  post {
-    self.isValid == true: "Unable to reject approval: invalid message or signature"
+    self.manager.signerRejectAction(actionUUID: actionUUID, messageSignaturePayload: self.messageSignaturePayload)
   }
 }
