@@ -93,7 +93,7 @@ after creating a treasury with the service account, run
 yarn nft
 ```
 
-##### Alternatively...
+##### Alternatively
 
 NOTE: Docker must be running for this method
 
