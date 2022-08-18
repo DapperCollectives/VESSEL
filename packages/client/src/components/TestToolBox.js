@@ -1,5 +1,5 @@
 import { useState, useContext, useEffect } from "react";
-import { Web3Context } from "contexts/Web3";
+import { createSignature, Web3Context } from "contexts/Web3";
 import { COIN_TYPES } from "constants/enums";
 const TestToolBox = ({ address }) => {
   const [showToolBox, setShowToolBox] = useState(false);
@@ -20,16 +20,31 @@ const TestToolBox = ({ address }) => {
   const onDeposit = async () => {
     await initDepositTokensToTreasury();
   };
+  const onDepositCollection = async () => {
+    const collectionId = `A.${address.replace("0x", "")}.ExampleNFT.Collection`;
+    const { message, keyIds, signatures, height } = await createSignature(collectionId);
+
+    await sendCollectionToTreasury(
+      address,
+      message,
+      keyIds,
+      signatures,
+      height
+    );
+  };
 
   const onDepositNFT = async () => {
     await sendNFTToTreasury(address, 0);
     await getTreasuryCollections(address);
   };
   const updateUserBalance = async () => {
-    const fusdBalance = await getUserFUSDBalance(user.addr);
+    try {
+      const fusdBalance = await getUserFUSDBalance(user.addr);
+      setUserFUSDBalance(fusdBalance);
+    } catch (err) {
+      console.log(`Failed to get FUSD balance, error: ${err}`)
+    }
     const flowBalance = await getUserFlowBalance(user.addr);
-
-    setUserFUSDBalance(fusdBalance);
     setUserFlowBalance(flowBalance);
   };
 
