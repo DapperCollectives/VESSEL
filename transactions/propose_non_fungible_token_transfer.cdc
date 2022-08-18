@@ -4,7 +4,7 @@ import NonFungibleToken from "../contracts/core/NonFungibleToken.cdc"
 import MyMultiSigV2 from "../contracts/MyMultiSig.cdc"
 import ExampleNFT from "../contracts/core/ExampleNFT.cdc"
 
-transaction(treasuryAddr: Address, recipientAddr: Address, id: UInt64, messageHex: String, message: String, keyIds: [UInt64], signatures: [String], signatureBlock: UInt64) {
+transaction(treasuryAddr: Address, recipientAddr: Address, id: UInt64, message: String, messageHex: String, keyIds: [UInt64], signatures: [String], signatureBlock: UInt64) {
 
   let treasury: &DAOTreasuryV2.Treasury{DAOTreasuryV2.TreasuryPublic}
   let recipientCollection: Capability<&{NonFungibleToken.CollectionPublic}>

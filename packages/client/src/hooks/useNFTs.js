@@ -4,14 +4,12 @@ import reducer, { INITIAL_STATE } from "../reducers/nfts";
 import {
   REGULAR_LIMIT,
   SIGNED_LIMIT,
-  EXECUTE_ACTION_LIMIT,
   createSignature,
 } from "../contexts/Web3";
 import {
   CHECK_TREASURY_NFT_COLLECTION,
   PROPOSE_NFT_TRANSFER,
   SEND_NFT_TO_TREASURY,
-  SEND_COLLECTION_TO_TREASURY,
   GET_TREASURY_IDENTIFIERS,
 } from "../flow";
 
@@ -28,44 +26,23 @@ const doSendNFTToTreasury = async (treasuryAddr, tokenId) => {
   });
 };
 
-const doSendCollectionToTreasury = async (
-  treasuryAddr,
-  message,
-  messageHex,
-  keyIds,
-  signatures,
-  height
-) => {
-  return await mutate({
-    cadence: SEND_COLLECTION_TO_TREASURY,
-    args: (arg, t) => [
-      arg(treasuryAddr, t.Address),
-      arg(message, t.String),
-      arg(messageHex, t.String),
-      arg(keyIds, t.Array(t.UInt64)),
-      arg(signatures, t.Array(t.String)),
-      arg(height, t.UInt64),
-    ],
-    limit: EXECUTE_ACTION_LIMIT,
-  });
-};
-
 const doProposeNFTTransfer = async (
   treasuryAddr,
   recipient,
-  tokenId,
-  message,
-  messageHex,
-  keyIds,
-  signatures,
-  height
+  nft
 ) => {
+  // Example: A.f8d6e0586b0a20c7.ExampleNFT.Collection-0
+  // First part will contain the collection identifier, and the second will contain the tokenId
+  const tokenInfo = nft.split("-");
+  const intent = `Transfer ${tokenInfo[0]} NFT from the treasury to ${recipient}`;
+  const { message, messageHex, keyIds, signatures, height } = await createSignature(intent);
+
   return await mutate({
     cadence: PROPOSE_NFT_TRANSFER,
     args: (arg, t) => [
       arg(treasuryAddr, t.Address),
       arg(recipient, t.Address),
-      arg(parseInt(tokenId), t.UInt64),
+      arg(parseInt(tokenInfo[1]), t.UInt64),
       arg(message, t.String),
       arg(messageHex, t.String),
       arg(keyIds, t.Array(t.UInt64)),
@@ -137,45 +114,15 @@ export default function useNFTs() {
     await tx(res).onceSealed();
   };
 
-  const sendCollectionToTreasury = async (
+  const proposeNFTTransfer = async (
     treasuryAddr,
-    message,
-    messageHex,
-    keyIds,
-    signatures,
-    height
-  ) => {
-    const res = await doSendCollectionToTreasury(
-      treasuryAddr,
-      message,
-      messageHex,
-      keyIds,
-      signatures,
-      height
-    );
-    await tx(res).onceSealed();
-    return res;
-  };
-
-  const proposeNFTTransfer = async (treasuryAddr, recipient, selectedNFT) => {
-    const treasuryVault = `Capability<&AnyResource{A.${treasuryAddr.replace(
-      "0x",
-      ""
-    )}.NonFungibleToken.CollectionPublic}>`;
-    const intent = `Transfer a ${treasuryVault} NFT from the treasury to ${recipient}`;
-
-    const { message, messageHex, keyIds, signatures, height } = await createSignature(intent);
-
-    const tokenId = selectedNFT.split("-")[1];
+    recipient,
+    nft
+  ) => {   
     const res = await doProposeNFTTransfer(
       treasuryAddr,
       recipient,
-      tokenId,
-      message,
-      messageHex,
-      keyIds,
-      signatures,
-      height
+      nft,
     );
     await tx(res).onceSealed();
     return res;
@@ -186,6 +133,5 @@ export default function useNFTs() {
     getTreasuryCollections,
     proposeNFTTransfer,
     sendNFTToTreasury,
-    sendCollectionToTreasury,
   };
 }

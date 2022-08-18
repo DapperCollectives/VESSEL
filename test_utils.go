@@ -336,7 +336,6 @@ func (otu *OverflowTestUtils) ProposeFungibleTokenTransferToTreasuryActionFail(t
 func (otu *OverflowTestUtils) ProposeNonFungibleTokenTransferAction(treasuryAcct string, proposingAcct, recipientAcct string, id uint64) *OverflowTestUtils {
 	recipient, _ := otu.O.State.Accounts().ByName(fmt.Sprintf("emulator-%s", recipientAcct))
 	src := []byte(fmt.Sprintf("Transfer A.f8d6e0586b0a20c7.ExampleNFT.Collection NFT from the treasury to 0x%s", recipient.Address()))
-
 	hexCollectionID := make([]byte, hex.EncodedLen(len(src)))
 	hex.Encode(hexCollectionID, src)
 
@@ -1008,4 +1007,31 @@ func (otu *OverflowTestUtils) GetAccountFUSDBalance(account string) uint64 {
 		RunReturns()
 
 	return val.ToGoValue().(uint64)
+}
+
+func (otu *OverflowTestUtils) AddBloctoVaultToTreasury(from string, to string) *OverflowTestUtils {
+
+	src := []byte("A.f8d6e0586b0a20c7.BloctoToken.Vault")
+	hexVaultID := make([]byte, hex.EncodedLen(len(src)))
+	hex.Encode(hexVaultID, src)
+
+	latestBlock, _ := otu.O.GetLatestBlock()
+	message := fmt.Sprintf("%s%s", hexVaultID, latestBlock.ID)
+	byteMessage := []byte(message)
+	messageHex := hex.EncodeToString(byteMessage)
+	signature := otu.SignMessage(from, message)
+
+	otu.O.TransactionFromFile("add_blocto_vault").
+		SignProposeAndPayAs(from).
+		Args(otu.O.Arguments().
+			Account(to).
+			String(message).
+			String(messageHex).
+			UInt64Array(0).
+			StringArray(signature).
+			UInt64(latestBlock.Height)).
+		Test(otu.T).
+		AssertSuccess()
+
+	return otu
 }

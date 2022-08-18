@@ -8,10 +8,10 @@ pub fun main(treasuryAddr: Address, collectionId: String): [&NonFungibleToken.NF
 
   let collection: &{NonFungibleToken.CollectionPublic} = treasury.borrowCollectionPublic(identifier: collectionId)
   let ids = collection.getIDs()
-    let nftRefs: [&NonFungibleToken.NFT] = []
-    for id in ids  {
-      let nftRef: &NonFungibleToken.NFT  = collection.borrowNFT(id: id)
-      nftRefs.append(nftRef)
-    }
-    return nftRefs
+  let nftRefs: [&NonFungibleToken.NFT] = []
+  for id in ids  {
+    let nftRef: &NonFungibleToken.NFT  = collection.borrowNFT(id: id)
+    nftRefs.append(nftRef)
+  }
+  return nftRefs
 }
