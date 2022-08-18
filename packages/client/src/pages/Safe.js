@@ -118,17 +118,14 @@ function Safe({ web3 }) {
 
     let keyId = sigResponse[0].keyId;
     let signature = sigResponse[0].signature;
-    // Temporary workaround for Blocto to send the correct key for signing the messages
-    if (sigResponse.length > 1 && sigResponse[1].keyId === 0) {
-      keyId = sigResponse[1].keyId;
-      signature = sigResponse[1].signature;
-    }
+    
     const keyIds = [keyId];
     const signatures = [signature];
 
     await signerApprove(
       parseInt(uuid, 10),
       message,
+      messageHex,
       keyIds,
       signatures,
       height

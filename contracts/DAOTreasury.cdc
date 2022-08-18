@@ -1,6 +1,7 @@
 import MyMultiSigV2 from "./MyMultiSig.cdc"
 import FungibleToken from "./core/FungibleToken.cdc"
 import NonFungibleToken from "./core/NonFungibleToken.cdc"
+import FCLCrypto from "./core/FCLCrypto.cdc"
 
 pub contract DAOTreasuryV2 {
 
@@ -94,15 +95,16 @@ pub contract DAOTreasuryV2 {
       )
 
       // ------ Validate Signature -------
-      var signatureValidationResponse = MyMultiSigV2.validateSignature(payload: signaturePayload)
+      let signatureValidationResponse = FCLCrypto.verifyUserSignatures(
+        address: signaturePayload.signingAddr,
+        message: signaturePayload.messageHex,
+        keyIndices: signaturePayload.keyIds,
+        signatures: signaturePayload.signatures
+      )
 
       assert(
-        signatureValidationResponse.isValid == true,
+        signatureValidationResponse == true,
         message: "Invalid Signature"
-      )
-      assert(
-        signatureValidationResponse.totalWeight >= 999.0,
-        message: "Insufficient Key Weights: sum of total signing key weights must be >= 999.0"
       )
     }
 
@@ -180,15 +182,16 @@ pub contract DAOTreasuryV2 {
       )
 
       // ------ Validate Signature -------
-      var signatureValidationResponse = MyMultiSigV2.validateSignature(payload: signaturePayload)
+      let signatureValidationResponse = FCLCrypto.verifyUserSignatures(
+        address: signaturePayload.signingAddr,
+        message: signaturePayload.messageHex,
+        keyIndices: signaturePayload.keyIds,
+        signatures: signaturePayload.signatures
+      )
 
       assert(
-        signatureValidationResponse.isValid == true,
+        signatureValidationResponse == true,
         message: "Invalid Signature"
-      )
-      assert(
-        signatureValidationResponse.totalWeight >= 999.0,
-        message: "Insufficient Key Weights: sum of total signing key weights must be >= 999.0"
       )
 
       // If all asserts passed, deposit vault into Treasury

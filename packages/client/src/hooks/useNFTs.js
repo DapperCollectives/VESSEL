@@ -31,6 +31,7 @@ const doSendNFTToTreasury = async (treasuryAddr, tokenId) => {
 const doSendCollectionToTreasury = async (
   treasuryAddr,
   message,
+  messageHex,
   keyIds,
   signatures,
   height
@@ -40,6 +41,7 @@ const doSendCollectionToTreasury = async (
     args: (arg, t) => [
       arg(treasuryAddr, t.Address),
       arg(message, t.String),
+      arg(messageHex, t.String),
       arg(keyIds, t.Array(t.UInt64)),
       arg(signatures, t.Array(t.String)),
       arg(height, t.UInt64),
@@ -53,6 +55,7 @@ const doProposeNFTTransfer = async (
   recipient,
   tokenId,
   message,
+  messageHex,
   keyIds,
   signatures,
   height
@@ -64,6 +67,7 @@ const doProposeNFTTransfer = async (
       arg(recipient, t.Address),
       arg(parseInt(tokenId), t.UInt64),
       arg(message, t.String),
+      arg(messageHex, t.String),
       arg(keyIds, t.Array(t.UInt64)),
       arg(signatures, t.Array(t.String)),
       arg(height, t.UInt64),
@@ -136,6 +140,7 @@ export default function useNFTs() {
   const sendCollectionToTreasury = async (
     treasuryAddr,
     message,
+    messageHex,
     keyIds,
     signatures,
     height
@@ -143,6 +148,7 @@ export default function useNFTs() {
     const res = await doSendCollectionToTreasury(
       treasuryAddr,
       message,
+      messageHex,
       keyIds,
       signatures,
       height
@@ -158,9 +164,7 @@ export default function useNFTs() {
     )}.NonFungibleToken.CollectionPublic}>`;
     const intent = `Transfer a ${treasuryVault} NFT from the treasury to ${recipient}`;
 
-    const { message, keyIds, signatures, height } = await createSignature(
-      intent
-    );
+    const { message, messageHex, keyIds, signatures, height } = await createSignature(intent);
 
     const tokenId = selectedNFT.split("-")[1];
     const res = await doProposeNFTTransfer(
@@ -168,6 +172,7 @@ export default function useNFTs() {
       recipient,
       tokenId,
       message,
+      messageHex,
       keyIds,
       signatures,
       height

@@ -26,11 +26,12 @@ const TestToolBox = ({ address }) => {
 
     const collectionId = `A.${address.replace("0x", "")}.ExampleNFT.Collection`;
 
-    const {message, keyIds, signatures, height} = await createSignature(collectionId);
+    const {message, messageHex, keyIds, signatures, height} = await createSignature(collectionId);
 
     await sendCollectionToTreasury(
       address,
       message,
+      messageHex,
       keyIds,
       signatures,
       height

@@ -1,5 +1,6 @@
 import Crypto
 import FungibleToken from "./core/FungibleToken.cdc"
+import FCLCrypto from "./core/FCLCrypto.cdc"
 
 pub contract MyMultiSigV2 {
 
@@ -39,13 +40,15 @@ pub contract MyMultiSigV2 {
     pub struct MessageSignaturePayload {
         pub let signingAddr: Address
         pub let message: String
+        pub let messageHex: String
         pub let keyIds: [Int]
         pub let signatures: [String]
         pub let signatureBlock: UInt64
 
-        init(signingAddr: Address, message: String, keyIds: [Int], signatures: [String], signatureBlock: UInt64) {
+        init(signingAddr: Address, message: String, messageHex: String, keyIds: [Int], signatures: [String], signatureBlock: UInt64) {
             self.signingAddr = signingAddr
             self.message = message
+            self.messageHex = messageHex
             self.keyIds = keyIds
             self.signatures = signatures
             self.signatureBlock = signatureBlock
@@ -87,16 +90,21 @@ pub contract MyMultiSigV2 {
             )
         
             // Validate Signature
-            var signatureValidationResponse = MyMultiSigV2.validateSignature(payload: messageSignaturePayload)
-            assert(signatureValidationResponse.isValid == true, message: "Invalid Signatures")
-            assert(signatureValidationResponse.totalWeight >= 999.0, message: "Total weight of combined signatures did not satisfy 999 key weight requirement.")
+            let signatureValidationResponse = FCLCrypto.verifyUserSignatures(
+                address: messageSignaturePayload.signingAddr,
+                message: messageSignaturePayload.messageHex,
+                keyIndices: messageSignaturePayload.keyIds,
+                signatures: messageSignaturePayload.signatures
+            )
+
+            assert(signatureValidationResponse == true, message: "Invalid Signatures")
 
             // Approve action
-            self.accountsVerified[messageSignaturePayload.signingAddr] = signatureValidationResponse.isValid
+            self.accountsVerified[messageSignaturePayload.signingAddr] = signatureValidationResponse
             self.totalVerified = self.totalVerified + 1
 
             emit ActionApprovedBySigner(address: messageSignaturePayload.signingAddr, uuid: self.uuid)
-            return signatureValidationResponse.isValid
+            return signatureValidationResponse
         }
 
         pub fun signerRevokeApproval(messageSignaturePayload: MessageSignaturePayload): Bool {
@@ -112,16 +120,21 @@ pub contract MyMultiSigV2 {
             )
         
             // Validate Signature
-            var signatureValidationResponse = MyMultiSigV2.validateSignature(payload: messageSignaturePayload)
-            assert(signatureValidationResponse.isValid == true, message: "Invalid Signatures")
-            assert(signatureValidationResponse.totalWeight >= 999.0, message: "Total weight of combined signatures did not satisfy 999 key weight requirement.")
+            let signatureValidationResponse = FCLCrypto.verifyUserSignatures(
+                address: messageSignaturePayload.signingAddr,
+                message: messageSignaturePayload.messageHex,
+                keyIndices: messageSignaturePayload.keyIds,
+                signatures: messageSignaturePayload.signatures
+            )            
+            
+            assert(signatureValidationResponse == true, message: "Invalid Signatures")
 
             // Revoke approval
             self.accountsVerified[messageSignaturePayload.signingAddr] = false
             self.totalVerified = self.totalVerified - 1
 
             emit ActionApprovalRevokedBySigner(address: messageSignaturePayload.signingAddr, uuid: self.uuid)
-            return signatureValidationResponse.isValid
+            return signatureValidationResponse
         }
 
         // Validate the approve/revoke approval message
@@ -311,80 +324,6 @@ pub contract MyMultiSigV2 {
         }
     }
 
-    // 
-    // ------- Functions --------
-    //
-
-    // Explanation: 
-    // Verifies that `acctAddress` is the one that signed the `message` (producing `signatures`) 
-    // with the `keyIds` (that are hopefully in its account, or its false) during `signatureBlock`
-    //
-    // Parameters:
-    // acctAddress: the address of the account we're verifying
-    // message: {blockId}{uuid of this resource}
-    // keyIds: the keyIds that the acctAddress theoretically signed with
-    // signatures: the signature that was theoretically produced from the `acctAddress` signing `message` with `keyIds`.
-    // can be multiple because you can sign with multiple keys, thus creating multiple signatures.
-    // signatureBlock: when the signature was produced
-    //
-    // Returns:
-    // Whether or not this signature is valid
-    // Cumulative weight of keys if signature is valid
-
-    pub fun validateSignature(payload: MessageSignaturePayload): ValidateSignatureResponse {
-        pre {
-            payload.keyIds.length == payload.signatures.length: "keyIds and signatures must be the same length"
-        }
-
-        let keyList = Crypto.KeyList()
-        let signingAddr = payload.signingAddr
-        let account = getAccount(signingAddr)
-
-        let keyIds = payload.keyIds
-        let uniqueKeys: {Int: Bool} = {}
-        for id in keyIds {
-            assert(uniqueKeys[id] == nil, message: "Duplicate keyId found for signatures")
-            uniqueKeys[id] = true
-        }
-
-        // In verify we need a [KeyListSignature] so we do that here
-        let signatureSet: [Crypto.KeyListSignature] = []
-        var totalWeight = 0.0
-
-        var i = 0
-        while (i < keyIds.length) {
-            let accountKey: AccountKey = account.keys.get(keyIndex: keyIds[i]) ?? panic("Provided key signature does not exist")
-            
-            let keyWeight = accountKey.weight
-            totalWeight = totalWeight + keyWeight
-
-            keyList.add(
-                PublicKey(
-                    publicKey: accountKey.publicKey.publicKey,
-                    signatureAlgorithm: accountKey.publicKey.signatureAlgorithm
-                ),
-                hashAlgorithm: accountKey.hashAlgorithm,
-                weight: keyWeight
-            )
-
-            var signature = payload.signatures[i]
-            signatureSet.append(
-                Crypto.KeyListSignature(
-                    keyIndex: keyIds[i],
-                    signature: signature.decodeHex()
-                )
-            )
-            i = i + 1
-        }
-
-        let signatureValid = keyList.verify(
-            signatureSet: signatureSet,
-            signedData: payload.message.utf8
-        )
-
-        return ValidateSignatureResponse(isValid: signatureValid, totalWeight: totalWeight)
-    }
-        
     pub fun createMultiSigManager(signers: [Address], threshold: UInt64): @Manager {
         return <- create Manager(initialSigners: signers, initialThreshold: threshold)
     }
