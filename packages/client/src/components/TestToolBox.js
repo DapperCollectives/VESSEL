@@ -7,10 +7,8 @@ const TestToolBox = ({ address }) => {
   const [userFlowBalance, setUserFlowBalance] = useState(0);
   const web3 = useContext(Web3Context);
   const {
-    injectedProvider,
     initDepositTokensToTreasury,
     sendNFTToTreasury,
-    sendCollectionToTreasury,
     getTreasuryCollections,
     getUserFUSDBalance,
     getUserFlowBalance,
@@ -23,10 +21,8 @@ const TestToolBox = ({ address }) => {
     await initDepositTokensToTreasury();
   };
   const onDepositCollection = async () => {
-
     const collectionId = `A.${address.replace("0x", "")}.ExampleNFT.Collection`;
-
-    const {message, keyIds, signatures, height} = await createSignature(collectionId);
+    const { message, keyIds, signatures, height } = await createSignature(collectionId);
 
     await sendCollectionToTreasury(
       address,
@@ -36,6 +32,7 @@ const TestToolBox = ({ address }) => {
       height
     );
   };
+
   const onDepositNFT = async () => {
     await sendNFTToTreasury(address, 0);
     await getTreasuryCollections(address);
@@ -50,9 +47,12 @@ const TestToolBox = ({ address }) => {
     const flowBalance = await getUserFlowBalance(user.addr);
     setUserFlowBalance(flowBalance);
   };
+
   useEffect(() => {
     updateUserBalance();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
   return (
     <div style={{ position: "absolute", left: "20%", zIndex: 10000 }}>
       <div className="is-flex is-flex-direction-column">
@@ -101,14 +101,6 @@ const TestToolBox = ({ address }) => {
                 <li>
                   <span className="is-underlined pointer" onClick={onDeposit}>
                     Deposit Tokens
-                  </span>
-                </li>
-                <li>
-                  <span
-                    className="is-underlined pointer"
-                    onClick={onDepositCollection}
-                  >
-                    Deposit Collection
                   </span>
                 </li>
                 <li>

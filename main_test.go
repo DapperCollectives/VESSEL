@@ -70,7 +70,14 @@ func TestTreasurySetup(t *testing.T) {
 		collectionIds := otu.GetTreasuryIdentifiers("treasuryOwner")
 		ownedNFTIds := otu.GetTreasuryCollection("treasuryOwner", collectionIds[1][0])
 		assert.Contains(otu.T, ownedNFTIds, uint64(0))
+	})
 
+	t.Run("Signer should be able to add a blocto vault to treasury", func(t *testing.T) {
+		otu.AddBloctoVaultToTreasury("signer1", "treasuryOwner")
+
+		// Assert that the vault has been added to the treasury
+		identifiers := otu.GetTreasuryIdentifiers("treasuryOwner")
+		assert.Contains(otu.T, identifiers[0], "A.f8d6e0586b0a20c7.BloctoToken.Vault")
 	})
 }
 

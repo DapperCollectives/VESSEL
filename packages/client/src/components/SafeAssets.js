@@ -1,87 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { isEmpty } from "lodash";
-import { Plus, Check } from "./Svg";
 import { useModalContext } from "../contexts";
-import { useAddressValidation } from "../hooks";
 import { ASSET_TYPES } from "constants/enums";
 import SendTokens from "./SendTokens";
-
-const AddNFT = ({ web3, address, message, keyIds, signatures, height }) => {
-  const modalContext = useModalContext();
-  const [collectionPath, setCollectionPath] = useState("");
-  const [isCollectionValid, setCollectionValid] = useState(false);
-  const { isAddressValid } = useAddressValidation(web3.injectedProvider);
-
-  const btnClasses = [
-    "button p-4 flex-1",
-    isCollectionValid ? "is-link" : "is-light is-disabled",
-  ];
-
-  const onSubmit = async () => {
-    await web3.sendCollectionToTreasury(
-      address,
-      message,
-      keyIds,
-      signatures,
-      height
-    );
-    modalContext.closeModal();
-  };
-
-  const onCollectionChange = async (e) => {
-    let newValue = e.target.value;
-    setCollectionPath(newValue);
-    const isValid = await isAddressValid(newValue);
-    setCollectionValid(isValid);
-  };
-
-  return (
-    <div className="p-5 has-text-black">
-      <h2 className="is-size-4">Add NFT Collection</h2>
-      <div className="border-light-top mt-4 pt-5">
-        <label className="has-text-grey mb-2">
-          Address<span className="has-text-red"> *</span>
-        </label>
-        <div className="is-flex">
-          <div className="flex-1" style={{ position: "relative" }}>
-            <input
-              style={{ height: 48 }}
-              className="border-light rounded-sm column is-full p-2 mt-2"
-              type="text"
-              value={collectionPath}
-              onChange={onCollectionChange}
-            />
-            {isCollectionValid && (
-              <div style={{ position: "absolute", right: 17, top: 20 }}>
-                <Check />
-              </div>
-            )}
-          </div>
-        </div>
-        <div className="is-flex is-align-items-center mt-6">
-          <button
-            className="button flex-1 p-4 mr-2"
-            onClick={modalContext.closeModal}
-          >
-            Cancel
-          </button>
-          <button className={btnClasses.join(" ")} onClick={onSubmit}>
-            Add
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-};
 
 function SafeAssets({
   web3,
   name,
   address,
-  message,
-  keyIds,
-  signatures,
-  height,
 }) {
   const assetComponents = [];
   const { getTreasuryCollections } = web3;
@@ -175,27 +101,6 @@ function SafeAssets({
           className="is-flex is-justify-content-center is-align-items-center is-flex-direction-column"
         >
           <h2 className="is-size-4">You don't have any NFTs added</h2>
-
-          <div className="is-flex border-light rounded-sm p-4 mt-4 pointer">
-            <p
-              className="has-text-grey"
-              onClick={() =>
-                modalContext.openModal(
-                  <AddNFT
-                    web3={web3}
-                    address={address}
-                    message={message}
-                    keyId={keyIds}
-                    signatures={signatures}
-                    height={height}
-                  />
-                )
-              }
-            >
-              <Plus style={{ position: "relative", top: 3 }} className="mr-2" />{" "}
-              Add NFT Collection
-            </p>
-          </div>
         </div>
       </div>
     );

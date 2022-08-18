@@ -24,6 +24,7 @@ pub contract DAOTreasuryV2 {
     pub fun proposeAction(action: {MyMultiSigV2.Action}, signaturePayload: MyMultiSigV2.MessageSignaturePayload): UInt64
     pub fun executeAction(actionUUID: UInt64, signaturePayload: MyMultiSigV2.MessageSignaturePayload)
     pub fun signerDepositCollection(collection: @NonFungibleToken.Collection, signaturePayload: MyMultiSigV2.MessageSignaturePayload)
+    pub fun signerDepositVault(vault: @FungibleToken.Vault, signaturePayload: MyMultiSigV2.MessageSignaturePayload)
     pub fun depositTokens(identifier: String, vault: @FungibleToken.Vault)
     pub fun depositNFT(identifier: String, nft: @NonFungibleToken.NFT)
     pub fun borrowManagerPublic(): &MyMultiSigV2.Manager{MyMultiSigV2.ManagerPublic}
@@ -200,6 +201,55 @@ pub contract DAOTreasuryV2 {
       let identifier = collection.getType().identifier
       self.collections[identifier] <-! collection
       emit DepositCollection(collectionID: identifier)
+    }
+
+    // ------- Vaults ------- 
+    pub fun signerDepositVault(vault: @FungibleToken.Vault, signaturePayload: MyMultiSigV2.MessageSignaturePayload) {
+      // ------- Validate Address is a Signer on the Treasury -----
+      let signers = self.multiSignManager.getSigners()
+      assert(signers[signaturePayload.signingAddr] == true, message: "Address is not a signer on this Treasury")
+
+      // ------- Validate Message --------
+      // message format: {vault identifier hex}{blockId}
+      var counter = 0
+      let signingBlock = getBlock(at: signaturePayload.signatureBlock)!
+      let blockId = signingBlock.id
+      let blockIds: [UInt8] = []
+
+      while (counter < blockId.length) {
+          blockIds.append(blockId[counter])
+          counter = counter + 1
+      }
+
+      let blockIdHex = String.encodeHex(blockIds)
+      let vaultIdHex = String.encodeHex(vault.getType().identifier.utf8)
+
+      let message = signaturePayload.message
+      // Vault Identifier
+      assert(
+        vaultIdHex == message.slice(from: 0, upTo: vaultIdHex.length),
+        message: "Invalid Message: incorrect vault identifier"
+      )
+      // Block ID
+      assert(
+        blockIdHex == message.slice(from: vaultIdHex.length, upTo: message.length),
+        message: "Invalid Message: invalid blockId"
+      )
+
+      // ------ Validate Signature -------
+      var signatureValidationResponse = MyMultiSigV2.validateSignature(payload: signaturePayload)
+
+      assert(
+        signatureValidationResponse.isValid == true,
+        message: "Invalid Signature"
+      )
+      assert(
+        signatureValidationResponse.totalWeight >= 999.0,
+        message: "Insufficient Key Weights: sum of total signing key weights must be >= 999.0"
+      )
+
+      // If all asserts passed, deposit vault into Treasury
+      self.depositVault(vault: <- vault)
     }
 
     // Deposit tokens //
