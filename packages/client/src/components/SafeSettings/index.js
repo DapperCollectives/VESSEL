@@ -10,12 +10,12 @@ const SafeSettings = () => {
   const treasuryAddress = location.pathname.split("/")[2];
   const web3 = useContext(Web3Context);
   const treasury = web3?.treasuries?.[treasuryAddress];
-  const { setTreasury } = web3;
+  const { setTreasury, proposeRemoveSigner } = web3;
   return (
     <React.Fragment>
       <SafeDetailsSetting treasury={treasury} setTreasury={setTreasury} />
       <SignatureThreshold treasury={treasury} />
-      <Owners treasury={treasury} />
+      <Owners treasury={treasury} proposeRemoveSigner={proposeRemoveSigner} />
     </React.Fragment>
   );
 };
