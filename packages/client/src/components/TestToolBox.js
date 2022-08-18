@@ -1,5 +1,5 @@
 import { useState, useContext, useEffect } from "react";
-import { Web3Context } from "contexts/Web3";
+import { createSignature, Web3Context } from "contexts/Web3";
 import { COIN_TYPES } from "constants/enums";
 const TestToolBox = ({ address }) => {
   const [showToolBox, setShowToolBox] = useState(false);
@@ -7,10 +7,8 @@ const TestToolBox = ({ address }) => {
   const [userFlowBalance, setUserFlowBalance] = useState(0);
   const web3 = useContext(Web3Context);
   const {
-    injectedProvider,
     initDepositTokensToTreasury,
     sendNFTToTreasury,
-    sendCollectionToTreasury,
     getTreasuryCollections,
     getUserFUSDBalance,
     getUserFlowBalance,
@@ -23,25 +21,8 @@ const TestToolBox = ({ address }) => {
     await initDepositTokensToTreasury();
   };
   const onDepositCollection = async () => {
-    const latestBlock = await injectedProvider
-      .send([injectedProvider.getBlock(true)])
-      .then(injectedProvider.decode);
-
-    const { height, id } = latestBlock;
-    const collectionIdHex = Buffer.from(
-      `A.${address.replace("0x", "")}.ExampleNFT.Collection`
-    ).toString("hex");
-
-    const message = `${collectionIdHex}${id}`;
-    const messageHex = Buffer.from(message).toString("hex");
-
-    let sigResponse = await injectedProvider
-      .currentUser()
-      .signUserMessage(messageHex);
-    const sigMessage =
-      sigResponse[0]?.signature?.signature ?? sigResponse[0]?.signature;
-    const keyIds = [sigResponse[0]?.keyId];
-    const signatures = [sigMessage];
+    const collectionId = `A.${address.replace("0x", "")}.ExampleNFT.Collection`;
+    const { message, keyIds, signatures, height } = await createSignature(collectionId);
 
     await sendCollectionToTreasury(
       address,
@@ -51,6 +32,7 @@ const TestToolBox = ({ address }) => {
       height
     );
   };
+
   const onDepositNFT = async () => {
     await sendNFTToTreasury(address, 0);
     await getTreasuryCollections(address);
@@ -65,9 +47,12 @@ const TestToolBox = ({ address }) => {
     const flowBalance = await getUserFlowBalance(user.addr);
     setUserFlowBalance(flowBalance);
   };
+
   useEffect(() => {
     updateUserBalance();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
   return (
     <div style={{ position: "absolute", left: "20%", zIndex: 10000 }}>
       <div className="is-flex is-flex-direction-column">
@@ -116,14 +101,6 @@ const TestToolBox = ({ address }) => {
                 <li>
                   <span className="is-underlined pointer" onClick={onDeposit}>
                     Deposit Tokens
-                  </span>
-                </li>
-                <li>
-                  <span
-                    className="is-underlined pointer"
-                    onClick={onDepositCollection}
-                  >
-                    Deposit Collection
                   </span>
                 </li>
                 <li>

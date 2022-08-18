@@ -2,8 +2,10 @@ import React, { useMemo, useState } from "react";
 import { useModalContext } from "../contexts";
 import { useClipboard, useAddressValidation } from "../hooks";
 import { useHistory } from "react-router-dom";
+import Dropdown from "components/Dropdown";
 import ProgressBar from "./ProgressBar";
 import { Person, Minus, Plus, Check } from "./Svg";
+import { COIN_TYPE_TO_META } from "constants/maps";
 import {
   getProgressPercentageForSignersAmount,
   isAddr,
@@ -267,8 +269,8 @@ const AddSafeOwner = ({ web3, onCancel, onNext, safeOwners }) => {
     setAddress(newAddress);
     setAddressValid(
       isAddr(newAddress) &&
-        (await isAddressValid(newAddress)) &&
-        !isAddressExisting(safeOwners, newAddress)
+      (await isAddressValid(newAddress)) &&
+      !isAddressExisting(safeOwners, newAddress)
     );
   };
 
@@ -330,6 +332,134 @@ const AddSafeOwner = ({ web3, onCancel, onNext, safeOwners }) => {
                 <Check />
               </div>
             )}
+          </div>
+        </div>
+        <div className="is-flex is-align-items-center mt-6">
+          <button className="button flex-1 p-4 mr-2" onClick={onCancel}>
+            Cancel
+          </button>
+          <button
+            disabled={!isFormValid}
+            className={nextButtonClasses.join(" ")}
+            onClick={onNextClick}
+          >
+            Next
+          </button>
+        </div>
+      </div>
+    </>
+  );
+};
+
+const AddVault = ({ onCancel, onNext }) => {
+  const onNextClick = () => {
+    onNext({
+      coinType,
+    });
+  };
+
+  const nextButtonClasses = [
+    "button flex-1 p-4",
+    "is-link"
+  ];
+
+  const coinTypes = Object.entries(COIN_TYPE_TO_META).map((type) => ({
+    itemValue: type[0],
+    displayText: type[1].displayName,
+  }));
+
+  const [coinType, setCoinType] = useState(coinTypes[0].itemValue);
+
+  return (
+    <>
+      <div className="p-5">
+        <h2 className="is-size-4 has-text-black">Add Vault</h2>
+      </div>
+      <div className="border-light-top p-5 has-text-grey">
+        <div className="flex-1 is-flex is-flex-direction-column">
+          <label className="has-text-grey mb-2">
+            Contract Name
+          </label>
+          <Dropdown
+            value={coinType}
+            values={coinTypes}
+            setValue={setCoinType}
+            style={{ height: "45px" }}
+          />
+        </div>
+        <div className="is-flex is-align-items-center mt-6">
+          <button className="button flex-1 p-4 mr-2" onClick={onCancel}>
+            Cancel
+          </button>
+          <button
+            className={nextButtonClasses.join(" ")}
+            onClick={onNextClick}
+          >
+            Next
+          </button>
+        </div>
+      </div>
+    </>
+  );
+};
+
+const AddCollection = ({ web3, onCancel, onNext }) => {
+  const { isAddressValid } = useAddressValidation(web3.injectedProvider);
+  const [contractName, setContractName] = useState("");
+  const [address, setAddress] = useState("");
+  const [addressValid, setAddressValid] = useState(false);
+  const isFormValid = contractName?.trim().length > 0 && addressValid;
+
+  const onAddressChange = async (newAddress) => {
+    setAddress(newAddress);
+    setAddressValid(isAddr(newAddress) && (await isAddressValid(newAddress)));
+  };
+
+  const onNextClick = () => {
+    onNext({
+      contractName,
+      address,
+    });
+  };
+
+  const nextButtonClasses = [
+    "button flex-1 p-4",
+    isFormValid ? "is-link" : "is-light is-disabled",
+  ];
+
+  return (
+    <>
+      <div className="p-5">
+        <h2 className="is-size-4 has-text-black">Add Collection</h2>
+      </div>
+      <div className="border-light-top p-5 has-text-grey">
+        <div className="flex-1 is-flex is-flex-direction-column">
+          <label className="has-text-grey mb-2">
+            Contract Name
+          </label>
+          <input
+            className="p-4 rounded-sm border-light"
+            type="text"
+            value={contractName}
+            onChange={(e) => setContractName(e.target.value)}
+          />
+          <div className="flex-1 is-flex is-flex-direction-column mt-4">
+            <label className="has-text-grey mb-2">
+              Contract Address
+            </label>
+            <div style={{ position: "relative" }}>
+              <input
+                className="p-4 rounded-sm column is-full border-light"
+                type="text"
+                value={address}
+                onChange={(e) => onAddressChange(e.target.value)}
+              />
+              {addressValid && (
+                <div style={{ position: "absolute", right: 17, top: 14 }}>
+                  <Check />
+                </div>
+              )}
+            </div>
           </div>
         </div>
         <div className="is-flex is-align-items-center mt-6">
@@ -448,6 +578,8 @@ function SafeSettings({ address, web3, name, threshold, safeOwners }) {
     proposeAddSigner,
     updateThreshold,
     proposeRemoveSigner,
+    proposeAddVault,
+    proposeAddCollection
   } = web3;
   const verifiedSafeOwners = safeOwners.filter((so) => so.verified);
   const canRemoveSigner = verifiedSafeOwners.length > threshold;
@@ -479,6 +611,20 @@ function SafeSettings({ address, web3, name, threshold, safeOwners }) {
     if (ownerToBeRemoved) {
       await proposeRemoveSigner(formatAddress(ownerToBeRemoved.address));
     }
+
+    modalContext.closeModal();
+    history.push(`/safe/${address}`);
+  };
+
+  const onAddVaultSubmit = async (form) => {
+    await proposeAddVault(form.coinType);
+
+    modalContext.closeModal();
+    history.push(`/safe/${address}`);
+  };
+
+  const onAddCollectionSubmit = async (form) => {
+    await proposeAddCollection(form.contractName, formatAddress(form.address));
 
     modalContext.closeModal();
     history.push(`/safe/${address}`);
@@ -542,6 +688,25 @@ function SafeSettings({ address, web3, name, threshold, safeOwners }) {
         onCancel={() => modalContext.closeModal()}
         onNext={openEditSignatureThresholdModal}
         safeOwners={safeOwners}
+      />
+    );
+  };
+
+  const openAddVaultModal = () => {
+    modalContext.openModal(
+      <AddVault
+        onCancel={() => modalContext.closeModal()}
+        onNext={onAddVaultSubmit}
+      />
+    );
+  };
+
+  const openAddCollectionModal = () => {
+    modalContext.openModal(
+      <AddCollection
+        web3={web3}
+        onCancel={() => modalContext.closeModal()}
+        onNext={onAddCollectionSubmit}
       />
     );
   };
@@ -644,6 +809,23 @@ function SafeSettings({ address, web3, name, threshold, safeOwners }) {
       >
         Add new owner
       </button>
+      <div className="p-0 mt-5">
+        <h4 className="is-size-5">Assets</h4>
+        <button
+          className="button mt-4 is-full p-4 border-light is-align-self-flex-end"
+          onClick={openAddVaultModal}
+        >
+          Add Vault
+          <Plus style={{ position: "relative", left: 5 }} />
+        </button>
+        <button
+          className="button mt-4 is-full p-4 border-light is-align-self-flex-end"
+          onClick={openAddCollectionModal}
+        >
+          Add Collection
+          <Plus style={{ position: "relative", left: 5 }} />
+        </button>
+      </div>
     </>
   );
 }
