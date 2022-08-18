@@ -4,7 +4,7 @@ import NonFungibleToken from "../contracts/core/NonFungibleToken.cdc"
 import MyMultiSigV2 from "../contracts/MyMultiSig.cdc"
 import ExampleNFT from "../contracts/core/ExampleNFT.cdc"
 
-transaction(treasuryAddr: Address, recipientAddr: Address, id: UInt64, message: String, keyIds: [UInt64], signatures: [String], signatureBlock: UInt64) {
+transaction(treasuryAddr: Address, recipientAddr: Address, id: UInt64, messageHex: String, message: String, keyIds: [UInt64], signatures: [String], signatureBlock: UInt64) {
 
   let treasury: &DAOTreasuryV2.Treasury{DAOTreasuryV2.TreasuryPublic}
   let recipientCollection: Capability<&{NonFungibleToken.CollectionPublic}>
@@ -25,7 +25,7 @@ transaction(treasuryAddr: Address, recipientAddr: Address, id: UInt64, message: 
     }
 
     self.messageSignaturePayload = MyMultiSigV2.MessageSignaturePayload(
-        signingAddr: signer.address, message: message, keyIds: _keyIds, signatures: signatures, signatureBlock: signatureBlock
+        signingAddr: signer.address, message: message, messageHex: messageHex, keyIds: _keyIds, signatures: signatures, signatureBlock: signatureBlock
     )
   }
   execute {
