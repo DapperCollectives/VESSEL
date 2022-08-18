@@ -851,3 +851,32 @@ func TestDestroyAction(t *testing.T) {
 		otu.ExecuteActionFailed("treasuryOwner", actionUUID, "This action does not exist.")
 	})
 }
+
+func TestDestroyCollectionAndVault(t *testing.T) {
+	otu := NewOverflowTest(t)
+
+	otu.CreateNFTCollection("signer1")
+	otu.SetupTreasury("treasuryOwner", Signers, DefaultThreshold)
+	otu.SendCollectionToTreasury("signer1", "treasuryOwner")
+
+	t.Run("Signer should not be able to remove non-empty vault", func(t *testing.T) {
+		otu.SetupFUSD("account")
+		otu.MintFUSD("account", TransferAmount)
+		otu.SendFUSDToTreasury("account", "treasuryOwner", TransferAmount)
+		otu.RemoveVaultFromTreasuryFailure("signer1", "treasuryOwner", FUSDTokenVaultID)
+	})
+	t.Run("Signer should be able to remove empty vault", func(t *testing.T) {
+		otu.RemoveVaultFromTreasury("signer1", "treasuryOwner", "A.0ae53cb6e3f42a79.FlowToken.Vault")
+	})
+	t.Run("Signer should be able to remove empty collection", func(t *testing.T) {
+		otu.RemoveCollectionFromTreasury("signer1", "treasuryOwner", "A.f8d6e0586b0a20c7.ExampleNFT.Collection")
+	})
+	t.Run("Signer should not be able to remove non-empty collection", func(t *testing.T) {
+		otu.CreateNFTCollection("signer1")
+		otu.MintNFT("signer1")
+		otu.SendCollectionToTreasury("signer1", "treasuryOwner")
+		otu.SendNFTToTreasury("signer1", "treasuryOwner", 0)
+		otu.RemoveCollectionFromTreasuryFailure("signer1", "treasuryOwner", "A.0ae53cb6e3f42a79.FlowToken.Vault")
+	})
+
+}

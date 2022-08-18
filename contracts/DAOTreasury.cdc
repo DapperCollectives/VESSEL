@@ -17,6 +17,8 @@ pub contract DAOTreasuryV2 {
   pub event DepositNFT(collectionID: String, nftID: UInt64)
   pub event WithdrawTokens(vaultID: String, amount: UFix64)
   pub event WithdrawNFT(collectionID: String, nftID: UInt64)
+  pub event DestroyVault(vaultID: String)
+  pub event DestroyCollection(collectionID: String)
 
 
   // Interfaces + Resources
@@ -24,6 +26,8 @@ pub contract DAOTreasuryV2 {
     pub fun proposeAction(action: {MyMultiSigV2.Action}, signaturePayload: MyMultiSigV2.MessageSignaturePayload): UInt64
     pub fun executeAction(actionUUID: UInt64, signaturePayload: MyMultiSigV2.MessageSignaturePayload)
     pub fun signerDepositCollection(collection: @NonFungibleToken.Collection, signaturePayload: MyMultiSigV2.MessageSignaturePayload)
+    pub fun signerRemoveCollection(identifier: String, signaturePayload: MyMultiSigV2.MessageSignaturePayload)
+    pub fun signerRemoveVault(identifier: String, signaturePayload: MyMultiSigV2.MessageSignaturePayload)
     pub fun depositTokens(identifier: String, vault: @FungibleToken.Vault)
     pub fun depositNFT(identifier: String, nft: @NonFungibleToken.NFT)
     pub fun borrowManagerPublic(): &MyMultiSigV2.Manager{MyMultiSigV2.ManagerPublic}
@@ -117,6 +121,61 @@ pub contract DAOTreasuryV2 {
 
     // ------- Vaults ------- 
 
+    pub fun signerRemoveVault(identifier: String, signaturePayload: MyMultiSigV2.MessageSignaturePayload) {
+      pre {
+        self.vaults[identifier] != nil: "Vault doesn't exist in this treasury."
+        self.vaults[identifier]?.balance == 0.0: "Vault must be empty before it can be removed."
+      }
+      // ------- Validate Address is a Signer on the Treasury -----
+      let signers = self.multiSignManager.getSigners()
+      assert(signers[signaturePayload.signingAddr] == true, message: "Address is not a signer on this Treasury")
+
+      // ------- Validate Message --------
+      // message format: {collection identifier hex}{blockId}
+      var counter = 0
+      let signingBlock = getBlock(at: signaturePayload.signatureBlock)!
+      let blockId = signingBlock.id
+      let blockIds: [UInt8] = []
+
+      while (counter < blockId.length) {
+          blockIds.append(blockId[counter])
+          counter = counter + 1
+      }
+
+      let blockIdHex = String.encodeHex(blockIds)
+      let vaultIdHex = String.encodeHex(identifier.utf8)
+
+      let message = signaturePayload.message
+
+      // Vault Identifier
+      assert(
+        vaultIdHex == message.slice(from: 0, upTo: vaultIdHex.length),
+        message: "Invalid Message: incorrect collection identifier"
+      )
+      // Block ID
+      assert(
+        blockIdHex == message.slice(from: vaultIdHex.length, upTo: message.length),
+        message: "Invalid Message: invalid blockId"
+      )
+
+      // ------ Validate Signature -------
+      var signatureValidationResponse = MyMultiSigV2.validateSignature(payload: signaturePayload)
+
+      assert(
+        signatureValidationResponse.isValid == true,
+        message: "Invalid Signature"
+      )
+      assert(
+        signatureValidationResponse.totalWeight >= 999.0,
+        message: "Insufficient Key Weights: sum of total signing key weights must be >= 999.0"
+      )
+
+      // If all asserts passed, remove vault from the Treasury and destroy
+      let vault <- self.vaults.remove(key: identifier)
+      destroy vault
+      emit DestroyVault(vaultID: identifier)
+    }
+
     // Deposit a Vault //
     pub fun depositVault(vault: @FungibleToken.Vault) {
       let identifier = vault.getType().identifier
@@ -193,6 +252,61 @@ pub contract DAOTreasuryV2 {
 
       // If all asserts passed, deposit vault into Treasury
       self.depositCollection(collection: <- collection)
+    }
+
+    pub fun signerRemoveCollection(identifier: String, signaturePayload: MyMultiSigV2.MessageSignaturePayload) {
+      pre {
+        self.collections[identifier] != nil: "Collection doesn't exist in this treasury."
+        self.collections[identifier]?.getIDs()?.length == 0 : "Collection must be empty before it can be removed."
+      }
+      // ------- Validate Address is a Signer on the Treasury -----
+      let signers = self.multiSignManager.getSigners()
+      assert(signers[signaturePayload.signingAddr] == true, message: "Address is not a signer on this Treasury")
+
+      // ------- Validate Message --------
+      // message format: {collection identifier hex}{blockId}
+      var counter = 0
+      let signingBlock = getBlock(at: signaturePayload.signatureBlock)!
+      let blockId = signingBlock.id
+      let blockIds: [UInt8] = []
+
+      while (counter < blockId.length) {
+          blockIds.append(blockId[counter])
+          counter = counter + 1
+      }
+
+      let blockIdHex = String.encodeHex(blockIds)
+      let collectionIdHex = String.encodeHex(identifier.utf8)
+
+      let message = signaturePayload.message
+
+      // Collection Identifier
+      assert(
+        collectionIdHex == message.slice(from: 0, upTo: collectionIdHex.length),
+        message: "Invalid Message: incorrect collection identifier"
+      )
+      // Block ID
+      assert(
+        blockIdHex == message.slice(from: collectionIdHex.length, upTo: message.length),
+        message: "Invalid Message: invalid blockId"
+      )
+
+      // ------ Validate Signature -------
+      var signatureValidationResponse = MyMultiSigV2.validateSignature(payload: signaturePayload)
+
+      assert(
+        signatureValidationResponse.isValid == true,
+        message: "Invalid Signature"
+      )
+      assert(
+        signatureValidationResponse.totalWeight >= 999.0,
+        message: "Insufficient Key Weights: sum of total signing key weights must be >= 999.0"
+      )
+
+      // If all asserts passed, remove vault from the Treasury and destroy
+      let collection <- self.collections.remove(key: identifier)
+      destroy collection
+      emit DestroyCollection(collectionID: identifier)
     }
 
     // Deposit a Collection //
