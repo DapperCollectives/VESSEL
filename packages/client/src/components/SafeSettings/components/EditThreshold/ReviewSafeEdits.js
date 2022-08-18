@@ -1,4 +1,4 @@
-import SignatureBar from "../SignatureBar/SignatureBar";
+import SignatureBar from "../SignatureBar";
 const ReviewSafeEdits = ({
   newOwner,
   newThreshold,

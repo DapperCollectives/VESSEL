@@ -33,7 +33,6 @@ const reducer = (state, action) => {
       };
     }
     case "SET_ACTIONS": {
-      console.log("dispatching set actions", action.payload);
       return {
         ...state,
         actions: {

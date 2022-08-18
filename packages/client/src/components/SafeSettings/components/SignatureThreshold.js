@@ -1,6 +1,6 @@
 import { useModalContext } from "contexts";
-import SignatureBar from "../SignatureBar/SignatureBar";
-import EditThreshold from "../EditThreshold";
+import SignatureBar from "./SignatureBar";
+import EditThreshold from "./EditThreshold";
 
 const SignatureThreshold = ({ treasury }) => {
   const { openModal, closeModal, isOpen } = useModalContext();

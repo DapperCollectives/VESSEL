@@ -1,14 +1,11 @@
-import React, { useContext } from "react";
+import React from "react";
 import { useModalContext } from "contexts";
 import { useClipboard } from "hooks";
 import EditSafeName from "./EditSafeName";
-import { Web3Context } from "contexts/Web3";
-const SafeDetailsSetting = ({ treasury }) => {
-  const web3 = useContext(Web3Context);
+const SafeDetailsSetting = ({ treasury, setTreasury }) => {
   const modalContext = useModalContext();
   const { name, address } = treasury;
   const safeAddressClipboard = useClipboard();
-  const { setTreasury } = web3;
   const openEditNameModal = () => {
     modalContext.openModal(
       <EditSafeName

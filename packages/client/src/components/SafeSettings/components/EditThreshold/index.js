@@ -7,7 +7,6 @@ import { Web3Context } from "contexts/Web3";
 import ReviewSafeEdits from "./ReviewSafeEdits";
 import EditThresholdForm from "./EditThresholdForm";
 const EditThreshold = ({ treasury, newOwner }) => {
-  const web3 = useContext(Web3Context);
   const history = useHistory();
   const { closeModal } = useModalContext();
   const [currStep, setCurrStep] = useState(0);
