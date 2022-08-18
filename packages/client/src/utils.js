@@ -47,7 +47,6 @@ export const formatAddress = (addr) => {
   return addr.startsWith("0x") ? addr : `0x${addr}`;
 };
 export const formatActionString = (str) => {
-  const isFungibleTransfer = str.includes("FungibleToken.Receiver");
   let newStr = "";
   const words = str.split(" ");
   words.forEach((word, idx) => {

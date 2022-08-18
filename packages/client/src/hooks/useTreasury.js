@@ -75,10 +75,6 @@ const doProposeTransfer = async (
   coinType
 ) => {
   const uFixAmount = String(parseFloat(amount).toFixed(8));
-  const tokenAddress =
-    process.env.REACT_APP_FLOW_ENV === "emulator"
-      ? "ee82856bf20e2aa6"
-      : "9a0766d93b6608b7";
   const identifiers = await doQuery(GET_TREASURY_IDENTIFIERS, treasuryAddr);
   const recepientVault = getVaultId(identifiers, coinType);
   const intent = `Transfer ${uFixAmount} ${recepientVault} tokens from the treasury to ${recipientAddr}`;
@@ -257,6 +253,7 @@ export default function useTreasury(treasuryAddr) {
 
   const refreshTreasury = async () => {
     const signers = await getSigners(treasuryAddr);
+
     if (!signers) {
       dispatch({ type: "SET_LOADING", payload: false });
       return;
@@ -300,7 +297,6 @@ export default function useTreasury(treasuryAddr) {
         verifiedSigners,
       });
     }
-
     dispatch({
       type: "SET_ACTIONS",
       payload: {

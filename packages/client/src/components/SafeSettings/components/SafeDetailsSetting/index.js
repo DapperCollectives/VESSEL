@@ -1,12 +1,14 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useModalContext } from "contexts";
-import { useClipboard, useTreasury } from "hooks";
+import { useClipboard } from "hooks";
 import EditSafeName from "./EditSafeName";
+import { Web3Context } from "contexts/Web3";
 const SafeDetailsSetting = ({ treasury }) => {
+  const web3 = useContext(Web3Context);
   const modalContext = useModalContext();
   const { name, address } = treasury;
   const safeAddressClipboard = useClipboard();
-  const { setTreasury } = useTreasury(address);
+  const { setTreasury } = web3;
   const openEditNameModal = () => {
     modalContext.openModal(
       <EditSafeName
@@ -17,8 +19,8 @@ const SafeDetailsSetting = ({ treasury }) => {
     );
   };
   const onEditNameSubmit = (newName) => {
-    modalContext.closeModal();
     setTreasury(address, { name: newName });
+    modalContext.closeModal();
   };
   return (
     <div>

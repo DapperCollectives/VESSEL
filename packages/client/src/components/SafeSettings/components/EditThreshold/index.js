@@ -1,17 +1,19 @@
+import { useContext } from "react";
 import { useHistory } from "react-router-dom";
 import { formatAddress } from "utils";
-import { useTreasury } from "hooks";
 import { useState } from "react";
 import { useModalContext } from "contexts";
+import { Web3Context } from "contexts/Web3";
 import ReviewSafeEdits from "./ReviewSafeEdits";
 import EditThresholdForm from "./EditThresholdForm";
 const EditThreshold = ({ treasury, newOwner }) => {
+  const web3 = useContext(Web3Context);
   const history = useHistory();
   const { closeModal } = useModalContext();
   const [currStep, setCurrStep] = useState(0);
   const { safeOwners, threshold, address } = treasury;
   const { proposeAddSigner, updateThreshold, setTreasury } =
-    useTreasury(address);
+    useContext(Web3Context);
   const [newThreshold, setNewThreshold] = useState(Number(threshold));
   const verifiedSafeOwners = safeOwners.filter((o) => o.verified);
   const allSafeOwners = newOwner
@@ -25,20 +27,15 @@ const EditThreshold = ({ treasury, newOwner }) => {
   };
 
   const onSubmitClick = async () => {
-    const thresholdToPersist = newThreshold ?? threshold;
-
     if (newOwner) {
       await proposeAddSigner(formatAddress(newOwner.address));
+      setTreasury(address, {
+        safeOwners: [...safeOwners, { ...newOwner, verified: false }],
+      });
     }
-
-    if (thresholdToPersist !== threshold) {
-      await updateThreshold(thresholdToPersist);
+    if (Number(newThreshold) !== Number(threshold)) {
+      await updateThreshold(newThreshold);
     }
-    setTreasury(address, {
-      threshold: thresholdToPersist,
-      safeOwners: [...safeOwners, { ...newOwner, verified: false }],
-    });
-
     closeModal();
     history.push(`/safe/${address}`);
   };

@@ -54,11 +54,11 @@ const ReceiveTokens = ({ name, address }) => {
 };
 
 function Safe({ web3 }) {
+  console.log("rendering safe", web3.actions);
   const params = useParams();
   const { address, tab } = params;
   const modalContext = useModalContext();
   const clipboard = useClipboard();
-
   const safeData = web3?.treasuries?.[address];
   const actions = web3?.actions?.[address];
   const allBalance = web3?.balances?.[address];

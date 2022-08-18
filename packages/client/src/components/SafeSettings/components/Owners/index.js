@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useHistory } from "react-router-dom";
 import { useModalContext } from "contexts";
-import { useClipboard, useTreasury } from "hooks";
+import { useClipboard } from "hooks";
+import { Web3Context } from "contexts/Web3";
 import EditThreshold from "../EditThreshold";
 import RemoveSafeOwner from "./RemoveSafeOwner";
 import AddSafeOwner from "./AddSafeOwner";
@@ -10,10 +11,11 @@ import { formatAddress } from "utils";
 const Owners = ({ treasury }) => {
   const modalContext = useModalContext();
   const history = useHistory();
+  const web3 = useContext(Web3Context);
   const { safeOwners, address } = treasury;
   const verifiedSafeOwners = safeOwners.filter((o) => o.verified);
   const ownersAddressClipboard = useClipboard();
-  const { proposeRemoveSigner } = useTreasury(address);
+  const { proposeRemoveSigner } = web3;
 
   const onRemoveSafeOwnerSubmit = async (ownerToBeRemoved) => {
     if (ownerToBeRemoved) {
