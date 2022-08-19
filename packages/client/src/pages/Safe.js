@@ -1,7 +1,7 @@
 import React from "react";
 import { useParams, NavLink } from "react-router-dom";
 import QRCode from "react-qr-code";
-import { shortenAddr, showError } from "../utils";
+import { shortenAddr } from "../utils";
 import {
   SafeHome,
   SafeTransactions,
@@ -13,7 +13,7 @@ import {
 } from "../components";
 import { ArrowDown, ArrowUp } from "../components/Svg";
 import { Web3Consumer, useModalContext } from "../contexts";
-import { useClipboard } from "../hooks";
+import { useClipboard, useErrorMessage } from "../hooks";
 
 const ReceiveTokens = ({ name, address }) => {
   const modalContext = useModalContext();
@@ -58,6 +58,8 @@ function Safe({ web3 }) {
   const { address, tab } = params;
   const modalContext = useModalContext();
   const clipboard = useClipboard();
+
+  const { showErrorModal } = useErrorMessage();
 
   const safeData = web3?.treasuries?.[address];
   const actions = web3?.actions?.[address];
@@ -125,11 +127,11 @@ function Safe({ web3 }) {
       keyIds,
       signatures,
       height
-    ).catch(error => showError(modalContext, error));
+    ).catch(error => showErrorModal(error));
   };
 
   const onConfirmAction = async ({ uuid }) => {
-    await executeAction(uuid).catch(error => showError(modalContext, error));
+    await executeAction(uuid).catch(error => showErrorModal(error));
   };
 
   const tabMap = {

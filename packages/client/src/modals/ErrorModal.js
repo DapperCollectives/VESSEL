@@ -1,12 +1,7 @@
 import React from "react";
-
-import { useModalContext } from "../contexts";
 import { Warning } from "../svg/Warning";
 
-
-const ErrorModal = ({ error }) => {
-    const modalContext = useModalContext();
-
+const ErrorModal = ({ error, onClose }) => {
     return (
         <div className="p-5 has-text-black has-text-left">
             <div className="pl-5 columns is-vcentered is-multiline is-mobile border-light-bottom">
@@ -20,8 +15,8 @@ const ErrorModal = ({ error }) => {
             </div>
             <div className="is-flex is-align-items-center mt-5">
                 <button
-                    className="button flex-1 p-4 mr-2"
-                    onClick={() => modalContext.closeModal()}
+                    className="button flex-1 p-4 mr-2 rounded-sm"
+                    onClick={onClose}
                 >
                     Close
                 </button>
