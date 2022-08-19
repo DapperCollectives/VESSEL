@@ -1,5 +1,4 @@
-import { COIN_TYPE_TO_META } from "constants/maps";
-import { isNaN } from "lodash";
+import { COIN_TYPE_TO_META, CONTRACT_NAME_TO_COIN_TYPE } from "constants/maps";
 
 export const checkResponse = async (response) => {
   if (!response.ok) {
@@ -46,33 +45,26 @@ export const isAddr = (addr) => {
 export const formatAddress = (addr) => {
   return addr.startsWith("0x") ? addr : `0x${addr}`;
 };
+
 export const formatActionString = (str) => {
-  const isFungibleTransfer = str.includes("FungibleToken.Receiver");
-  let newStr = "";
-  const words = str.split(" ");
-  words.forEach((word, idx) => {
-    const noLength = !word?.trim().length;
-    //remove class names like Capability<&AnyResource{A.0x.FungibleToken.Receiver}>
-    const isClass = word.startsWith("Capability<");
-    if (noLength || isClass) {
-      return;
-    }
-    const float = parseFloat(word);
-    if (isNaN(float) || word.startsWith("0x")) {
-      newStr += word;
-    } else {
-      newStr += float;
-    }
-    // add space if not done
-    if (idx < words.length - 1) {
-      newStr += " ";
-    }
-  });
-
-  // remove "from the treasury" as thats implied
-  newStr = newStr.replace("from the treasury ", "");
-
-  return newStr;
+  const vaultRegex = /A\..*\.Vault/g;
+  const collectionRegex = /A\..*\.Collection/g;
+  const floatRegex = /[0-9]*[.][0-9]+/;
+  const isTokenTransfer = vaultRegex.test(str);
+  const isNFTTransfer = collectionRegex.test(str);
+  let contractName;
+  let result;
+  if (isTokenTransfer) {
+    contractName = str.match(vaultRegex)[0].split(".")[2];
+    const tokenName = CONTRACT_NAME_TO_COIN_TYPE[contractName];
+    result = str.replace(floatRegex, parseFloat(str.match(floatRegex)[0]));
+    return result.replace(vaultRegex, tokenName);
+  }
+  if (isNFTTransfer) {
+    contractName = str.match(collectionRegex)[0].split(".")[2];
+    return str.replace(collectionRegex, contractName);
+  }
+  return str;
 };
 
 export const getProgressPercentageForSignersAmount = (signersAmount) => {
