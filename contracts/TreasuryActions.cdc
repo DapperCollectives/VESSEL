@@ -181,7 +181,6 @@ pub contract TreasuryActionsV2 {
                         .concat(" NFT from the treasury to ")
                         .concat(recipientAddr.toString())
 
-                        log(self.intent)
       self.proposer = proposer
       self.recipientCollection = recipientCollection
       self.withdrawID = nftID
