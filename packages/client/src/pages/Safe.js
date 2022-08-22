@@ -13,7 +13,7 @@ import {
 } from "../components";
 import { ArrowDown, ArrowUp } from "../components/Svg";
 import { Web3Consumer, useModalContext } from "../contexts";
-import { useClipboard } from "../hooks";
+import { useClipboard, useErrorMessage } from "../hooks";
 
 const ReceiveTokens = ({ name, address }) => {
   const modalContext = useModalContext();
@@ -58,6 +58,9 @@ function Safe({ web3 }) {
   const { address, tab } = params;
   const modalContext = useModalContext();
   const clipboard = useClipboard();
+
+  const { showErrorModal } = useErrorMessage();
+
   const safeData = web3?.treasuries?.[address];
   const actions = web3?.actions?.[address];
   const allBalance = web3?.balances?.[address];
@@ -114,21 +117,28 @@ function Safe({ web3 }) {
     let sigResponse = await injectedProvider
       .currentUser()
       .signUserMessage(messageHex);
-    const sigMessage =
-      sigResponse[0]?.signature?.signature ?? sigResponse[0]?.signature;
-    const keyIds = [sigResponse[0]?.keyId];
-    const signatures = [sigMessage];
+
+    let keyId = sigResponse[0].keyId;
+    let signature = sigResponse[0].signature;
+    // Temporary workaround for Blocto to send the correct key for signing the messages
+    if (sigResponse.length > 1 && sigResponse[1].keyId === 0) {
+      keyId = sigResponse[1].keyId;
+      signature = sigResponse[1].signature;
+    }
+    const keyIds = [keyId];
+    const signatures = [signature];
+
     await signerApprove(
       parseInt(uuid, 10),
       message,
       keyIds,
       signatures,
       height
-    );
+    ).catch((error) => showErrorModal(error));
   };
 
   const onConfirmAction = async ({ uuid }) => {
-    await executeAction(uuid);
+    await executeAction(uuid).catch((error) => showErrorModal(error));
   };
 
   const tabMap = {
