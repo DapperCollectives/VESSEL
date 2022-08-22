@@ -82,6 +82,22 @@
         "emulator": "0xf8d6e0586b0a20c7",
         "testnet": "0xa983fecbed621163"
       }
+    },
+    "BloctoToken": {
+      "source": "./contracts/core/BloctoToken.cdc",
+      "aliases": {
+        "testnet": "0x6e0797ac987005f5"
+      }
+    },
+    "StarlyToken": {
+      "aliases": {
+        "testnet": "0xf63219072aaddd50"
+      }
+    },
+    "REVV": {
+      "aliases": {
+        "testnet": "0x14ca72fa4d45d2c3"
+      }
     }
   },
   "networks": {
@@ -197,6 +213,7 @@
     "emulator": {
       "emulator-account": [
         "FUSD",
+        "BloctoToken",
         "NonFungibleToken",
         "MetadataViews",
         "ExampleNFT",
@@ -226,7 +243,6 @@
       "emulator-signer18": [],
       "emulator-signer19": [],
       "emulator-signer20": [],
-
       "emulator-treasuryOwner": []
     },
     "testnet": {
