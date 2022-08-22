@@ -98,7 +98,7 @@ pub contract DAOTreasuryV2 {
       // ------ Validate Signature -------
       let signatureValidationResponse = FCLCrypto.verifyUserSignatures(
         address: signaturePayload.signingAddr,
-        message: signaturePayload.messageHex,
+        message: String.encodeHex(signaturePayload.message.utf8),
         keyIndices: signaturePayload.keyIds,
         signatures: signaturePayload.signatures
       )
@@ -185,7 +185,7 @@ pub contract DAOTreasuryV2 {
       // ------ Validate Signature -------
       let signatureValidationResponse = FCLCrypto.verifyUserSignatures(
         address: signaturePayload.signingAddr,
-        message: signaturePayload.messageHex,
+        message: String.encodeHex(signaturePayload.message.utf8),
         keyIndices: signaturePayload.keyIds,
         signatures: signaturePayload.signatures
       )
@@ -242,7 +242,7 @@ pub contract DAOTreasuryV2 {
       // ------ Validate Signature -------
       let signatureValidationResponse = FCLCrypto.verifyUserSignatures(
         address: signaturePayload.signingAddr,
-        message: signaturePayload.messageHex,
+        message: String.encodeHex(signaturePayload.message.utf8),
         keyIndices: signaturePayload.keyIds,
         signatures: signaturePayload.signatures
       )

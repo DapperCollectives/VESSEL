@@ -40,7 +40,6 @@ pub contract MyMultiSigV2 {
     pub struct MessageSignaturePayload {
         pub let signingAddr: Address
         pub let message: String
-        pub let messageHex: String
         pub let keyIds: [Int]
         pub let signatures: [String]
         pub let signatureBlock: UInt64
@@ -48,7 +47,6 @@ pub contract MyMultiSigV2 {
         init(signingAddr: Address, message: String, keyIds: [Int], signatures: [String], signatureBlock: UInt64) {
             self.signingAddr = signingAddr
             self.message = message
-            self.messageHex = String.encodeHex(message.utf8)
             self.keyIds = keyIds
             self.signatures = signatures
             self.signatureBlock = signatureBlock
@@ -92,7 +90,7 @@ pub contract MyMultiSigV2 {
             // Validate Signature
             let signatureValidationResponse = FCLCrypto.verifyUserSignatures(
                 address: messageSignaturePayload.signingAddr,
-                message: messageSignaturePayload.messageHex,
+                message: String.encodeHex(messageSignaturePayload.message.utf8),
                 keyIndices: messageSignaturePayload.keyIds,
                 signatures: messageSignaturePayload.signatures
             )
@@ -122,7 +120,7 @@ pub contract MyMultiSigV2 {
             // Validate Signature
             let signatureValidationResponse = FCLCrypto.verifyUserSignatures(
                 address: messageSignaturePayload.signingAddr,
-                message: messageSignaturePayload.messageHex,
+                message: String.encodeHex(messageSignaturePayload.message.utf8),
                 keyIndices: messageSignaturePayload.keyIds,
                 signatures: messageSignaturePayload.signatures
             )            
