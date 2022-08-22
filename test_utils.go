@@ -315,7 +315,6 @@ func (otu *OverflowTestUtils) ProposeFungibleTokenTransferToTreasuryActionFail(t
 func (otu *OverflowTestUtils) ProposeNonFungibleTokenTransferAction(treasuryAcct string, proposingAcct, recipientAcct string, id uint64) *OverflowTestUtils {
 	recipient, _ := otu.O.State.Accounts().ByName(fmt.Sprintf("emulator-%s", recipientAcct))
 	src := []byte(fmt.Sprintf("Transfer A.f8d6e0586b0a20c7.ExampleNFT.Collection NFT from the treasury to 0x%s", recipient.Address()))
-
 	hexCollectionID := make([]byte, hex.EncodedLen(len(src)))
 	hex.Encode(hexCollectionID, src)
 
@@ -581,7 +580,6 @@ func (otu *OverflowTestUtils) SignerRevokeApprovalFailed(treasuryAcct string, ac
 	// message
 	// {uuid}{hexIntent}{block.ID}
 	message := fmt.Sprintf("%s%s%s", uuid, hexIntent, latestBlock.ID)
-
 	// signature
 	signature := otu.SignMessage(signingAccount, message)
 

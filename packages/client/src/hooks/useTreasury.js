@@ -80,7 +80,6 @@ const doProposeTransfer = async (
   const identifiers = await doQuery(GET_TREASURY_IDENTIFIERS, treasuryAddr);
   const recepientVault = getVaultId(identifiers, coinType);
   const intent = `Transfer ${uFixAmount} ${recepientVault} tokens from the treasury to ${recipientAddr}`;
-
   const { message, keyIds, signatures, height } = await createSignature(intent);
 
   return await mutate({
@@ -536,7 +535,7 @@ export default function useTreasury(treasuryAddr) {
     }).catch(console.error);
     return balance;
   };
-  
+
   return {
     ...state,
     refreshTreasury,

@@ -75,6 +75,13 @@
 				"emulator": "0xf8d6e0586b0a20c7",
 				"testnet": "0xa983fecbed621163"
 			}
+		}, 
+		"FCLCrypto": {
+			"source": "./contracts/core/FCLCrypto.cdc",
+			"aliases": {
+				"testnet": "0x74daa6f9c7ef24b1",
+				"mainnet": "0xb4b82a1c9d21d284"
+			}
 		},
 		"BloctoToken": {
 			"source": "./contracts/core/BloctoToken.cdc",
@@ -213,7 +220,8 @@
 				"MyMultiSigV2",
 				"DAOTreasuryV2",
 				"TreasuryActionsV2",
-				"OnChainMultiSig"
+				"OnChainMultiSig",
+				"FCLCrypto"
 			],
 			"emulator-recipient": [],
 			"emulator-signer1": [],
