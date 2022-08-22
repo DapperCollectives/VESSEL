@@ -1,5 +1,5 @@
 import { useEffect, useReducer } from "react";
-import { mutate, query, tx } from "@onflow/fcl";
+import { mutate, query, tx, config } from "@onflow/fcl";
 import { syncSafeOwnersWithSigners, getVaultId } from "../utils";
 import { COIN_TYPE_TO_META } from "constants/maps";
 import reducer, { INITIAL_STATE } from "../reducers/treasuries";
@@ -28,6 +28,8 @@ import {
   REMOVE_SIGNER,
   GET_VAULT_BALANCE,
   PROPOSE_TRANSFER,
+  ADD_VAULT,
+  ADD_COLLECTION,
   GET_USER_FUSD_BALANCE,
   GET_USER_FLOW_BALANCE,
 } from "../flow";
@@ -75,10 +77,6 @@ const doProposeTransfer = async (
   coinType
 ) => {
   const uFixAmount = String(parseFloat(amount).toFixed(8));
-  const tokenAddress =
-    process.env.REACT_APP_FLOW_ENV === "emulator"
-      ? "ee82856bf20e2aa6"
-      : "9a0766d93b6608b7";
   const identifiers = await doQuery(GET_TREASURY_IDENTIFIERS, treasuryAddr);
   const recepientVault = getVaultId(identifiers, coinType);
   const intent = `Transfer ${uFixAmount} ${recepientVault} tokens from the treasury to ${recipientAddr}`;
@@ -209,6 +207,42 @@ const doProposeRemoveSigner = async (
   });
 };
 
+const doProposeAddVault = async (treasuryAddr, contractName) => {
+  const contractAddress = await config().get(`0x${contractName}`);
+
+  const intent = `A.${contractAddress.replace("0x", "")}.${contractName}.Vault`;
+  const { message, keyIds, signatures, height } = await createSignature(intent);
+
+  return await mutate({
+    cadence: ADD_VAULT(contractName),
+    args: (arg, t) => [
+      arg(treasuryAddr, t.Address),
+      arg(message, t.String),
+      arg(keyIds, t.Array(t.UInt64)),
+      arg(signatures, t.Array(t.String)),
+      arg(height, t.UInt64)
+    ],
+    limit: SIGNED_LIMIT,
+  });
+};
+
+const doProposeAddCollection = async (treasuryAddr, contractName, contractAddress) => {
+  const intent = `A.${contractAddress.replace("0x", "")}.${contractName}.Collection`;
+  const { message, keyIds, signatures, height } = await createSignature(intent);
+
+  return await mutate({
+    cadence: ADD_COLLECTION(contractName, contractAddress),
+    args: (arg, t) => [
+      arg(treasuryAddr, t.Address),
+      arg(message, t.String),
+      arg(keyIds, t.Array(t.UInt64)),
+      arg(signatures, t.Array(t.String)),
+      arg(height, t.UInt64)
+    ],
+    limit: SIGNED_LIMIT,
+  });
+};
+
 const getSigners = async (address) => {
   return await doQuery(GET_SIGNERS, address);
 };
@@ -257,6 +291,7 @@ export default function useTreasury(treasuryAddr) {
 
   const refreshTreasury = async () => {
     const signers = await getSigners(treasuryAddr);
+
     if (!signers) {
       dispatch({ type: "SET_LOADING", payload: false });
       return;
@@ -300,7 +335,6 @@ export default function useTreasury(treasuryAddr) {
         verifiedSigners,
       });
     }
-
     dispatch({
       type: "SET_ACTIONS",
       payload: {
@@ -386,13 +420,19 @@ export default function useTreasury(treasuryAddr) {
       String(parseFloat(10).toFixed(8)),
       COIN_TYPES.FLOW
     );
-    const fusdRes = await doSendTokensToTreasury(
-      treasuryAddr,
-      String(parseFloat(10).toFixed(8)),
-      COIN_TYPES.FUSD
-    );
     await tx(flowRes).onceSealed();
-    await tx(fusdRes).onceSealed();
+
+    try {
+      const fusdRes = await doSendTokensToTreasury(
+        treasuryAddr,
+        String(parseFloat(10).toFixed(8)),
+        COIN_TYPES.FUSD
+      );
+      await tx(fusdRes).onceSealed();
+    } catch (err) {
+      console.log(`Failed to deposit FUSD, error: ${err}`)
+    }
+
     await refreshTreasury();
   };
 
@@ -458,13 +498,36 @@ export default function useTreasury(treasuryAddr) {
     await tx(res).onceSealed();
     await refreshTreasury();
   };
+
+  const proposeAddVault = async (coinType) => {
+    try {
+      const contractName = COIN_TYPE_TO_META[coinType].contractName;
+      const res = await doProposeAddVault(treasuryAddr, contractName);
+      await tx(res).onceSealed();
+      await refreshTreasury();
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const proposeAddCollection = async (contractName, contractAddress) => {
+    try {
+      const res = await doProposeAddCollection(treasuryAddr, contractName, contractAddress);
+      await tx(res).onceSealed();
+      await refreshTreasury();
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   const getUserFUSDBalance = async (address) => {
     const balance = await query({
       cadence: GET_USER_FUSD_BALANCE,
       args: (arg, t) => [arg(address, t.Address)],
-    }).catch(console.error);
+    });
     return balance;
   };
+
   const getUserFlowBalance = async (address) => {
     const balance = await query({
       cadence: GET_USER_FLOW_BALANCE,
@@ -472,6 +535,7 @@ export default function useTreasury(treasuryAddr) {
     }).catch(console.error);
     return balance;
   };
+
   return {
     ...state,
     refreshTreasury,
@@ -488,6 +552,8 @@ export default function useTreasury(treasuryAddr) {
     updateSigner,
     proposeRemoveSigner,
     getVaultBalance,
+    proposeAddVault,
+    proposeAddCollection,
     getUserFUSDBalance,
     getUserFlowBalance,
   };

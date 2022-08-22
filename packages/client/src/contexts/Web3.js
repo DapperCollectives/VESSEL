@@ -68,7 +68,7 @@ export default function Web3Provider({
       Object.keys(contracts).forEach((contract) => {
         fcl.config().put(contract, contracts[contract]);
       });
-    } catch (e) {}
+    } catch (e) { }
   }, [network]);
 
   const user = useFclUser(fcl);
@@ -130,10 +130,11 @@ export const createSignature = async (intent) => {
     const messageHex = Buffer.from(message).toString("hex");
 
     let sigResponse = await fcl.currentUser().signUserMessage(messageHex);
-    const sigMessage =
-      sigResponse[0]?.signature?.signature ?? sigResponse[0]?.signature;
-    const keyIds = [sigResponse[0]?.keyId];
-    const signatures = [sigMessage];
+    let keyId = sigResponse[0].keyId;
+    let signature = sigResponse[0].signature;
+
+    const keyIds = [keyId];
+    const signatures = [signature];
 
     return {
       message,

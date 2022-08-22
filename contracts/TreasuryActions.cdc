@@ -174,12 +174,13 @@ pub contract TreasuryActionsV2 {
 
     init(recipientCollection: Capability<&{NonFungibleToken.CollectionPublic}>, nftID: UInt64, proposer: Address) {
       let recipientAddr = recipientCollection.borrow()!.owner!.address
-      let collectionID = recipientCollection.getType().identifier
+      let collectionID = recipientCollection.borrow()!.getType().identifier
 
-      self.intent = "Transfer a "
+      self.intent = "Transfer "
                         .concat(collectionID)
                         .concat(" NFT from the treasury to ")
                         .concat(recipientAddr.toString())
+
       self.proposer = proposer
       self.recipientCollection = recipientCollection
       self.withdrawID = nftID

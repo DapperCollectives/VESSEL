@@ -1,18 +1,19 @@
-export const SEND_COLLECTION_TO_TREASURY = `
+export const ADD_COLLECTION = (contractName, contractAddress) => `
 	import NonFungibleToken from 0xNonFungibleToken
-	import ExampleNFT from 0xExampleNFT
+    import ${contractName} from ${contractAddress}
 	import DAOTreasuryV2 from 0xDAOTreasuryV2
 	import MyMultiSigV2 from 0xMyMultiSigV2
 
 	transaction(treasuryAddr: Address, message: String, keyIds: [UInt64], signatures: [String], signatureBlock: UInt64) {
 
+		let treasury: &DAOTreasuryV2.Treasury{DAOTreasuryV2.TreasuryPublic}
+		let messageSignaturePayload: MyMultiSigV2.MessageSignaturePayload
+
 		prepare(signer: AuthAccount) {
-	
-			let treasury = getAccount(treasuryAddr).getCapability(DAOTreasuryV2.TreasuryPublicPath)
+			
+			self.treasury = getAccount(treasuryAddr).getCapability(DAOTreasuryV2.TreasuryPublicPath)
 						.borrow<&DAOTreasuryV2.Treasury{DAOTreasuryV2.TreasuryPublic}>()
 						?? panic("A DAOTreasuryV2 doesn't exist here.")
-	
-			let collection <- ExampleNFT.createEmptyCollection()
 	
 			var _keyIds: [Int] = []
 	
@@ -20,11 +21,14 @@ export const SEND_COLLECTION_TO_TREASURY = `
 				_keyIds.append(Int(keyId))
 			}
 	
-			let messageSignaturePayload = MyMultiSigV2.MessageSignaturePayload(
+			self.messageSignaturePayload = MyMultiSigV2.MessageSignaturePayload(
 				signingAddr: signer.address, message: message, keyIds: _keyIds, signatures: signatures, signatureBlock: signatureBlock
 			)
-			// Deposit the NFT in the treasury's collection
-			treasury.signerDepositCollection(collection: <-collection, signaturePayload: messageSignaturePayload)
+		}
+		
+		execute {
+			let collection <- ${contractName}.createEmptyCollection()
+			self.treasury.signerDepositCollection(collection: <- collection, signaturePayload: self.messageSignaturePayload)
 		}
 	}
 `;
