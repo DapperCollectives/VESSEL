@@ -134,11 +134,11 @@ function Safe({ web3 }) {
       keyIds,
       signatures,
       height
-    ).catch(error => showErrorModal(error));
+    ).catch((error) => showErrorModal(error));
   };
 
   const onConfirmAction = async ({ uuid }) => {
-    await executeAction(uuid).catch(error => showErrorModal(error));
+    await executeAction(uuid).catch((error) => showErrorModal(error));
   };
 
   const tabMap = {
@@ -171,14 +171,7 @@ function Safe({ web3 }) {
     contacts: (
       <SafeContacts safeOwners={safeData?.safeOwners} key="safe-contacts" />
     ),
-    settings: (
-      <SafeSettings
-        address={address}
-        web3={web3}
-        {...safeData}
-        key="safe-settings"
-      />
-    ),
+    settings: <SafeSettings key="safe-settings" />,
   };
 
   const BodyComponent = tabMap[currentTab];

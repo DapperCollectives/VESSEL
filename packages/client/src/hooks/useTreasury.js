@@ -292,6 +292,7 @@ export default function useTreasury(treasuryAddr) {
 
   const refreshTreasury = async () => {
     const signers = await getSigners(treasuryAddr);
+
     if (!signers) {
       dispatch({ type: "SET_LOADING", payload: false });
       return;
@@ -335,7 +336,6 @@ export default function useTreasury(treasuryAddr) {
         verifiedSigners,
       });
     }
-
     dispatch({
       type: "SET_ACTIONS",
       payload: {
