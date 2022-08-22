@@ -125,7 +125,6 @@ function Safe({ web3 }) {
     await signerApprove(
       parseInt(uuid, 10),
       message,
-      messageHex,
       keyIds,
       signatures,
       height

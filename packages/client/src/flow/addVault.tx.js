@@ -3,7 +3,7 @@ export const ADD_VAULT = (contractName) => `
     import ${contractName} from 0x${contractName}
     import MyMultiSigV2 from 0xMyMultiSigV2
 
-    transaction(treasuryAddr: Address, message: String, messageHex: String, keyIds: [UInt64], signatures: [String], signatureBlock: UInt64) {
+    transaction(treasuryAddr: Address, message: String, keyIds: [UInt64], signatures: [String], signatureBlock: UInt64) {
 
         let treasury: &DAOTreasuryV2.Treasury{DAOTreasuryV2.TreasuryPublic}
         let messageSignaturePayload: MyMultiSigV2.MessageSignaturePayload
@@ -19,7 +19,7 @@ export const ADD_VAULT = (contractName) => `
             }
 
             self.messageSignaturePayload = MyMultiSigV2.MessageSignaturePayload(
-                signingAddr: signer.address, message: message, messageHex: messageHex, keyIds: _keyIds, signatures: signatures, signatureBlock: signatureBlock
+                signingAddr: signer.address, message: message, keyIds: _keyIds, signatures: signatures, signatureBlock: signatureBlock
             )
         }
 

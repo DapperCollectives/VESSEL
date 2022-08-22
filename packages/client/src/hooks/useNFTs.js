@@ -35,7 +35,7 @@ const doProposeNFTTransfer = async (
   // First part will contain the collection identifier, and the second will contain the tokenId
   const tokenInfo = nft.split("-");
   const intent = `Transfer ${tokenInfo[0]} NFT from the treasury to ${recipient}`;
-  const { message, messageHex, keyIds, signatures, height } = await createSignature(intent);
+  const { message, keyIds, signatures, height } = await createSignature(intent);
 
   return await mutate({
     cadence: PROPOSE_NFT_TRANSFER,
@@ -44,7 +44,6 @@ const doProposeNFTTransfer = async (
       arg(recipient, t.Address),
       arg(parseInt(tokenInfo[1]), t.UInt64),
       arg(message, t.String),
-      arg(messageHex, t.String),
       arg(keyIds, t.Array(t.UInt64)),
       arg(signatures, t.Array(t.String)),
       arg(height, t.UInt64),

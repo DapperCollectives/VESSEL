@@ -75,8 +75,6 @@ func (otu *OverflowTestUtils) ProposeNewThreshold(treasuryAddr, proposingAcct st
 	latestBlock, _ := otu.O.GetLatestBlock()
 	// message
 	message := fmt.Sprintf("%s%s", hexCollectionID, latestBlock.ID)
-	byteMessage := []byte(message)
-	messageHex := hex.EncodeToString(byteMessage)
 	// signature
 	signature := otu.SignMessage(proposingAcct, message)
 
@@ -86,7 +84,6 @@ func (otu *OverflowTestUtils) ProposeNewThreshold(treasuryAddr, proposingAcct st
 			Address(treasuryAddr).
 			UInt64(newThreshold).
 			String(message).
-			String(messageHex).
 			UInt64Array(0).
 			StringArray(signature).
 			UInt64(latestBlock.Height)).
@@ -105,8 +102,6 @@ func (otu *OverflowTestUtils) ProposeNewThresholdFail(proposingAcct string, newT
 	latestBlock, _ := otu.O.GetLatestBlock()
 	// message
 	message := fmt.Sprintf("%s%s", hexCollectionID, latestBlock.ID)
-	byteMessage := []byte(message)
-	messageHex := hex.EncodeToString(byteMessage)
 	// signature
 	signature := otu.SignMessage(proposingAcct, message)
 
@@ -115,7 +110,6 @@ func (otu *OverflowTestUtils) ProposeNewThresholdFail(proposingAcct string, newT
 		Args(otu.O.Arguments().
 			UInt64(newThreshold).
 			String(message).
-			String(messageHex).
 			UInt64Array(0).
 			StringArray(signature).
 			UInt64(latestBlock.Height)).
@@ -178,8 +172,6 @@ func (otu *OverflowTestUtils) SendCollectionToTreasury(from string, to string) *
 	latestBlock, _ := otu.O.GetLatestBlock()
 	// message
 	message := fmt.Sprintf("%s%s", hexCollectionID, latestBlock.ID)
-	byteMessage := []byte(message)
-	messageHex := hex.EncodeToString(byteMessage)
 	// signature
 	signature := otu.SignMessage(from, message)
 
@@ -188,7 +180,6 @@ func (otu *OverflowTestUtils) SendCollectionToTreasury(from string, to string) *
 		Args(otu.O.Arguments().
 			Account(to).
 			String(message).
-			String(messageHex).
 			UInt64Array(0).
 			StringArray(signature).
 			UInt64(latestBlock.Height)).
@@ -208,8 +199,6 @@ func (otu *OverflowTestUtils) ProposeFungibleTokenTransferAction(treasuryAcct st
 	latestBlock, _ := otu.O.GetLatestBlock()
 	// message
 	message := fmt.Sprintf("%s%s", hexCollectionID, latestBlock.ID)
-	byteMessage := []byte(message)
-	messageHex := hex.EncodeToString(byteMessage)
 	// signature
 	signature := otu.SignMessage(proposingAcct, message)
 	otu.O.TransactionFromFile("propose_fungible_token_transfer").
@@ -219,7 +208,6 @@ func (otu *OverflowTestUtils) ProposeFungibleTokenTransferAction(treasuryAcct st
 			Account(recipientAcct).
 			UFix64(amount).
 			String(message).
-			String(messageHex).
 			UInt64Array(0).
 			StringArray(signature).
 			UInt64(latestBlock.Height).
@@ -241,8 +229,6 @@ func (otu *OverflowTestUtils) ProposeFungibleTokenTransferActionFail(treasuryAcc
 	latestBlock, _ := otu.O.GetLatestBlock()
 	// message
 	message := fmt.Sprintf("%s%s", hexCollectionID, latestBlock.ID)
-	byteMessage := []byte(message)
-	messageHex := hex.EncodeToString(byteMessage)
 	// signature
 	signature := otu.SignMessage(proposingAcct, message)
 
@@ -253,7 +239,6 @@ func (otu *OverflowTestUtils) ProposeFungibleTokenTransferActionFail(treasuryAcc
 			Account(recipientAcct).
 			UFix64(amount).
 			String(message).
-			String(messageHex).
 			UInt64Array(0).
 			StringArray(signature).
 			UInt64(latestBlock.Height).
@@ -276,8 +261,6 @@ func (otu *OverflowTestUtils) ProposeFungibleTokenTransferToTreasuryAction(treas
 	latestBlock, _ := otu.O.GetLatestBlock()
 	// message
 	message := fmt.Sprintf("%s%s", hexCollectionID, latestBlock.ID)
-	byteMessage := []byte(message)
-	messageHex := hex.EncodeToString(byteMessage)
 	// signature
 	signature := otu.SignMessage(proposingAcct, message)
 
@@ -289,7 +272,6 @@ func (otu *OverflowTestUtils) ProposeFungibleTokenTransferToTreasuryAction(treas
 			String(vaultIdentifier).
 			UFix64(amount).
 			String(message).
-			String(messageHex).
 			UInt64Array(0).
 			StringArray(signature).
 			UInt64(latestBlock.Height)).
@@ -310,8 +292,6 @@ func (otu *OverflowTestUtils) ProposeFungibleTokenTransferToTreasuryActionFail(t
 	latestBlock, _ := otu.O.GetLatestBlock()
 	// message
 	message := fmt.Sprintf("%s%s", hexCollectionID, latestBlock.ID)
-	byteMessage := []byte(message)
-	messageHex := hex.EncodeToString(byteMessage)
 	// signature
 	signature := otu.SignMessage(proposingAcct, message)
 
@@ -323,7 +303,6 @@ func (otu *OverflowTestUtils) ProposeFungibleTokenTransferToTreasuryActionFail(t
 			String(vaultIdentifier).
 			UFix64(amount).
 			String(message).
-			String(messageHex).
 			UInt64Array(0).
 			StringArray(signature).
 			UInt64(latestBlock.Height)).
@@ -343,8 +322,6 @@ func (otu *OverflowTestUtils) ProposeNonFungibleTokenTransferAction(treasuryAcct
 	latestBlock, _ := otu.O.GetLatestBlock()
 	// message
 	message := fmt.Sprintf("%s%s", hexCollectionID, latestBlock.ID)
-	byteMessage := []byte(message)
-	messageHex := hex.EncodeToString(byteMessage)
 	// signature
 	signature := otu.SignMessage(proposingAcct, message)
 
@@ -355,7 +332,6 @@ func (otu *OverflowTestUtils) ProposeNonFungibleTokenTransferAction(treasuryAcct
 			Account(recipientAcct).
 			UInt64(id).
 			String(message).
-			String(messageHex).
 			UInt64Array(0).
 			StringArray(signature).
 			UInt64(latestBlock.Height)).
@@ -377,8 +353,6 @@ func (otu *OverflowTestUtils) ProposeNonFungibleTokenTransferToTreasuryAction(tr
 	latestBlock, _ := otu.O.GetLatestBlock()
 	// message
 	message := fmt.Sprintf("%s%s", hexCollectionID, latestBlock.ID)
-	byteMessage := []byte(message)
-	messageHex := hex.EncodeToString(byteMessage)
 	// signature
 	signature := otu.SignMessage(proposingAcct, message)
 
@@ -390,7 +364,6 @@ func (otu *OverflowTestUtils) ProposeNonFungibleTokenTransferToTreasuryAction(tr
 			String(collectionIdentifier).
 			UInt64(id).
 			String(message).
-			String(messageHex).
 			UInt64Array(0).
 			StringArray(signature).
 			UInt64(latestBlock.Height)).
@@ -449,8 +422,6 @@ func (otu *OverflowTestUtils) ProposeAddSignerAction(treasuryAddr, proposingAcct
 	latestBlock, _ := otu.O.GetLatestBlock()
 	// message
 	message := fmt.Sprintf("%s%s", signerHex, latestBlock.ID)
-	byteMessage := []byte(message)
-	messageHex := hex.EncodeToString(byteMessage)
 	// signature
 	signature := otu.SignMessage(proposingAcct, message)
 
@@ -460,7 +431,6 @@ func (otu *OverflowTestUtils) ProposeAddSignerAction(treasuryAddr, proposingAcct
 			Address(treasuryAddr).
 			Address(address).
 			String(message).
-			String(messageHex).
 			UInt64Array(0).
 			StringArray(signature).
 			UInt64(latestBlock.Height)).
@@ -480,8 +450,6 @@ func (otu *OverflowTestUtils) ProposeRemoveSignerAction(treasuryAddr, proposingA
 	latestBlock, _ := otu.O.GetLatestBlock()
 	// message
 	message := fmt.Sprintf("%s%s", hexCollectionID, latestBlock.ID)
-	byteMessage := []byte(message)
-	messageHex := hex.EncodeToString(byteMessage)
 	// signature
 	signature := otu.SignMessage(proposingAcct, message)
 
@@ -491,7 +459,6 @@ func (otu *OverflowTestUtils) ProposeRemoveSignerAction(treasuryAddr, proposingA
 			Address(treasuryAddr).
 			Address(address).
 			String(message).
-			String(messageHex).
 			UInt64Array(0).
 			StringArray(signature).
 			UInt64(latestBlock.Height)).
@@ -523,8 +490,6 @@ func (otu *OverflowTestUtils) SignerApproveAction(treasuryAcct string, actionUUI
 	// message
 	// {uuid}{hexIntent}{block.ID}
 	message := fmt.Sprintf("%s%s%s", uuid, hexIntent, latestBlock.ID)
-	byteMessage := []byte(message)
-	messageHex := hex.EncodeToString(byteMessage)
 
 	// signature
 	signature := otu.SignMessage(signingAccount, message)
@@ -536,10 +501,9 @@ func (otu *OverflowTestUtils) SignerApproveAction(treasuryAcct string, actionUUI
 	otu.O.TransactionFromFile("signer_approve").
 		SignProposeAndPayAs(signingAccount).
 		Args(otu.O.Arguments().
-			Account(treasuryAcct).      // treasuryAddr
-			UInt64(uint64(actionUUID)). // actionUUID
-			String(message).            // message
-			String(messageHex).
+			Account(treasuryAcct).       // treasuryAddr
+			UInt64(uint64(actionUUID)).  // actionUUID
+			String(message).             // message
 			UInt64Array(0).              // [keyIds]
 			StringArray(signature).      // [signatures]
 			UInt64(latestBlock.Height)). // signatureBlock
@@ -571,8 +535,6 @@ func (otu *OverflowTestUtils) SignerRevokeApproval(treasuryAcct string, actionUU
 	// message
 	// {uuid}{hexIntent}{block.ID}
 	message := fmt.Sprintf("%s%s%s", uuid, hexIntent, latestBlock.ID)
-	byteMessage := []byte(message)
-	messageHex := hex.EncodeToString(byteMessage)
 
 	// signature
 	signature := otu.SignMessage(signingAccount, message)
@@ -584,10 +546,9 @@ func (otu *OverflowTestUtils) SignerRevokeApproval(treasuryAcct string, actionUU
 	otu.O.TransactionFromFile("signer_revoke").
 		SignProposeAndPayAs(signingAccount).
 		Args(otu.O.Arguments().
-			Account(treasuryAcct).      // treasuryAddr
-			UInt64(uint64(actionUUID)). // actionUUID
-			String(message).            // message
-			String(messageHex).
+			Account(treasuryAcct).       // treasuryAddr
+			UInt64(uint64(actionUUID)).  // actionUUID
+			String(message).             // message
 			UInt64Array(0).              // [keyIds]
 			StringArray(signature).      // [signatures]
 			UInt64(latestBlock.Height)). // signatureBlock
@@ -619,8 +580,6 @@ func (otu *OverflowTestUtils) SignerRevokeApprovalFailed(treasuryAcct string, ac
 	// message
 	// {uuid}{hexIntent}{block.ID}
 	message := fmt.Sprintf("%s%s%s", uuid, hexIntent, latestBlock.ID)
-	byteMessage := []byte(message)
-	messageHex := hex.EncodeToString(byteMessage)
 	// signature
 	signature := otu.SignMessage(signingAccount, message)
 
@@ -631,10 +590,9 @@ func (otu *OverflowTestUtils) SignerRevokeApprovalFailed(treasuryAcct string, ac
 	otu.O.TransactionFromFile("signer_revoke").
 		SignProposeAndPayAs(signingAccount).
 		Args(otu.O.Arguments().
-			Account(treasuryAcct).      // treasuryAddr
-			UInt64(uint64(actionUUID)). // actionUUID
-			String(message).            // message
-			String(messageHex).
+			Account(treasuryAcct).       // treasuryAddr
+			UInt64(uint64(actionUUID)).  // actionUUID
+			String(message).             // message
 			UInt64Array(0).              // [keyIds]
 			StringArray(signature).      // [signatures]
 			UInt64(latestBlock.Height)). // signatureBlock
@@ -681,8 +639,6 @@ func (otu *OverflowTestUtils) ExecuteAction(treasuryAcct string, actionUUID uint
 	latestBlock, _ := otu.O.GetLatestBlock()
 	// message
 	message := fmt.Sprintf("%s%s", hexID, latestBlock.ID)
-	byteMessage := []byte(message)
-	messageHex := hex.EncodeToString(byteMessage)
 	// signature
 	signature := otu.SignMessage(treasuryAcct, message)
 
@@ -692,7 +648,6 @@ func (otu *OverflowTestUtils) ExecuteAction(treasuryAcct string, actionUUID uint
 			Account(treasuryAcct).
 			UInt64(actionUUID).
 			String(message).
-			String(messageHex).
 			UInt64Array(0).
 			StringArray(signature).
 			UInt64(latestBlock.Height)).
@@ -711,8 +666,6 @@ func (otu *OverflowTestUtils) ExecuteActionFailed(treasuryAcct string, actionUUI
 	latestBlock, _ := otu.O.GetLatestBlock()
 	// message
 	message := fmt.Sprintf("%s%s", hexID, latestBlock.ID)
-	byteMessage := []byte(message)
-	messageHex := hex.EncodeToString(byteMessage)
 	// signature
 	signature := otu.SignMessage(treasuryAcct, message)
 
@@ -722,7 +675,6 @@ func (otu *OverflowTestUtils) ExecuteActionFailed(treasuryAcct string, actionUUI
 			Account(treasuryAcct).
 			UInt64(actionUUID).
 			String(message).
-			String(messageHex).
 			UInt64Array(0).
 			StringArray(signature).
 			UInt64(latestBlock.Height)).
@@ -741,8 +693,6 @@ func (otu *OverflowTestUtils) ProposeDestroyAction(treasuryAcct string, actionUU
 	latestBlock, _ := otu.O.GetLatestBlock()
 	// message
 	message := fmt.Sprintf("%s%s", hexCollectionID, latestBlock.ID)
-	byteMessage := []byte(message)
-	messageHex := hex.EncodeToString(byteMessage)
 	// signature
 	signature := otu.SignMessage(treasuryAcct, message)
 
@@ -752,7 +702,6 @@ func (otu *OverflowTestUtils) ProposeDestroyAction(treasuryAcct string, actionUU
 			Account(treasuryAcct).
 			UInt64(actionUUID).
 			String(message).
-			String(messageHex).
 			UInt64Array(0).
 			StringArray(signature).
 			UInt64(latestBlock.Height)).
@@ -1017,8 +966,6 @@ func (otu *OverflowTestUtils) AddBloctoVaultToTreasury(from string, to string) *
 
 	latestBlock, _ := otu.O.GetLatestBlock()
 	message := fmt.Sprintf("%s%s", hexVaultID, latestBlock.ID)
-	byteMessage := []byte(message)
-	messageHex := hex.EncodeToString(byteMessage)
 	signature := otu.SignMessage(from, message)
 
 	otu.O.TransactionFromFile("add_blocto_vault").
@@ -1026,7 +973,6 @@ func (otu *OverflowTestUtils) AddBloctoVaultToTreasury(from string, to string) *
 		Args(otu.O.Arguments().
 			Account(to).
 			String(message).
-			String(messageHex).
 			UInt64Array(0).
 			StringArray(signature).
 			UInt64(latestBlock.Height)).

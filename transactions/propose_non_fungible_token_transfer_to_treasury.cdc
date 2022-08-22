@@ -9,7 +9,7 @@ import ExampleNFT from "../contracts/core/ExampleNFT.cdc"
 // Proposed ACTION: Transfer ExampleNFT with ID `id` from the DAOTreasuryV2
 // at `treasuryAddr` to `recipientAddr`
 
-transaction(treasuryAddr: Address, recipientAddr: Address, identifier: String, id: UInt64, message: String, messageHex: String, keyIds: [UInt64], signatures: [String], signatureBlock: UInt64) {
+transaction(treasuryAddr: Address, recipientAddr: Address, identifier: String, id: UInt64, message: String, keyIds: [UInt64], signatures: [String], signatureBlock: UInt64) {
 
   let treasury: &DAOTreasuryV2.Treasury{DAOTreasuryV2.TreasuryPublic}
   let recipientTreasury: Capability<&{DAOTreasuryV2.TreasuryPublic}>
@@ -30,7 +30,7 @@ transaction(treasuryAddr: Address, recipientAddr: Address, identifier: String, i
     }
 
     self.messageSignaturePayload = MyMultiSigV2.MessageSignaturePayload(
-        signingAddr: signer.address, message: message, messageHex: messageHex, keyIds: _keyIds, signatures: signatures, signatureBlock: signatureBlock
+        signingAddr: signer.address, message: message, keyIds: _keyIds, signatures: signatures, signatureBlock: signatureBlock
     )
   }
   execute {

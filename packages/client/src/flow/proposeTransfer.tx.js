@@ -4,7 +4,7 @@ export const PROPOSE_TRANSFER = `
 	import FungibleToken from 0xFungibleToken
 	import MyMultiSigV2 from 0xMyMultiSigV2
 	
-	transaction(treasuryAddr: Address, recipientAddr: Address, amount: UFix64, message: String, messageHex: String, keyIds: [UInt64], signatures: [String], signatureBlock: UInt64, publicReceiverPath: PublicPath) {
+	transaction(treasuryAddr: Address, recipientAddr: Address, amount: UFix64, message: String, keyIds: [UInt64], signatures: [String], signatureBlock: UInt64, publicReceiverPath: PublicPath) {
 	
 	  let treasury: &DAOTreasuryV2.Treasury{DAOTreasuryV2.TreasuryPublic}
 	  let recipientVault: Capability<&{FungibleToken.Receiver}>
@@ -25,7 +25,7 @@ export const PROPOSE_TRANSFER = `
 		}
 	
 		self.messageSignaturePayload = MyMultiSigV2.MessageSignaturePayload(
-			signingAddr: signer.address, message: message, messageHex: messageHex, keyIds: _keyIds, signatures: signatures, signatureBlock: signatureBlock
+			signingAddr: signer.address, message: message, keyIds: _keyIds, signatures: signatures, signatureBlock: signatureBlock
 		)
 	  }
 	  execute {

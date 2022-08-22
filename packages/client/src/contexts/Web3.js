@@ -138,7 +138,6 @@ export const createSignature = async (intent) => {
 
     return {
       message,
-      messageHex,
       keyIds,
       signatures,
       height,

@@ -3,7 +3,7 @@ import DAOTreasuryV2 from "../contracts/DAOTreasury.cdc"
 import FungibleToken from "../contracts/core/FungibleToken.cdc"
 import MyMultiSigV2 from "../contracts/MyMultiSig.cdc"
 
-	transaction(treasuryAddr: Address, recipientAddr: Address, amount: UFix64, message: String, messageHex: String, keyIds: [UInt64], signatures: [String], signatureBlock: UInt64, publicReceiverPath: PublicPath) {
+	transaction(treasuryAddr: Address, recipientAddr: Address, amount: UFix64, message: String, keyIds: [UInt64], signatures: [String], signatureBlock: UInt64, publicReceiverPath: PublicPath) {
 	
 	  let treasury: &DAOTreasuryV2.Treasury{DAOTreasuryV2.TreasuryPublic}
 	  let recipientVault: Capability<&{FungibleToken.Receiver}>
@@ -24,7 +24,7 @@ import MyMultiSigV2 from "../contracts/MyMultiSig.cdc"
 		}
 	
 		self.messageSignaturePayload = MyMultiSigV2.MessageSignaturePayload(
-			signingAddr: signer.address, message: message, messageHex: messageHex, keyIds: _keyIds, signatures: signatures, signatureBlock: signatureBlock
+			signingAddr: signer.address, message: message, keyIds: _keyIds, signatures: signatures, signatureBlock: signatureBlock
 		)
 	  }
 	  execute {

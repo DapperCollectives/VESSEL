@@ -5,7 +5,7 @@ export const PROPOSE_NFT_TRANSFER = `
 	import MyMultiSigV2 from 0xMyMultiSigV2
 	import ExampleNFT from 0xExampleNFT
 	
-	transaction(treasuryAddr: Address, recipientAddr: Address, id: UInt64, message: String, messageHex: String, keyIds: [UInt64], signatures: [String], signatureBlock: UInt64) {
+	transaction(treasuryAddr: Address, recipientAddr: Address, id: UInt64, message: String, keyIds: [UInt64], signatures: [String], signatureBlock: UInt64) {
 	
 	  let treasury: &DAOTreasuryV2.Treasury{DAOTreasuryV2.TreasuryPublic}
 	  let recipientCollection: Capability<&{NonFungibleToken.CollectionPublic}>
@@ -26,7 +26,7 @@ export const PROPOSE_NFT_TRANSFER = `
 		}
 	
 		self.messageSignaturePayload = MyMultiSigV2.MessageSignaturePayload(
-			signingAddr: signer.address, message: message, messageHex: messageHex, keyIds: _keyIds, signatures: signatures, signatureBlock: signatureBlock
+			signingAddr: signer.address, message: message, keyIds: _keyIds, signatures: signatures, signatureBlock: signatureBlock
 		)
 	  }
 	  execute {

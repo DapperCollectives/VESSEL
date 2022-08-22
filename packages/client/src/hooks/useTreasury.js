@@ -80,7 +80,7 @@ const doProposeTransfer = async (
   const identifiers = await doQuery(GET_TREASURY_IDENTIFIERS, treasuryAddr);
   const recepientVault = getVaultId(identifiers, coinType);
   const intent = `Transfer ${uFixAmount} ${recepientVault} tokens from the treasury to ${recipientAddr}`;
-  const { message, messageHex, keyIds, signatures, height } = await createSignature(intent);
+  const { message, keyIds, signatures, height } = await createSignature(intent);
 
   return await mutate({
     cadence: PROPOSE_TRANSFER,
@@ -89,7 +89,6 @@ const doProposeTransfer = async (
       arg(recipientAddr, t.Address),
       arg(amount, t.UFix64),
       arg(message, t.String),
-      arg(messageHex, t.String),
       arg(keyIds, t.Array(t.UInt64)),
       arg(signatures, t.Array(t.String)),
       arg(height, t.UInt64),
@@ -103,7 +102,6 @@ const doSignApprove = async (
   treasuryAddr,
   actionUUID,
   message,
-  messageHex,
   keyIds,
   signatures,
   signatureBlock
@@ -114,7 +112,6 @@ const doSignApprove = async (
       arg(treasuryAddr, t.Address),
       arg(actionUUID, t.UInt64),
       arg(message, t.String),
-      arg(messageHex, t.String),
       arg(keyIds, t.Array(t.UInt64)),
       arg(signatures, t.Array(t.String)),
       arg(signatureBlock, t.UInt64),
@@ -124,7 +121,7 @@ const doSignApprove = async (
 };
 
 const doExecuteAction = async (treasuryAddr, actionUUID) => {
-  const { message, messageHex, keyIds, signatures, height } = await createSignature(
+  const { message, keyIds, signatures, height } = await createSignature(
     actionUUID.toString()
   );
 
@@ -134,7 +131,6 @@ const doExecuteAction = async (treasuryAddr, actionUUID) => {
       arg(treasuryAddr, t.Address),
       arg(actionUUID, t.UInt64),
       arg(message, t.String),
-      arg(messageHex, t.String),
       arg(keyIds, t.Array(t.UInt64)),
       arg(signatures, t.Array(t.String)),
       arg(height, t.UInt64),
@@ -145,7 +141,7 @@ const doExecuteAction = async (treasuryAddr, actionUUID) => {
 
 const doUpdateThreshold = async (treasuryAddr, newThreshold) => {
   const intent = `Update the threshold of signers to ${newThreshold}.`;
-  const { message, messageHex, keyIds, signatures, height } = await createSignature(intent);
+  const { message, keyIds, signatures, height } = await createSignature(intent);
 
   return await mutate({
     cadence: UPDATE_THRESHOLD,
@@ -153,7 +149,6 @@ const doUpdateThreshold = async (treasuryAddr, newThreshold) => {
       arg(treasuryAddr, t.Address),
       arg(newThreshold, t.UInt64),
       arg(message, t.String),
-      arg(messageHex, t.String),
       arg(keyIds, t.Array(t.UInt64)),
       arg(signatures, t.Array(t.String)),
       arg(height, t.UInt64),
@@ -164,7 +159,7 @@ const doUpdateThreshold = async (treasuryAddr, newThreshold) => {
 
 const doProposeAddSigner = async (treasuryAddr, newSignerAddress) => {
   const intent = `Add account ${newSignerAddress} as a signer.`;
-  const { message, messageHex, keyIds, signatures, height } = await createSignature(intent);
+  const { message, keyIds, signatures, height } = await createSignature(intent);
 
   return await mutate({
     cadence: ADD_SIGNER,
@@ -172,7 +167,6 @@ const doProposeAddSigner = async (treasuryAddr, newSignerAddress) => {
       arg(treasuryAddr, t.Address),
       arg(newSignerAddress, t.Address),
       arg(message, t.String),
-      arg(messageHex, t.String),
       arg(keyIds, t.Array(t.UInt64)),
       arg(signatures, t.Array(t.String)),
       arg(height, t.UInt64),
@@ -197,7 +191,7 @@ const doProposeRemoveSigner = async (
   signerToBeRemovedAddress
 ) => {
   const intent = `Remove ${signerToBeRemovedAddress} as a signer.`;
-  const { message, messageHex, keyIds, signatures, height } = await createSignature(intent);
+  const { message, keyIds, signatures, height } = await createSignature(intent);
 
   return await mutate({
     cadence: REMOVE_SIGNER,
@@ -205,7 +199,6 @@ const doProposeRemoveSigner = async (
       arg(treasuryAddr, t.Address),
       arg(signerToBeRemovedAddress, t.Address),
       arg(message, t.String),
-      arg(messageHex, t.String),
       arg(keyIds, t.Array(t.UInt64)),
       arg(signatures, t.Array(t.String)),
       arg(height, t.UInt64),
@@ -218,14 +211,13 @@ const doProposeAddVault = async (treasuryAddr, contractName) => {
   const contractAddress = await config().get(`0x${contractName}`);
 
   const intent = `A.${contractAddress.replace("0x", "")}.${contractName}.Vault`;
-  const { message, messageHex, keyIds, signatures, height } = await createSignature(intent);
+  const { message, keyIds, signatures, height } = await createSignature(intent);
 
   return await mutate({
     cadence: ADD_VAULT(contractName),
     args: (arg, t) => [
       arg(treasuryAddr, t.Address),
       arg(message, t.String),
-      arg(messageHex, t.String),
       arg(keyIds, t.Array(t.UInt64)),
       arg(signatures, t.Array(t.String)),
       arg(height, t.UInt64)
@@ -236,14 +228,13 @@ const doProposeAddVault = async (treasuryAddr, contractName) => {
 
 const doProposeAddCollection = async (treasuryAddr, contractName, contractAddress) => {
   const intent = `A.${contractAddress.replace("0x", "")}.${contractName}.Collection`;
-  const { message, messageHex, keyIds, signatures, height } = await createSignature(intent);
+  const { message, keyIds, signatures, height } = await createSignature(intent);
 
   return await mutate({
     cadence: ADD_COLLECTION(contractName, contractAddress),
     args: (arg, t) => [
       arg(treasuryAddr, t.Address),
       arg(message, t.String),
-      arg(messageHex, t.String),
       arg(keyIds, t.Array(t.UInt64)),
       arg(signatures, t.Array(t.String)),
       arg(height, t.UInt64)
@@ -458,7 +449,6 @@ export default function useTreasury(treasuryAddr) {
   const signerApprove = async (
     actionUUID,
     message,
-    messageHex,
     keyIds,
     signatures,
     signatureBlock
@@ -467,7 +457,6 @@ export default function useTreasury(treasuryAddr) {
       treasuryAddr,
       actionUUID,
       message,
-      messageHex,
       keyIds,
       signatures,
       signatureBlock

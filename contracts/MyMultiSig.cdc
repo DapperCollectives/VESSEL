@@ -45,10 +45,10 @@ pub contract MyMultiSigV2 {
         pub let signatures: [String]
         pub let signatureBlock: UInt64
 
-        init(signingAddr: Address, message: String, messageHex: String, keyIds: [Int], signatures: [String], signatureBlock: UInt64) {
+        init(signingAddr: Address, message: String, keyIds: [Int], signatures: [String], signatureBlock: UInt64) {
             self.signingAddr = signingAddr
             self.message = message
-            self.messageHex = messageHex
+            self.messageHex = String.encodeHex(message.utf8)
             self.keyIds = keyIds
             self.signatures = signatures
             self.signatureBlock = signatureBlock

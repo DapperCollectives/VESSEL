@@ -6,7 +6,7 @@ import MyMultiSigV2 from "../contracts/MyMultiSig.cdc"
 // Proposed ACTION: Transfer `amount` FlowToken from the DAOTreasuryV2
 // at `treasuryAddr` to `recipientAddr`
 
-transaction(treasuryAddr: Address, recipientAddr: Address, identifier: String, amount: UFix64, message: String, messageHex: String, keyIds: [UInt64], signatures: [String], signatureBlock: UInt64) {
+transaction(treasuryAddr: Address, recipientAddr: Address, identifier: String, amount: UFix64, message: String, keyIds: [UInt64], signatures: [String], signatureBlock: UInt64) {
 
   let treasury: &DAOTreasuryV2.Treasury{DAOTreasuryV2.TreasuryPublic}
   let recipientTreasury: Capability<&{DAOTreasuryV2.TreasuryPublic}>
@@ -27,7 +27,7 @@ transaction(treasuryAddr: Address, recipientAddr: Address, identifier: String, a
     }
 
     self.messageSignaturePayload = MyMultiSigV2.MessageSignaturePayload(
-        signingAddr: signer.address, message: message, messageHex: messageHex, keyIds: _keyIds, signatures: signatures, signatureBlock: signatureBlock
+        signingAddr: signer.address, message: message, keyIds: _keyIds, signatures: signatures, signatureBlock: signatureBlock
     )
   }
   execute {
