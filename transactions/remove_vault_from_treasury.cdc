@@ -20,7 +20,7 @@ transaction(treasuryAddr: Address, identifier: String, message: String, keyIds: 
         let messageSignaturePayload = MyMultiSigV2.MessageSignaturePayload(
             signingAddr: signer.address, message: message, keyIds: _keyIds, signatures: signatures, signatureBlock: signatureBlock
         )
-        // Deposit the NFT in the treasury's collection
+        // Execute removing vault
         treasury.signerRemoveVault(identifier: identifier, signaturePayload: messageSignaturePayload)
     }
 }
