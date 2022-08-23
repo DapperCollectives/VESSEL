@@ -2,7 +2,7 @@ import Crypto
 import FungibleToken from "./core/FungibleToken.cdc"
 import FCLCrypto from "./core/FCLCrypto.cdc"
 
-pub contract MyMultiSigV2 {
+pub contract MyMultiSigV3 {
 
     // Events
     pub event ActionExecutedByManager(uuid: UInt64)
@@ -177,7 +177,7 @@ pub contract MyMultiSigV2 {
 
             // Validate Message
             assert(
-                MyMultiSigV2.approveOrRejectActionMessageIsValid(action: action, messageSignaturePayload: messageSignaturePayload),
+                MyMultiSigV3.approveOrRejectActionMessageIsValid(action: action, messageSignaturePayload: messageSignaturePayload),
                 message: "Signed message is invalid"
             )
         
@@ -210,7 +210,7 @@ pub contract MyMultiSigV2 {
 
             // Validate Message
             assert(
-                MyMultiSigV2.approveOrRejectActionMessageIsValid(action: self.borrowAction(actionUUID: actionUUID), messageSignaturePayload: messageSignaturePayload),
+                MyMultiSigV3.approveOrRejectActionMessageIsValid(action: self.borrowAction(actionUUID: actionUUID), messageSignaturePayload: messageSignaturePayload),
                 message: "Signed message is invalid"
             )
         

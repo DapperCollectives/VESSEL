@@ -1,5 +1,5 @@
 export const SEND_TOKENS_TO_TREASURY = `
-	import DAOTreasuryV2 from 0xDAOTreasuryV2
+	import DAOTreasuryV3 from 0xDAOTreasuryV3
 	import FungibleToken from 0xFungibleToken
 
 	transaction(treasuryAddr: Address, amount: UFix64, vaultPath: StoragePath ) {
@@ -9,9 +9,9 @@ export const SEND_TOKENS_TO_TREASURY = `
 			let vault = signer.borrow<&FungibleToken.Vault>(from: vaultPath)!
 			let tokens <- vault.withdraw(amount: amount)
 		
-			let treasury = getAccount(treasuryAddr).getCapability(DAOTreasuryV2.TreasuryPublicPath)
-						.borrow<&DAOTreasuryV2.Treasury{DAOTreasuryV2.TreasuryPublic}>()
-						?? panic("A DAOTreasuryV2 doesn't exist here.")
+			let treasury = getAccount(treasuryAddr).getCapability(DAOTreasuryV3.TreasuryPublicPath)
+						.borrow<&DAOTreasuryV3.Treasury{DAOTreasuryV3.TreasuryPublic}>()
+						?? panic("A DAOTreasuryV3 doesn't exist here.")
 		
 			let identifier: String = vault.getType().identifier
 	  
