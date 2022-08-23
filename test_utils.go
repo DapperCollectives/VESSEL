@@ -604,22 +604,17 @@ func (otu *OverflowTestUtils) SignerRejectApprovalFailed(treasuryAcct string, ac
 	return otu
 }
 
-func (otu *OverflowTestUtils) GetVerifiedSignersForAction(treasuryAcct string, actionUUID uint64) map[string]bool {
-	verifiedSigners := otu.O.ScriptFromFile("get_verified_signers_for_action").
+func (otu *OverflowTestUtils) GetSignerResponsesForAction(treasuryAcct string, actionUUID uint64) map[string]string {
+	signerResponses := otu.O.ScriptFromFile("get_signer_responses_for_action").
 		Args(otu.O.Arguments().
 			Account(treasuryAcct).
 			UInt64(actionUUID)).
 		RunReturnsJsonString()
 
-	var _signers map[string]bool
-	var signers map[string]bool = map[string]bool{}
-	json.Unmarshal([]byte(verifiedSigners), &_signers)
+	var responses map[string]string
+	json.Unmarshal([]byte(signerResponses), &responses)
 
-	for k, v := range _signers {
-		signers[k] = (v == true)
-	}
-
-	return signers
+	return responses
 }
 
 func (otu *OverflowTestUtils) ExecuteAction(treasuryAcct string, actionUUID uint64) *OverflowTestUtils {

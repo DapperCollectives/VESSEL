@@ -3,7 +3,7 @@ export const UPDATE_THRESHOLD = `
   import TreasuryActionsV2 from 0xTreasuryActionsV2
   import MyMultiSigV2 from 0xMyMultiSigV2
 
-  transaction(treasuryAddr: Address, newThreshold: Int, message: String, keyIds: [UInt64], signatures: [String], signatureBlock: UInt64) {
+  transaction(treasuryAddr: Address, newThreshold: UInt, message: String, keyIds: [UInt64], signatures: [String], signatureBlock: UInt64) {
   
     let treasury: &DAOTreasuryV2.Treasury{DAOTreasuryV2.TreasuryPublic}
     let action: AnyStruct{MyMultiSigV2.Action}

@@ -64,25 +64,31 @@ pub contract MyMultiSigV2 {
     }
 
     //
+    // ------- Enums------- 
+    //
+
+    pub enum SignerResponse: UInt {
+        pub case approved
+        pub case rejected
+        pub case pending
+    }
+    
+    //
     // ------- Resources ------- 
     //
 
     pub resource MultiSignAction {
 
-        pub var accountsVerified: {Address: Bool}
+        pub var signerResponses: {Address: SignerResponse}
         access(contract) let action: {Action}
 
-        access(contract) fun setAccountsVerified(signer: Address, value: Bool) {
-            self.accountsVerified[signer] = value
+        access(contract) fun setSignerResponse(signer: Address, value: SignerResponse) {
+            self.signerResponses[signer] = value
         }
 
         init(signers: [Address], action: {Action}) {
-            self.accountsVerified = {}
+            self.signerResponses = {}
             self.action = action
-            
-            for signer in signers {
-                self.accountsVerified[signer] = nil
-            }
         }
     }
 
@@ -92,8 +98,8 @@ pub contract MyMultiSigV2 {
         pub fun getIntents(): {UInt64: String}
         pub fun getSigners(): {Address: Bool}
         pub fun getThreshold(): UInt
-        pub fun getVerifiedSignersForAction(actionUUID: UInt64): {Address: Bool}
-        pub fun getTotalVerifiedForAction(actionUUID: UInt64): Int
+        pub fun getSignerResponsesForAction(actionUUID: UInt64): {Address: UInt}
+        pub fun getTotalApprovedForAction(actionUUID: UInt64): Int
         pub fun getTotalRejectedForAction(actionUUID: UInt64): Int
         pub fun signerApproveAction(actionUUID: UInt64, messageSignaturePayload: MessageSignaturePayload)
         pub fun signerRejectAction(actionUUID: UInt64, messageSignaturePayload: MessageSignaturePayload)
@@ -124,7 +130,6 @@ pub contract MyMultiSigV2 {
                 self.signers.length >= Int(self.threshold):
                     "Cannot remove signer, number of signers must be equal or higher than the threshold."
             }
-
             self.signers.remove(key: signer)
             emit SignerRemoved(address: signer)
         }
@@ -164,7 +169,7 @@ pub contract MyMultiSigV2 {
             pre {
                 self.signers[messageSignaturePayload.signingAddr] == true:
                     "This address is not allowed to sign for this."
-                self.borrowAction(actionUUID:actionUUID).accountsVerified[messageSignaturePayload.signingAddr] != true:
+                self.borrowAction(actionUUID:actionUUID).signerResponses[messageSignaturePayload.signingAddr] != SignerResponse.approved:
                     "This address has already signed."
             }
             let action = self.borrowAction(actionUUID:actionUUID)
@@ -186,7 +191,7 @@ pub contract MyMultiSigV2 {
             assert(signatureValidationResponse == true, message: "Invalid Signatures")
 
             // Approve action
-            action.setAccountsVerified(signer: messageSignaturePayload.signingAddr, value: true)
+            action.setSignerResponse(signer: messageSignaturePayload.signingAddr, value: SignerResponse.approved)
 
             emit ActionApprovedBySigner(address: messageSignaturePayload.signingAddr, uuid: self.uuid)
         }
@@ -194,7 +199,7 @@ pub contract MyMultiSigV2 {
         pub fun signerRejectAction(actionUUID: UInt64, messageSignaturePayload: MessageSignaturePayload) {
             pre {
                 self.actions[actionUUID] != nil: "Couldn't find action with UUID ".concat(actionUUID.toString())
-                self.borrowAction(actionUUID: actionUUID).accountsVerified[messageSignaturePayload.signingAddr] != false:
+                self.borrowAction(actionUUID: actionUUID).signerResponses[messageSignaturePayload.signingAddr] != SignerResponse.rejected:
                     "Signer "
                         .concat(messageSignaturePayload.signingAddr.toString())
                         .concat(" has already rejected this action")
@@ -218,7 +223,7 @@ pub contract MyMultiSigV2 {
 
             // Reject action
             let action = self.borrowAction(actionUUID: actionUUID)
-            action.setAccountsVerified(signer: messageSignaturePayload.signingAddr, value: false)
+            action.setSignerResponse(signer: messageSignaturePayload.signingAddr, value: SignerResponse.rejected)
 
             emit ActionRejectedBySigner(address: messageSignaturePayload.signingAddr, uuid: self.uuid)
 
@@ -232,7 +237,7 @@ pub contract MyMultiSigV2 {
 
         pub fun readyToExecute(actionUUID: UInt64): Bool {
             let actionRef: &MultiSignAction = (&self.actions[actionUUID] as &MultiSignAction?)!
-            return self.getTotalVerifiedForAction(actionUUID: actionUUID) >= Int(self.threshold)
+            return self.getTotalApprovedForAction(actionUUID: actionUUID) >= Int(self.threshold)
         }
 
         pub fun borrowAction(actionUUID: UInt64): &MultiSignAction {
@@ -259,16 +264,26 @@ pub contract MyMultiSigV2 {
             return self.threshold
         }
 
-        pub fun getVerifiedSignersForAction(actionUUID: UInt64): {Address: Bool} {
-            return self.borrowAction(actionUUID: actionUUID).accountsVerified
+        pub fun getSignerResponsesForAction(actionUUID: UInt64): {Address: UInt} {
+            let allResponses: {Address: UInt} = {}
+            let responses = self.borrowAction(actionUUID: actionUUID).signerResponses
+            for signer in self.signers.keys {
+                if responses[signer] != nil {
+                    allResponses[signer] = responses[signer]!.rawValue
+                }
+                else {
+                    allResponses[signer] = SignerResponse.pending.rawValue
+                }
+            }
+            return  allResponses
         }
 
-        pub fun getTotalVerifiedForAction(actionUUID: UInt64): Int {
+        pub fun getTotalApprovedForAction(actionUUID: UInt64): Int {
             var total: Int = 0
             let action = self.borrowAction(actionUUID: actionUUID)
             for key in self.signers.keys {
-                if action.accountsVerified[key] == true {
-                    total= total + 1
+                if action.signerResponses[key] != nil && action.signerResponses[key]! == SignerResponse.approved {
+                    total = total + 1
                 }
             }
             return total
@@ -278,8 +293,8 @@ pub contract MyMultiSigV2 {
             var total: Int = 0
             let action = self.borrowAction(actionUUID: actionUUID)
             for key in self.signers.keys {
-                if action.accountsVerified[key] == false {
-                    total= total + 1
+                if action.signerResponses[key] != nil && action.signerResponses[key]! == SignerResponse.rejected {
+                    total = total + 1
                 }
             }
             return total

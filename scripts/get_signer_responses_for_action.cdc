@@ -1,6 +1,5 @@
-export const GET_SIGNERS_FOR_ACTION = `
-import DAOTreasuryV2 from 0xDAOTreasuryV2
-import MyMultiSigV2 from 0xMyMultiSigV2
+import DAOTreasuryV2 from "../contracts/DAOTreasury.cdc"
+import MyMultiSigV2 from "../contracts/MyMultiSig.cdc"
 
 pub fun main(treasuryAddr: Address, actionUUID: UInt64): {Address: String} {
   let treasury = getAccount(treasuryAddr).getCapability(DAOTreasuryV2.TreasuryPublicPath)
@@ -12,6 +11,7 @@ pub fun main(treasuryAddr: Address, actionUUID: UInt64): {Address: String} {
 
   let allSigners: {Address: String} = {}
 
+  // Map enum values to strings
   for signer in responses.keys {
     switch MyMultiSigV2.SignerResponse(rawValue: responses[signer]!)!{
       case MyMultiSigV2.SignerResponse.approved:
@@ -26,4 +26,3 @@ pub fun main(treasuryAddr: Address, actionUUID: UInt64): {Address: String} {
   }
   return allSigners
 }
-`;

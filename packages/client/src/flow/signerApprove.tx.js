@@ -34,7 +34,7 @@ export const SIGNER_APPROVE = `
 		}
 	  
 		post {
-		  self.action.accountsVerified[self.messageSignaturePayload.signingAddr] == true: "Error: tx completed but signer approval not registered"
+		  self.action.signerResponses[self.messageSignaturePayload.signingAddr] ==  MyMultiSigV2.SignerResponse.approved: "Error: tx completed but signer approval not registered"
 		}
 	  }
 `;
