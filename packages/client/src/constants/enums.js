@@ -7,6 +7,9 @@ export const COIN_TYPES = {
   FLOW: "FLOW",
   FUSD: "FUSD",
   USDC: "USDC",
+  BLT: "BLT",
+  STARLY: "STARLY",
+  REVV: "REVV"
 };
 
 export const SAFE_TYPES = {

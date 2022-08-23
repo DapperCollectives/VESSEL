@@ -361,9 +361,9 @@ pub contract MyMultiSigV2 {
             keyList.add(
                 PublicKey(
                     publicKey: accountKey.publicKey.publicKey,
-                    signatureAlgorithm: UInt(accountKey.publicKey.signatureAlgorithm.rawValue) == 2 ? SignatureAlgorithm.ECDSA_secp256k1  : SignatureAlgorithm.ECDSA_P256
+                    signatureAlgorithm: accountKey.publicKey.signatureAlgorithm
                 ),
-                hashAlgorithm: HashAlgorithm.SHA3_256,
+                hashAlgorithm: accountKey.hashAlgorithm,
                 weight: keyWeight
             )
 
