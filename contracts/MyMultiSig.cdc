@@ -168,7 +168,8 @@ pub contract MyMultiSigV2 {
         pub fun signerApproveAction(actionUUID: UInt64, messageSignaturePayload: MessageSignaturePayload) {
             pre {
                 self.signers[messageSignaturePayload.signingAddr] == true:
-                    "This address is not allowed to sign for this."
+                    "This address is not a signer on the Treasury."
+                self.actions[actionUUID] != nil: "Couldn't find action with UUID ".concat(actionUUID.toString())
                 self.borrowAction(actionUUID:actionUUID).signerResponses[messageSignaturePayload.signingAddr] != SignerResponse.approved:
                     "This address has already signed."
             }
@@ -198,6 +199,8 @@ pub contract MyMultiSigV2 {
 
         pub fun signerRejectAction(actionUUID: UInt64, messageSignaturePayload: MessageSignaturePayload) {
             pre {
+                self.signers[messageSignaturePayload.signingAddr] == true:
+                    "This address is not a signer on the Treasury." 
                 self.actions[actionUUID] != nil: "Couldn't find action with UUID ".concat(actionUUID.toString())
                 self.borrowAction(actionUUID: actionUUID).signerResponses[messageSignaturePayload.signingAddr] != SignerResponse.rejected:
                     "Signer "
@@ -281,8 +284,9 @@ pub contract MyMultiSigV2 {
         pub fun getTotalApprovedForAction(actionUUID: UInt64): Int {
             var total: Int = 0
             let action = self.borrowAction(actionUUID: actionUUID)
-            for key in self.signers.keys {
-                if action.signerResponses[key] != nil && action.signerResponses[key]! == SignerResponse.approved {
+            for key in action.signerResponses.keys {
+                let status = action.signerResponses[key]
+                if status != nil && status! == SignerResponse.approved {
                     total = total + 1
                 }
             }
@@ -292,8 +296,9 @@ pub contract MyMultiSigV2 {
         pub fun getTotalRejectedForAction(actionUUID: UInt64): Int {
             var total: Int = 0
             let action = self.borrowAction(actionUUID: actionUUID)
-            for key in self.signers.keys {
-                if action.signerResponses[key] != nil && action.signerResponses[key]! == SignerResponse.rejected {
+            for key in action.signerResponses.keys {
+                let status = action.signerResponses[key]
+                if status != nil && status! == SignerResponse.rejected {
                     total = total + 1
                 }
             }
