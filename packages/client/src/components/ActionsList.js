@@ -1,5 +1,6 @@
 import React from "react";
 import { formatActionString } from "../utils";
+import { SIGNER_RESPONSES } from "constants/enums";
 
 function ActionsList({ actions = [], onSign, onConfirm, safeData }) {
   const ActionComponents = [];
@@ -16,8 +17,8 @@ function ActionsList({ actions = [], onSign, onConfirm, safeData }) {
   } else {
     actions.forEach((action, idx) => {
       const borderClass = idx < actions.length - 1 ? "border-light-top" : ``;
-      const totalSigned = Object.values(action.verifiedSigners).filter(
-        (x) => x
+      const totalSigned = Object.values(action.signerResponses).filter(
+        (x) => x == SIGNER_RESPONSES.APPROVED
       ).length;
       const confirmReady = totalSigned >= safeData.threshold;
       const background = confirmReady ? "#FF8A00" : "#FF0000";

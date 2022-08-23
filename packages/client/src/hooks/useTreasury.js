@@ -51,7 +51,7 @@ const doCreateTreasury = async (signerAddresses, threshold) => {
     cadence: INITIALIZE_TREASURY,
     args: (arg, t) => [
       arg(signerAddresses, t.Array(t.Address)),
-      arg(threshold, t.UInt64),
+      arg(threshold, t.UInt),
     ],
     limit: CREATE_TREASURY_LIMIT,
   });
@@ -147,7 +147,7 @@ const doUpdateThreshold = async (treasuryAddr, newThreshold) => {
     cadence: UPDATE_THRESHOLD,
     args: (arg, t) => [
       arg(treasuryAddr, t.Address),
-      arg(newThreshold, t.UInt64),
+      arg(newThreshold, t.UInt),
       arg(message, t.String),
       arg(keyIds, t.Array(t.UInt64)),
       arg(signatures, t.Array(t.String)),
@@ -325,14 +325,14 @@ export default function useTreasury(treasuryAddr) {
 
     for (const action of Object.keys(proposedActionsResp ?? {})) {
       const uuid = parseInt(action, 10);
-      const verifiedSigners = await getSignersForAction(
+      const signerResponses = await getSignersForAction(
         treasuryAddr,
         parseInt(action, 10)
       );
       proposedActions.push({
         uuid,
         intent: proposedActionsResp[action],
-        verifiedSigners,
+        signerResponses,
       });
     }
     dispatch({
