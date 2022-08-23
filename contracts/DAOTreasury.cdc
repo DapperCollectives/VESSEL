@@ -72,30 +72,17 @@ pub contract DAOTreasuryV2 {
 
       // ------- Validate Message --------
       // message format: {identifier hex}{blockId}
-      var counter = 0
-      let signingBlock = getBlock(at: signaturePayload.signatureBlock)!
-      let blockId = signingBlock.id
-      let blockIds: [UInt8] = []
-
-      while (counter < blockId.length) {
-          blockIds.append(blockId[counter])
-          counter = counter + 1
-      }
-
-      let blockIdHex = String.encodeHex(blockIds)
-      let identifierHex = String.encodeHex(identifier.utf8)
-
       let message = signaturePayload.message
-      // Identifier
+
+      // ------- Validate Identifier -------
+      let identifierHex = String.encodeHex(identifier.utf8)
       assert(
         identifierHex == message.slice(from: 0, upTo: identifierHex.length),
         message: "Invalid Message: incorrect identifier"
       )
-      // Block ID
-      assert(
-        blockIdHex == message.slice(from: identifierHex.length, upTo: message.length),
-        message: "Invalid Message: invalid blockId"
-      )
+
+      // ------ Validate Block ID --------
+      MyMultiSigV2.validateMessageBlockId(blockHeight: signaturePayload.signatureBlock, messageBlockId: message.slice(from: identifierHex.length, upTo: message.length))
 
       // ------ Validate Signature -------
       var signatureValidationResponse = MyMultiSigV2.validateSignature(payload: signaturePayload)
@@ -132,31 +119,17 @@ pub contract DAOTreasuryV2 {
 
       // ------- Validate Message --------
       // message format: {collection identifier hex}{blockId}
-      var counter = 0
-      let signingBlock = getBlock(at: signaturePayload.signatureBlock)!
-      let blockId = signingBlock.id
-      let blockIds: [UInt8] = []
-
-      while (counter < blockId.length) {
-          blockIds.append(blockId[counter])
-          counter = counter + 1
-      }
-
-      let blockIdHex = String.encodeHex(blockIds)
-      let vaultIdHex = String.encodeHex(identifier.utf8)
-
       let message = signaturePayload.message
 
-      // Vault Identifier
+      // ----- Validate Vault Identifier -----
+      let vaultIdHex = String.encodeHex(identifier.utf8)
       assert(
         vaultIdHex == message.slice(from: 0, upTo: vaultIdHex.length),
         message: "Invalid Message: incorrect vault identifier"
       )
-      // Block ID
-      assert(
-        blockIdHex == message.slice(from: vaultIdHex.length, upTo: message.length),
-        message: "Invalid Message: invalid blockId"
-      )
+
+      // ------ Validate Block ID --------
+      MyMultiSigV2.validateMessageBlockId(blockHeight: signaturePayload.signatureBlock, messageBlockId: message.slice(from: vaultIdHex.length, upTo: message.length))
 
       // ------ Validate Signature -------
       var signatureValidationResponse = MyMultiSigV2.validateSignature(payload: signaturePayload)
@@ -213,30 +186,17 @@ pub contract DAOTreasuryV2 {
 
       // ------- Validate Message --------
       // message format: {collection identifier hex}{blockId}
-      var counter = 0
-      let signingBlock = getBlock(at: signaturePayload.signatureBlock)!
-      let blockId = signingBlock.id
-      let blockIds: [UInt8] = []
-
-      while (counter < blockId.length) {
-          blockIds.append(blockId[counter])
-          counter = counter + 1
-      }
-
-      let blockIdHex = String.encodeHex(blockIds)
-      let collectionIdHex = String.encodeHex(collection.getType().identifier.utf8)
-
       let message = signaturePayload.message
-      // Collection Identifier
+
+      // ------- Validate Collection Identifier -------
+      let collectionIdHex = String.encodeHex(collection.getType().identifier.utf8)
       assert(
         collectionIdHex == message.slice(from: 0, upTo: collectionIdHex.length),
         message: "Invalid Message: incorrect collection identifier"
       )
-      // Block ID
-      assert(
-        blockIdHex == message.slice(from: collectionIdHex.length, upTo: message.length),
-        message: "Invalid Message: invalid blockId"
-      )
+
+      // ------ Validate Block ID --------
+      MyMultiSigV2.validateMessageBlockId(blockHeight: signaturePayload.signatureBlock, messageBlockId: message.slice(from: collectionIdHex.length, upTo: message.length))
 
       // ------ Validate Signature -------
       var signatureValidationResponse = MyMultiSigV2.validateSignature(payload: signaturePayload)
@@ -265,31 +225,18 @@ pub contract DAOTreasuryV2 {
 
       // ------- Validate Message --------
       // message format: {collection identifier hex}{blockId}
-      var counter = 0
-      let signingBlock = getBlock(at: signaturePayload.signatureBlock)!
-      let blockId = signingBlock.id
-      let blockIds: [UInt8] = []
 
-      while (counter < blockId.length) {
-          blockIds.append(blockId[counter])
-          counter = counter + 1
-      }
-
-      let blockIdHex = String.encodeHex(blockIds)
       let collectionIdHex = String.encodeHex(identifier.utf8)
-
       let message = signaturePayload.message
 
-      // Collection Identifier
+      // ------ Validate Collection Identifier ------
       assert(
         collectionIdHex == message.slice(from: 0, upTo: collectionIdHex.length),
         message: "Invalid Message: incorrect collection identifier"
       )
-      // Block ID
-      assert(
-        blockIdHex == message.slice(from: collectionIdHex.length, upTo: message.length),
-        message: "Invalid Message: invalid blockId"
-      )
+
+      // ------ Validate Block ID --------
+      MyMultiSigV2.validateMessageBlockId(blockHeight: signaturePayload.signatureBlock, messageBlockId: message.slice(from: collectionIdHex.length, upTo: message.length))
 
       // ------ Validate Signature -------
       var signatureValidationResponse = MyMultiSigV2.validateSignature(payload: signaturePayload)
