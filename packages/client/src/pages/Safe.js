@@ -13,7 +13,7 @@ import {
 } from "../components";
 import { ArrowDown, ArrowUp } from "../components/Svg";
 import { Web3Consumer, useModalContext } from "../contexts";
-import { useClipboard, useErrorMessage } from "../hooks";
+import { useClipboard, useErrorMessage, useSuccessMessage } from "../hooks";
 
 const ReceiveTokens = ({ name, address }) => {
   const modalContext = useModalContext();
@@ -60,6 +60,7 @@ function Safe({ web3 }) {
   const clipboard = useClipboard();
 
   const { showErrorModal } = useErrorMessage();
+  const { showSuccessModal } = useSuccessMessage();
 
   const safeData = web3?.treasuries?.[address];
   const actions = web3?.actions?.[address];
@@ -134,7 +135,10 @@ function Safe({ web3 }) {
   };
 
   const onConfirmAction = async ({ uuid }) => {
-    await executeAction(uuid).catch((error) => showErrorModal(error));
+    const events = await executeAction(uuid).catch((error) => showErrorModal(error));
+    const actions = events.filter(e => e.type.endsWith("ActionExecuted"));
+
+    showSuccessModal(actions[0]);
   };
 
   const tabMap = {

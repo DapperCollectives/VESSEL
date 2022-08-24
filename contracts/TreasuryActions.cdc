@@ -72,7 +72,7 @@ pub contract TreasuryActionsV3 {
 
       emit TransferTokenToAccountActionExecuted(
         recipientAddr: self.recipientVault.borrow()!.owner!.address,
-        vaultID: self.recipientVault.getType().identifier,
+        vaultID: self.recipientVault.borrow()!.getType().identifier,
         amount: self.amount,
         treasuryAddr: treasuryRef.owner!.address
       )

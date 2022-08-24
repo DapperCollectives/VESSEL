@@ -9,7 +9,7 @@ import (
 
 var FlowTokenVaultID = "A.0ae53cb6e3f42a79.FlowToken.Vault"
 var FUSDTokenVaultID = "A.f8d6e0586b0a20c7.FUSD.Vault"
-var NonFungibleTokenCollectionID = "A.f8d6e0586b0a20c7.ExampleNFT.Collection"
+var NonFungibleTokenCollectionID = "A.f8d6e0586b0a20c7.ZeedsINO.Collection"
 var DefaultAccountBalance uint64 = 1e5
 var TransferAmount float64 = 100
 var TransferAmountUInt64 uint64 = 100e8

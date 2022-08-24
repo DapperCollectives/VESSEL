@@ -1,6 +1,6 @@
 export const SEND_NFT_TO_TREASURY = `
 	import NonFungibleToken from 0xNonFungibleToken
-	import ExampleNFT from 0xExampleNFT
+	import ZeedzINO from 0xZeedzINO
 	import DAOTreasuryV3 from 0xDAOTreasuryV3
 	import MyMultiSigV3 from 0xMyMultiSigV3
 
@@ -9,7 +9,7 @@ export const SEND_NFT_TO_TREASURY = `
 			prepare(signer: AuthAccount) {
 					// borrow a reference to the signer's NFT collection
 					let collectionRef = signer
-							.borrow<&ExampleNFT.Collection>(from: ExampleNFT.CollectionStoragePath)
+							.borrow<&ZeedzINO.Collection>(from: ZeedzINO.CollectionStoragePath)
 							?? panic("Could not borrow a reference to the owner's collection")
 
 					let treasury = getAccount(treasuryAddr).getCapability(DAOTreasuryV3.TreasuryPublicPath)

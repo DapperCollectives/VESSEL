@@ -2,11 +2,10 @@ import TreasuryActionsV3 from "../contracts/TreasuryActions.cdc"
 import DAOTreasuryV3 from "../contracts/DAOTreasury.cdc"
 import NonFungibleToken from "../contracts/core/NonFungibleToken.cdc"
 import MyMultiSigV3 from "../contracts/MyMultiSig.cdc"
-import ExampleNFT from "../contracts/core/ExampleNFT.cdc"
 
 // An example of proposing an action.
 //
-// Proposed ACTION: Transfer ExampleNFT with ID `id` from the DAOTreasuryV3
+// Proposed ACTION: Transfer ZeedzINO with ID `id` from the DAOTreasuryV2
 // at `treasuryAddr` to `recipientAddr`
 
 transaction(treasuryAddr: Address, recipientAddr: Address, identifier: String, id: UInt64, message: String, keyIds: [UInt64], signatures: [String], signatureBlock: UInt64) {

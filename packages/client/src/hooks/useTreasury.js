@@ -264,6 +264,7 @@ const getSignersForAction = async (address, actionUUID) => {
 
 const getVaultBalance = async (address, coinType = COIN_TYPES.FLOW) => {
   const identifiers = await doQuery(GET_TREASURY_IDENTIFIERS, address);
+  console.log(identifiers)
   const vaultId = getVaultId(identifiers, coinType);
   if (vaultId) {
     return await query({
@@ -467,9 +468,10 @@ export default function useTreasury(treasuryAddr) {
 
   const executeAction = async (actionUUID) => {
     const res = await doExecuteAction(treasuryAddr, actionUUID);
-    await tx(res).onceSealed();
+    const result = await tx(res).onceSealed();
     await refreshTreasury();
     await updateOwnerList(treasuryAddr);
+    return result.events;
   };
 
   const updateThreshold = async (newThreshold) => {
