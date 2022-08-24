@@ -8,7 +8,6 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/DapperCollectives/VESSEL/go/util"
 	"github.com/bjartek/overflow/overflow"
 	"github.com/onflow/cadence"
 	"github.com/onflow/flow-go-sdk"
@@ -24,7 +23,6 @@ const ServiceAddress = "0xf8d6e0586b0a20c7"
 func NewOverflowTest(t *testing.T) *OverflowTestUtils {
 	otu := &OverflowTestUtils{T: t, O: overflow.NewTestingEmulator().Start()}
 	// otu := &OverflowTestUtils{T: t, O: overflow.NewOverflowEmulator().Start()}
-	util.DeployFiatToken("treasuryOwner", "USDC", "0.1.0", otu.O)
 	return otu
 }
 
