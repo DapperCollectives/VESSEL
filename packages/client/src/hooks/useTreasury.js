@@ -264,7 +264,6 @@ const getSignersForAction = async (address, actionUUID) => {
 
 const getVaultBalance = async (address, coinType = COIN_TYPES.FLOW) => {
   const identifiers = await doQuery(GET_TREASURY_IDENTIFIERS, address);
-  console.log(identifiers)
   const vaultId = getVaultId(identifiers, coinType);
   if (vaultId) {
     return await query({

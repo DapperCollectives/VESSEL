@@ -82,7 +82,7 @@ export default function useNFTs() {
       name: res.name,
       description: res.description,
       thumbnail: {
-        url: res.thumbnail,
+        url: res.imageURI,
       },
     }));
 
