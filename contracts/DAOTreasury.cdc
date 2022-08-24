@@ -18,6 +18,8 @@ pub contract DAOTreasuryV3 {
   pub event DepositNFT(collectionID: String, nftID: UInt64)
   pub event WithdrawTokens(vaultID: String, amount: UFix64)
   pub event WithdrawNFT(collectionID: String, nftID: UInt64)
+  pub event DestroyVault(vaultID: String)
+  pub event DestroyCollection(collectionID: String)
 
 
   // Interfaces + Resources
@@ -25,7 +27,9 @@ pub contract DAOTreasuryV3 {
     pub fun proposeAction(action: {MyMultiSigV3.Action}, signaturePayload: MyMultiSigV3.MessageSignaturePayload): UInt64
     pub fun executeAction(actionUUID: UInt64, signaturePayload: MyMultiSigV3.MessageSignaturePayload)
     pub fun signerDepositCollection(collection: @NonFungibleToken.Collection, signaturePayload: MyMultiSigV3.MessageSignaturePayload)
+    pub fun signerRemoveCollection(identifier: String, signaturePayload: MyMultiSigV3.MessageSignaturePayload)
     pub fun signerDepositVault(vault: @FungibleToken.Vault, signaturePayload: MyMultiSigV3.MessageSignaturePayload)
+    pub fun signerRemoveVault(identifier: String, signaturePayload: MyMultiSigV3.MessageSignaturePayload)
     pub fun depositTokens(identifier: String, vault: @FungibleToken.Vault)
     pub fun depositNFT(identifier: String, nft: @NonFungibleToken.NFT)
     pub fun borrowManagerPublic(): &MyMultiSigV3.Manager{MyMultiSigV3.ManagerPublic}
@@ -70,30 +74,17 @@ pub contract DAOTreasuryV3 {
 
       // ------- Validate Message --------
       // message format: {identifier hex}{blockId}
-      var counter = 0
-      let signingBlock = getBlock(at: signaturePayload.signatureBlock)!
-      let blockId = signingBlock.id
-      let blockIds: [UInt8] = []
-
-      while (counter < blockId.length) {
-          blockIds.append(blockId[counter])
-          counter = counter + 1
-      }
-
-      let blockIdHex = String.encodeHex(blockIds)
-      let identifierHex = String.encodeHex(identifier.utf8)
-
       let message = signaturePayload.message
-      // Identifier
+
+      // ------- Validate Identifier -------
+      let identifierHex = String.encodeHex(identifier.utf8)
       assert(
         identifierHex == message.slice(from: 0, upTo: identifierHex.length),
         message: "Invalid Message: incorrect identifier"
       )
-      // Block ID
-      assert(
-        blockIdHex == message.slice(from: identifierHex.length, upTo: message.length),
-        message: "Invalid Message: invalid blockId"
-      )
+
+      // ------ Validate Block ID --------
+      MyMultiSigV3.validateMessageBlockId(blockHeight: signaturePayload.signatureBlock, messageBlockId: message.slice(from: identifierHex.length, upTo: message.length))
 
       // ------ Validate Signature -------
       let signatureValidationResponse = FCLCrypto.verifyUserSignatures(
@@ -102,7 +93,6 @@ pub contract DAOTreasuryV3 {
         keyIndices: signaturePayload.keyIds,
         signatures: signaturePayload.signatures
       )
-
       assert(
         signatureValidationResponse == true,
         message: "Invalid Signature"
@@ -119,6 +109,47 @@ pub contract DAOTreasuryV3 {
     }
 
     // ------- Vaults ------- 
+
+    pub fun signerRemoveVault(identifier: String, signaturePayload: MyMultiSigV3.MessageSignaturePayload) {
+      pre {
+        self.vaults[identifier] != nil: "Vault doesn't exist in this treasury."
+        self.vaults[identifier]?.balance == 0.0: "Vault must be empty before it can be removed."
+      }
+      // ------- Validate Address is a Signer on the Treasury -----
+      let signers = self.multiSignManager.getSigners()
+      assert(signers[signaturePayload.signingAddr] == true, message: "Address is not a signer on this Treasury")
+
+      // ------- Validate Message --------
+      // message format: {collection identifier hex}{blockId}
+      let message = signaturePayload.message
+
+      // ----- Validate Vault Identifier -----
+      let vaultIdHex = String.encodeHex(identifier.utf8)
+      assert(
+        vaultIdHex == message.slice(from: 0, upTo: vaultIdHex.length),
+        message: "Invalid Message: incorrect vault identifier"
+      )
+
+      // ------ Validate Block ID --------
+      MyMultiSigV3.validateMessageBlockId(blockHeight: signaturePayload.signatureBlock, messageBlockId: message.slice(from: vaultIdHex.length, upTo: message.length))
+
+      // ------ Validate Signature -------
+      let signatureValidationResponse = FCLCrypto.verifyUserSignatures(
+          address: signaturePayload.signingAddr,
+          message: String.encodeHex(signaturePayload.message.utf8),
+          keyIndices: signaturePayload.keyIds,
+          signatures: signaturePayload.signatures
+      )
+      assert(
+        signatureValidationResponse == true,
+        message: "Invalid Signature"
+      )
+
+      // If all asserts passed, remove vault from the Treasury and destroy
+      let vault <- self.vaults.remove(key: identifier)
+      destroy vault
+      emit DestroyVault(vaultID: identifier)
+    }
 
     // Deposit a Vault //
     pub fun depositVault(vault: @FungibleToken.Vault) {
@@ -157,30 +188,57 @@ pub contract DAOTreasuryV3 {
 
       // ------- Validate Message --------
       // message format: {collection identifier hex}{blockId}
-      var counter = 0
-      let signingBlock = getBlock(at: signaturePayload.signatureBlock)!
-      let blockId = signingBlock.id
-      let blockIds: [UInt8] = []
-
-      while (counter < blockId.length) {
-          blockIds.append(blockId[counter])
-          counter = counter + 1
-      }
-
-      let blockIdHex = String.encodeHex(blockIds)
-      let collectionIdHex = String.encodeHex(collection.getType().identifier.utf8)
-
       let message = signaturePayload.message
-      // Collection Identifier
+
+      // ------- Validate Collection Identifier -------
+      let collectionIdHex = String.encodeHex(collection.getType().identifier.utf8)
       assert(
         collectionIdHex == message.slice(from: 0, upTo: collectionIdHex.length),
         message: "Invalid Message: incorrect collection identifier"
       )
-      // Block ID
-      assert(
-        blockIdHex == message.slice(from: collectionIdHex.length, upTo: message.length),
-        message: "Invalid Message: invalid blockId"
+
+      // ------ Validate Block ID --------
+      MyMultiSigV3.validateMessageBlockId(blockHeight: signaturePayload.signatureBlock, messageBlockId: message.slice(from: collectionIdHex.length, upTo: message.length))
+
+      // ------ Validate Signature -------
+      let signatureValidationResponse = FCLCrypto.verifyUserSignatures(
+          address: signaturePayload.signingAddr,
+          message: String.encodeHex(signaturePayload.message.utf8),
+          keyIndices: signaturePayload.keyIds,
+          signatures: signaturePayload.signatures
       )
+      assert(
+        signatureValidationResponse == true,
+        message: "Invalid Signature"
+      )
+
+      // If all asserts passed, deposit vault into Treasury
+      self.depositCollection(collection: <- collection)
+    }
+
+    pub fun signerRemoveCollection(identifier: String, signaturePayload: MyMultiSigV3.MessageSignaturePayload) {
+      pre {
+        self.collections[identifier] != nil: "Collection doesn't exist in this treasury."
+        self.collections[identifier]?.getIDs()?.length == 0 : "Collection must be empty before it can be removed."
+      }
+      // ------- Validate Address is a Signer on the Treasury -----
+      let signers = self.multiSignManager.getSigners()
+      assert(signers[signaturePayload.signingAddr] == true, message: "Address is not a signer on this Treasury")
+
+      // ------- Validate Message --------
+      // message format: {collection identifier hex}{blockId}
+
+      let collectionIdHex = String.encodeHex(identifier.utf8)
+      let message = signaturePayload.message
+
+      // ------ Validate Collection Identifier ------
+      assert(
+        collectionIdHex == message.slice(from: 0, upTo: collectionIdHex.length),
+        message: "Invalid Message: incorrect collection identifier"
+      )
+
+      // ------ Validate Block ID --------
+      MyMultiSigV3.validateMessageBlockId(blockHeight: signaturePayload.signatureBlock, messageBlockId: message.slice(from: collectionIdHex.length, upTo: message.length))
 
       // ------ Validate Signature -------
       let signatureValidationResponse = FCLCrypto.verifyUserSignatures(
@@ -189,14 +247,15 @@ pub contract DAOTreasuryV3 {
         keyIndices: signaturePayload.keyIds,
         signatures: signaturePayload.signatures
       )
-
       assert(
         signatureValidationResponse == true,
         message: "Invalid Signature"
       )
 
-      // If all asserts passed, deposit vault into Treasury
-      self.depositCollection(collection: <- collection)
+      // If all asserts passed, remove vault from the Treasury and destroy
+      let collection <- self.collections.remove(key: identifier)
+      destroy collection
+      emit DestroyCollection(collectionID: identifier)
     }
 
     // Deposit a Collection //
@@ -246,7 +305,6 @@ pub contract DAOTreasuryV3 {
         keyIndices: signaturePayload.keyIds,
         signatures: signaturePayload.signatures
       )
-
       assert(
         signatureValidationResponse == true,
         message: "Invalid Signature"

@@ -199,6 +199,138 @@ func (otu *OverflowTestUtils) SendCollectionToTreasury(from string, to string) *
 	return otu
 }
 
+func (otu *OverflowTestUtils) RemoveCollectionFromTreasury(from, treasuryAddr, collectionID string) *OverflowTestUtils {
+
+	//////////////////////////////////////////////
+	// Generate message/signature for signer
+	// msg {hexCollectionID}{blockID}
+	//////////////////////////////////////////////
+
+	src := []byte(collectionID)
+	hexCollectionID := make([]byte, hex.EncodedLen(len(src)))
+	hex.Encode(hexCollectionID, src)
+
+	// block.ID & block.Height
+	latestBlock, _ := otu.O.GetLatestBlock()
+	// message
+	message := fmt.Sprintf("%s%s", hexCollectionID, latestBlock.ID)
+	// signature
+	signature := otu.SignMessage(from, message)
+
+	otu.O.TransactionFromFile("remove_collection_from_treasury").
+		SignProposeAndPayAs(from).
+		Args(otu.O.Arguments().
+			Account(treasuryAddr).
+			String(collectionID).
+			String(message).
+			UInt64Array(0).
+			StringArray(signature).
+			UInt64(latestBlock.Height)).
+		Test(otu.T).
+		AssertSuccess()
+
+	return otu
+}
+
+func (otu *OverflowTestUtils) RemoveCollectionFromTreasuryFailure(from, treasuryAddr, collectionID string) *OverflowTestUtils {
+
+	//////////////////////////////////////////////
+	// Generate message/signature for signer
+	// msg {hexCollectionID}{blockID}
+	//////////////////////////////////////////////
+
+	src := []byte(collectionID)
+	hexCollectionID := make([]byte, hex.EncodedLen(len(src)))
+	hex.Encode(hexCollectionID, src)
+
+	// block.ID & block.Height
+	latestBlock, _ := otu.O.GetLatestBlock()
+	// message
+	message := fmt.Sprintf("%s%s", hexCollectionID, latestBlock.ID)
+	// signature
+	signature := otu.SignMessage(from, message)
+
+	otu.O.TransactionFromFile("remove_collection_from_treasury").
+		SignProposeAndPayAs(from).
+		Args(otu.O.Arguments().
+			Account(treasuryAddr).
+			String(collectionID).
+			String(message).
+			UInt64Array(0).
+			StringArray(signature).
+			UInt64(latestBlock.Height)).
+		Test(otu.T).
+		AssertFailure("")
+
+	return otu
+}
+
+func (otu *OverflowTestUtils) RemoveVaultFromTreasury(from string, treasuryAddr string, vaultID string) *OverflowTestUtils {
+
+	//////////////////////////////////////////////
+	// Generate message/signature for signer
+	// msg {hexCollectionID}{blockID}
+	//////////////////////////////////////////////
+
+	src := []byte(vaultID)
+	hexVaultID := make([]byte, hex.EncodedLen(len(src)))
+	hex.Encode(hexVaultID, src)
+
+	// block.ID & block.Height
+	latestBlock, _ := otu.O.GetLatestBlock()
+	// message
+	message := fmt.Sprintf("%s%s", hexVaultID, latestBlock.ID)
+	// signature
+	signature := otu.SignMessage(from, message)
+
+	otu.O.TransactionFromFile("remove_vault_from_treasury").
+		SignProposeAndPayAs(from).
+		Args(otu.O.Arguments().
+			Account(treasuryAddr).
+			String(vaultID).
+			String(message).
+			UInt64Array(0).
+			StringArray(signature).
+			UInt64(latestBlock.Height)).
+		Test(otu.T).
+		AssertSuccess()
+
+	return otu
+}
+
+func (otu *OverflowTestUtils) RemoveVaultFromTreasuryFailure(from string, treasuryAddr string, vaultID string) *OverflowTestUtils {
+
+	//////////////////////////////////////////////
+	// Generate message/signature for signer
+	// msg {hexCollectionID}{blockID}
+	//////////////////////////////////////////////
+
+	src := []byte(vaultID)
+	hexVaultID := make([]byte, hex.EncodedLen(len(src)))
+	hex.Encode(hexVaultID, src)
+
+	// block.ID & block.Height
+	latestBlock, _ := otu.O.GetLatestBlock()
+	// message
+	message := fmt.Sprintf("%s%s", hexVaultID, latestBlock.ID)
+	// signature
+	signature := otu.SignMessage(from, message)
+
+	otu.O.TransactionFromFile("remove_vault_from_treasury").
+		SignProposeAndPayAs(from).
+		Args(otu.O.Arguments().
+			Account(treasuryAddr).
+			String(vaultID).
+			String(message).
+			UInt64Array(0).
+			StringArray(signature).
+			UInt64(latestBlock.Height)).
+		Test(otu.T).
+		AssertFailure("")
+
+	return otu
+}
+
 func (otu *OverflowTestUtils) ProposeFungibleTokenTransferAction(treasuryAcct string, proposingAcct, recipientAcct string, amount float64, publicReceiverPathId string, vaultId string) *OverflowTestUtils {
 	recipient, _ := otu.O.State.Accounts().ByName(fmt.Sprintf("emulator-%s", recipientAcct))
 	src := []byte(fmt.Sprintf("Transfer %.8f %s tokens from the treasury to 0x%s", amount, vaultId, recipient.Address()))

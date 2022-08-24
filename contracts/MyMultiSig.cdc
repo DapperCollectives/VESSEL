@@ -366,8 +366,29 @@ pub contract MyMultiSigV3 {
         )
         return true
     }
-    
+
+    // takes a blockheight included in the signaturePayload and validates that
+    // it matches the blockId encoded in the message.
+    pub fun validateMessageBlockId(blockHeight: UInt64, messageBlockId: String) {
+        var counter = 0
+        let signingBlock = getBlock(at: blockHeight)!
+        let blockId = signingBlock.id
+        let blockIds: [UInt8] = []
+
+        while (counter < blockId.length) {
+            blockIds.append(blockId[counter])
+            counter = counter + 1
+        }
+
+        let blockIdHex = String.encodeHex(blockIds)
+        assert(
+            blockIdHex == messageBlockId,
+            message: "Invalid Message: invalid blockId"
+        )
+    }
+        
     pub fun createMultiSigManager(signers: [Address], threshold: UInt): @Manager {
         return <- create Manager(initialSigners: signers, initialThreshold: threshold)
     }
 }
+ 
