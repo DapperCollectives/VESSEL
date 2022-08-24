@@ -1,6 +1,6 @@
 import "./App.sass";
 import React from "react";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { HashRouter as Router, Switch, Route } from "react-router-dom";
 import { GraphQLClient, ClientContext } from "graphql-hooks";
 import { Web3Provider, ModalProvider } from "./contexts";
 import { Home, Safe, LoadSafe, CreateSafe } from "./pages";
