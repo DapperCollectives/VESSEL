@@ -6,6 +6,7 @@ export { GET_TREASURY_IDENTIFIERS } from "./getTreasuryIdentifiers.tx";
 export { GET_VAULT_BALANCE } from "./getVaultBalance.tx";
 export { GET_USER_FUSD_BALANCE } from "./getUserFUSDBalance.tx";
 export { GET_USER_FLOW_BALANCE } from "./getUserFlowBalance.tx";
+export { GET_USER_USDC_BALANCE } from "./getUserUSDCBalance.tx";
 export { SEND_TOKENS_TO_TREASURY } from "./sendTokensToTreasury.tx";
 export { SIGNER_APPROVE } from "./signerApprove.tx";
 export { GET_SIGNERS_FOR_ACTION } from "./getSignersForAction.tx";

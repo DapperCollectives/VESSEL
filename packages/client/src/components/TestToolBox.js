@@ -1,39 +1,33 @@
 import { useState, useContext, useEffect } from "react";
 import { Web3Context } from "contexts/Web3";
 import { COIN_TYPES } from "constants/enums";
+import { COIN_TYPE_TO_META } from "constants/maps";
+import { useAccount } from "hooks";
+import { formatAddress } from "utils";
 const TestToolBox = ({ address }) => {
   const [showToolBox, setShowToolBox] = useState(false);
-  const [userFUSDBalance, setUserFUSDBalance] = useState(0);
-  const [userFlowBalance, setUserFlowBalance] = useState(0);
+  const [userBalances, setuserBalances] = useState([]);
   const web3 = useContext(Web3Context);
-  const {
-    initDepositTokensToTreasury,
-    sendNFTToTreasury,
-    getTreasuryCollections,
-    getUserFUSDBalance,
-    getUserFlowBalance,
-    balances,
-    user,
-  } = web3;
+  const { getUserBalances, initDepositTokensToTreasury } = useAccount();
+  const { sendNFTToTreasury, getTreasuryCollections, balances, user } = web3;
 
   const treasuryBalances = balances[address];
   const onDeposit = async () => {
-    await initDepositTokensToTreasury();
+    await initDepositTokensToTreasury(address);
   };
 
   const onDepositNFT = async () => {
     await sendNFTToTreasury(address, 0);
     await getTreasuryCollections(address);
   };
+
   const updateUserBalance = async () => {
     try {
-      const fusdBalance = await getUserFUSDBalance(user.addr);
-      setUserFUSDBalance(fusdBalance);
+      const newUserBalances = await getUserBalances(formatAddress(user.addr));
+      setuserBalances(newUserBalances);
     } catch (err) {
-      console.log(`Failed to get FUSD balance, error: ${err}`)
+      console.log(`Failed to get FUSD balance, error: ${err}`);
     }
-    const flowBalance = await getUserFlowBalance(user.addr);
-    setUserFlowBalance(flowBalance);
   };
 
   useEffect(() => {
@@ -67,16 +61,24 @@ const TestToolBox = ({ address }) => {
               <ul>
                 <li>
                   <span>Account:</span>
-                  <ul className="ml-3">
-                    <li>Flow: {userFlowBalance}</li>
-                    <li>FUSD: {userFUSDBalance}</li>
-                  </ul>
+                  {userBalances && !!userBalances.length && (
+                    <ul className="ml-3">
+                      {userBalances.map((coin) => (
+                        <li key={COIN_TYPE_TO_META[coin.coinType].displayName}>
+                          {`${COIN_TYPE_TO_META[coin.coinType].displayName}: ${
+                            coin.balance
+                          }`}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                 </li>
                 <li>
                   <span>Treasury:</span>
                   <ul className="ml-3">
                     <li>Flow: {treasuryBalances[COIN_TYPES.FLOW]}</li>
                     <li>FUSD: {treasuryBalances[COIN_TYPES.FUSD]}</li>
+                    <li>USDC: {treasuryBalances[COIN_TYPES.USDC]}</li>
                   </ul>
                 </li>
               </ul>

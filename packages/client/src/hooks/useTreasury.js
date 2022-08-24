@@ -6,17 +6,15 @@ import reducer, { INITIAL_STATE } from "../reducers/treasuries";
 import {
   CREATE_TREASURY_LIMIT,
   EXECUTE_ACTION_LIMIT,
-  REGULAR_LIMIT,
   SIGNED_LIMIT,
   SIGNER_APPROVE_LIMIT,
   UPDATE_SIGNER_LIMIT,
-  createSignature,
-} from "../contexts/Web3";
+} from "constants/constants";
+import { createSignature } from "../contexts/Web3";
 import {
   GET_SIGNERS,
   GET_THRESHOLD,
   INITIALIZE_TREASURY,
-  SEND_TOKENS_TO_TREASURY,
   GET_PROPOSED_ACTIONS,
   SIGNER_APPROVE,
   GET_SIGNERS_FOR_ACTION,
@@ -30,8 +28,6 @@ import {
   PROPOSE_TRANSFER,
   ADD_VAULT,
   ADD_COLLECTION,
-  GET_USER_FUSD_BALANCE,
-  GET_USER_FLOW_BALANCE,
 } from "../flow";
 import { COIN_TYPES } from "constants/enums";
 
@@ -54,19 +50,6 @@ const doCreateTreasury = async (signerAddresses, threshold) => {
       arg(threshold, t.UInt),
     ],
     limit: CREATE_TREASURY_LIMIT,
-  });
-};
-
-const doSendTokensToTreasury = async (treasuryAddr, amount, coinType) => {
-  const vaultPath = COIN_TYPE_TO_META[coinType].storageVaultPath;
-  return await mutate({
-    cadence: SEND_TOKENS_TO_TREASURY,
-    args: (arg, t) => [
-      arg(treasuryAddr, t.Address),
-      arg(amount, t.UFix64),
-      arg(vaultPath, t.Path),
-    ],
-    limit: REGULAR_LIMIT,
   });
 };
 
@@ -220,14 +203,21 @@ const doProposeAddVault = async (treasuryAddr, contractName) => {
       arg(message, t.String),
       arg(keyIds, t.Array(t.UInt64)),
       arg(signatures, t.Array(t.String)),
-      arg(height, t.UInt64)
+      arg(height, t.UInt64),
     ],
     limit: SIGNED_LIMIT,
   });
 };
 
-const doProposeAddCollection = async (treasuryAddr, contractName, contractAddress) => {
-  const intent = `A.${contractAddress.replace("0x", "")}.${contractName}.Collection`;
+const doProposeAddCollection = async (
+  treasuryAddr,
+  contractName,
+  contractAddress
+) => {
+  const intent = `A.${contractAddress.replace(
+    "0x",
+    ""
+  )}.${contractName}.Collection`;
   const { message, keyIds, signatures, height } = await createSignature(intent);
 
   return await mutate({
@@ -237,7 +227,7 @@ const doProposeAddCollection = async (treasuryAddr, contractName, contractAddres
       arg(message, t.String),
       arg(keyIds, t.Array(t.UInt64)),
       arg(signatures, t.Array(t.String)),
-      arg(height, t.UInt64)
+      arg(height, t.UInt64),
     ],
     limit: SIGNED_LIMIT,
   });
@@ -412,30 +402,6 @@ export default function useTreasury(treasuryAddr) {
     return null;
   };
 
-  //FOR TESTING UTILS ONLY, calling this method deposits tokens to treasury
-  //should only be used for testing
-  const initDepositTokensToTreasury = async () => {
-    const flowRes = await doSendTokensToTreasury(
-      treasuryAddr,
-      String(parseFloat(10).toFixed(8)),
-      COIN_TYPES.FLOW
-    );
-    await tx(flowRes).onceSealed();
-
-    try {
-      const fusdRes = await doSendTokensToTreasury(
-        treasuryAddr,
-        String(parseFloat(10).toFixed(8)),
-        COIN_TYPES.FUSD
-      );
-      await tx(fusdRes).onceSealed();
-    } catch (err) {
-      console.log(`Failed to deposit FUSD, error: ${err}`)
-    }
-
-    await refreshTreasury();
-  };
-
   const proposeTransfer = async (recipientAddr, amount, coinType) => {
     const res = await doProposeTransfer(
       treasuryAddr,
@@ -512,30 +478,17 @@ export default function useTreasury(treasuryAddr) {
 
   const proposeAddCollection = async (contractName, contractAddress) => {
     try {
-      const res = await doProposeAddCollection(treasuryAddr, contractName, contractAddress);
+      const res = await doProposeAddCollection(
+        treasuryAddr,
+        contractName,
+        contractAddress
+      );
       await tx(res).onceSealed();
       await refreshTreasury();
     } catch (error) {
       console.error(error);
     }
   };
-
-  const getUserFUSDBalance = async (address) => {
-    const balance = await query({
-      cadence: GET_USER_FUSD_BALANCE,
-      args: (arg, t) => [arg(address, t.Address)],
-    });
-    return balance;
-  };
-
-  const getUserFlowBalance = async (address) => {
-    const balance = await query({
-      cadence: GET_USER_FLOW_BALANCE,
-      args: (arg, t) => [arg(address, t.Address)],
-    }).catch(console.error);
-    return balance;
-  };
-
   return {
     ...state,
     refreshTreasury,
@@ -543,7 +496,6 @@ export default function useTreasury(treasuryAddr) {
     cancelCreatingTreasury,
     fetchTreasury,
     setTreasury,
-    initDepositTokensToTreasury,
     proposeTransfer,
     signerApprove,
     executeAction,
@@ -554,7 +506,5 @@ export default function useTreasury(treasuryAddr) {
     getVaultBalance,
     proposeAddVault,
     proposeAddCollection,
-    getUserFUSDBalance,
-    getUserFlowBalance,
   };
 }
