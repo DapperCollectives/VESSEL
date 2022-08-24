@@ -11,7 +11,7 @@ import { REGULAR_LIMIT } from "constants/constants";
 
 const COIN_TYPE_LIST = [COIN_TYPES.FLOW, COIN_TYPES.FUSD, COIN_TYPES.USDC];
 
-const useAccount = () => {
+export default function useAccount() {
   const doSendTokensToTreasury = async (treasuryAddr, amount, coinType) => {
     const vaultPath = COIN_TYPE_TO_META[coinType].storageVaultPath;
     return await mutate({
@@ -53,6 +53,8 @@ const useAccount = () => {
         break;
       case COIN_TYPES.USDC:
         cadence = GET_USER_USDC_BALANCE;
+      default:
+        cadence = GET_USER_FLOW_BALANCE;
     }
     const balance = await query({
       cadence,
@@ -80,5 +82,4 @@ const useAccount = () => {
     getUserBalances,
     initDepositTokensToTreasury,
   };
-};
-export default useAccount;
+}

@@ -18,7 +18,7 @@ function ActionsList({ actions = [], onSign, onConfirm, safeData }) {
     actions.forEach((action, idx) => {
       const borderClass = idx < actions.length - 1 ? "border-light-top" : ``;
       const totalSigned = Object.values(action.signerResponses).filter(
-        (x) => x == SIGNER_RESPONSES.APPROVED
+        (x) => x === SIGNER_RESPONSES.APPROVED
       ).length;
       const confirmReady = totalSigned >= safeData.threshold;
       const background = confirmReady ? "#FF8A00" : "#FF0000";

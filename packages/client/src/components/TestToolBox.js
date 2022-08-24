@@ -38,14 +38,15 @@ const TestToolBox = ({ address }) => {
   return (
     <div style={{ position: "absolute", left: "20%", zIndex: 10000 }}>
       <div className="is-flex is-flex-direction-column">
-        <a
+        <button
+          style={{ border: "none" }}
           className="has-background-warning has-text-black p-1"
           onClick={() => {
             setShowToolBox((prevState) => !prevState);
           }}
         >
           {process.env.REACT_APP_FLOW_ENV} test utils
-        </a>
+        </button>
         {showToolBox && (
           <div
             className="has-text-black p-1 is-flex is-flex-direction-row has-background-warning  p-3"
@@ -54,9 +55,13 @@ const TestToolBox = ({ address }) => {
             <div className="mr-5">
               <label>
                 <strong>Balances</strong>
-                <a className="is-underlined ml-2" onClick={updateUserBalance}>
+                <button
+                  href="#"
+                  className="has-background-warning ml-2"
+                  onClick={updateUserBalance}
+                >
                   refresh
-                </a>
+                </button>
               </label>
               <ul>
                 <li>
