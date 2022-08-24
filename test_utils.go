@@ -23,7 +23,19 @@ const ServiceAddress = "0xf8d6e0586b0a20c7"
 func NewOverflowTest(t *testing.T) *OverflowTestUtils {
 	otu := &OverflowTestUtils{T: t, O: overflow.NewTestingEmulator().Start()}
 	// otu := &OverflowTestUtils{T: t, O: overflow.NewOverflowEmulator().Start()}
+	otu.DeployFiatToken("FiatToken", "USDC", "0.1.0", 1000000000.00000000, false)
 	return otu
+}
+
+func (otu *OverflowTestUtils) DeployFiatToken(contractName, tokenName, version string, initTotalSupply float64, initPaused bool) {
+	otu.O.Tx("deploy_contract_with_auth",
+		overflow.SignProposeAndPayAs("account"),
+		overflow.Arg("contractName", contractName),
+		overflow.Arg("tokenName", tokenName),
+		overflow.Arg("version", version),
+		overflow.Arg("initTotalSupply", initTotalSupply),
+		overflow.Arg("initPaused", initPaused),
+	).Print()
 }
 
 func (otu *OverflowTestUtils) SetupTreasury(name string, signers []string, threshold int) *OverflowTestUtils {
