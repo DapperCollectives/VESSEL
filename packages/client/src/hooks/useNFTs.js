@@ -31,7 +31,7 @@ const doProposeNFTTransfer = async (
   recipient,
   nft
 ) => {
-  // Example: A.f8d6e0586b0a20c7.ZeedsINO.Collection-0
+  // Example: A.f8d6e0586b0a20c7.ZeedzINO.Collection-0
   // First part will contain the collection identifier, and the second will contain the tokenId
   const tokenInfo = nft.split("-");
   const intent = `Transfer ${tokenInfo[0]} NFT from the treasury to ${recipient}`;

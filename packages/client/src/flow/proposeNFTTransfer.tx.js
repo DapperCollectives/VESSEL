@@ -16,7 +16,7 @@ export const PROPOSE_NFT_TRANSFER = `
 		self.treasury = getAccount(treasuryAddr).getCapability(DAOTreasuryV3.TreasuryPublicPath)
 						.borrow<&DAOTreasuryV3.Treasury{DAOTreasuryV3.TreasuryPublic}>()
 						?? panic("A DAOTreasuryV3 doesn't exist here.")
-		self.recipientCollection = getAccount(recipientAddr).getCapability<&{NonFungibleToken.CollectionPublic}>(ZeedzINO.ZeedzCollectionPublic)
+		self.recipientCollection = getAccount(recipientAddr).getCapability<&{NonFungibleToken.CollectionPublic}>(ZeedzINO.CollectionPublicPath)
 		self.action = TreasuryActionsV3.TransferNFT(recipientCollection: self.recipientCollection, nftID: id, proposer: signer.address)
 		
 		var _keyIds: [Int] = []

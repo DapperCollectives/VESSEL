@@ -121,7 +121,7 @@ pub contract ZeedzINO: NonFungibleToken {
                         publicPath: ZeedzINO.CollectionPublicPath,
                         providerPath: /private/ZeedzINOCollection,
                         publicCollection: Type<&ZeedzINO.Collection{ZeedzINO.ZeedzCollectionPublic}>(),
-                        publicLinked: Type<&ZeedzINO.Collection{ZeedzINO.ZeedzCollectionPublic, NonFungibleToken.CollectionPublic, NonFungibleToken.Receiver, MetadataViews.ResolverCollection}>(),
+                        publicLinkedType: Type<&ZeedzINO.Collection{ZeedzINO.ZeedzCollectionPublic, NonFungibleToken.CollectionPublic, NonFungibleToken.Receiver, MetadataViews.ResolverCollection}>(),
                         providerLinkedType: Type<&ZeedzINO.Collection{ZeedzINO.ZeedzCollectionPublic, NonFungibleToken.CollectionPublic, NonFungibleToken.Provider, MetadataViews.ResolverCollection}>(),
                         createEmptyCollectionFunction: (fun (): @NonFungibleToken.Collection {
                             return <-ZeedzINO.createEmptyCollection()
@@ -358,7 +358,7 @@ pub contract ZeedzINO: NonFungibleToken {
         //  and deposit it in the recipients collection using their collection reference.
         //
         pub fun mintNFT(recipient: &{NonFungibleToken.CollectionPublic}, name: String, description: String, typeID: UInt32, serialNumber: String, edition: UInt32, editionCap: UInt32, evolutionStage: UInt32, rarity: String, imageURI: String) {
-            recipient.deposit(token: <-create ZeedzINO.NFT(initID: ZeedzINO.totalSupply, initName: name, initDescription: description, initTypeID: typeID, initSerialNumber: serialNumber, initEdition: edition, initEdition: editionCap, initEvolutionStage: evolutionStage, initRarity: rarity, initImageURI: imageURI))
+            recipient.deposit(token: <-create ZeedzINO.NFT(initID: ZeedzINO.totalSupply, initName: name, initDescription: description, initTypeID: typeID, initSerialNumber: serialNumber, initEdition: edition, initEditionCap: editionCap, initEvolutionStage: evolutionStage, initRarity: rarity, initImageURI: imageURI))
             emit Minted(id: ZeedzINO.totalSupply, name: name, description: description, typeID: typeID, serialNumber: serialNumber, edition: edition, rarity: rarity)
 
             // increase numberOfMinterPerType and totalSupply
