@@ -1,21 +1,22 @@
 export const SIGNER_APPROVE = `
-	import DAOTreasuryV2 from 0xDAOTreasuryV2
-	import MyMultiSigV2 from 0xMyMultiSigV2
+	import DAOTreasuryV3 from 0xDAOTreasuryV3
+	import MyMultiSigV3 from 0xMyMultiSigV3
 
 	transaction(treasuryAddr: Address, actionUUID: UInt64, message: String, keyIds: [UInt64], signatures: [String], signatureBlock: UInt64) {
 
 		var isValid: Bool
-		let action: &MyMultiSigV2.MultiSignAction 
-		let messageSignaturePayload: MyMultiSigV2.MessageSignaturePayload
+		let action: &MyMultiSigV3.MultiSignAction 
+		let manager: &MyMultiSigV3.Manager{MyMultiSigV3.ManagerPublic}
+		let messageSignaturePayload: MyMultiSigV3.MessageSignaturePayload
 	  
 		prepare(signer: AuthAccount) {
 		  self.isValid = false
-		  let treasury = getAccount(treasuryAddr).getCapability(DAOTreasuryV2.TreasuryPublicPath)
-						  .borrow<&DAOTreasuryV2.Treasury{DAOTreasuryV2.TreasuryPublic}>()
-						  ?? panic("A DAOTreasuryV2 doesn't exist here.")
+		  let treasury = getAccount(treasuryAddr).getCapability(DAOTreasuryV3.TreasuryPublicPath)
+						  .borrow<&DAOTreasuryV3.Treasury{DAOTreasuryV3.TreasuryPublic}>()
+						  ?? panic("A DAOTreasuryV3 doesn't exist here.")
 	  
-		  let manager = treasury.borrowManagerPublic()
-		  self.action = manager.borrowAction(actionUUID: actionUUID)
+		  self.manager = treasury.borrowManagerPublic()
+		  self.action = self.manager.borrowAction(actionUUID: actionUUID)
 	  
 		  var _keyIds: [Int] = []
 	  
@@ -23,18 +24,17 @@ export const SIGNER_APPROVE = `
 			_keyIds.append(Int(keyId))
 		  }
 	  
-		  self.messageSignaturePayload = MyMultiSigV2.MessageSignaturePayload(
-			signingAddr: signer.address, message: message, keyIds: _keyIds, signatures: signatures, signatureBlock: signatureBlock
+		  self.messageSignaturePayload = MyMultiSigV3.MessageSignaturePayload(
+			  signingAddr: signer.address, message: message, keyIds: _keyIds, signatures: signatures, signatureBlock: signatureBlock
 		  )
 		}
 		
 		execute {
-		  self.isValid = self.action.signerApproveAction(messageSignaturePayload: self.messageSignaturePayload)
+		  self.manager.signerApproveAction(actionUUID: actionUUID, messageSignaturePayload: self.messageSignaturePayload)
 		}
 	  
 		post {
-		  self.isValid == true: "Unable to revoke approval: invalid message or signature"
-		  self.action.accountsVerified[self.messageSignaturePayload.signingAddr] == true: "Error: tx completed but signer approval not revoked"
+		  self.action.signerResponses[self.messageSignaturePayload.signingAddr] ==  MyMultiSigV3.SignerResponse.approved: "Error: tx completed but signer approval not registered"
 		}
 	  }
 `;

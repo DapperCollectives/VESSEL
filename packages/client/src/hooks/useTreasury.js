@@ -51,7 +51,7 @@ const doCreateTreasury = async (signerAddresses, threshold) => {
     cadence: INITIALIZE_TREASURY,
     args: (arg, t) => [
       arg(signerAddresses, t.Array(t.Address)),
-      arg(threshold, t.UInt64),
+      arg(threshold, t.UInt),
     ],
     limit: CREATE_TREASURY_LIMIT,
   });
@@ -80,7 +80,6 @@ const doProposeTransfer = async (
   const identifiers = await doQuery(GET_TREASURY_IDENTIFIERS, treasuryAddr);
   const recepientVault = getVaultId(identifiers, coinType);
   const intent = `Transfer ${uFixAmount} ${recepientVault} tokens from the treasury to ${recipientAddr}`;
-
   const { message, keyIds, signatures, height } = await createSignature(intent);
 
   return await mutate({
@@ -148,7 +147,7 @@ const doUpdateThreshold = async (treasuryAddr, newThreshold) => {
     cadence: UPDATE_THRESHOLD,
     args: (arg, t) => [
       arg(treasuryAddr, t.Address),
-      arg(newThreshold, t.UInt64),
+      arg(newThreshold, t.UInt),
       arg(message, t.String),
       arg(keyIds, t.Array(t.UInt64)),
       arg(signatures, t.Array(t.String)),
@@ -292,6 +291,7 @@ export default function useTreasury(treasuryAddr) {
 
   const refreshTreasury = async () => {
     const signers = await getSigners(treasuryAddr);
+
     if (!signers) {
       dispatch({ type: "SET_LOADING", payload: false });
       return;
@@ -325,17 +325,16 @@ export default function useTreasury(treasuryAddr) {
 
     for (const action of Object.keys(proposedActionsResp ?? {})) {
       const uuid = parseInt(action, 10);
-      const verifiedSigners = await getSignersForAction(
+      const signerResponses = await getSignersForAction(
         treasuryAddr,
         parseInt(action, 10)
       );
       proposedActions.push({
         uuid,
         intent: proposedActionsResp[action],
-        verifiedSigners,
+        signerResponses,
       });
     }
-
     dispatch({
       type: "SET_ACTIONS",
       payload: {
@@ -536,7 +535,7 @@ export default function useTreasury(treasuryAddr) {
     }).catch(console.error);
     return balance;
   };
-  
+
   return {
     ...state,
     refreshTreasury,

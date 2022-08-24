@@ -1,5 +1,5 @@
 import { useState, useContext, useEffect } from "react";
-import { createSignature, Web3Context } from "contexts/Web3";
+import { Web3Context } from "contexts/Web3";
 import { COIN_TYPES } from "constants/enums";
 const TestToolBox = ({ address }) => {
   const [showToolBox, setShowToolBox] = useState(false);
@@ -19,18 +19,6 @@ const TestToolBox = ({ address }) => {
   const treasuryBalances = balances[address];
   const onDeposit = async () => {
     await initDepositTokensToTreasury();
-  };
-  const onDepositCollection = async () => {
-    const collectionId = `A.${address.replace("0x", "")}.ExampleNFT.Collection`;
-    const { message, keyIds, signatures, height } = await createSignature(collectionId);
-
-    await sendCollectionToTreasury(
-      address,
-      message,
-      keyIds,
-      signatures,
-      height
-    );
   };
 
   const onDepositNFT = async () => {

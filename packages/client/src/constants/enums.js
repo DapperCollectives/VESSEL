@@ -20,3 +20,9 @@ export const SAFE_TYPES = {
   MEDIA: "Media",
   OTHER: "Other",
 };
+
+export const SIGNER_RESPONSES = {
+  APPROVED: "approved",
+  REJECTED: "rejected",
+  PENDING: "pending",
+}
