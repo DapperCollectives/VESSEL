@@ -27,7 +27,7 @@ function SafeOverview({ allBalance }) {
         >
           <LogoV style={{ position: "absolute", top: "0px", right: "-30px", zIndex: 0 }} />
           <div style={{ zIndex: 1 }}>
-            <div className="column is-full p-0 mb-2 is-flex is-flex-direction-row is-justify-content-space-between">
+            <div className="column is-full p-0 mb-5 is-flex is-flex-direction-row is-justify-content-space-between">
               <label>Tokens</label>
               {!!tokensWithPositiveBalance.length && (
                 <Link to={(location) => `${location.pathname}/assets`}>View All</Link>
@@ -51,7 +51,7 @@ function SafeOverview({ allBalance }) {
                     >
                       <div className="is-flex is-flex-direction-row is-justify-content-flex-start mb-5">
                         <CoinIcon coinType={type} />
-                        <label className="ml-3 has-text-black">FLOW</label>
+                        <label className="ml-3 has-text-black">{type}</label>
                       </div>
                       <h2 className="title is-5 has-text-white has-text-weight-normal">{balance.toLocaleString()}</h2>
                     </div>
