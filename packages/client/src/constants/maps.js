@@ -38,18 +38,24 @@ export const COIN_TYPE_TO_META = {
     displayName: "BLT",
     vaultName: "BloctoToken.Vault",
     publicReceiverPath: { domain: "public", identifier: "bloctoTokenVault" },
+    publicBalancePath: { domain: "public", identifier: "bloctoTokenBalance" },
+    storageVaultPath: { domain: "storage", identifier: "bloctoTokenVault" },
   },
   [COIN_TYPES.STARLY]: {
     contractName: "StarlyToken",
     displayName: "STARLY",
     vaultName: "StarlyToken.Vault",
     publicReceiverPath: { domain: "public", identifier: "starlyTokenVault" },
+    publicBalancePath: { domain: "public", identifier: "starlyTokenBalance" },
+    storageVaultPath: { domain: "storage", identifier: "starlyTokenVault" },
   },
   [COIN_TYPES.REVV]: {
     contractName: "REVV",
     displayName: "REVV",
     vaultName: "REVV.Vault",
     publicReceiverPath: { domain: "public", identifier: "revvReceiver" },
+    publicBalancePath: { domain: "public", identifier: "revvBalance" },
+    storageVaultPath: { domain: "storage", identifier: "revvVault" },
   },
 };
 
