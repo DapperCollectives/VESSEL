@@ -19,3 +19,4 @@ export { SEND_NFT_TO_TREASURY } from "./sendNFTToTreasury.tx";
 export { PROPOSE_NFT_TRANSFER } from "./proposeNFTTransfer.tx";
 export { ADD_VAULT } from "./addVault.tx";
 export { ADD_COLLECTION } from "./addCollection.tx";
+export { GET_NFT_REF } from "./getNFTReference.tx";

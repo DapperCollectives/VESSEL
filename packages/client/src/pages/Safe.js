@@ -137,8 +137,7 @@ function Safe({ web3 }) {
   const onConfirmAction = async ({ uuid }) => {
     const events = await executeAction(uuid).catch((error) => showErrorModal(error));
     const actions = events.filter(e => e.type.endsWith("ActionExecuted"));
-
-    showSuccessModal(actions[0]);
+    showSuccessModal(actions[0], safeData.name);
   };
 
   const tabMap = {

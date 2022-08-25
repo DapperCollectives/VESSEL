@@ -11,6 +11,7 @@ import {
   PROPOSE_NFT_TRANSFER,
   SEND_NFT_TO_TREASURY,
   GET_TREASURY_IDENTIFIERS,
+  GET_NFT_REF,
 } from "../flow";
 
 const storageKey = "vessel-assets";
@@ -108,6 +109,17 @@ export default function useNFTs() {
     }
   };
 
+  const getNFTReference = async (accountAddr, nftId) => {
+    const nftRef = await query({
+      cadence: GET_NFT_REF,
+      args: (arg, t) => [
+        arg(accountAddr, t.Address),
+        arg(nftId, t.UInt64),
+      ],
+    }).catch(console.error);
+    return nftRef.imageURI;
+  }
+
   const sendNFTToTreasury = async (treasuryAddr, tokenId) => {
     const res = await doSendNFTToTreasury(treasuryAddr, tokenId);
     await tx(res).onceSealed();
@@ -132,5 +144,6 @@ export default function useNFTs() {
     getTreasuryCollections,
     proposeNFTTransfer,
     sendNFTToTreasury,
+    getNFTReference,
   };
 }

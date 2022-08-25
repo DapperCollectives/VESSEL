@@ -1,17 +1,20 @@
 import { useModalContext } from "contexts";
-import { ErrorModal } from "modals";
+import { SuccessModal } from "modals";
 import { useEffect, useState } from "react";
 
 export default function useSuccessMessage() {
     const { openModal, closeModal } = useModalContext();
-    const [message, setMessage] = useState();
+    const [data, setData] = useState();
+    const [type, setType] = useState();
+    const [safeName, setSafeName] = useState();
 
-    const showSuccessModal = (action) => {
+    const showSuccessModal = (action, safeName) => {
         const type = getActionType(action.type.split(".")[3]);
-
-        setMessage(JSON.stringify(action.data));
+        setType(type);
+        setData(action.data);
+        setSafeName(safeName);
     }
-    
+
     const getActionType = (type) => {
         switch (type) {
             case "TransferNFTToAccountActionExecuted":
@@ -24,18 +27,18 @@ export default function useSuccessMessage() {
     }
 
     const closeSuccessModal = () => {
-        setMessage();
+        setData();
         closeModal();
     }
 
     useEffect(() => {
-        if (message) {
+        if (data) {
             openModal(
-                <ErrorModal error={message} onClose={closeSuccessModal} />
+                <SuccessModal safeName={safeName} data={data} type={type} onClose={closeSuccessModal} />
             );
         }
         // eslint-disable-next-line
-    }, [message])
+    }, [data])
 
     return { showSuccessModal };
 }

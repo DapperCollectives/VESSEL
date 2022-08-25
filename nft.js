@@ -21,7 +21,7 @@ const deployNFTCollection = () => {
       console.log(stdout);
 
       exec(
-        `flow transactions send ${mintNFT} 0x${address} testName testDescription https://i.natgeofe.com/n/46b07b5e-1264-42e1-ae4b-8a021226e2d0/domestic-cat_thumb.jpg`,
+        `flow transactions send ${mintNFT} 0x${address} testName testDescription https://global-uploads.webflow.com/60f008ba9757da0940af288e/61b5db25500c31e1496d1603_zeedz.jpg`,
         (error, stdout, stderr) => {
           if (error?.message || stderr) {
             console.log(`error minting nft: ${error.message}`);
