@@ -14,6 +14,7 @@ function SafeOverview({ allBalance }) {
         .map((entry) => ({ type: entry[0], balance: Number(entry[1]) }))
         .filter((token) => token.balance > 0)
     : [];
+  if (tokensWithPositiveBalance.length > 3) tokensWithPositiveBalance = tokensWithPositiveBalance.slice(0, 3);
 
   return (
     <>
