@@ -6,7 +6,7 @@ import { useAccount } from "hooks";
 import { formatAddress } from "utils";
 const TestToolBox = ({ address }) => {
   const [showToolBox, setShowToolBox] = useState(false);
-  const [userBalances, setuserBalances] = useState([]);
+  const [userBalances, setUserBalances] = useState([]);
   const web3 = useContext(Web3Context);
   const { getUserBalances, initDepositTokensToTreasury } = useAccount();
   const { sendNFTToTreasury, getTreasuryCollections, balances, user } = web3;
@@ -24,9 +24,9 @@ const TestToolBox = ({ address }) => {
   const updateUserBalance = async () => {
     try {
       const newUserBalances = await getUserBalances(formatAddress(user.addr));
-      setuserBalances(newUserBalances);
+      setUserBalances(newUserBalances);
     } catch (err) {
-      console.log(`Failed to get FUSD balance, error: ${err}`);
+      console.log(`Failed to get coin balances, error: ${err}`);
     }
   };
 
@@ -55,11 +55,7 @@ const TestToolBox = ({ address }) => {
             <div className="mr-5">
               <label>
                 <strong>Balances</strong>
-                <button
-                  href="#"
-                  className="has-background-warning ml-2"
-                  onClick={updateUserBalance}
-                >
+                <button className="has-background-warning ml-2" onClick={updateUserBalance}>
                   refresh
                 </button>
               </label>
@@ -70,9 +66,7 @@ const TestToolBox = ({ address }) => {
                     <ul className="ml-3">
                       {userBalances.map((coin) => (
                         <li key={COIN_TYPE_TO_META[coin.coinType].displayName}>
-                          {`${COIN_TYPE_TO_META[coin.coinType].displayName}: ${
-                            coin.balance
-                          }`}
+                          {COIN_TYPE_TO_META[coin.coinType].displayName + ": " + coin.balance}
                         </li>
                       ))}
                     </ul>
@@ -99,10 +93,7 @@ const TestToolBox = ({ address }) => {
                   </span>
                 </li>
                 <li>
-                  <span
-                    className="is-underlined pointer"
-                    onClick={onDepositNFT}
-                  >
+                  <span className="is-underlined pointer" onClick={onDepositNFT}>
                     Deposit NFT
                   </span>
                 </li>

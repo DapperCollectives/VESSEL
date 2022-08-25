@@ -98,3 +98,5 @@ export const getVaultId = (identifiers, coinType) => {
     (id) => id.indexOf(COIN_TYPE_TO_META[coinType].vaultName) >= 0
   );
 };
+
+export const removeAddressPrefix = (address) => address.replace("0x", "");

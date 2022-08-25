@@ -14,6 +14,7 @@ export const COIN_TYPE_TO_META = {
     displayName: "FLOW",
     vaultName: "FlowToken.Vault",
     publicReceiverPath: { domain: "public", identifier: "flowTokenReceiver" },
+    publicBalancePath: { domain: "public", identifier: "flowTokenBalance" },
     storageVaultPath: { domain: "storage", identifier: "flowTokenVault" },
   },
   [COIN_TYPES.FUSD]: {
@@ -21,6 +22,7 @@ export const COIN_TYPE_TO_META = {
     displayName: "FUSD",
     vaultName: "FUSD.Vault",
     publicReceiverPath: { domain: "public", identifier: "fusdReceiver" },
+    publicBalancePath: { domain: "public", identifier: "fusdBalance" },
     storageVaultPath: { domain: "storage", identifier: "fusdVault" },
   },
   [COIN_TYPES.USDC]: {
@@ -28,6 +30,7 @@ export const COIN_TYPE_TO_META = {
     displayName: "USDC",
     vaultName: "FiatToken.Vault",
     publicReceiverPath: { domain: "public", identifier: "USDCVaultReceiver" },
+    publicBalancePath: { domain: "public", identifier: "USDCVaultBalance" },
     storageVaultPath: { domain: "storage", identifier: "USDCVault" },
   },
   [COIN_TYPES.BLT]: {
@@ -71,16 +74,16 @@ export const SAFE_TYPES_TO_META = {
   },
 };
 
-/** 
+/**
  * TODO: Remove once API for fetching the name of the token is implemented
- * For now every time the fungible token is added to flow.json, the token name should be added here 
- * (in case it is different from the contract name) 
-*/
+ * For now every time the fungible token is added to flow.json, the token name should be added here
+ * (in case it is different from the contract name)
+ */
 export const CONTRACT_NAME_TO_COIN_TYPE = {
-  "FlowToken": COIN_TYPES.FLOW,
-  "FUSD": COIN_TYPES.FUSD,
-  "FiatToken": COIN_TYPES.USDC,
-  "BloctoToken": COIN_TYPES.BLT,
-  "StarlyToken": COIN_TYPES.STARLY,
-  "REVV": COIN_TYPES.REVV,
-}
+  FlowToken: COIN_TYPES.FLOW,
+  FUSD: COIN_TYPES.FUSD,
+  FiatToken: COIN_TYPES.USDC,
+  BloctoToken: COIN_TYPES.BLT,
+  StarlyToken: COIN_TYPES.STARLY,
+  REVV: COIN_TYPES.REVV,
+};

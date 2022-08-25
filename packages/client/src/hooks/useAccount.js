@@ -1,10 +1,5 @@
 import { mutate, query, tx } from "@onflow/fcl";
-import {
-  GET_USER_FLOW_BALANCE,
-  GET_USER_FUSD_BALANCE,
-  GET_USER_USDC_BALANCE,
-  SEND_TOKENS_TO_TREASURY,
-} from "flow";
+import { GetAccountBalanceByContractName, SEND_TOKENS_TO_TREASURY } from "flow";
 import { COIN_TYPE_TO_META } from "constants/maps";
 import { COIN_TYPES } from "constants/enums";
 import { REGULAR_LIMIT } from "constants/constants";
@@ -16,11 +11,7 @@ export default function useAccount() {
     const vaultPath = COIN_TYPE_TO_META[coinType].storageVaultPath;
     return await mutate({
       cadence: SEND_TOKENS_TO_TREASURY,
-      args: (arg, t) => [
-        arg(treasuryAddr, t.Address),
-        arg(amount, t.UFix64),
-        arg(vaultPath, t.Path),
-      ],
+      args: (arg, t) => [arg(treasuryAddr, t.Address), arg(amount, t.UFix64), arg(vaultPath, t.Path)],
       limit: REGULAR_LIMIT,
     });
   };
@@ -30,11 +21,7 @@ export default function useAccount() {
   const initDepositTokensToTreasury = async (treasuryAddr) => {
     for await (const coinType of COIN_TYPE_LIST) {
       try {
-        const res = await doSendTokensToTreasury(
-          treasuryAddr,
-          String(parseFloat(10).toFixed(8)),
-          coinType
-        );
+        const res = await doSendTokensToTreasury(treasuryAddr, String(parseFloat(10).toFixed(8)), coinType);
         await tx(res).onceSealed();
       } catch (err) {
         console.log(`Failed to deposit ${coinType}, error: ${err}`);
@@ -43,22 +30,11 @@ export default function useAccount() {
   };
 
   const getBalanceByCoinType = async (coinType, address) => {
-    let cadence;
-    switch (coinType) {
-      case COIN_TYPES.FLOW:
-        cadence = GET_USER_FLOW_BALANCE;
-        break;
-      case COIN_TYPES.FUSD:
-        cadence = GET_USER_FUSD_BALANCE;
-        break;
-      case COIN_TYPES.USDC:
-        cadence = GET_USER_USDC_BALANCE;
-      default:
-        cadence = GET_USER_FLOW_BALANCE;
-    }
+    const cadence = GetAccountBalanceByContractName(COIN_TYPE_TO_META[coinType].contractName);
+    const vaultPath = COIN_TYPE_TO_META[coinType].publicBalancePath;
     const balance = await query({
       cadence,
-      args: (arg, t) => [arg(address, t.Address)],
+      args: (arg, t) => [arg(address, t.Address), arg(vaultPath, t.Path)],
     });
     return balance;
   };
