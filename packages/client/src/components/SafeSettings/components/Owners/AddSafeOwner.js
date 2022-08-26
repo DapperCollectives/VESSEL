@@ -10,7 +10,6 @@ const AddSafeOwner = ({ onCancel, onNext, safeOwners }) => {
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
   const [addressValid, setAddressValid] = useState(false);
-  const isFormValid = name?.trim().length > 0 && addressValid;
 
   const onAddressChange = async (newAddress) => {
     setAddress(newAddress);
@@ -38,7 +37,7 @@ const AddSafeOwner = ({ onCancel, onNext, safeOwners }) => {
 
   const nextButtonClasses = [
     "button flex-1 p-4",
-    isFormValid ? "is-link" : "is-light is-disabled",
+    addressValid ? "is-link" : "is-light is-disabled",
   ];
 
   return (
@@ -52,7 +51,7 @@ const AddSafeOwner = ({ onCancel, onNext, safeOwners }) => {
       <div className="border-light-top p-5 has-text-grey">
         <div className="flex-1 is-flex is-flex-direction-column">
           <label className="has-text-grey mb-2">
-            Owner Name<span className="has-text-red">*</span>
+            Owner Name
           </label>
           <input
             className="p-4 rounded-sm border-light"
@@ -86,7 +85,7 @@ const AddSafeOwner = ({ onCancel, onNext, safeOwners }) => {
             Cancel
           </button>
           <button
-            disabled={!isFormValid}
+            disabled={!isAddressValid}
             className={nextButtonClasses.join(" ")}
             onClick={onNextClick}
           >
