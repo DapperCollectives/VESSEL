@@ -24,21 +24,25 @@ function SafeOverview({ allBalance }) {
       <div className="column p-0 mt-4 mb-5 is-flex is-full">
         <div
           className={balanceClasses.join(" ")}
-          style={{ overflow: "hidden", minHeight: "200px", position: "relative" }}
+          style={{ overflow: "hidden", minHeight: 200, minWidth: 375, position: "relative" }}
         >
           <LogoV style={{ position: "absolute", top: "0px", right: "-30px", zIndex: 0 }} />
           <div style={{ zIndex: 1 }}>
             <div className="column is-full p-0 mb-5 is-flex is-flex-direction-row is-justify-content-space-between">
               <label>Tokens</label>
               {!!tokensWithPositiveBalance.length && (
-                <Link to={(location) => `${location.pathname}/assets`}>View All</Link>
+                <Link to={(location) => `${location.pathname}/assets`}>
+                  <strong>View All</strong>
+                </Link>
               )}
             </div>
             {!tokensWithPositiveBalance.length ? (
-              <div className="p-3 m-1">
+              <div className="p-3 mb-1">
                 <div className="is-flex is-flex-direction-column is-justify-content-center is-align-items-center">
-                  <p className="ml-3 has-text-white ">You don't have any tokens</p>
-                  <button className="button column is-half is-medium has-background-white mt-5">Deposit Tokens</button>
+                  <p className="has-text-white ">You don't have any tokens</p>
+                  <button className="button column is-half has-text-small has-background-white mt-2 p-3 rounded-sm">
+                    Deposit Tokens
+                  </button>
                 </div>
               </div>
             ) : (
@@ -52,9 +56,11 @@ function SafeOverview({ allBalance }) {
                     >
                       <div className="is-flex is-flex-direction-row is-justify-content-flex-start mb-5">
                         <CoinIcon coinType={type} />
-                        <label className="ml-3 has-text-black">{type}</label>
+                        <label className="ml-2 pt-.5 has-text-black">{type}</label>
                       </div>
-                      <h2 className="title is-5 has-text-white has-text-weight-normal">{balance.toLocaleString()}</h2>
+                      <h2 className="title is-5 has-text-white has-text-weight-normal is-family-monospace">
+                        {balance.toLocaleString()}
+                      </h2>
                     </div>
                   ))}
               </div>
