@@ -1,39 +1,33 @@
 import { useState, useContext, useEffect } from "react";
 import { Web3Context } from "contexts/Web3";
 import { COIN_TYPES } from "constants/enums";
+import { COIN_TYPE_TO_META } from "constants/maps";
+import { useAccount } from "hooks";
+import { formatAddress } from "utils";
 const TestToolBox = ({ address }) => {
   const [showToolBox, setShowToolBox] = useState(false);
-  const [userFUSDBalance, setUserFUSDBalance] = useState(0);
-  const [userFlowBalance, setUserFlowBalance] = useState(0);
+  const [userBalances, setUserBalances] = useState([]);
   const web3 = useContext(Web3Context);
-  const {
-    initDepositTokensToTreasury,
-    sendNFTToTreasury,
-    getTreasuryCollections,
-    getUserFUSDBalance,
-    getUserFlowBalance,
-    balances,
-    user,
-  } = web3;
+  const { getUserBalances, initDepositTokensToTreasury } = useAccount();
+  const { sendNFTToTreasury, getTreasuryCollections, balances, user } = web3;
 
   const treasuryBalances = balances[address];
   const onDeposit = async () => {
-    await initDepositTokensToTreasury();
+    await initDepositTokensToTreasury(address);
   };
 
   const onDepositNFT = async () => {
     await sendNFTToTreasury(address, 0);
     await getTreasuryCollections(address);
   };
+
   const updateUserBalance = async () => {
     try {
-      const fusdBalance = await getUserFUSDBalance(user.addr);
-      setUserFUSDBalance(fusdBalance);
+      const newUserBalances = await getUserBalances(formatAddress(user.addr));
+      setUserBalances(newUserBalances);
     } catch (err) {
-      console.log(`Failed to get FUSD balance, error: ${err}`)
+      console.log(`Failed to get coin balances, error: ${err}`);
     }
-    const flowBalance = await getUserFlowBalance(user.addr);
-    setUserFlowBalance(flowBalance);
   };
 
   useEffect(() => {
@@ -44,14 +38,15 @@ const TestToolBox = ({ address }) => {
   return (
     <div style={{ position: "absolute", left: "20%", zIndex: 10000 }}>
       <div className="is-flex is-flex-direction-column">
-        <a
+        <button
+          style={{ border: "none" }}
           className="has-background-warning has-text-black p-1"
           onClick={() => {
             setShowToolBox((prevState) => !prevState);
           }}
         >
           {process.env.REACT_APP_FLOW_ENV} test utils
-        </a>
+        </button>
         {showToolBox && (
           <div
             className="has-text-black p-1 is-flex is-flex-direction-row has-background-warning  p-3"
@@ -60,23 +55,29 @@ const TestToolBox = ({ address }) => {
             <div className="mr-5">
               <label>
                 <strong>Balances</strong>
-                <a className="is-underlined ml-2" onClick={updateUserBalance}>
+                <button className="has-background-warning ml-2" onClick={updateUserBalance}>
                   refresh
-                </a>
+                </button>
               </label>
               <ul>
                 <li>
                   <span>Account:</span>
-                  <ul className="ml-3">
-                    <li>Flow: {userFlowBalance}</li>
-                    <li>FUSD: {userFUSDBalance}</li>
-                  </ul>
+                  {userBalances && !!userBalances.length && (
+                    <ul className="ml-3">
+                      {userBalances.map((coin) => (
+                        <li key={COIN_TYPE_TO_META[coin.coinType].displayName}>
+                          {COIN_TYPE_TO_META[coin.coinType].displayName + ": " + coin.balance}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                 </li>
                 <li>
                   <span>Treasury:</span>
                   <ul className="ml-3">
                     <li>Flow: {treasuryBalances[COIN_TYPES.FLOW]}</li>
                     <li>FUSD: {treasuryBalances[COIN_TYPES.FUSD]}</li>
+                    <li>USDC: {treasuryBalances[COIN_TYPES.USDC]}</li>
                   </ul>
                 </li>
               </ul>
@@ -92,10 +93,7 @@ const TestToolBox = ({ address }) => {
                   </span>
                 </li>
                 <li>
-                  <span
-                    className="is-underlined pointer"
-                    onClick={onDepositNFT}
-                  >
+                  <span className="is-underlined pointer" onClick={onDepositNFT}>
                     Deposit NFT
                   </span>
                 </li>

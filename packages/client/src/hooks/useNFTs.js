@@ -1,11 +1,8 @@
 import { useEffect, useReducer } from "react";
 import { mutate, query, tx } from "@onflow/fcl";
 import reducer, { INITIAL_STATE } from "../reducers/nfts";
-import {
-  REGULAR_LIMIT,
-  SIGNED_LIMIT,
-  createSignature,
-} from "../contexts/Web3";
+import { REGULAR_LIMIT, SIGNED_LIMIT } from "constants/constants";
+import { createSignature } from "../contexts/Web3";
 import {
   CHECK_TREASURY_NFT_COLLECTION,
   PROPOSE_NFT_TRANSFER,
@@ -26,11 +23,7 @@ const doSendNFTToTreasury = async (treasuryAddr, tokenId) => {
   });
 };
 
-const doProposeNFTTransfer = async (
-  treasuryAddr,
-  recipient,
-  nft
-) => {
+const doProposeNFTTransfer = async (treasuryAddr, recipient, nft) => {
   // Example: A.f8d6e0586b0a20c7.ExampleNFT.Collection-0
   // First part will contain the collection identifier, and the second will contain the tokenId
   const tokenInfo = nft.split("-");
@@ -113,16 +106,8 @@ export default function useNFTs() {
     await tx(res).onceSealed();
   };
 
-  const proposeNFTTransfer = async (
-    treasuryAddr,
-    recipient,
-    nft
-  ) => {   
-    const res = await doProposeNFTTransfer(
-      treasuryAddr,
-      recipient,
-      nft,
-    );
+  const proposeNFTTransfer = async (treasuryAddr, recipient, nft) => {
+    const res = await doProposeNFTTransfer(treasuryAddr, recipient, nft);
     await tx(res).onceSealed();
     return res;
   };
