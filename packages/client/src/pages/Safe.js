@@ -120,11 +120,7 @@ function Safe({ web3 }) {
 
     let keyId = sigResponse[0].keyId;
     let signature = sigResponse[0].signature;
-    // Temporary workaround for Blocto to send the correct key for signing the messages
-    if (sigResponse.length > 1 && sigResponse[1].keyId === 0) {
-      keyId = sigResponse[1].keyId;
-      signature = sigResponse[1].signature;
-    }
+    
     const keyIds = [keyId];
     const signatures = [signature];
 
@@ -134,11 +130,11 @@ function Safe({ web3 }) {
       keyIds,
       signatures,
       height
-    ).catch(error => showErrorModal(error));
+    ).catch((error) => showErrorModal(error));
   };
 
   const onConfirmAction = async ({ uuid }) => {
-    await executeAction(uuid).catch(error => showErrorModal(error));
+    await executeAction(uuid).catch((error) => showErrorModal(error));
   };
 
   const tabMap = {
@@ -171,14 +167,7 @@ function Safe({ web3 }) {
     contacts: (
       <SafeContacts safeOwners={safeData?.safeOwners} key="safe-contacts" />
     ),
-    settings: (
-      <SafeSettings
-        address={address}
-        web3={web3}
-        {...safeData}
-        key="safe-settings"
-      />
-    ),
+    settings: <SafeSettings key="safe-settings" />,
   };
 
   const BodyComponent = tabMap[currentTab];

@@ -72,7 +72,7 @@ yarn chain
 To deploy all contracts in `./contracts`:
 
 ```bash
-go run go/deploy.go
+yarn deploy
 ```
 
 #### Seeding Emulator account with FUSD

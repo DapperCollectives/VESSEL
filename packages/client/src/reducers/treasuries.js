@@ -1,8 +1,6 @@
 export const INITIAL_STATE = {
   loadingTreasuries: "Loading Treasuries",
   error: null,
-  creatingTreasury: false,
-  createdTreasury: false,
   submittedTransaction: false,
   treasuries: {},
   actions: {},
@@ -50,20 +48,10 @@ const reducer = (state, action) => {
         },
       };
     }
-    case "SET_CREATING_TREASURY":
-      return {
-        ...state,
-        creatingTreasury: action.payload,
-      };
     case "SUBMITTED_TREASURY_TRANSACTION":
       return {
         ...state,
         submittedTransaction: true,
-      };
-    case "TREASURY_TRANSACTION_SUCCESS":
-      return {
-        ...state,
-        createdTreasury: true,
       };
     case "SET_LOADING":
       return {

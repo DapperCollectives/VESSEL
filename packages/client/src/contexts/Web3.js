@@ -4,13 +4,6 @@ import networks from "../networks";
 import { useRouteMatch } from "react-router-dom";
 import { useFclUser, useTreasury, useNFTs } from "../hooks";
 
-export const REGULAR_LIMIT = 55;
-export const CREATE_TREASURY_LIMIT = 100;
-export const UPDATE_SIGNER_LIMIT = 110;
-export const SIGNED_LIMIT = 300;
-export const SIGNER_APPROVE_LIMIT = 310;
-export const EXECUTE_ACTION_LIMIT = 350;
-
 // create our app context
 export const Web3Context = React.createContext({});
 
@@ -68,7 +61,7 @@ export default function Web3Provider({
       Object.keys(contracts).forEach((contract) => {
         fcl.config().put(contract, contracts[contract]);
       });
-    } catch (e) { }
+    } catch (e) {}
   }, [network]);
 
   const user = useFclUser(fcl);
@@ -130,14 +123,9 @@ export const createSignature = async (intent) => {
     const messageHex = Buffer.from(message).toString("hex");
 
     let sigResponse = await fcl.currentUser().signUserMessage(messageHex);
-
     let keyId = sigResponse[0].keyId;
     let signature = sigResponse[0].signature;
-    // Temporary workaround for Blocto to send the correct key for signing the messages
-    if (sigResponse.length > 1 && sigResponse[1].keyId === 0) {
-      keyId = sigResponse[1].keyId;
-      signature = sigResponse[1].signature;
-    }
+
     const keyIds = [keyId];
     const signatures = [signature];
 

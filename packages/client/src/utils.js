@@ -72,8 +72,9 @@ export const getProgressPercentageForSignersAmount = (signersAmount) => {
 };
 
 export const getFlowscanUrlForTransaction = (hash) => {
-  return `https://${process.env.REACT_APP_FLOW_ENV === "mainnet" ? "" : "testnet."
-    }flowscan.org/transaction/${hash}`;
+  return `https://${
+    process.env.REACT_APP_FLOW_ENV === "mainnet" ? "" : "testnet."
+  }flowscan.org/transaction/${hash}`;
 };
 
 export const syncSafeOwnersWithSigners = (signers, safeOwners) => {
@@ -97,3 +98,5 @@ export const getVaultId = (identifiers, coinType) => {
     (id) => id.indexOf(COIN_TYPE_TO_META[coinType].vaultName) >= 0
   );
 };
+
+export const removeAddressPrefix = (address) => address.replace("0x", "");

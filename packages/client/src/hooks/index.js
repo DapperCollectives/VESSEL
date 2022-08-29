@@ -6,3 +6,4 @@ export { default as useTreasury } from "./useTreasury";
 export { default as useNFTs } from "./useNFTs";
 export { default as useFlowFees } from "./useFlowFees";
 export { default as useErrorMessage } from "./useErrorMessage";
+export { default as useAccount } from "./useAccount";

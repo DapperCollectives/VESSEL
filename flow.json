@@ -20,13 +20,6 @@
         "testnet": "0x7e60df042a9c0868"
       }
     },
-    "FlowFees": {
-      "source": "./contracts/core/FlowFees.cdc",
-      "aliases": {
-        "emulator": "0xe5a8b7f23e8b548f",
-        "testnet": "0x912d5440f7e3769e"
-      }
-    },
     "FUSD": {
       "source": "./contracts/core/FUSD.cdc",
       "aliases": {
@@ -51,19 +44,19 @@
         "testnet": "0x48bc5b54d3728e9e"
       }
     },
-    "MyMultiSigV2": {
+    "MyMultiSigV3": {
       "source": "./contracts/MyMultiSig.cdc",
       "aliases": {
         "testnet": "0x68a4fe55ec686656"
       }
     },
-    "DAOTreasuryV2": {
+    "DAOTreasuryV3": {
       "source": "./contracts/DAOTreasury.cdc",
       "aliases": {
         "testnet": "0x68a4fe55ec686656"
       }
     },
-    "TreasuryActionsV2": {
+    "TreasuryActionsV3": {
       "source": "./contracts/TreasuryActions.cdc",
       "aliases": {
         "testnet": "0x68a4fe55ec686656"
@@ -81,6 +74,13 @@
       "aliases": {
         "emulator": "0xf8d6e0586b0a20c7",
         "testnet": "0xa983fecbed621163"
+      }
+    },
+    "FCLCrypto": {
+      "source": "./contracts/core/FCLCrypto.cdc",
+      "aliases": {
+        "testnet": "0x74daa6f9c7ef24b1",
+        "mainnet": "0xb4b82a1c9d21d284"
       }
     },
     "BloctoToken": {
@@ -217,10 +217,11 @@
         "NonFungibleToken",
         "MetadataViews",
         "ExampleNFT",
-        "MyMultiSigV2",
-        "DAOTreasuryV2",
-        "TreasuryActionsV2",
-        "OnChainMultiSig"
+        "MyMultiSigV3",
+        "DAOTreasuryV3",
+        "TreasuryActionsV3",
+        "OnChainMultiSig",
+        "FCLCrypto"
       ],
       "emulator-recipient": [],
       "emulator-signer1": [],
@@ -246,7 +247,7 @@
       "emulator-treasuryOwner": []
     },
     "testnet": {
-      "testnet-account": ["MyMultiSigV2", "DAOTreasuryV2", "TreasuryActionsV2"]
+      "testnet-account": ["MyMultiSigV3", "DAOTreasuryV3", "TreasuryActionsV3"]
     }
   }
 }
