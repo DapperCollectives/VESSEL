@@ -6,9 +6,9 @@ import {
 } from "constants/constantValues";
 
 const useFlowFees = () => {
-  const getEstimation = async () => {
-    const { PROPOSE_ACTION, SIGN_ACTION, EXECUTE_ACTION } = EXECUTION_EFFORTS;
-    const executionEffort = PROPOSE_ACTION + SIGN_ACTION + EXECUTE_ACTION;
+  const getProposeSendTokenEstimation = async () => {
+    const { PROPOSE_ACTION } = EXECUTION_EFFORTS;
+    const executionEffort = PROPOSE_ACTION;
     const estimate = await query({
       cadence: GET_FLOW_FEES_ESTIMATION,
       args: (arg, t) => [
@@ -18,7 +18,7 @@ const useFlowFees = () => {
     }).catch(console.error);
     return `${estimate * 0.9} - ${estimate * 1.1}`;
   };
-  return { getEstimation };
+  return { getProposeSendTokenEstimation };
 };
 
 export default useFlowFees;
