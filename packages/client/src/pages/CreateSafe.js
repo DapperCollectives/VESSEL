@@ -25,12 +25,11 @@ const AuthorizeTreasury = ({
   let isAuthorizeReady = false;
   const history = useHistory();
   if (safeName.trim().length && safeType) {
-    const everyOwnerHasName = safeOwners.every((so) => so?.name?.trim().length);
     const everyOwnerHasValidAddress = Object.values(
       safeOwnersValidByAddress
     ).every((isValid) => isValid);
 
-    if (everyOwnerHasName && everyOwnerHasValidAddress) {
+    if (everyOwnerHasValidAddress) {
       safeOwners.map((so) => (so.verified = true));
       isAuthorizeReady = true;
     }
