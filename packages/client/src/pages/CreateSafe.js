@@ -17,7 +17,6 @@ const AuthorizeTreasury = ({
   safeOwners,
   safeOwnersValidByAddress,
   createTreasury,
-  cancelCreatingTreasury,
   creatingTreasury,
   createdTreasury,
   signersAmount,
@@ -50,7 +49,6 @@ const AuthorizeTreasury = ({
   };
   const onCancelCreatingSafe = () => {
     history.push("/");
-    cancelCreatingTreasury();
   };
   let stepMessage = "Create a new safe";
   if (creatingTreasury) stepMessage = "Your safe is being created...";
@@ -100,15 +98,14 @@ function CreateSafe({ web3 }) {
   const [safeType, setSafeType] = useState("Social");
   const [safeName, setSafeName] = useState("");
   const [signersAmount, setSignersAmount] = useState(1);
+  const [creatingTreasury, setCreatingTreasury] = useState(false);
+  const [createdTreasury, setCreatedTreasury] = useState(false);
   const {
     injectedProvider,
     address,
     loadingTreasuries,
-    creatingTreasury,
-    createdTreasury,
     submittedTransaction,
     createTreasury,
-    cancelCreatingTreasury,
   } = web3;
   const [safeOwners, setSafeOwners] = useState([
     { name: "", address, verified: true },
@@ -133,7 +130,11 @@ function CreateSafe({ web3 }) {
     // skip first safe owner since it's the connected user and won't have an address
     checkSafeOwnerAddressesValidity(newSafeOwners.slice(1));
   };
-
+  const onCreateTreasuryClick = async (treasuryData) => {
+    setCreatingTreasury(true);
+    await createTreasury(treasuryData);
+    setCreatedTreasury(true);
+  };
   if (!address) {
     return <WalletPrompt />;
   }
@@ -257,9 +258,8 @@ function CreateSafe({ web3 }) {
         safeOwners={safeOwners}
         safeOwnersValidByAddress={safeOwnersValidByAddress}
         signersAmount={signersAmount}
-        createTreasury={createTreasury}
+        createTreasury={onCreateTreasuryClick}
         creatingTreasury={creatingTreasury}
-        cancelCreatingTreasury={cancelCreatingTreasury}
         createdTreasury={createdTreasury}
       />
       {BodyComponents}
