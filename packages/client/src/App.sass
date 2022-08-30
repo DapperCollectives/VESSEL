@@ -1,16 +1,24 @@
 @charset "utf-8"
-
+@import "@fontsource/dm-sans"
+@import "@fontsource/dm-mono"
 $navWidth: 260px
 
 // Set your brand colors
 $bodyBg: #162c4e
 $bodyColor: #bbc6ce
+$primaryPurple: #7464F0
+$backgroundPurple: #9B8FF9
+$darkPurple: #000E64
 
 // Update Bulma's global variables
 $grey-dark: $bodyColor
 $grey-darker: $bodyColor
 $grey-light: $bodyColor
 $link: white
+$primary: $primaryPurple
+$light: $backgroundPurple
+$family-sans-serif: "DM Sans"
+$family-monospace: "DM Mono"
 
 // sets a max width of 960px on .container
 $widescreen-enabled: false
@@ -26,7 +34,8 @@ $input-shadow: none
 $button-background-color: transparent
 $button-border-color: #7464F0
 $button-active-border-color: black
-$button-hover-border-color: black
+$button-hover-border-color: $darkPurple
+$button-hover-color: $darkPurple
 $button-focus-border-color: black
 $button-color: #7464F0
 $button-font: DM Sans
@@ -66,7 +75,7 @@ html
 body
   height: 100%
   margin: 0
-  font-family: "Helvetica Neue", sans-serif
+  font-family: "DM Sans", Sans-serif
   -webkit-font-smoothing: antialiased
   -moz-osx-font-smoothing: grayscale
 .sidebar
