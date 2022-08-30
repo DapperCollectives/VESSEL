@@ -168,3 +168,43 @@ export const Check = ({ width = "24", height = "24", className = "" }) => (
     <path stroke="#fff" d="M5 13l5 4 8-9" />
   </svg>
 );
+
+export const Warning = ({ width = "24", height = "25", className = "" }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={width}
+    height={height}
+    className={className}
+    fill="none"
+    viewBox="0 0 24 25"
+  >
+    <path d="M21.5264 19L12.8661 4C12.4812 3.33333 11.519 3.33333 11.1341 4L2.47385 19C2.08895 19.6667 2.57007 20.5 3.33987 20.5H20.6604C21.4302 20.5 21.9113 19.6667 21.5264 19Z" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M11.9502 16.5H12.0502V16.6H11.9502V16.5Z" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M12 9.5V13.5" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
+
+export const OpenNewTab = ({ width = "18", height = "18", className = "" }) =>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={width}
+    height={height}
+    className={className}
+    fill="none"
+    viewBox="0 0 18 18"
+  >
+    <path d="M17 6.33334L17 1.00001M17 1.00001H11.6666M17 1.00001L9 9M7.22222 1H5.26667C3.77319 1 3.02646 1 2.45603 1.29065C1.95426 1.54631 1.54631 1.95426 1.29065 2.45603C1 3.02646 1 3.77319 1 5.26667V12.7333C1 14.2268 1 14.9735 1.29065 15.544C1.54631 16.0457 1.95426 16.4537 2.45603 16.7094C3.02646 17 3.77319 17 5.26667 17H12.7333C14.2268 17 14.9735 17 15.544 16.7094C16.0457 16.4537 16.4537 16.0457 16.7094 15.544C17 14.9735 17 14.2268 17 12.7333V10.7778" stroke="white" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+
+export const Copy = ({ width = "18", height = "18", className = "" }) =>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={width}
+    height={height}
+    className={className}
+    fill="none"
+    viewBox="0 0 18 19"
+  >
+    <path d="M10.5 5.75V5.5C10.5 4.55719 10.5 4.08579 10.2071 3.79289C9.91421 3.5 9.44281 3.5 8.5 3.5H5C4.05719 3.5 3.58579 3.5 3.29289 3.79289C3 4.08579 3 4.55719 3 5.5V9C3 9.94281 3 10.4142 3.29289 10.7071C3.58579 11 4.05719 11 5 11H5.25" stroke="black" />
+    <rect x="7.5" y="8" width="7.5" height="7.5" rx="1" stroke="black" />
+  </svg>

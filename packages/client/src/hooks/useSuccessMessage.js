@@ -1,28 +1,32 @@
+import { useEffect, useState } from "react";
 import { useModalContext } from "contexts";
 import { SuccessModal } from "modals";
-import { useEffect, useState } from "react";
+import { ASSET_TYPES } from "../constants/enums";
 
 export default function useSuccessMessage() {
     const { openModal, closeModal } = useModalContext();
     const [data, setData] = useState();
     const [type, setType] = useState();
     const [safeName, setSafeName] = useState();
+    const [transactionId, setTransactionId] = useState();
+
 
     const showSuccessModal = (action, safeName) => {
         const type = getActionType(action.type.split(".")[3]);
         setType(type);
         setData(action.data);
+        setTransactionId(action.transactionId);
         setSafeName(safeName);
     }
 
     const getActionType = (type) => {
         switch (type) {
             case "TransferNFTToAccountActionExecuted":
-                return "NFT";
+                return ASSET_TYPES.NFT;
             case "TransferTokenToAccountActionExecuted":
-                return "FT";
+                return ASSET_TYPES.TOKEN;
             default:
-                return "other";
+                return undefined;
         }
     }
 
@@ -32,13 +36,13 @@ export default function useSuccessMessage() {
     }
 
     useEffect(() => {
-        if (data) {
+        if (type && data && safeName) {
             openModal(
-                <SuccessModal safeName={safeName} data={data} type={type} onClose={closeSuccessModal} />
+                <SuccessModal safeName={safeName} data={data} type={type} txID={transactionId} onClose={closeSuccessModal} />
             );
         }
         // eslint-disable-next-line
-    }, [data])
+    }, [data, safeName])
 
     return { showSuccessModal };
 }

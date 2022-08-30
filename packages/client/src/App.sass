@@ -1,16 +1,26 @@
 @charset "utf-8"
 
+@import "@fontsource/dm-sans"
+@import "@fontsource/dm-mono"
+
 $navWidth: 260px
 
 // Set your brand colors
 $bodyBg: #162c4e
 $bodyColor: #bbc6ce
+$primaryPurple: #7464F0
+$backgroundPurple: #9B8FF9
+$darkPurple: #000E64
 
 // Update Bulma's global variables
 $grey-dark: $bodyColor
 $grey-darker: $bodyColor
 $grey-light: $bodyColor
 $link: white
+$primary: $primaryPurple
+$light: $backgroundPurple
+$family-sans-serif: "DM Sans"
+$family-monospace: "DM Mono"
 
 // sets a max width of 960px on .container
 $widescreen-enabled: false
@@ -26,8 +36,8 @@ $input-shadow: none
 $button-background-color: transparent
 $button-border-color: #7464F0
 $button-active-border-color: black
-$button-hover-border-color: black
-$button-focus-border-color: black
+$button-hover-border-color: $darkPurple
+$button-hover-color: $darkPurple
 $button-color: #7464F0
 $button-font: DM Sans
 $button-font-weight: 700
@@ -66,7 +76,7 @@ html
 body
   height: 100%
   margin: 0
-  font-family: "Helvetica Neue", sans-serif
+  font-family: "DM Sans", Sans-serif
   -webkit-font-smoothing: antialiased
   -moz-osx-font-smoothing: grayscale
 .sidebar
@@ -118,6 +128,28 @@ code
   pointer-events: none
   svg
     opacity: 0.5
+.modal-safe-name
+  color: $primaryPurple
+  font-weight: 500
+  letter-spacing: -0.01em
+.modal-title
+  font-size: 40px
+  font-weight: 500
+  letter-spacing: -0.03em
+.success-modal-image
+  width: 156px
+.success-modal-background
+  border-radius: 8px
+  background-color: #DCFABF
+  position: relative
+  &::after
+    position: absolute
+    content: ""
+    background: url(/img/green-V4x.png)
+    background-size: 16em
+    background-position: 100%
+    background-repeat: no-repeat
+    opacity: 0.6
 hr
   background-color: grey
   margin: 0
@@ -140,6 +172,15 @@ label
 .button:hover.is-link
   color: white
   background-color: #0C14D0
+.button.is-info,
+.button:hover.is-info
+  color: white
+  background-color: black
+  border-radius: 18px
+  padding: 4px 15px
+.button.is-flowscan
+  color: white
+  background-color: $primaryPurple
 .progress-bit
   width: 3px
   border-radius: 4px

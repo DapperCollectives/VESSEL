@@ -1,5 +1,5 @@
 import React from "react";
-import { Warning } from "../svg/Warning";
+import { Warning } from "../components/Svg";
 
 const ErrorModal = ({ error, onClose }) => {
     return (
