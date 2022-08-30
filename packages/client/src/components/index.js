@@ -15,3 +15,4 @@ export { default as SafeTransactions } from "./SafeTransactions";
 export { default as SignatureRequirements } from "./SignatureRequirements";
 export { default as SendTokens } from "./SendTokens";
 export { default as TestToolBox } from "./TestToolBox";
+export { default as SafeTokens } from "./SafeTokens";

@@ -8,6 +8,7 @@ import {
   SafeAssets,
   SafeContacts,
   SafeSettings,
+  SafeTokens,
   SendTokens,
   TestToolBox,
 } from "../components";
@@ -76,7 +77,14 @@ function Safe({ web3 }) {
   }
 
   const currentTab = tab ?? "home";
-  const buttons = ["home", "transactions", "assets", "contacts", "settings"];
+  const buttons = [
+    "home",
+    "transactions",
+    "tokens",
+    "assets",
+    "contacts",
+    "settings",
+  ];
   const buttonClasses = [
     "button rounded-lg border-none",
     "is-capitalized",
@@ -120,7 +128,7 @@ function Safe({ web3 }) {
 
     let keyId = sigResponse[0].keyId;
     let signature = sigResponse[0].signature;
-    
+
     const keyIds = [keyId];
     const signatures = [signature];
 
@@ -156,6 +164,7 @@ function Safe({ web3 }) {
         address={address}
       />
     ),
+    tokens: <SafeTokens key="safe-tokens" />,
     assets: (
       <SafeAssets
         web3={web3}
