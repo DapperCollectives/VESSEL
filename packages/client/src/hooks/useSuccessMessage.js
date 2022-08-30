@@ -8,15 +8,18 @@ export default function useSuccessMessage() {
     const [data, setData] = useState();
     const [type, setType] = useState();
     const [safeName, setSafeName] = useState();
+    const [safeAddress, setSafeAddress] = useState();
+    const [safeOwners, setSafeOwners] = useState();
     const [transactionId, setTransactionId] = useState();
 
-
-    const showSuccessModal = (action, safeName) => {
+    const showSuccessModal = (action, safeName, safeAddress, safeOwners) => {
         const type = getActionType(action.type.split(".")[3]);
         setType(type);
         setData(action.data);
         setTransactionId(action.transactionId);
         setSafeName(safeName);
+        setSafeAddress(safeAddress);
+        setSafeOwners(safeOwners);
     }
 
     const getActionType = (type) => {
@@ -38,7 +41,7 @@ export default function useSuccessMessage() {
     useEffect(() => {
         if (type && data && safeName) {
             openModal(
-                <SuccessModal safeName={safeName} data={data} type={type} txID={transactionId} onClose={closeSuccessModal} />
+                <SuccessModal safeName={safeName} safeAddress={safeAddress} safeOwners={safeOwners} data={data} type={type} txID={transactionId} onClose={closeSuccessModal} />
             );
         }
         // eslint-disable-next-line

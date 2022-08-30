@@ -121,7 +121,7 @@ function Safe({ web3 }) {
 
     let keyId = sigResponse[0].keyId;
     let signature = sigResponse[0].signature;
-    
+
     const keyIds = [keyId];
     const signatures = [signature];
 
@@ -136,8 +136,10 @@ function Safe({ web3 }) {
 
   const onConfirmAction = async ({ uuid }) => {
     const events = await executeAction(uuid).catch((error) => showErrorModal(error));
-    const actions = events.filter(e => e.type.endsWith("ActionExecuted"));
-    showSuccessModal(actions[0], safeData.name);
+    if (events) {
+      const actions = events.filter(e => e.type.endsWith("ActionExecuted"));
+      showSuccessModal(actions[0], safeData.name, safeData.address, safeData.safeOwners);
+    }
   };
 
   const tabMap = {

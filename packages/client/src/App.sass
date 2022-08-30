@@ -138,18 +138,15 @@ code
   letter-spacing: -0.03em
 .success-modal-image
   width: 156px
+  border-radius: 8px
 .success-modal-background
   border-radius: 8px
-  background-color: #DCFABF
+  background-color: #F0F0FE
   position: relative
-  &::after
-    position: absolute
-    content: ""
-    background: url(/img/green-V4x.png)
-    background-size: 16em
-    background-position: 100%
-    background-repeat: no-repeat
-    opacity: 0.6
+  background-image: url(/img/purple-V4x.png)
+  background-size: 16em
+  background-position: 100% 0px
+  background-repeat: no-repeat
 hr
   background-color: grey
   margin: 0
@@ -175,10 +172,11 @@ label
 .button.is-info,
 .button:hover.is-info
   color: white
-  background-color: black
-  border-radius: 18px
-  padding: 4px 15px
-.button.is-flowscan
+  background-color: $primaryPurple
+  border-radius: 100px
+  padding: 4px 12px
+  height: 26px
+.button.is-done
   color: white
   background-color: $primaryPurple
 .progress-bit
