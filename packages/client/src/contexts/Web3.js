@@ -4,13 +4,6 @@ import networks from "../networks";
 import { useRouteMatch } from "react-router-dom";
 import { useFclUser, useTreasury, useNFTs } from "../hooks";
 
-export const REGULAR_LIMIT = 55;
-export const CREATE_TREASURY_LIMIT = 100;
-export const UPDATE_SIGNER_LIMIT = 110;
-export const SIGNED_LIMIT = 300;
-export const SIGNER_APPROVE_LIMIT = 310;
-export const EXECUTE_ACTION_LIMIT = 350;
-
 // create our app context
 export const Web3Context = React.createContext({});
 
@@ -68,7 +61,7 @@ export default function Web3Provider({
       Object.keys(contracts).forEach((contract) => {
         fcl.config().put(contract, contracts[contract]);
       });
-    } catch (e) { }
+    } catch (e) {}
   }, [network]);
 
   const user = useFclUser(fcl);

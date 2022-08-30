@@ -5,4 +5,5 @@ export { default as useFlowgraphTransactions } from "./useFlowgraphTransactions"
 export { default as useTreasury } from "./useTreasury";
 export { default as useNFTs } from "./useNFTs";
 export { default as useErrorMessage } from "./useErrorMessage";
+export { default as useAccount } from "./useAccount";
 export { default as useSuccessMessage } from "./useSuccessMessage";
