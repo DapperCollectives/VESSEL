@@ -39,13 +39,13 @@ export default function useSuccessMessage() {
     }
 
     useEffect(() => {
-        if (type && data && safeName) {
+        if (type && data && safeName && safeOwners) {
             openModal(
                 <SuccessModal safeName={safeName} safeAddress={safeAddress} safeOwners={safeOwners} data={data} type={type} txID={transactionId} onClose={closeSuccessModal} />
             );
         }
         // eslint-disable-next-line
-    }, [data, safeName])
+    }, [data, safeName, safeOwners])
 
     return { showSuccessModal };
 }
