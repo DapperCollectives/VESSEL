@@ -45,13 +45,13 @@ pub contract MyMultiSigV3 {
         pub var type: String
         pub var intent: String
         pub var proposer: Address
-        pub var recipient: Address?
-        pub var vaultId: String?
-        pub var collectionId: String?
-        pub var nftId: UInt64?
-        pub var tokenAmount: UFix64?
-        pub var signerAddr: Address?
-        pub var newThreshold: UInt?
+        pub(set) var recipient: Address?
+        pub(set) var vaultId: String?
+        pub(set) var collectionId: String?
+        pub(set) var nftId: UInt64?
+        pub(set) var tokenAmount: UFix64?
+        pub(set) var signerAddr: Address?
+        pub(set) var newThreshold: UInt?
 
         init(
             name: String, type: String, intent: String, proposer: Address, recipient: Address?,
