@@ -8,24 +8,37 @@ pub contract DAOTreasuryV3 {
   pub let TreasuryStoragePath: StoragePath
   pub let TreasuryPublicPath: PublicPath
 
-  // Events
+  // ------- Events ------
+
+  // Treasury
   pub event TreasuryInitialized(initialSigners: [Address], initialThreshold: UInt)
-  pub event ProposeAction(actionUUID: UInt64, proposer: Address)
-  pub event ExecuteAction(treasuryUUID: UInt64, actionUUID: UInt64, executor: Address, actionView: MyMultiSigV3.ActionView, signerResponses: {Address: UInt})
+
+  // Actions
+  pub event ActionProposed(actionUUID: UInt64, proposer: Address)
+  pub event ActionExecuted(treasuryUUID: UInt64, actionUUID: UInt64, executor: Address, actionView: MyMultiSigV3.ActionView, signerResponses: {Address: UInt})
   pub event ActionDestroyed(treasuryUUID: UInt64, actionUUID: UInt64, signerResponses: {Address: UInt})
   pub event ActionApprovedBySigner(treasuryUUID: UInt64, address: Address, uuid: UInt64, signerResponses: {Address: UInt})
   pub event ActionRejectedBySigner(treasuryUUID: UInt64, address: Address, uuid: UInt64, signerResponses: {Address: UInt})
-  pub event DepositVault(vaultID: String)
-  pub event DepositCollection(collectionID: String)
-  pub event DepositTokens(identifier: String)
-  pub event DepositNFT(collectionID: String, nftID: UInt64)
-  pub event WithdrawTokens(vaultID: String, amount: UFix64)
-  pub event WithdrawNFT(collectionID: String, nftID: UInt64)
-  pub event DestroyVault(vaultID: String)
-  pub event DestroyCollection(collectionID: String)
 
+  // Vaults
+  pub event VaultDeposited(vaultID: String)
+  pub event VaultDestroyed(vaultID: String)
 
-  // Interfaces + Resources
+  // Collections
+  pub event CollectionDeposited(collectionID: String)
+  pub event CollectionDestroyed(collectionID: String)
+
+  // Tokens
+  pub event TokensDeposited(identifier: String)
+  pub event TokensWithdrawn(vaultID: String, amount: UFix64)
+
+  // NFTs
+  pub event NFTDeposited(collectionID: String, nftID: UInt64)
+  pub event NFTWithdrawn(collectionID: String, nftID: UInt64)
+
+  //
+  // ------- Interfaces + Resources -------
+  //
   pub resource interface TreasuryPublic {
     pub fun signerApproveAction(actionUUID: UInt64, messageSignaturePayload: MyMultiSigV3.MessageSignaturePayload)
     pub fun signerRejectAction(actionUUID: UInt64, messageSignaturePayload: MyMultiSigV3.MessageSignaturePayload)
@@ -49,9 +62,6 @@ pub contract DAOTreasuryV3 {
     access(self) var vaults: @{String: FungibleToken.Vault}
     access(self) var collections: @{String: NonFungibleToken.Collection}
 
-    // ------- Manager -------   
-
-    // Signer Approve/Reject
     pub fun signerApproveAction(actionUUID: UInt64, messageSignaturePayload: MyMultiSigV3.MessageSignaturePayload) {
       self.multiSignManager.signerApproveAction(actionUUID: actionUUID, messageSignaturePayload: messageSignaturePayload) 
       let signerResponses = self.multiSignManager.getSignerResponsesForAction(actionUUID: actionUUID)
@@ -70,7 +80,6 @@ pub contract DAOTreasuryV3 {
       }
     }
 
-    // Signer Approve/Execute
     pub fun proposeAction(action: {MyMultiSigV3.Action}, signaturePayload: MyMultiSigV3.MessageSignaturePayload): UInt64 {
       self.validateTreasurySigner(identifier: action.intent, signaturePayload: signaturePayload)
 
