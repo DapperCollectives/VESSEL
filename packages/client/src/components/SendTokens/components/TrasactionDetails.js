@@ -1,10 +1,17 @@
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { shortenAddr } from "utils";
 import { SendTokensContext } from "../sendTokensContext";
 import { ASSET_TYPES } from "constants/enums";
+import { useFlowFees } from "hooks";
 const TransactionDetails = () => {
+  const [transactionFee, setTransactionFee] = useState(0);
   const [sendModalState] = useContext(SendTokensContext);
   const { assetType, tokenAmount, selectedNFTUrl, recipient } = sendModalState;
+  const { getProposeSendTokenEstimation } = useFlowFees();
+  useEffect(async () => {
+    const fee = await getProposeSendTokenEstimation();
+    setTransactionFee(fee);
+  }, []);
   return (
     <div>
       {assetType === ASSET_TYPES.TOKEN && (
@@ -36,7 +43,7 @@ const TransactionDetails = () => {
         </div>
         <div className="border-light-top is-flex is-justify-content-space-between py-5">
           <span className="has-text-grey">Network fee</span>
-          <span>$0</span>
+          <span>{transactionFee} FLOW</span>
         </div>
         <div className="border-light-top is-flex is-justify-content-space-between py-5">
           <span>Total</span>
