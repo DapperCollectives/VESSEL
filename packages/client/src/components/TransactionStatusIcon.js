@@ -1,9 +1,8 @@
 import React from "react";
 
 const STATUS_TO_BACKGROUND_COLOR = {
-  sealed: "#18AA01",
+  confirmed: "#18AA01",
   pending: "#FF8A00",
-  expired: "#FF0000",
 };
 
 function TransactionStatusIcon({ status }) {
