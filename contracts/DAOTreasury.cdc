@@ -11,7 +11,9 @@ pub contract DAOTreasuryV3 {
   // Events
   pub event TreasuryInitialized(initialSigners: [Address], initialThreshold: UInt)
   pub event ProposeAction(actionUUID: UInt64, proposer: Address)
-  pub event ExecuteAction(actionUUID: UInt64, proposer: Address)
+  pub event ExecuteAction(treasuryUUID: UInt64, actionUUID: UInt64, executor: Address, actionView: MyMultiSigV3.ActionView, signerResponses: {Address: UInt})
+  pub event ActionApprovedBySigner(treasuryUUID: UInt64, address: Address, uuid: UInt64, signerResponses: {Address: UInt})
+  pub event ActionRejectedBySigner(treasuryUUID: UInt64, address: Address, uuid: UInt64, signerResponses: {Address: UInt})
   pub event DepositVault(vaultID: String)
   pub event DepositCollection(collectionID: String)
   pub event DepositTokens(identifier: String)
@@ -24,6 +26,8 @@ pub contract DAOTreasuryV3 {
 
   // Interfaces + Resources
   pub resource interface TreasuryPublic {
+    pub fun signerApproveAction(actionUUID: UInt64, messageSignaturePayload: MyMultiSigV3.MessageSignaturePayload)
+    pub fun signerRejectAction(actionUUID: UInt64, messageSignaturePayload: MyMultiSigV3.MessageSignaturePayload)
     pub fun proposeAction(action: {MyMultiSigV3.Action}, signaturePayload: MyMultiSigV3.MessageSignaturePayload): UInt64
     pub fun executeAction(actionUUID: UInt64, signaturePayload: MyMultiSigV3.MessageSignaturePayload)
     pub fun signerDepositCollection(collection: @NonFungibleToken.Collection, signaturePayload: MyMultiSigV3.MessageSignaturePayload)
@@ -45,6 +49,26 @@ pub contract DAOTreasuryV3 {
     access(self) var collections: @{String: NonFungibleToken.Collection}
 
     // ------- Manager -------   
+
+    // Signer Approve/Reject
+    pub fun signerApproveAction(actionUUID: UInt64, messageSignaturePayload: MyMultiSigV3.MessageSignaturePayload) {
+      self.multiSignManager.signerApproveAction(actionUUID: actionUUID, messageSignaturePayload: messageSignaturePayload) 
+      let signerResponses = self.multiSignManager.getSignerResponsesForAction(actionUUID: actionUUID)
+      emit ActionApprovedBySigner(treasuryUUID: self.uuid, address: messageSignaturePayload.signingAddr, uuid: self.uuid, signerResponses: signerResponses)
+    }
+
+    pub fun signerRejectAction(actionUUID: UInt64, messageSignaturePayload: MyMultiSigV3.MessageSignaturePayload) {
+      self.multiSignManager.signerRejectAction(actionUUID: actionUUID, messageSignaturePayload: messageSignaturePayload) 
+      let signerResponses = self.multiSignManager.getSignerResponsesForAction(actionUUID: actionUUID)
+      emit ActionRejectedBySigner(treasuryUUID: self.uuid, address: messageSignaturePayload.signingAddr, uuid: self.uuid, signerResponses: signerResponses)
+
+      // Destroy action if there are sufficient rejections
+      if self.multiSignManager.canDestroyAction(actionUUID: actionUUID) {
+         self.multiSignManager.attemptDestroyAction(actionUUID: actionUUID)
+      }
+    }
+
+    // Signer Approve/Execute
     pub fun proposeAction(action: {MyMultiSigV3.Action}, signaturePayload: MyMultiSigV3.MessageSignaturePayload): UInt64 {
       self.validateTreasurySigner(identifier: action.intent, signaturePayload: signaturePayload)
 
@@ -62,9 +86,18 @@ pub contract DAOTreasuryV3 {
     pub fun executeAction(actionUUID: UInt64, signaturePayload: MyMultiSigV3.MessageSignaturePayload) {
       self.validateTreasurySigner(identifier: actionUUID.toString(), signaturePayload: signaturePayload)
 
+      let action = self.multiSignManager.borrowAction(actionUUID: actionUUID)
+      let actionView = action.getView()
       let selfRef: &Treasury = &self as &Treasury
+      emit ExecuteAction(
+        treasuryUUID: self.uuid,
+        actionUUID: actionUUID,
+        executor: signaturePayload.signingAddr,
+        actionView: actionView,
+        signerResponses: self.multiSignManager.getSignerResponsesForAction(actionUUID: actionUUID)
+      )
       self.multiSignManager.executeAction(actionUUID: actionUUID, {"treasury": selfRef})
-      emit ExecuteAction(actionUUID: actionUUID, proposer: signaturePayload.signingAddr)
+      
     }
 
     access(self) fun validateTreasurySigner(identifier: String, signaturePayload: MyMultiSigV3.MessageSignaturePayload) {

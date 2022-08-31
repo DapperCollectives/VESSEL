@@ -78,6 +78,22 @@ pub contract TreasuryActionsV3 {
       )
     }
 
+    pub fun getView(): MyMultiSigV3.ActionView {
+      return MyMultiSigV3.ActionView(
+        name: "Transfer Tokens",
+        type: "TransferToken",
+        intent: self.intent,
+        proposer: self.proposer,
+        recipient: self.recipientVault.borrow()!.owner!.address,
+        vaultId: self.recipientVault.borrow()!.getType().identifier,
+        collectionId: nil,
+        nftId: nil,
+        tokenAmount : self.amount,
+        signerAddr: nil,
+        newThreshold: nil
+      )
+    }
+
     init(recipientVault: Capability<&{FungibleToken.Receiver}>, amount: UFix64, proposer: Address) {
       pre {
         amount > 0.0 : "Amount should be higher than 0.0"  
@@ -92,12 +108,6 @@ pub contract TreasuryActionsV3 {
       self.recipientVault = recipientVault
       self.amount = amount
       self.proposer = proposer
-
-      emit TransferTokenToAccountActionCreated(
-        recipientAddr: recipientVault.borrow()!.owner!.address,
-        vaultID: recipientVault.getType().identifier,
-        amount: amount
-      )
     }
   }
 
@@ -115,12 +125,21 @@ pub contract TreasuryActionsV3 {
 
       let recipientAddr = self.recipientTreasury.borrow()!.owner!.address
       self.recipientTreasury.borrow()!.depositTokens(identifier: self.identifier, vault: <- withdrawnTokens)
+    }
 
-      emit TransferTokenToTreasuryActionExecuted(
-        recipientAddr: recipientAddr,
-        vaultID: self.identifier,
-        amount: self.amount,
-        treasuryAddr: treasuryRef.owner!.address
+    pub fun getView(): MyMultiSigV3.ActionView {
+      return MyMultiSigV3.ActionView(
+        name: "Transfer Tokens",
+        type: "TransferTokenToTreasury",
+        intent: self.intent,
+        proposer: self.proposer,
+        recipient: self.recipientTreasury.borrow()!.owner!.address,
+        vaultId: self.identifier,
+        collectionId: nil,
+        nftId: nil,
+        tokenAmount : self.amount,
+        signerAddr: nil,
+        newThreshold: nil
       )
     }
 
@@ -172,6 +191,23 @@ pub contract TreasuryActionsV3 {
       )
     }
 
+    pub fun getView(): MyMultiSigV3.ActionView {
+       
+      return MyMultiSigV3.ActionView(
+        name: "Transfer NFT",
+        type: "TransferNFT",
+        intent: self.intent,
+        proposer: self.proposer,
+        recipient: self.recipientCollection.borrow()!.owner!.address,
+        vaultId: nil,
+        collectionId: self.recipientCollection.borrow()!.getType().identifier,
+        nftId: self.withdrawID,
+        tokenAmount: nil,
+        signerAddr: nil,
+        newThreshold: nil
+      )
+    }
+
     init(recipientCollection: Capability<&{NonFungibleToken.CollectionPublic}>, nftID: UInt64, proposer: Address) {
       let recipientAddr = recipientCollection.borrow()!.owner!.address
       let collectionID = recipientCollection.borrow()!.getType().identifier
@@ -206,12 +242,21 @@ pub contract TreasuryActionsV3 {
 
       let recipientCollectionRef: &{NonFungibleToken.CollectionPublic} = self.recipientTreasury.borrow()!.borrowCollectionPublic(identifier: self.identifier)
       recipientCollectionRef.deposit(token: <- nft)
+    }
 
-      emit TransferNFTToTreasuryActionExecuted(
-        recipientAddr: self.recipientTreasury.borrow()!.owner!.address,
-        collectionID: self.identifier,
-        nftID: self.withdrawID,
-        treasuryAddr: treasuryRef.owner!.address
+    pub fun getView(): MyMultiSigV3.ActionView {
+      return MyMultiSigV3.ActionView(
+        name: "Transfer NFT",
+        type: "TransferNFTToTreasury",
+        intent: self.intent,
+        proposer: self.proposer,
+        recipient: self.recipientTreasury.borrow()!.owner!.address,
+        vaultId: nil,
+        collectionId: self.identifier,
+        nftId: self.withdrawID,
+        tokenAmount: nil,
+        signerAddr: nil,
+        newThreshold: nil
       )
     }
 
@@ -253,6 +298,22 @@ pub contract TreasuryActionsV3 {
       emit AddSignerActionExecuted(address: self.signer, treasuryAddr: treasuryRef.owner!.address)
     }
 
+    pub fun getView(): MyMultiSigV3.ActionView {
+      return MyMultiSigV3.ActionView(
+        name: "Add Owner",
+        type: "AddSigner",
+        intent: self.intent,
+        proposer: self.proposer,
+        recipient: nil,
+        vaultId: nil,
+        collectionId: nil,
+        nftId: nil,
+        tokenAmount: nil,
+        signerAddr: self.signer,
+        newThreshold: nil
+      )
+    }
+
     init(signer: Address, proposer: Address) {
       self.proposer = proposer
       self.signer = signer
@@ -274,7 +335,22 @@ pub contract TreasuryActionsV3 {
 
       let manager = treasuryRef.borrowManager()
       manager.removeSigner(signer: self.signer)
-      emit RemoveSignerActionExecuted(address: self.signer, treasuryAddr: treasuryRef.owner!.address)
+    }
+
+    pub fun getView(): MyMultiSigV3.ActionView {
+      return MyMultiSigV3.ActionView(
+        name: "Remove Owner",
+        type: "RemoveSigner",
+        intent: self.intent,
+        proposer: self.proposer,
+        recipient: nil,
+        vaultId: nil,
+        collectionId: nil,
+        nftId: nil,
+        tokenAmount: nil,
+        signerAddr: self.signer,
+        newThreshold: nil
+      )
     }
 
     init(signer: Address, proposer: Address) {
@@ -299,7 +375,22 @@ pub contract TreasuryActionsV3 {
       let manager = treasuryRef.borrowManager()
       let oldThreshold = manager.threshold
       manager.updateThreshold(newThreshold: self.threshold)
-      emit UpdateThresholdActionExecuted(oldThreshold: oldThreshold, newThreshold: self.threshold, treasuryAddr: treasuryRef.owner!.address)
+    }
+
+    pub fun getView(): MyMultiSigV3.ActionView {
+      return MyMultiSigV3.ActionView(
+        name: "Update Threshold",
+        type: "UpdateThreshold",
+        intent: self.intent,
+        proposer: self.proposer,
+        recipient: nil,
+        vaultId: nil,
+        collectionId: nil,
+        nftId: nil,
+        tokenAmount: nil,
+        signerAddr: nil,
+        newThreshold: self.threshold
+      )
     }
 
     init(threshold: UInt, proposer: Address) {

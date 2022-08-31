@@ -5,17 +5,17 @@ transaction(treasuryAddr: Address, actionUUID: UInt64, message: String, keyIds: 
 
   var isValid: Bool
   var action: &MyMultiSigV3.MultiSignAction
-  var manager: &MyMultiSigV3.Manager{MyMultiSigV3.ManagerPublic}
+  var treasury: &DAOTreasuryV3.Treasury{DAOTreasuryV3.TreasuryPublic}
   var messageSignaturePayload: MyMultiSigV3.MessageSignaturePayload
   
   prepare(signer: AuthAccount) {
     self.isValid = false
-    let treasury = getAccount(treasuryAddr).getCapability(DAOTreasuryV3.TreasuryPublicPath)
+    self.treasury = getAccount(treasuryAddr).getCapability(DAOTreasuryV3.TreasuryPublicPath)
                     .borrow<&DAOTreasuryV3.Treasury{DAOTreasuryV3.TreasuryPublic}>()
                     ?? panic("A DAOTreasuryV3 doesn't exist here.")
 
-    self.manager = treasury.borrowManagerPublic()
-    self.action = self.manager.borrowAction(actionUUID: actionUUID)
+    let manager = self.treasury.borrowManagerPublic()
+    self.action = manager.borrowAction(actionUUID: actionUUID)
 
     var _keyIds: [Int] = []
 
@@ -29,6 +29,6 @@ transaction(treasuryAddr: Address, actionUUID: UInt64, message: String, keyIds: 
 
   }
   execute {
-    self.manager.signerRejectAction(actionUUID: actionUUID, messageSignaturePayload: self.messageSignaturePayload)
+    self.treasury.signerRejectAction(actionUUID: actionUUID, messageSignaturePayload: self.messageSignaturePayload)
   }
 }

@@ -6,8 +6,7 @@ pub contract MyMultiSigV3 {
 
     // Events
     pub event ActionExecutedByManager(uuid: UInt64)
-    pub event ActionApprovedBySigner(address: Address, uuid: UInt64)
-    pub event ActionRejectedBySigner(address: Address, uuid: UInt64)
+    
     pub event ActionCreated(uuid: UInt64, intent: String)
     pub event SignerAdded(address: Address)
     pub event SignerRemoved(address: Address)
@@ -30,7 +29,41 @@ pub contract MyMultiSigV3 {
     pub struct interface Action {
         pub let intent: String
         pub let proposer: Address
+        pub fun getView(): ActionView
         access(account) fun execute(_ params: {String: AnyStruct})
+    }
+
+    // General View Struct for Actions
+    pub struct ActionView {
+        pub var name: String
+        pub var type: String
+        pub var intent: String
+        pub var proposer: Address
+        pub var recipient: Address?
+        pub var vaultId: String?
+        pub var collectionId: String?
+        pub var nftId: UInt64?
+        pub var tokenAmount: UFix64?
+        pub var signerAddr: Address?
+        pub var newThreshold: UInt?
+
+        init(
+            name: String, type: String, intent: String, proposer: Address, recipient: Address?,
+            vaultId: String?, collectionId: String?, nftId: UInt64?, tokenAmount: UFix64?,
+            signerAddr: Address?, newThreshold: UInt?
+        ) {
+            self.name = name
+            self.type = type 
+            self.intent = intent
+            self.proposer = proposer
+            self.recipient = recipient
+            self.vaultId = vaultId
+            self.collectionId = collectionId
+            self.nftId = nftId
+            self.tokenAmount = tokenAmount
+            self.signerAddr = signerAddr
+            self.newThreshold = newThreshold
+        }
     }
 
     //
@@ -86,6 +119,10 @@ pub contract MyMultiSigV3 {
             self.signerResponses[signer] = value
         }
 
+        pub fun getView(): ActionView {
+            return self.action.getView()
+        }
+
         init(signers: [Address], action: {Action}) {
             self.signerResponses = {}
             self.action = action
@@ -101,8 +138,6 @@ pub contract MyMultiSigV3 {
         pub fun getSignerResponsesForAction(actionUUID: UInt64): {Address: UInt}
         pub fun getTotalApprovedForAction(actionUUID: UInt64): Int
         pub fun getTotalRejectedForAction(actionUUID: UInt64): Int
-        pub fun signerApproveAction(actionUUID: UInt64, messageSignaturePayload: MessageSignaturePayload)
-        pub fun signerRejectAction(actionUUID: UInt64, messageSignaturePayload: MessageSignaturePayload)
     }
     
     pub resource Manager: ManagerPublic {
@@ -165,7 +200,7 @@ pub contract MyMultiSigV3 {
             return uuid
         }
 
-        pub fun signerApproveAction(actionUUID: UInt64, messageSignaturePayload: MessageSignaturePayload) {
+        access(account) fun signerApproveAction(actionUUID: UInt64, messageSignaturePayload: MessageSignaturePayload) {
             pre {
                 self.signers[messageSignaturePayload.signingAddr] == true:
                     "This address is not a signer on the Treasury."
@@ -193,11 +228,9 @@ pub contract MyMultiSigV3 {
 
             // Approve action
             action.setSignerResponse(signer: messageSignaturePayload.signingAddr, value: SignerResponse.approved)
-
-            emit ActionApprovedBySigner(address: messageSignaturePayload.signingAddr, uuid: self.uuid)
         }
 
-        pub fun signerRejectAction(actionUUID: UInt64, messageSignaturePayload: MessageSignaturePayload) {
+        access(account) fun signerRejectAction(actionUUID: UInt64, messageSignaturePayload: MessageSignaturePayload) {
             pre {
                 self.signers[messageSignaturePayload.signingAddr] == true:
                     "This address is not a signer on the Treasury." 
@@ -227,15 +260,20 @@ pub contract MyMultiSigV3 {
             // Reject action
             let action = self.borrowAction(actionUUID: actionUUID)
             action.setSignerResponse(signer: messageSignaturePayload.signingAddr, value: SignerResponse.rejected)
+        }
 
-            emit ActionRejectedBySigner(address: messageSignaturePayload.signingAddr, uuid: self.uuid)
+        pub fun canDestroyAction(actionUUID: UInt64): Bool {
+            return self.getTotalRejectedForAction(actionUUID: actionUUID) > (self.signers.length - Int(self.threshold))
+        }
 
-            // Check if we have enough rejections to delete the action
-            if self.getTotalRejectedForAction(actionUUID: actionUUID) > (self.signers.length - Int(self.threshold)) {
-                let removedAction <- self.actions.remove(key: actionUUID)
-                destroy removedAction
-                emit ActionDestroyed(uuid: actionUUID)
-            }
+        access(account) fun attemptDestroyAction(actionUUID: UInt64) {
+            pre {
+                self.canDestroyAction(actionUUID: actionUUID):
+                    "Action does not have enough rejections to destroy"
+            } 
+            let removedAction <- self.actions.remove(key: actionUUID)
+            destroy removedAction
+            emit ActionDestroyed(uuid: actionUUID)
         }
 
         pub fun readyToExecute(actionUUID: UInt64): Bool {
