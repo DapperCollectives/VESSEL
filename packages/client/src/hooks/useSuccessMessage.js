@@ -41,7 +41,7 @@ export default function useSuccessMessage() {
     useEffect(() => {
         if (type && data && safeName && safeOwners) {
             openModal(
-                <SuccessModal safeName={safeName} safeAddress={safeAddress} safeOwners={safeOwners} data={data} type={type} txID={transactionId} onClose={closeSuccessModal} />
+                <SuccessModal safeName={safeName} safeAddress={safeAddress} safeOwners={safeOwners} actionData={data} type={type} txID={transactionId} onClose={closeSuccessModal} />
             );
         }
         // eslint-disable-next-line

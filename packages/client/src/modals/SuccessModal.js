@@ -6,17 +6,20 @@ import { getFlowscanUrlForTransaction } from "utils";
 import { ASSET_TYPES } from "../constants/enums";
 import { COIN_TYPE_TO_META, CONTRACT_NAME_TO_COIN_TYPE } from "../constants/maps";
 
-const SuccessModal = ({ data, type, txID, onClose, safeName, safeAddress, safeOwners }) => {
+const SuccessModal = ({ actionData, type, txID, onClose, safeName, safeAddress, safeOwners }) => {
     const { getNFTReference } = useContext(Web3Context);
     const clipboard = useClipboard();
+
+    const { recipientAddr, nftID, collectionID, vaultID, amount } = actionData;
+    const { displayName, icon } = getTokenMeta(vaultID) || {};
 
     const [imageURI, setImageURI] = useState();
 
     useEffect(() => {
         if (type === ASSET_TYPES.NFT) {
             const getImageURL = async () => {
-                const result = await getNFTReference(data.recipientAddr, data.nftID);
-                setImageURI(result);
+                const result = await getNFTReference(recipientAddr, nftID);
+                setImageURI(result.imageURI);
             };
             getImageURL().catch(console.error);
         }
@@ -26,14 +29,11 @@ const SuccessModal = ({ data, type, txID, onClose, safeName, safeAddress, safeOw
         return collectionId.split(".")[2];
     }
 
-    function getTokenName(vaultId) {
-        const tokenName = vaultId.split(".")[2];
-        return COIN_TYPE_TO_META[CONTRACT_NAME_TO_COIN_TYPE[tokenName]].displayName;
-    }
-
-    function getTokenIcon(vaultId) {
-        const tokenName = vaultId.split(".")[2];
-        return COIN_TYPE_TO_META[CONTRACT_NAME_TO_COIN_TYPE[tokenName]].icon;
+    function getTokenMeta(vaultId) {
+        if (vaultId) {
+            const tokenName = vaultId.split(".")[2];
+            return COIN_TYPE_TO_META[CONTRACT_NAME_TO_COIN_TYPE[tokenName]];
+        }
     }
 
     function getSafeOwnerName(address) {
@@ -59,20 +59,20 @@ const SuccessModal = ({ data, type, txID, onClose, safeName, safeAddress, safeOw
                         <>
                             <img className="columns is-vcentered is-multiline is-mobile mr-2 mt-2 success-modal-image" src={imageURI} />
                             <span className="columns is-vcentered is-multiline is-mobile mr-2 is-size-2 is-family-monospace">
-                                #{data.nftID}
+                                #{nftID}
                             </span>
                             <span className="columns is-vcentered is-multiline is-mobile is-size-6 has-text-weight-bold">
-                                {getNFTName(data.collectionID)}
+                                {getNFTName(collectionID)}
                             </span>
                         </>
                     }
                     {type === ASSET_TYPES.TOKEN &&
                         <>
                             <span className="columns is-vcentered is-multiline is-mobile mr-2 mt-2 is-size-2 is-family-monospace">
-                                {data.amount}
+                                {Number(amount)}
                             </span>
                             <span className="columns is-vcentered is-multiline is-mobile is-size-6 has-text-weight-bold">
-                                {getTokenIcon(data.vaultID)} &nbsp; {getTokenName(data.vaultID)}
+                                {icon} &nbsp; {displayName}
                             </span>
                         </>
                     }
@@ -101,13 +101,13 @@ const SuccessModal = ({ data, type, txID, onClose, safeName, safeAddress, safeOw
                     &nbsp;
                     <div className="flex-1" style={{ position: "relative" }}>
                         <span className="has-text-weight-bold">
-                            {getSafeOwnerName(data.recipientAddr)}
+                            {getSafeOwnerName(recipientAddr)}
                         </span>
                         <div >
                             <span className="has-text-grey">
-                                {data.recipientAddr}
+                                {recipientAddr}
                             </span>
-                            <a className="" onClick={() => clipboard.copy(data.recipientAddr)}>
+                            <a className="" onClick={() => clipboard.copy(recipientAddr)}>
                                 <Copy className="mt-1 ml-2 pointer" />
                             </a>
                         </div>

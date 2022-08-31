@@ -110,7 +110,7 @@ export default function useNFTs() {
         arg(nftId, t.UInt64),
       ],
     }).catch(console.error);
-    return nftRef.imageURI;
+    return nftRef;
   }
 
   const sendNFTToTreasury = async (treasuryAddr, tokenId) => {
