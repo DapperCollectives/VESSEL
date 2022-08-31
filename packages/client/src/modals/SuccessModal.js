@@ -6,24 +6,25 @@ import { getFlowscanUrlForTransaction } from "utils";
 import { ASSET_TYPES } from "../constants/enums";
 import { COIN_TYPE_TO_META, CONTRACT_NAME_TO_COIN_TYPE } from "../constants/maps";
 
-const SuccessModal = ({ actionData, type, txID, onClose, safeName, safeAddress, safeOwners }) => {
+const SuccessModal = ({ actionData, actionType, txID, onClose, safeName, safeAddress, safeOwners }) => {
     const { getNFTReference } = useContext(Web3Context);
     const clipboard = useClipboard();
 
     const { recipientAddr, nftID, collectionID, vaultID, amount } = actionData;
     const { displayName, icon } = getTokenMeta(vaultID) || {};
 
-    const [imageURI, setImageURI] = useState();
+    const [image, setImage] = useState();
+    const { name: imageName, imageURI } = image || {};
 
     useEffect(() => {
-        if (type === ASSET_TYPES.NFT) {
+        if (actionType === ASSET_TYPES.NFT) {
             const getImageURL = async () => {
                 const result = await getNFTReference(recipientAddr, nftID);
-                setImageURI(result.imageURI);
+                setImage(result);
             };
             getImageURL().catch(console.error);
         }
-    }, [type])
+    }, [actionType, nftID, recipientAddr, getNFTReference])
 
     function getNFTName(collectionId) {
         return collectionId.split(".")[2];
@@ -45,9 +46,9 @@ const SuccessModal = ({ actionData, type, txID, onClose, safeName, safeAddress, 
         <div className="p-5 has-text-black has-text-left">
             <div className="border-light-bottom columns is-vcentered is-multiline is-mobile">
                 <h2 className="pb-4 is-size-5 has-text-black column">Success</h2>
-                <a className="" onClick={onClose}>
+                <span className="pointer" onClick={onClose}>
                     <Close className="mr-4" />
-                </a>
+                </span>
             </div>
 
             <div className="mt-4 p-5 success-modal-background">
@@ -55,9 +56,9 @@ const SuccessModal = ({ actionData, type, txID, onClose, safeName, safeAddress, 
                     Sent <ArrowUp className="ml-2 has-text-white" />
                 </button>
                 <div className="pl-4">
-                    {type === ASSET_TYPES.NFT &&
+                    {actionType === ASSET_TYPES.NFT &&
                         <>
-                            <img className="columns is-vcentered is-multiline is-mobile mr-2 mt-2 success-modal-image" src={imageURI} />
+                            <img className="columns is-vcentered is-multiline is-mobile mr-2 mt-2 success-modal-image" src={imageURI} alt={imageName} />
                             <span className="columns is-vcentered is-multiline is-mobile mr-2 is-size-2 is-family-monospace">
                                 #{nftID}
                             </span>
@@ -66,7 +67,7 @@ const SuccessModal = ({ actionData, type, txID, onClose, safeName, safeAddress, 
                             </span>
                         </>
                     }
-                    {type === ASSET_TYPES.TOKEN &&
+                    {actionType === ASSET_TYPES.TOKEN &&
                         <>
                             <span className="columns is-vcentered is-multiline is-mobile mr-2 mt-2 is-size-2 is-family-monospace">
                                 {Number(amount)}
@@ -90,9 +91,9 @@ const SuccessModal = ({ actionData, type, txID, onClose, safeName, safeAddress, 
                             <span className="has-text-grey">
                                 {safeAddress}
                             </span>
-                            <a className="" onClick={() => clipboard.copy(safeAddress)}>
+                            <span className="pointer" onClick={() => clipboard.copy(safeAddress)}>
                                 <Copy className="mt-1 ml-2 pointer" />
-                            </a>
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -107,9 +108,9 @@ const SuccessModal = ({ actionData, type, txID, onClose, safeName, safeAddress, 
                             <span className="has-text-grey">
                                 {recipientAddr}
                             </span>
-                            <a className="" onClick={() => clipboard.copy(recipientAddr)}>
+                            <span className="pointer" onClick={() => clipboard.copy(recipientAddr)}>
                                 <Copy className="mt-1 ml-2 pointer" />
-                            </a>
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -119,6 +120,7 @@ const SuccessModal = ({ actionData, type, txID, onClose, safeName, safeAddress, 
                     className="button flex-1 p-4 mr-2 rounded-sm"
                     href={getFlowscanUrlForTransaction(txID)}
                     target="_blank"
+                    rel="noreferrer"
                 >
                     Flowscan
                     &nbsp;
