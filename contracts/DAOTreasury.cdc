@@ -12,6 +12,7 @@ pub contract DAOTreasuryV3 {
   pub event TreasuryInitialized(initialSigners: [Address], initialThreshold: UInt)
   pub event ProposeAction(actionUUID: UInt64, proposer: Address)
   pub event ExecuteAction(treasuryUUID: UInt64, actionUUID: UInt64, executor: Address, actionView: MyMultiSigV3.ActionView, signerResponses: {Address: UInt})
+  pub event ActionDestroyed(treasuryUUID: UInt64, actionUUID: UInt64, signerResponses: {Address: UInt})
   pub event ActionApprovedBySigner(treasuryUUID: UInt64, address: Address, uuid: UInt64, signerResponses: {Address: UInt})
   pub event ActionRejectedBySigner(treasuryUUID: UInt64, address: Address, uuid: UInt64, signerResponses: {Address: UInt})
   pub event DepositVault(vaultID: String)
@@ -65,6 +66,7 @@ pub contract DAOTreasuryV3 {
       // Destroy action if there are sufficient rejections
       if self.multiSignManager.canDestroyAction(actionUUID: actionUUID) {
          self.multiSignManager.attemptDestroyAction(actionUUID: actionUUID)
+         emit ActionDestroyed(treasuryUUID: self.uuid, actionUUID: actionUUID, signerResponses: signerResponses)
       }
     }
 

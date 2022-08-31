@@ -4,16 +4,6 @@ import FCLCrypto from "./core/FCLCrypto.cdc"
 
 pub contract MyMultiSigV3 {
 
-    // Events
-    pub event ActionExecutedByManager(uuid: UInt64)
-    
-    pub event ActionCreated(uuid: UInt64, intent: String)
-    pub event SignerAdded(address: Address)
-    pub event SignerRemoved(address: Address)
-    pub event MultiSigThresholdUpdated(oldThreshold: UInt, newThreshold: UInt)
-    pub event ActionDestroyed(uuid: UInt64)
-    pub event ManagerInitialized(initialSigners: [Address], initialThreshold: UInt)
-
     //
     // ------- Resource Interfaces ------- 
     //
@@ -22,16 +12,32 @@ pub contract MyMultiSigV3 {
         access(contract) let multiSignManager: @Manager
     }
 
+    pub resource interface ManagerPublic {
+        pub fun borrowAction(actionUUID: UInt64): &MultiSignAction
+        pub fun getIDs(): [UInt64]
+        pub fun getIntents(): {UInt64: String}
+        pub fun getSigners(): {Address: Bool}
+        pub fun getThreshold(): UInt
+        pub fun getSignerResponsesForAction(actionUUID: UInt64): {Address: UInt}
+        pub fun getTotalApprovedForAction(actionUUID: UInt64): Int
+        pub fun getTotalRejectedForAction(actionUUID: UInt64): Int
+    }
+
     //
-    // ------- Action Wrapper ------- 
+    // ------- Struct Interfaces ------- 
     //
 
+    // Interface for actions implemented in TreasuryActions contract
     pub struct interface Action {
         pub let intent: String
         pub let proposer: Address
         pub fun getView(): ActionView
         access(account) fun execute(_ params: {String: AnyStruct})
     }
+
+    //
+    // ------- Structs ------- 
+    //
 
     // General View Struct for Actions
     pub struct ActionView {
@@ -66,10 +72,8 @@ pub contract MyMultiSigV3 {
         }
     }
 
-    //
-    // ------- Structs --------
-    //
-
+    // Struct for actions that require a signature
+    // to be submitted by a signer on the Treasury
     pub struct MessageSignaturePayload {
         pub let signingAddr: Address
         pub let message: String
@@ -83,16 +87,6 @@ pub contract MyMultiSigV3 {
             self.keyIds = keyIds
             self.signatures = signatures
             self.signatureBlock = signatureBlock
-        }
-    }
-
-    pub struct ValidateSignatureResponse {
-        pub let isValid: Bool
-        pub let totalWeight: UFix64
-
-        init(isValid: Bool, totalWeight: UFix64) {
-            self.isValid = isValid
-            self.totalWeight = totalWeight
         }
     }
 
@@ -128,17 +122,6 @@ pub contract MyMultiSigV3 {
             self.action = action
         }
     }
-
-    pub resource interface ManagerPublic {
-        pub fun borrowAction(actionUUID: UInt64): &MultiSignAction
-        pub fun getIDs(): [UInt64]
-        pub fun getIntents(): {UInt64: String}
-        pub fun getSigners(): {Address: Bool}
-        pub fun getThreshold(): UInt
-        pub fun getSignerResponsesForAction(actionUUID: UInt64): {Address: UInt}
-        pub fun getTotalApprovedForAction(actionUUID: UInt64): Int
-        pub fun getTotalRejectedForAction(actionUUID: UInt64): Int
-    }
     
     pub resource Manager: ManagerPublic {
         access(account) let signers: {Address: Bool}
@@ -157,7 +140,6 @@ pub contract MyMultiSigV3 {
             getAccount(signer).keys.get(keyIndex: 0)
 
             self.signers.insert(key: signer, true)
-            emit SignerAdded(address: signer)
         }
 
         access(account) fun removeSigner(signer: Address) {
@@ -166,7 +148,6 @@ pub contract MyMultiSigV3 {
                     "Cannot remove signer, number of signers must be equal or higher than the threshold."
             }
             self.signers.remove(key: signer)
-            emit SignerRemoved(address: signer)
         }
 
         access(account) fun updateThreshold(newThreshold: UInt) {
@@ -177,7 +158,6 @@ pub contract MyMultiSigV3 {
 
             let oldThreshold = self.threshold
             self.threshold = newThreshold
-            emit MultiSigThresholdUpdated(oldThreshold: oldThreshold, newThreshold: newThreshold)
         }
 
         access(account) fun executeAction(actionUUID: UInt64, _ params: {String: AnyStruct}) {
@@ -188,7 +168,6 @@ pub contract MyMultiSigV3 {
             
             let action <- self.actions.remove(key: actionUUID) ?? panic("This action does not exist.")
             action.action.execute(params)
-            emit ActionExecutedByManager(uuid: actionUUID)
             destroy action
         }
 
@@ -196,7 +175,6 @@ pub contract MyMultiSigV3 {
             let newAction <- create MultiSignAction(signers: self.signers.keys, action: action)
             let uuid = newAction.uuid
             self.actions[newAction.uuid] <-! newAction
-            emit ActionCreated(uuid: uuid, intent: action.intent)
             return uuid
         }
 
@@ -273,7 +251,6 @@ pub contract MyMultiSigV3 {
             } 
             let removedAction <- self.actions.remove(key: actionUUID)
             destroy removedAction
-            emit ActionDestroyed(uuid: actionUUID)
         }
 
         pub fun readyToExecute(actionUUID: UInt64): Bool {
@@ -362,7 +339,6 @@ pub contract MyMultiSigV3 {
             for signer in initialSigners {
                 self.signers.insert(key: signer, true)
             }
-            emit ManagerInitialized(initialSigners: initialSigners, initialThreshold: initialThreshold)
         }
 
         destroy() {
