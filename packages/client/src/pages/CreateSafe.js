@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useHistory, NavLink } from "react-router-dom";
 import {
   WalletPrompt,
@@ -107,9 +107,16 @@ function CreateSafe({ web3 }) {
     submittedTransaction,
     createTreasury,
   } = web3;
-  const [safeOwners, setSafeOwners] = useState([
-    { name: "", address, verified: true },
-  ]);
+  const [safeOwners, setSafeOwners] = useState();
+
+  useEffect(() => {
+    if (address) {
+      setSafeOwners([
+        { name: "", address, verified: true },
+      ])
+    }
+  }, [address]);
+
   const [safeOwnersValidByAddress, setSafeOwnersValidByAddress] = useState({});
   const { isAddressValid } = useAddressValidation(injectedProvider);
 
@@ -229,39 +236,44 @@ function CreateSafe({ web3 }) {
     </>
   ) : (
     <>
-      <SafeDetails
-        safeType={safeType}
-        setSafeType={setSafeType}
-        safeName={safeName}
-        setSafeName={setSafeName}
-      />
-      <SafeOwners
-        address={address}
-        safeOwners={safeOwners}
-        safeOwnersValidByAddress={safeOwnersValidByAddress}
-        setSafeOwners={onSafeOwnersChange}
-      />
-      <SignatureRequirements
-        safeOwners={safeOwners}
-        signersAmount={signersAmount}
-        setSignersAmount={setSignersAmount}
-      />
+      {safeOwners &&
+        <>
+          <SafeDetails
+            safeType={safeType}
+            setSafeType={setSafeType}
+            safeName={safeName}
+            setSafeName={setSafeName}
+          />
+          <SafeOwners
+            address={address}
+            safeOwners={safeOwners}
+            safeOwnersValidByAddress={safeOwnersValidByAddress}
+            setSafeOwners={onSafeOwnersChange}
+          />
+          <SignatureRequirements
+            safeOwners={safeOwners}
+            signersAmount={signersAmount}
+            setSignersAmount={setSignersAmount}
+          />
+        </>}
     </>
   );
 
   return (
     <section className="section is-flex is-flex-direction-column is-align-items-center has-text-black">
-      <AuthorizeTreasury
-        address={address}
-        safeName={safeName}
-        safeType={safeType}
-        safeOwners={safeOwners}
-        safeOwnersValidByAddress={safeOwnersValidByAddress}
-        signersAmount={signersAmount}
-        createTreasury={onCreateTreasuryClick}
-        creatingTreasury={creatingTreasury}
-        createdTreasury={createdTreasury}
-      />
+      {safeOwners &&
+        <AuthorizeTreasury
+          address={address}
+          safeName={safeName}
+          safeType={safeType}
+          safeOwners={safeOwners}
+          safeOwnersValidByAddress={safeOwnersValidByAddress}
+          signersAmount={signersAmount}
+          createTreasury={onCreateTreasuryClick}
+          creatingTreasury={creatingTreasury}
+          createdTreasury={createdTreasury}
+        />
+      }
       {BodyComponents}
     </section>
   );
