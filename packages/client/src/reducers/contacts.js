@@ -1,3 +1,7 @@
+/*
+ * contacts is an object of { <treasury address>: [contact objects] }
+ * where each contact object has { name: <string>, address: <string> }
+ */
 export const INITIAL_STATE = {
   contacts: {},
 };
