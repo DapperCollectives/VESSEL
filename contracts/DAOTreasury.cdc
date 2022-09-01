@@ -100,15 +100,15 @@ pub contract DAOTreasuryV3 {
       let action = self.multiSignManager.borrowAction(actionUUID: actionUUID)
       let actionView = action.getView()
       let selfRef: &Treasury = &self as &Treasury
+      let signerResponses = self.multiSignManager.getSignerResponsesForAction(actionUUID: actionUUID)
+      self.multiSignManager.executeAction(actionUUID: actionUUID, {"treasury": selfRef})
       emit ActionExecuted(
         treasuryUUID: self.uuid,
         actionUUID: actionUUID,
         executor: signaturePayload.signingAddr,
         actionView: actionView,
-        signerResponses: self.multiSignManager.getSignerResponsesForAction(actionUUID: actionUUID)
+        signerResponses: signerResponses
       )
-      self.multiSignManager.executeAction(actionUUID: actionUUID, {"treasury": selfRef})
-      
     }
 
     access(self) fun validateTreasurySigner(identifier: String, signaturePayload: MyMultiSigV3.MessageSignaturePayload) {
