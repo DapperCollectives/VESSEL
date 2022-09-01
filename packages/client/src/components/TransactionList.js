@@ -11,7 +11,7 @@ function getDisplayStringForTokenTransfer(tokenTransfer) {
   }
 
   const amount = parseFloat(tokenTransfer.amount.value ?? "0");
-  const token = tokenTransfer.amount.token.id
+  const token = tokenTransfer?.amount?.token?.id
     .split(".")[2]
     .replace("Token", "")
     .toUpperCase();
@@ -63,13 +63,13 @@ function TransactionDetails({ safeOwners, transaction, onClose }) {
     );
   };
 
-  const date = new Date(transaction.time);
+  const date = new Date(transaction.eventDate);
   const lastTokenTransfer =
     transaction.tokenTransfers[transaction.tokenTransfers.length - 1];
   const recipientName =
     (lastTokenTransfer &&
       safeOwners.find(
-        ({ address }) => address === lastTokenTransfer.counterparty.address
+        ({ address }) => address === lastTokenTransfer?.counterparty?.address
       )?.name) ??
     FALLBACK_RECIPIENT_NAME;
 
@@ -88,12 +88,12 @@ function TransactionDetails({ safeOwners, transaction, onClose }) {
           {renderRow(
             "Hash",
             <a
-              href={getFlowscanUrlForTransaction(transaction.hash)}
+              href={getFlowscanUrlForTransaction(transaction.flowTransactionId)}
               target="_blank"
               rel="noopen noreferrer"
               className="is-underlined has-text-black"
             >
-              {shortenAddr(transaction.hash)}
+              {shortenAddr(transaction.flowTransactionId)}
             </a>
           )}
           {renderRow(
@@ -108,10 +108,10 @@ function TransactionDetails({ safeOwners, transaction, onClose }) {
           {renderRow(
             "Address",
             lastTokenTransfer
-              ? shortenAddr(lastTokenTransfer.counterparty.address)
+              ? shortenAddr(lastTokenTransfer?.counterparty?.address)
               : ""
           )}
-          {renderRow("Executed", shortenAddr(transaction.payer.address))}
+          {renderRow("Executed", shortenAddr(transaction.blockEventData.proposer))}
           {renderRow(
             "Created",
             `${date.toLocaleDateString("en-us", {
@@ -141,7 +141,7 @@ function TransactionListItem({
     "is-flex is-align-items-center is-justify-content-space-between py-4 border-light-top",
     isLastInList && "border-light-bottom",
   ];
-  const date = new Date(transaction.time);
+  const date = new Date(transaction.eventDate);
   const lastTokenTransfer =
     transaction.tokenTransfers[transaction.tokenTransfers.length - 1];
 
@@ -190,7 +190,7 @@ function TransactionList({ safeData, transactions = [{ foo: "bar" }] }) {
   return transactions.map((transaction, index) => {
     return (
       <TransactionListItem
-        key={transaction.hash}
+        key={transaction.flowTransactionId}
         transaction={transaction}
         displayIndex={transactions.length - index}
         isLastInList={index === transactions.length - 1}
