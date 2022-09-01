@@ -1,13 +1,12 @@
 import React, { useState } from "react";
 import { isEmpty } from "lodash";
-import ModalHeader from "./ModalHeader";
 import InputAddress from "./InputAddress";
 import InputText from "./InputText";
 import { Copy, Plus } from "./Svg";
 import { useClipboard, useContacts } from "../hooks";
 import { useModalContext } from "contexts";
 
-function EditContactModal({ contacts, contact, onConfirm, confirmText, headerTitle }) {
+function EditContactModal({ contacts, contact, onConfirm, confirmText }) {
   const modalContext = useModalContext();
   const [currentAddr, setCurrentAddr] = useState(contact.address);
   const [currentName, setCurrentName] = useState(contact.name);
@@ -24,8 +23,7 @@ function EditContactModal({ contacts, contact, onConfirm, confirmText, headerTit
 
   return (
     <div className="py-5 has-text-black">
-      <ModalHeader className="px-5 pb-5 border-light-bottom" title={headerTitle} />
-      <div className="column is-flex is-flex-direction-column is-full px-5 mt-4">
+      <div className="column is-flex is-flex-direction-column is-full px-5 py-0">
         <div>
           <p className="has-text-grey">Address<span className="has-text-red">*</span></p>
           <InputAddress 
@@ -66,12 +64,11 @@ function EditContactModal({ contacts, contact, onConfirm, confirmText, headerTit
   );
 }
 
-function RemoveContactModal({ contact, onConfirm, confirmText, headerTitle }) {
+function RemoveContactModal({ contact, onConfirm, confirmText }) {
   const modalContext = useModalContext();
   return (
     <div className="py-5 has-text-black">
-      <ModalHeader className="px-5 pb-5 border-light-bottom" title={headerTitle} />
-      <div className="column is-flex is-flex-direction-column is-full px-5 mt-4">
+      <div className="column is-flex is-flex-direction-column is-full px-5 py-0">
         <p>
           This action will remove {contact.address} {contact.name ? `(${contact.name}) ` : ''}
           from your saved addresses.
@@ -120,26 +117,33 @@ function SafeContacts({ address }) {
       onConfirm={(newContact) => setContact(contacts.length, newContact)}
       contacts={contacts}
       contact={{ name: '', address: '' }} 
-    />
+    />,
+    {
+      headerTitle: "Add Contact",
+    }
   );
 
   const openEditModal = (index, contact) => modalContext.openModal(
     <EditContactModal 
-      headerTitle="Edit Contact"
       confirmText="Update"
       onConfirm={(newContact) => setContact(index, newContact)}
       contacts={contacts}
       contact={contact} 
-    />
+    />,
+    {
+      headerTitle: "Edit Contact",
+    }
   );
 
   const openRemoveModal = (index, contact) => modalContext.openModal(
     <RemoveContactModal 
-      headerTitle="Confirm"
       confirmText="Confirm"
       onConfirm={() => removeContact(index)}
       contact={contact} 
-    />
+    />,
+    {
+      headerTitle: "Confirm",
+    }
   );
 
   return (
