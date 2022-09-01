@@ -5,7 +5,7 @@ import { LogoV, CoinIcon } from "components/Svg";
 function SafeOverview({ allBalance }) {
   const balanceClasses = [
     "is-flex is-flex-direction-column flex-1",
-    "rounded-sm has-background-primary has-shadow has-text-white",
+    "rounded-sm has-background-primary-purple has-shadow has-text-white",
     "p-5 mr-6",
   ];
 
@@ -14,7 +14,8 @@ function SafeOverview({ allBalance }) {
         .map((entry) => ({ type: entry[0], balance: Number(entry[1]) }))
         .filter((token) => token.balance > 0)
     : [];
-  if (tokensWithPositiveBalance.length > 3) tokensWithPositiveBalance = tokensWithPositiveBalance.slice(0, 3);
+  if (tokensWithPositiveBalance.length > 3)
+    tokensWithPositiveBalance = tokensWithPositiveBalance.slice(0, 3);
 
   return (
     <>
@@ -24,9 +25,21 @@ function SafeOverview({ allBalance }) {
       <div className="column p-0 mt-4 mb-5 is-flex is-full">
         <div
           className={balanceClasses.join(" ")}
-          style={{ overflow: "hidden", minHeight: 200, minWidth: 375, position: "relative" }}
+          style={{
+            overflow: "hidden",
+            minHeight: 200,
+            minWidth: 375,
+            position: "relative",
+          }}
         >
-          <LogoV style={{ position: "absolute", top: "0px", right: "-30px", zIndex: 0 }} />
+          <LogoV
+            style={{
+              position: "absolute",
+              top: "0px",
+              right: "-30px",
+              zIndex: 0,
+            }}
+          />
           <div style={{ zIndex: 1 }}>
             <div className="column is-full p-0 mb-5 is-flex is-flex-direction-row is-justify-content-space-between">
               <label>Tokens</label>
@@ -51,14 +64,16 @@ function SafeOverview({ allBalance }) {
                   tokensWithPositiveBalance.map(({ type, balance }) => (
                     <div
                       key={type}
-                      className=" has-background-light rounded-sm p-3 m-1"
+                      className="has-background-secondary-purple rounded-sm p-3 m-1"
                       style={{ flex: "2 1 auto", maxWidth: "50%" }}
                     >
                       <div className="is-flex is-flex-direction-row is-justify-content-flex-start mb-5">
                         <CoinIcon coinType={type} />
-                        <label className="ml-2 pt-.5 has-text-black">{type}</label>
+                        <label className="ml-2 pt-.5 has-text-black">
+                          {type}
+                        </label>
                       </div>
-                      <h2 className="title is-5 has-text-white has-text-weight-normal is-family-monospace">
+                      <h2 className="title is-5 has-text-white has-text-weight-normal has-text-heighlight">
                         {balance.toLocaleString()}
                       </h2>
                     </div>
@@ -67,7 +82,10 @@ function SafeOverview({ allBalance }) {
             )}
           </div>
         </div>
-        <div className="rounded-sm border-light has-shadow p-5 is-flex" style={{ minWidth: 375 }}></div>
+        <div
+          className="rounded-sm border-light has-shadow p-5 is-flex"
+          style={{ minWidth: 375 }}
+        ></div>
       </div>
     </>
   );

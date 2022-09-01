@@ -40,7 +40,7 @@ const TestToolBox = ({ address }) => {
       <div className="is-flex is-flex-direction-column">
         <button
           style={{ border: "none" }}
-          className="has-background-warning has-text-black p-1"
+          className="has-background-info has-text-black p-1"
           onClick={() => {
             setShowToolBox((prevState) => !prevState);
           }}
@@ -49,13 +49,16 @@ const TestToolBox = ({ address }) => {
         </button>
         {showToolBox && (
           <div
-            className="has-text-black p-1 is-flex is-flex-direction-row has-background-warning  p-3"
+            className="has-text-black p-1 is-flex is-flex-direction-row has-background-info  p-3"
             style={{ opacity: 1 }}
           >
             <div className="mr-5">
               <label>
                 <strong>Balances</strong>
-                <button className="has-background-warning ml-2" onClick={updateUserBalance}>
+                <button
+                  className="has-background-info ml-2"
+                  onClick={updateUserBalance}
+                >
                   refresh
                 </button>
               </label>
@@ -66,7 +69,9 @@ const TestToolBox = ({ address }) => {
                     <ul className="ml-3">
                       {userBalances.map((coin) => (
                         <li key={COIN_TYPE_TO_META[coin.coinType].displayName}>
-                          {COIN_TYPE_TO_META[coin.coinType].displayName + ": " + coin.balance}
+                          {COIN_TYPE_TO_META[coin.coinType].displayName +
+                            ": " +
+                            coin.balance}
                         </li>
                       ))}
                     </ul>
@@ -93,7 +98,10 @@ const TestToolBox = ({ address }) => {
                   </span>
                 </li>
                 <li>
-                  <span className="is-underlined pointer" onClick={onDepositNFT}>
+                  <span
+                    className="is-underlined pointer"
+                    onClick={onDepositNFT}
+                  >
                     Deposit NFT
                   </span>
                 </li>
