@@ -110,7 +110,6 @@ function SafeContacts({ address }) {
 
   const openAddModal = () => openModal(
     <EditContactModal 
-      headerTitle="Add Contact"
       confirmText="Add"
       onConfirm={(newContact) => setContact(contacts.length, newContact)}
       contacts={contacts}
