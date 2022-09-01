@@ -41,7 +41,6 @@ pub contract MyMultiSigV3 {
 
     // General View Struct for Actions
     pub struct ActionView {
-        pub var name: String
         pub var type: String
         pub var intent: String
         pub var proposer: Address
@@ -54,11 +53,10 @@ pub contract MyMultiSigV3 {
         pub(set) var newThreshold: UInt?
 
         init(
-            name: String, type: String, intent: String, proposer: Address, recipient: Address?,
+            type: String, intent: String, proposer: Address, recipient: Address?,
             vaultId: String?, collectionId: String?, nftId: UInt64?, tokenAmount: UFix64?,
             signerAddr: Address?, newThreshold: UInt?
         ) {
-            self.name = name
             self.type = type 
             self.intent = intent
             self.proposer = proposer
@@ -181,7 +179,7 @@ pub contract MyMultiSigV3 {
         access(account) fun signerApproveAction(actionUUID: UInt64, messageSignaturePayload: MessageSignaturePayload) {
             pre {
                 self.signers[messageSignaturePayload.signingAddr] == true:
-                    "This address is not a signer on the Treasury."
+                    "This address not a signer on the Treasury."
                 self.actions[actionUUID] != nil: "Couldn't find action with UUID ".concat(actionUUID.toString())
                 self.borrowAction(actionUUID:actionUUID).signerResponses[messageSignaturePayload.signingAddr] != SignerResponse.approved:
                     "This address has already signed."

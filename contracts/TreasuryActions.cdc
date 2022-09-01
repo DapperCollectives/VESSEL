@@ -6,9 +6,8 @@ import NonFungibleToken from "./core/NonFungibleToken.cdc"
 pub contract TreasuryActionsV3 {
 
   // Utility
-  pub fun InitializeActionView(name: String, type: String, intent: String, proposer: Address): MyMultiSigV3.ActionView {
+  pub fun InitializeActionView(type: String, intent: String, proposer: Address): MyMultiSigV3.ActionView {
     return MyMultiSigV3.ActionView(
-      name: name,
       type: type,
       intent: intent,
       proposer: proposer,
@@ -38,7 +37,6 @@ pub contract TreasuryActionsV3 {
 
     pub fun getView(): MyMultiSigV3.ActionView {
       let view: MyMultiSigV3.ActionView = TreasuryActionsV3.InitializeActionView(
-        name: "Transfer Tokens",
         type: "TransferToken",
         intent: self.intent,
         proposer: self.proposer
@@ -84,7 +82,6 @@ pub contract TreasuryActionsV3 {
 
     pub fun getView(): MyMultiSigV3.ActionView {
       let view: MyMultiSigV3.ActionView = TreasuryActionsV3.InitializeActionView(
-        name: "Transfer Tokens",
         type: "TransferTokenToTreasury",
         intent: self.intent,
         proposer: self.proposer
@@ -132,7 +129,6 @@ pub contract TreasuryActionsV3 {
 
     pub fun getView(): MyMultiSigV3.ActionView {
       let view: MyMultiSigV3.ActionView = TreasuryActionsV3.InitializeActionView(
-        name: "Transfer NFT",
         type: "TransferNFT",
         intent: self.intent,
         proposer: self.proposer
@@ -176,7 +172,6 @@ pub contract TreasuryActionsV3 {
 
     pub fun getView(): MyMultiSigV3.ActionView {
       let view: MyMultiSigV3.ActionView = TreasuryActionsV3.InitializeActionView(
-        name: "Transfer NFT",
         type: "TransferNFTToTreasury",
         intent: self.intent,
         proposer: self.proposer
@@ -219,7 +214,6 @@ pub contract TreasuryActionsV3 {
 
     pub fun getView(): MyMultiSigV3.ActionView {
       let view: MyMultiSigV3.ActionView = TreasuryActionsV3.InitializeActionView(
-        name: "Add Owner",
         type: "AddSigner",
         intent: self.intent,
         proposer: self.proposer
@@ -252,7 +246,6 @@ pub contract TreasuryActionsV3 {
 
     pub fun getView(): MyMultiSigV3.ActionView {
       let view: MyMultiSigV3.ActionView = TreasuryActionsV3.InitializeActionView(
-        name: "Remove Owner",
         type: "RemoveSigner",
         intent: self.intent,
         proposer: self.proposer
@@ -286,7 +279,6 @@ pub contract TreasuryActionsV3 {
 
     pub fun getView(): MyMultiSigV3.ActionView {
       let view: MyMultiSigV3.ActionView = TreasuryActionsV3.InitializeActionView(
-        name: "Update Threshold",
         type: "UpdateThreshold",
         intent: self.intent,
         proposer: self.proposer

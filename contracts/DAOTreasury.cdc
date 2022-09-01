@@ -14,27 +14,25 @@ pub contract DAOTreasuryV3 {
   pub event TreasuryInitialized(initialSigners: [Address], initialThreshold: UInt)
 
   // Actions
-  pub event ActionProposed(actionUUID: UInt64, proposer: Address)
+  pub event ActionProposed(treasuryUUID: UInt64, actionUUID: UInt64, proposer: Address, actionView: MyMultiSigV3.ActionView)
   pub event ActionExecuted(treasuryUUID: UInt64, actionUUID: UInt64, executor: Address, actionView: MyMultiSigV3.ActionView, signerResponses: {Address: UInt})
   pub event ActionDestroyed(treasuryUUID: UInt64, actionUUID: UInt64, signerResponses: {Address: UInt})
   pub event ActionApprovedBySigner(treasuryUUID: UInt64, address: Address, uuid: UInt64, signerResponses: {Address: UInt})
   pub event ActionRejectedBySigner(treasuryUUID: UInt64, address: Address, uuid: UInt64, signerResponses: {Address: UInt})
 
   // Vaults
-  pub event VaultDeposited(vaultID: String)
-  pub event VaultDestroyed(vaultID: String)
+  pub event VaultDeposited(treasuryUUID: UInt64, signerAddr: Address, vaultID: String)
+  pub event VaultDestroyed(treasuryUUID: UInt64, signerAddr: Address, vaultID: String)
 
   // Collections
-  pub event CollectionDeposited(collectionID: String)
-  pub event CollectionDestroyed(collectionID: String)
+  pub event CollectionDeposited(treasuryUUID: UInt64, signerAddr: Address, collectionID: String)
+  pub event CollectionDestroyed(treasuryUUID: UInt64, signerAddr: Address, collectionID: String)
 
   // Tokens
-  pub event TokensDeposited(identifier: String)
-  pub event TokensWithdrawn(vaultID: String, amount: UFix64)
+  pub event TokensDeposited(treasuryUUID: UInt64, identifier: String)
 
   // NFTs
-  pub event NFTDeposited(collectionID: String, nftID: UInt64)
-  pub event NFTWithdrawn(collectionID: String, nftID: UInt64)
+  pub event NFTDeposited(treasuryUUID: UInt64, collectionID: String, nftID: UInt64)
 
   //
   // ------- Interfaces + Resources -------
@@ -84,7 +82,8 @@ pub contract DAOTreasuryV3 {
       self.validateTreasurySigner(identifier: action.intent, signaturePayload: signaturePayload)
 
       let uuid = self.multiSignManager.createMultiSign(action: action)
-      emit ActionProposed(actionUUID: uuid, proposer: action.proposer)
+      let action = self.multiSignManager.borrowAction(actionUUID: uuid)
+      emit ActionProposed(treasuryUUID: self.uuid, actionUUID: uuid, proposer: action.proposer, actionView: action.getView())
       return uuid
     }
 
@@ -192,7 +191,7 @@ pub contract DAOTreasuryV3 {
       // If all asserts passed, remove vault from the Treasury and destroy
       let vault <- self.vaults.remove(key: identifier)
       destroy vault
-      emit VaultDestroyed(vaultID: identifier)
+      emit VaultDestroyed(treasuryUUID: self.uuid, vaultID: identifier)
     }
 
     // Deposit a Vault //
@@ -203,12 +202,11 @@ pub contract DAOTreasuryV3 {
       } else {
         self.vaults[identifier] <-! vault
       }
-      emit VaultDeposited(vaultID: identifier)
+      emit VaultDeposited(treasuryUUID: self.uuid, vaultID: identifier)
     }
 
     // Withdraw some tokens //
     access(account) fun withdrawTokens(identifier: String, amount: UFix64): @FungibleToken.Vault {
-      emit TokensWithdrawn(vaultID: identifier, amount: amount)
       let vaultRef = (&self.vaults[identifier] as &FungibleToken.Vault?)!
       return <- vaultRef.withdraw(amount: amount)
     }
@@ -299,14 +297,14 @@ pub contract DAOTreasuryV3 {
       // If all asserts passed, remove vault from the Treasury and destroy
       let collection <- self.collections.remove(key: identifier)
       destroy collection
-      emit CollectionDestroyed(collectionID: identifier)
+      emit CollectionDestroyed(treasuryUUID: self.uuid, collectionID: identifier)
     }
 
     // Deposit a Collection //
     pub fun depositCollection(collection: @NonFungibleToken.Collection) {
       let identifier = collection.getType().identifier
       self.collections[identifier] <-! collection
-      emit CollectionDeposited(collectionID: identifier)
+      emit CollectionDeposited(treasuryUUID: self.uuid, collectionID: identifier)
     }
 
     // ------- Vaults ------- 
@@ -360,7 +358,7 @@ pub contract DAOTreasuryV3 {
 
     // Deposit tokens //
     pub fun depositTokens(identifier: String, vault: @FungibleToken.Vault) {
-      emit TokensDeposited(identifier: identifier)
+      emit TokensDeposited(treasuryUUID: self.uuid, identifier: identifier)
 
       let vaultRef = (&self.vaults[identifier] as &FungibleToken.Vault?)!
       vaultRef.deposit(from: <- vault)
@@ -369,7 +367,7 @@ pub contract DAOTreasuryV3 {
 
     // Deposit an NFT //
     pub fun depositNFT(identifier: String, nft: @NonFungibleToken.NFT) {
-      emit NFTDeposited(collectionID: identifier, nftID: nft.id)
+      emit NFTDeposited(treasuryUUID: self.uuid, collectionID: identifier, nftID: nft.id)
 
       let collectionRef = (&self.collections[identifier] as &NonFungibleToken.Collection?)!
       collectionRef.deposit(token: <- nft)
@@ -377,7 +375,6 @@ pub contract DAOTreasuryV3 {
 
     // Withdraw an NFT //
     access(account) fun withdrawNFT(identifier: String, id: UInt64): @NonFungibleToken.NFT {
-      emit NFTWithdrawn(collectionID: identifier, nftID: id)
       let collectionRef = (&self.collections[identifier] as &NonFungibleToken.Collection?)!
       return <- collectionRef.withdraw(withdrawID: id)
     }
