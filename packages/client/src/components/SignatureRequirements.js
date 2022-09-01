@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import ProgressBar from "./ProgressBar";
 import { Person, Minus, Plus } from "./Svg";
 import { getProgressPercentageForSignersAmount } from "../utils";
@@ -8,13 +8,6 @@ function SignatureRequirements({
   signersAmount,
   setSignersAmount,
 }) {
-  // force signer amount to not exceed amount of safe owners
-  useEffect(() => {
-    if (safeOwners.length < signersAmount) {
-      setSignersAmount(safeOwners.length);
-    }
-  }, [safeOwners]);
-
   const signerClasses = [
     "is-flex",
     "is-justify-content-center",
