@@ -6,8 +6,7 @@ import { Copy, Plus } from "./Svg";
 import { useClipboard, useContacts } from "../hooks";
 import { useModalContext } from "contexts";
 
-function EditContactModal({ contacts, contact, onConfirm, confirmText }) {
-  const modalContext = useModalContext();
+function EditContactModal({ contacts, contact, onConfirm, confirmText, closeModal }) {
   const [currentAddr, setCurrentAddr] = useState(contact.address);
   const [currentName, setCurrentName] = useState(contact.name);
   const [addressValid, setAddressValid] = useState(Boolean(contact.address));
@@ -42,7 +41,7 @@ function EditContactModal({ contacts, contact, onConfirm, confirmText }) {
         </div>
       </div>
       <div className="is-flex is-align-items-center mt-5 px-5">
-        <button className="button flex-1 p-4 mr-2" onClick={() => modalContext.closeModal()}>
+        <button className="button flex-1 p-4 mr-2" onClick={closeModal}>
           Cancel
         </button>
         <button
@@ -53,7 +52,7 @@ function EditContactModal({ contacts, contact, onConfirm, confirmText }) {
                 address: currentAddr,
                 name: currentName,
               });
-              modalContext.closeModal();
+              closeModal();
             }
           }}
         >
@@ -64,8 +63,7 @@ function EditContactModal({ contacts, contact, onConfirm, confirmText }) {
   );
 }
 
-function RemoveContactModal({ contact, onConfirm, confirmText }) {
-  const modalContext = useModalContext();
+function RemoveContactModal({ contact, onConfirm, confirmText, closeModal }) {
   return (
     <div className="py-5 has-text-black">
       <div className="column is-flex is-flex-direction-column is-full px-5 py-0">
@@ -75,11 +73,11 @@ function RemoveContactModal({ contact, onConfirm, confirmText }) {
         </p>
       </div>
       <div className="is-flex is-align-items-center mt-5 px-5">
-        <button className="button flex-1 p-4 mr-2" onClick={() => modalContext.closeModal()}>
+        <button className="button flex-1 p-4 mr-2" onClick={closeModal}>
           Cancel
         </button>
         <button className="button is-link flex-1 p-4" onClick={() => {
-          modalContext.closeModal();
+          closeModal();
           onConfirm();
         }}>
           {confirmText}
@@ -103,43 +101,46 @@ function EmptyContacts({ openAddModal }) {
 }
 
 function SafeContacts({ address }) {
-  const modalContext = useModalContext();
+  const { openModal, closeModal } = useModalContext();
   const clipboard = useClipboard();
   const { contacts, setContact, removeContact } = useContacts(address);
 
   const minWidth = 120;
   const addressWidth = 160;
 
-  const openAddModal = () => modalContext.openModal(
+  const openAddModal = () => openModal(
     <EditContactModal 
       headerTitle="Add Contact"
       confirmText="Add"
       onConfirm={(newContact) => setContact(contacts.length, newContact)}
       contacts={contacts}
       contact={{ name: '', address: '' }} 
+      closeModal={closeModal}
     />,
     {
       headerTitle: "Add Contact",
     }
   );
 
-  const openEditModal = (index, contact) => modalContext.openModal(
+  const openEditModal = (index, contact) => openModal(
     <EditContactModal 
       confirmText="Update"
       onConfirm={(newContact) => setContact(index, newContact)}
       contacts={contacts}
       contact={contact} 
+      closeModal={closeModal}
     />,
     {
       headerTitle: "Edit Contact",
     }
   );
 
-  const openRemoveModal = (index, contact) => modalContext.openModal(
+  const openRemoveModal = (index, contact) => openModal(
     <RemoveContactModal 
       confirmText="Confirm"
       onConfirm={() => removeContact(index)}
       contact={contact} 
+      closeModal={closeModal}
     />,
     {
       headerTitle: "Confirm",
