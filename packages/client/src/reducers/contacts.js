@@ -9,30 +9,30 @@ export const INITIAL_STATE = {
 const reducer = (state, action) => {
   const address = Object.keys(action.payload)[0];
   const body = action.payload[address];
-  const newContacts = (state.contacts?.[address] ?? []).slice(0);
+  const treasuryContacts = (state.contacts?.[address] ?? []).slice(0);
 
   switch (action.type) {
     case "SET_CONTACT": {
       const { index, newContact } = body;
-      newContacts[index] = newContact;
+      treasuryContacts[index] = newContact;
 
       return {
         ...state,
         contacts: {
           ...state.contacts,
-          [address]: newContacts,
+          [address]: treasuryContacts,
         },
       };
     }
     case "REMOVE_CONTACT": {
       const { index } = body;
-      newContacts.splice(index, 1);
+      treasuryContacts.splice(index, 1);
 
       return {
         ...state,
         contacts: {
           ...state.contacts,
-          [address]: newContacts,
+          [address]: treasuryContacts,
         },
       };
     }
