@@ -7,18 +7,20 @@ import { Copy, Plus } from "./Svg";
 import { useClipboard, useContacts } from "../hooks";
 import { useModalContext } from "contexts";
 
-function EditContactModal({ contact, onConfirm, confirmText, headerTitle }) {
+function EditContactModal({ contacts, contact, onConfirm, confirmText, headerTitle }) {
   const modalContext = useModalContext();
   const [currentAddr, setCurrentAddr] = useState(contact.address);
   const [currentName, setCurrentName] = useState(contact.name);
   const [addressValid, setAddressValid] = useState(Boolean(contact.address));
+  const [addressNew, setAddressNew] = useState(true);
   const onAddressChange = ({ value, isValid }) => {
     setCurrentAddr(value);
     setAddressValid(isValid);
+    setAddressNew(isEmpty(contacts) || contacts.every(c => c.address !== value));
   };
   const onNameChange = ({ value }) => setCurrentName(value);
-
-  const updateBtnClasses = ["button", "flex-1", "p-4", addressValid ? "is-link" : ""];
+  const canConfirm = addressNew && addressValid;
+  const updateBtnClasses = ["button", "flex-1", "p-4", canConfirm ? "is-link" : ""];
 
   return (
     <div className="py-5 has-text-black">
@@ -30,6 +32,9 @@ function EditContactModal({ contact, onConfirm, confirmText, headerTitle }) {
             value={currentAddr} 
             isValid={addressValid} 
             onChange={onAddressChange} />
+          {!addressNew &&
+            <p className="has-text-red mt-2">This address has already been added.</p>
+          }
         </div>
         <div className="mt-5">
           <p className="has-text-grey">Name</p>
@@ -45,7 +50,7 @@ function EditContactModal({ contact, onConfirm, confirmText, headerTitle }) {
         <button
           className={updateBtnClasses.join(" ")}
           onClick={() => {
-            if (addressValid) {
+            if (canConfirm) {
               onConfirm({
                 address: currentAddr,
                 name: currentName,
@@ -113,6 +118,7 @@ function SafeContacts({ address }) {
       headerTitle="Add Contact"
       confirmText="Add"
       onConfirm={(newContact) => setContact(contacts.length, newContact)}
+      contacts={contacts}
       contact={{ name: '', address: '' }} 
     />
   );
@@ -122,6 +128,7 @@ function SafeContacts({ address }) {
       headerTitle="Edit Contact"
       confirmText="Update"
       onConfirm={(newContact) => setContact(index, newContact)}
+      contacts={contacts}
       contact={contact} 
     />
   );

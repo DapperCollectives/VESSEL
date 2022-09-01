@@ -8,12 +8,13 @@ const InputAddress = ({ web3, value, isValid, onChange }) => {
   const { isAddressValid } = useAddressValidation(web3.injectedProvider);
 
   const onValueChange = async (e) => {
-    const { value } = e.target;
+    let { value } = e.target;
     let isValid = isAddr(value);
     if (isValid) {
       isValid = await isAddressValid(formatAddress(value));
     }
-    onChange({ value, isValid });
+    // if address is valid, autoformat prefix with 0x
+    onChange({ value: isValid ? formatAddress(value) : value, isValid });
   };
 
   return (
