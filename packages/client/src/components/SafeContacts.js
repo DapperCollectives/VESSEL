@@ -173,7 +173,7 @@ function SafeContacts({ address }) {
           {contacts.map((contact, index) => (
             <div
               className="is-flex is-align-items-center is-justify-content-space-between column is-full p-5 border-light-bottom"
-              key={index}
+              key={contact.address}
             >
               <div className="mr-5" style={{ width: addressWidth }}>
                 <span className="pointer" onClick={() => clipboard.copy(contact.address)} style={{ whiteSpace: "nowrap" }}>
