@@ -1,18 +1,18 @@
-import DAOTreasuryV3 from "../contracts/DAOTreasury.cdc"
-import MyMultiSigV3 from "../contracts/MyMultiSig.cdc"
+import DAOTreasuryV4 from "../contracts/DAOTreasury.cdc"
+import MyMultiSigV4 from "../contracts/MyMultiSig.cdc"
 
 transaction(treasuryAddr: Address, actionUUID: UInt64, message: String, keyIds: [UInt64], signatures: [String], signatureBlock: UInt64) {
 
   var isValid: Bool
-  var action: &MyMultiSigV3.MultiSignAction
-  var treasury: &DAOTreasuryV3.Treasury{DAOTreasuryV3.TreasuryPublic}
-  var messageSignaturePayload: MyMultiSigV3.MessageSignaturePayload
+  var action: &MyMultiSigV4.MultiSignAction
+  var treasury: &DAOTreasuryV4.Treasury{DAOTreasuryV4.TreasuryPublic}
+  var messageSignaturePayload: MyMultiSigV4.MessageSignaturePayload
   
   prepare(signer: AuthAccount) {
     self.isValid = false
-    self.treasury = getAccount(treasuryAddr).getCapability(DAOTreasuryV3.TreasuryPublicPath)
-                    .borrow<&DAOTreasuryV3.Treasury{DAOTreasuryV3.TreasuryPublic}>()
-                    ?? panic("A DAOTreasuryV3 doesn't exist here.")
+    self.treasury = getAccount(treasuryAddr).getCapability(DAOTreasuryV4.TreasuryPublicPath)
+                    .borrow<&DAOTreasuryV4.Treasury{DAOTreasuryV4.TreasuryPublic}>()
+                    ?? panic("A DAOTreasuryV4 doesn't exist here.")
 
     let manager = self.treasury.borrowManagerPublic()
     self.action = manager.borrowAction(actionUUID: actionUUID)
@@ -23,7 +23,7 @@ transaction(treasuryAddr: Address, actionUUID: UInt64, message: String, keyIds: 
       _keyIds.append(Int(keyId))
     }
 
-    self.messageSignaturePayload = MyMultiSigV3.MessageSignaturePayload(
+    self.messageSignaturePayload = MyMultiSigV4.MessageSignaturePayload(
         signingAddr: signer.address, message: message, keyIds: _keyIds, signatures: signatures, signatureBlock: signatureBlock
     )
 

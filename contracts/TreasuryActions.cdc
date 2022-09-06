@@ -1,13 +1,13 @@
-import MyMultiSigV3 from "./MyMultiSig.cdc"
-import DAOTreasuryV3 from "./DAOTreasury.cdc"
+import MyMultiSigV4 from "./MyMultiSig.cdc"
+import DAOTreasuryV4 from "./DAOTreasury.cdc"
 import FungibleToken from "./core/FungibleToken.cdc"
 import NonFungibleToken from "./core/NonFungibleToken.cdc"
 
-pub contract TreasuryActionsV3 {
+pub contract TreasuryActionsV4 {
 
   // Utility
-  pub fun InitializeActionView(type: String, intent: String, proposer: Address): MyMultiSigV3.ActionView {
-    return MyMultiSigV3.ActionView(
+  pub fun InitializeActionView(type: String, intent: String, proposer: Address): MyMultiSigV4.ActionView {
+    return MyMultiSigV4.ActionView(
       type: type,
       intent: intent,
       proposer: proposer,
@@ -22,21 +22,21 @@ pub contract TreasuryActionsV3 {
   }
 
   // Transfers `amount` tokens from the treasury to `recipientVault`
-  pub struct TransferToken: MyMultiSigV3.Action {
+  pub struct TransferToken: MyMultiSigV4.Action {
     pub let intent: String
     pub let proposer: Address
     pub let recipientVault: Capability<&{FungibleToken.Receiver}>
     pub let amount: UFix64
 
     access(account) fun execute(_ params: {String: AnyStruct}) {
-      let treasuryRef: &DAOTreasuryV3.Treasury = params["treasury"]! as! &DAOTreasuryV3.Treasury
+      let treasuryRef: &DAOTreasuryV4.Treasury = params["treasury"]! as! &DAOTreasuryV4.Treasury
       let vaultID: String = self.recipientVault.borrow()!.getType().identifier
       let withdrawnTokens <- treasuryRef.withdrawTokens(identifier: vaultID, amount: self.amount)
       self.recipientVault.borrow()!.deposit(from: <- withdrawnTokens)
     }
 
-    pub fun getView(): MyMultiSigV3.ActionView {
-      let view: MyMultiSigV3.ActionView = TreasuryActionsV3.InitializeActionView(
+    pub fun getView(): MyMultiSigV4.ActionView {
+      let view: MyMultiSigV4.ActionView = TreasuryActionsV4.InitializeActionView(
         type: "TransferToken",
         intent: self.intent,
         proposer: self.proposer
@@ -65,23 +65,23 @@ pub contract TreasuryActionsV3 {
   }
 
   // Transfers `amount` of `identifier` tokens from the treasury to another treasury
-  pub struct TransferTokenToTreasury: MyMultiSigV3.Action {
+  pub struct TransferTokenToTreasury: MyMultiSigV4.Action {
     pub let intent: String
     pub let proposer: Address
     pub let identifier: String
-    pub let recipientTreasury: Capability<&{DAOTreasuryV3.TreasuryPublic}>
+    pub let recipientTreasury: Capability<&{DAOTreasuryV4.TreasuryPublic}>
     pub let amount: UFix64
 
     access(account) fun execute(_ params: {String: AnyStruct}) {
-      let treasuryRef: &DAOTreasuryV3.Treasury = params["treasury"]! as! &DAOTreasuryV3.Treasury
+      let treasuryRef: &DAOTreasuryV4.Treasury = params["treasury"]! as! &DAOTreasuryV4.Treasury
       let withdrawnTokens <- treasuryRef.withdrawTokens(identifier: self.identifier, amount: self.amount)
 
       let recipientAddr = self.recipientTreasury.borrow()!.owner!.address
       self.recipientTreasury.borrow()!.depositTokens(identifier: self.identifier, vault: <- withdrawnTokens)
     }
 
-    pub fun getView(): MyMultiSigV3.ActionView {
-      let view: MyMultiSigV3.ActionView = TreasuryActionsV3.InitializeActionView(
+    pub fun getView(): MyMultiSigV4.ActionView {
+      let view: MyMultiSigV4.ActionView = TreasuryActionsV4.InitializeActionView(
         type: "TransferTokenToTreasury",
         intent: self.intent,
         proposer: self.proposer
@@ -92,7 +92,7 @@ pub contract TreasuryActionsV3 {
       return view 
     }
 
-    init(recipientTreasury: Capability<&{DAOTreasuryV3.TreasuryPublic}>, identifier: String, amount: UFix64, proposer: Address) {
+    init(recipientTreasury: Capability<&{DAOTreasuryV4.TreasuryPublic}>, identifier: String, amount: UFix64, proposer: Address) {
       pre {
         amount > 0.0 : "Amount should be higher than 0.0"  
       }
@@ -112,14 +112,14 @@ pub contract TreasuryActionsV3 {
   }
 
   // Transfers an NFT from the treasury to `recipientCollection`
-  pub struct TransferNFT: MyMultiSigV3.Action {
+  pub struct TransferNFT: MyMultiSigV4.Action {
     pub let intent: String
     pub let proposer: Address
     pub let recipientCollection: Capability<&{NonFungibleToken.CollectionPublic}>
     pub let withdrawID: UInt64
 
     access(account) fun execute(_ params: {String: AnyStruct}) {
-      let treasuryRef: &DAOTreasuryV3.Treasury = params["treasury"]! as! &DAOTreasuryV3.Treasury
+      let treasuryRef: &DAOTreasuryV4.Treasury = params["treasury"]! as! &DAOTreasuryV4.Treasury
       let collectionID = self.recipientCollection.borrow()!.getType().identifier
       
       let nft <- treasuryRef.withdrawNFT(identifier: collectionID, id: self.withdrawID)
@@ -127,8 +127,8 @@ pub contract TreasuryActionsV3 {
       self.recipientCollection.borrow()!.deposit(token: <- nft)
     }
 
-    pub fun getView(): MyMultiSigV3.ActionView {
-      let view: MyMultiSigV3.ActionView = TreasuryActionsV3.InitializeActionView(
+    pub fun getView(): MyMultiSigV4.ActionView {
+      let view: MyMultiSigV4.ActionView = TreasuryActionsV4.InitializeActionView(
         type: "TransferNFT",
         intent: self.intent,
         proposer: self.proposer
@@ -155,23 +155,23 @@ pub contract TreasuryActionsV3 {
   }
 
   // Transfers an NFT from the treasury to another treasury
-  pub struct TransferNFTToTreasury: MyMultiSigV3.Action {
+  pub struct TransferNFTToTreasury: MyMultiSigV4.Action {
     pub let intent: String
     pub let proposer: Address
     pub let identifier: String
-    pub let recipientTreasury: Capability<&{DAOTreasuryV3.TreasuryPublic}>
+    pub let recipientTreasury: Capability<&{DAOTreasuryV4.TreasuryPublic}>
     pub let withdrawID: UInt64
 
     access(account) fun execute(_ params: {String: AnyStruct}) {
-      let treasuryRef: &DAOTreasuryV3.Treasury = params["treasury"]! as! &DAOTreasuryV3.Treasury
+      let treasuryRef: &DAOTreasuryV4.Treasury = params["treasury"]! as! &DAOTreasuryV4.Treasury
       let nft <- treasuryRef.withdrawNFT(identifier: self.identifier, id: self.withdrawID)
 
       let recipientCollectionRef: &{NonFungibleToken.CollectionPublic} = self.recipientTreasury.borrow()!.borrowCollectionPublic(identifier: self.identifier)
       recipientCollectionRef.deposit(token: <- nft)
     }
 
-    pub fun getView(): MyMultiSigV3.ActionView {
-      let view: MyMultiSigV3.ActionView = TreasuryActionsV3.InitializeActionView(
+    pub fun getView(): MyMultiSigV4.ActionView {
+      let view: MyMultiSigV4.ActionView = TreasuryActionsV4.InitializeActionView(
         type: "TransferNFTToTreasury",
         intent: self.intent,
         proposer: self.proposer
@@ -182,7 +182,7 @@ pub contract TreasuryActionsV3 {
       return view
     }
 
-    init(recipientTreasury: Capability<&{DAOTreasuryV3.TreasuryPublic}>, identifier: String, nftID: UInt64, proposer: Address) {
+    init(recipientTreasury: Capability<&{DAOTreasuryV4.TreasuryPublic}>, identifier: String, nftID: UInt64, proposer: Address) {
       let recipientAddr = recipientTreasury.borrow()!.owner!.address
       self.intent = "Transfer an NFT from collection"
                         .concat(" ")
@@ -200,20 +200,20 @@ pub contract TreasuryActionsV3 {
   }
 
   // Add a new signer to the treasury
-  pub struct AddSigner: MyMultiSigV3.Action {
+  pub struct AddSigner: MyMultiSigV4.Action {
     pub let signer: Address
     pub let intent: String
     pub let proposer: Address
 
     access(account) fun execute(_ params: {String: AnyStruct}) {
-      let treasuryRef: &DAOTreasuryV3.Treasury = params["treasury"]! as! &DAOTreasuryV3.Treasury
+      let treasuryRef: &DAOTreasuryV4.Treasury = params["treasury"]! as! &DAOTreasuryV4.Treasury
 
       let manager = treasuryRef.borrowManager()
       manager.addSigner(signer: self.signer)
     }
 
-    pub fun getView(): MyMultiSigV3.ActionView {
-      let view: MyMultiSigV3.ActionView = TreasuryActionsV3.InitializeActionView(
+    pub fun getView(): MyMultiSigV4.ActionView {
+      let view: MyMultiSigV4.ActionView = TreasuryActionsV4.InitializeActionView(
         type: "AddSigner",
         intent: self.intent,
         proposer: self.proposer
@@ -232,20 +232,20 @@ pub contract TreasuryActionsV3 {
   }
 
   // Remove a signer from the treasury
-  pub struct RemoveSigner: MyMultiSigV3.Action {
+  pub struct RemoveSigner: MyMultiSigV4.Action {
     pub let signer: Address
     pub let intent: String
     pub let proposer: Address
 
     access(account) fun execute(_ params: {String: AnyStruct}) {
-      let treasuryRef: &DAOTreasuryV3.Treasury = params["treasury"]! as! &DAOTreasuryV3.Treasury
+      let treasuryRef: &DAOTreasuryV4.Treasury = params["treasury"]! as! &DAOTreasuryV4.Treasury
 
       let manager = treasuryRef.borrowManager()
       manager.removeSigner(signer: self.signer)
     }
 
-    pub fun getView(): MyMultiSigV3.ActionView {
-      let view: MyMultiSigV3.ActionView = TreasuryActionsV3.InitializeActionView(
+    pub fun getView(): MyMultiSigV4.ActionView {
+      let view: MyMultiSigV4.ActionView = TreasuryActionsV4.InitializeActionView(
         type: "RemoveSigner",
         intent: self.intent,
         proposer: self.proposer
@@ -264,21 +264,21 @@ pub contract TreasuryActionsV3 {
   }
 
   // Update the threshold of signers
-  pub struct UpdateThreshold: MyMultiSigV3.Action {
+  pub struct UpdateThreshold: MyMultiSigV4.Action {
     pub let threshold: UInt
     pub let intent: String
     pub let proposer: Address
 
     access(account) fun execute(_ params: {String: AnyStruct}) {
-      let treasuryRef: &DAOTreasuryV3.Treasury = params["treasury"]! as! &DAOTreasuryV3.Treasury
+      let treasuryRef: &DAOTreasuryV4.Treasury = params["treasury"]! as! &DAOTreasuryV4.Treasury
 
       let manager = treasuryRef.borrowManager()
       let oldThreshold = manager.threshold
       manager.updateThreshold(newThreshold: self.threshold)
     }
 
-    pub fun getView(): MyMultiSigV3.ActionView {
-      let view: MyMultiSigV3.ActionView = TreasuryActionsV3.InitializeActionView(
+    pub fun getView(): MyMultiSigV4.ActionView {
+      let view: MyMultiSigV4.ActionView = TreasuryActionsV4.InitializeActionView(
         type: "UpdateThreshold",
         intent: self.intent,
         proposer: self.proposer

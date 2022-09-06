@@ -1,9 +1,9 @@
-import MyMultiSigV3 from "./MyMultiSig.cdc"
+import MyMultiSigV4 from "./MyMultiSig.cdc"
 import FungibleToken from "./core/FungibleToken.cdc"
 import NonFungibleToken from "./core/NonFungibleToken.cdc"
 import FCLCrypto from "./core/FCLCrypto.cdc"
 
-pub contract DAOTreasuryV3 {
+pub contract DAOTreasuryV4 {
 
   pub let TreasuryStoragePath: StoragePath
   pub let TreasuryPublicPath: PublicPath
@@ -14,8 +14,8 @@ pub contract DAOTreasuryV3 {
   pub event TreasuryInitialized(initialSigners: [Address], initialThreshold: UInt)
 
   // Actions
-  pub event ActionProposed(treasuryUUID: UInt64, actionUUID: UInt64, proposer: Address, actionView: MyMultiSigV3.ActionView)
-  pub event ActionExecuted(treasuryUUID: UInt64, actionUUID: UInt64, executor: Address, actionView: MyMultiSigV3.ActionView, signerResponses: {Address: UInt})
+  pub event ActionProposed(treasuryUUID: UInt64, actionUUID: UInt64, proposer: Address, actionView: MyMultiSigV4.ActionView)
+  pub event ActionExecuted(treasuryUUID: UInt64, actionUUID: UInt64, executor: Address, actionView: MyMultiSigV4.ActionView, signerResponses: {Address: UInt})
   pub event ActionDestroyed(treasuryUUID: UInt64, actionUUID: UInt64, signerResponses: {Address: UInt})
   pub event ActionApprovedBySigner(treasuryUUID: UInt64, address: Address, actionUUID: UInt64, signerResponses: {Address: UInt})
   pub event ActionRejectedBySigner(treasuryUUID: UInt64, address: Address, actionUUID: UInt64, signerResponses: {Address: UInt})
@@ -38,35 +38,35 @@ pub contract DAOTreasuryV3 {
   // ------- Interfaces + Resources -------
   //
   pub resource interface TreasuryPublic {
-    pub fun signerApproveAction(actionUUID: UInt64, messageSignaturePayload: MyMultiSigV3.MessageSignaturePayload)
-    pub fun signerRejectAction(actionUUID: UInt64, messageSignaturePayload: MyMultiSigV3.MessageSignaturePayload)
-    pub fun proposeAction(action: {MyMultiSigV3.Action}, signaturePayload: MyMultiSigV3.MessageSignaturePayload): UInt64
-    pub fun executeAction(actionUUID: UInt64, signaturePayload: MyMultiSigV3.MessageSignaturePayload)
-    pub fun signerDepositCollection(collection: @NonFungibleToken.Collection, signaturePayload: MyMultiSigV3.MessageSignaturePayload)
-    pub fun signerRemoveCollection(identifier: String, signaturePayload: MyMultiSigV3.MessageSignaturePayload)
-    pub fun signerDepositVault(vault: @FungibleToken.Vault, signaturePayload: MyMultiSigV3.MessageSignaturePayload)
-    pub fun signerRemoveVault(identifier: String, signaturePayload: MyMultiSigV3.MessageSignaturePayload)
+    pub fun signerApproveAction(actionUUID: UInt64, messageSignaturePayload: MyMultiSigV4.MessageSignaturePayload)
+    pub fun signerRejectAction(actionUUID: UInt64, messageSignaturePayload: MyMultiSigV4.MessageSignaturePayload)
+    pub fun proposeAction(action: {MyMultiSigV4.Action}, signaturePayload: MyMultiSigV4.MessageSignaturePayload): UInt64
+    pub fun executeAction(actionUUID: UInt64, signaturePayload: MyMultiSigV4.MessageSignaturePayload)
+    pub fun signerDepositCollection(collection: @NonFungibleToken.Collection, signaturePayload: MyMultiSigV4.MessageSignaturePayload)
+    pub fun signerRemoveCollection(identifier: String, signaturePayload: MyMultiSigV4.MessageSignaturePayload)
+    pub fun signerDepositVault(vault: @FungibleToken.Vault, signaturePayload: MyMultiSigV4.MessageSignaturePayload)
+    pub fun signerRemoveVault(identifier: String, signaturePayload: MyMultiSigV4.MessageSignaturePayload)
     pub fun depositTokens(identifier: String, vault: @FungibleToken.Vault)
     pub fun depositNFT(identifier: String, nft: @NonFungibleToken.NFT)
-    pub fun borrowManagerPublic(): &MyMultiSigV3.Manager{MyMultiSigV3.ManagerPublic}
+    pub fun borrowManagerPublic(): &MyMultiSigV4.Manager{MyMultiSigV4.ManagerPublic}
     pub fun borrowVaultPublic(identifier: String): &{FungibleToken.Balance}
     pub fun borrowCollectionPublic(identifier: String): &{NonFungibleToken.CollectionPublic}
     pub fun getVaultIdentifiers(): [String]
     pub fun getCollectionIdentifiers(): [String]
   }
 
-  pub resource Treasury: MyMultiSigV3.MultiSign, TreasuryPublic {
-    access(contract) let multiSignManager: @MyMultiSigV3.Manager
+  pub resource Treasury: MyMultiSigV4.MultiSign, TreasuryPublic {
+    access(contract) let multiSignManager: @MyMultiSigV4.Manager
     access(self) var vaults: @{String: FungibleToken.Vault}
     access(self) var collections: @{String: NonFungibleToken.Collection}
 
-    pub fun signerApproveAction(actionUUID: UInt64, messageSignaturePayload: MyMultiSigV3.MessageSignaturePayload) {
+    pub fun signerApproveAction(actionUUID: UInt64, messageSignaturePayload: MyMultiSigV4.MessageSignaturePayload) {
       self.multiSignManager.signerApproveAction(actionUUID: actionUUID, messageSignaturePayload: messageSignaturePayload) 
       let signerResponses = self.multiSignManager.getSignerResponsesForAction(actionUUID: actionUUID)
       emit ActionApprovedBySigner(treasuryUUID: self.uuid, address: messageSignaturePayload.signingAddr, actionUUID: actionUUID, signerResponses: signerResponses)
     }
 
-    pub fun signerRejectAction(actionUUID: UInt64, messageSignaturePayload: MyMultiSigV3.MessageSignaturePayload) {
+    pub fun signerRejectAction(actionUUID: UInt64, messageSignaturePayload: MyMultiSigV4.MessageSignaturePayload) {
       self.multiSignManager.signerRejectAction(actionUUID: actionUUID, messageSignaturePayload: messageSignaturePayload) 
       let signerResponses = self.multiSignManager.getSignerResponsesForAction(actionUUID: actionUUID)
       emit ActionRejectedBySigner(treasuryUUID: self.uuid, address: messageSignaturePayload.signingAddr, actionUUID: actionUUID, signerResponses: signerResponses)
@@ -78,7 +78,7 @@ pub contract DAOTreasuryV3 {
       }
     }
 
-    pub fun proposeAction(action: {MyMultiSigV3.Action}, signaturePayload: MyMultiSigV3.MessageSignaturePayload): UInt64 {
+    pub fun proposeAction(action: {MyMultiSigV4.Action}, signaturePayload: MyMultiSigV4.MessageSignaturePayload): UInt64 {
       self.validateTreasurySigner(identifier: action.intent, signaturePayload: signaturePayload)
 
       let actionUUID = self.multiSignManager.createMultiSign(action: action)
@@ -94,7 +94,7 @@ pub contract DAOTreasuryV3 {
       wants. This means it's very imporant for the signers
       to know what they are signing.
     */
-    pub fun executeAction(actionUUID: UInt64, signaturePayload: MyMultiSigV3.MessageSignaturePayload) {
+    pub fun executeAction(actionUUID: UInt64, signaturePayload: MyMultiSigV4.MessageSignaturePayload) {
       self.validateTreasurySigner(identifier: actionUUID.toString(), signaturePayload: signaturePayload)
 
       let action = self.multiSignManager.borrowAction(actionUUID: actionUUID)
@@ -111,7 +111,7 @@ pub contract DAOTreasuryV3 {
       )
     }
 
-    access(self) fun validateTreasurySigner(identifier: String, signaturePayload: MyMultiSigV3.MessageSignaturePayload) {
+    access(self) fun validateTreasurySigner(identifier: String, signaturePayload: MyMultiSigV4.MessageSignaturePayload) {
       // ------- Validate Address is a Signer on the Treasury -----
       let signers = self.multiSignManager.getSigners()
       assert(signers[signaturePayload.signingAddr] == true, message: "Address is not a signer on this Treasury")
@@ -128,7 +128,7 @@ pub contract DAOTreasuryV3 {
       )
 
       // ------ Validate Block ID --------
-      MyMultiSigV3.validateMessageBlockId(blockHeight: signaturePayload.signatureBlock, messageBlockId: message.slice(from: identifierHex.length, upTo: message.length))
+      MyMultiSigV4.validateMessageBlockId(blockHeight: signaturePayload.signatureBlock, messageBlockId: message.slice(from: identifierHex.length, upTo: message.length))
 
       // ------ Validate Signature -------
       let signatureValidationResponse = FCLCrypto.verifyUserSignatures(
@@ -144,17 +144,17 @@ pub contract DAOTreasuryV3 {
     }
 
     // Reference to Manager //
-    access(account) fun borrowManager(): &MyMultiSigV3.Manager {
-      return &self.multiSignManager as &MyMultiSigV3.Manager
+    access(account) fun borrowManager(): &MyMultiSigV4.Manager {
+      return &self.multiSignManager as &MyMultiSigV4.Manager
     }
 
-    pub fun borrowManagerPublic(): &MyMultiSigV3.Manager{MyMultiSigV3.ManagerPublic} {
-      return &self.multiSignManager as &MyMultiSigV3.Manager{MyMultiSigV3.ManagerPublic}
+    pub fun borrowManagerPublic(): &MyMultiSigV4.Manager{MyMultiSigV4.ManagerPublic} {
+      return &self.multiSignManager as &MyMultiSigV4.Manager{MyMultiSigV4.ManagerPublic}
     }
 
     // ------- Vaults ------- 
 
-    pub fun signerRemoveVault(identifier: String, signaturePayload: MyMultiSigV3.MessageSignaturePayload) {
+    pub fun signerRemoveVault(identifier: String, signaturePayload: MyMultiSigV4.MessageSignaturePayload) {
       pre {
         self.vaults[identifier] != nil: "Vault doesn't exist in this treasury."
         self.vaults[identifier]?.balance == 0.0: "Vault must be empty before it can be removed."
@@ -175,7 +175,7 @@ pub contract DAOTreasuryV3 {
       )
 
       // ------ Validate Block ID --------
-      MyMultiSigV3.validateMessageBlockId(blockHeight: signaturePayload.signatureBlock, messageBlockId: message.slice(from: vaultIdHex.length, upTo: message.length))
+      MyMultiSigV4.validateMessageBlockId(blockHeight: signaturePayload.signatureBlock, messageBlockId: message.slice(from: vaultIdHex.length, upTo: message.length))
 
       // ------ Validate Signature -------
       let signatureValidationResponse = FCLCrypto.verifyUserSignatures(
@@ -223,7 +223,7 @@ pub contract DAOTreasuryV3 {
 
     // ------- Collections ------- 
 
-    pub fun signerDepositCollection(collection: @NonFungibleToken.Collection, signaturePayload: MyMultiSigV3.MessageSignaturePayload) {
+    pub fun signerDepositCollection(collection: @NonFungibleToken.Collection, signaturePayload: MyMultiSigV4.MessageSignaturePayload) {
       // ------- Validate Address is a Signer on the Treasury -----
       let signers = self.multiSignManager.getSigners()
       assert(signers[signaturePayload.signingAddr] == true, message: "Address is not a signer on this Treasury")
@@ -241,7 +241,7 @@ pub contract DAOTreasuryV3 {
       )
 
       // ------ Validate Block ID --------
-      MyMultiSigV3.validateMessageBlockId(blockHeight: signaturePayload.signatureBlock, messageBlockId: message.slice(from: collectionIdHex.length, upTo: message.length))
+      MyMultiSigV4.validateMessageBlockId(blockHeight: signaturePayload.signatureBlock, messageBlockId: message.slice(from: collectionIdHex.length, upTo: message.length))
 
       // ------ Validate Signature -------
       let signatureValidationResponse = FCLCrypto.verifyUserSignatures(
@@ -260,7 +260,7 @@ pub contract DAOTreasuryV3 {
       emit CollectionDeposited(treasuryUUID: self.uuid, signerAddr: signaturePayload.signingAddr, collectionID: identifier)
     }
 
-    pub fun signerRemoveCollection(identifier: String, signaturePayload: MyMultiSigV3.MessageSignaturePayload) {
+    pub fun signerRemoveCollection(identifier: String, signaturePayload: MyMultiSigV4.MessageSignaturePayload) {
       pre {
         self.collections[identifier] != nil: "Collection doesn't exist in this treasury."
         self.collections[identifier]?.getIDs()?.length == 0 : "Collection must be empty before it can be removed."
@@ -282,7 +282,7 @@ pub contract DAOTreasuryV3 {
       )
 
       // ------ Validate Block ID --------
-      MyMultiSigV3.validateMessageBlockId(blockHeight: signaturePayload.signatureBlock, messageBlockId: message.slice(from: collectionIdHex.length, upTo: message.length))
+      MyMultiSigV4.validateMessageBlockId(blockHeight: signaturePayload.signatureBlock, messageBlockId: message.slice(from: collectionIdHex.length, upTo: message.length))
 
       // ------ Validate Signature -------
       let signatureValidationResponse = FCLCrypto.verifyUserSignatures(
@@ -309,7 +309,7 @@ pub contract DAOTreasuryV3 {
     }
 
     // ------- Vaults ------- 
-    pub fun signerDepositVault(vault: @FungibleToken.Vault, signaturePayload: MyMultiSigV3.MessageSignaturePayload) {
+    pub fun signerDepositVault(vault: @FungibleToken.Vault, signaturePayload: MyMultiSigV4.MessageSignaturePayload) {
       // ------- Validate Address is a Signer on the Treasury -----
       let signers = self.multiSignManager.getSigners()
       assert(signers[signaturePayload.signingAddr] == true, message: "Address is not a signer on this Treasury")
@@ -329,7 +329,7 @@ pub contract DAOTreasuryV3 {
       )
 
       // ------ Validate Block ID --------
-      MyMultiSigV3.validateMessageBlockId(blockHeight: signaturePayload.signatureBlock, messageBlockId: message.slice(from: vaultIdHex.length, upTo: message.length))
+      MyMultiSigV4.validateMessageBlockId(blockHeight: signaturePayload.signatureBlock, messageBlockId: message.slice(from: vaultIdHex.length, upTo: message.length))
 
       // ------ Validate Signature -------
       let signatureValidationResponse = FCLCrypto.verifyUserSignatures(
@@ -381,7 +381,7 @@ pub contract DAOTreasuryV3 {
     }
 
     init(initialSigners: [Address], initialThreshold: UInt) {
-      self.multiSignManager <- MyMultiSigV3.createMultiSigManager(signers: initialSigners, threshold: initialThreshold)
+      self.multiSignManager <- MyMultiSigV4.createMultiSigManager(signers: initialSigners, threshold: initialThreshold)
       self.vaults <- {}
       self.collections <- {}
     }
@@ -411,8 +411,8 @@ pub contract DAOTreasuryV3 {
   }
 
   init() {
-    self.TreasuryStoragePath = /storage/DAOTreasuryV3
-    self.TreasuryPublicPath = /public/DAOTreasuryV3
+    self.TreasuryStoragePath = /storage/DAOTreasuryV4
+    self.TreasuryPublicPath = /public/DAOTreasuryV4
   }
 
 }
