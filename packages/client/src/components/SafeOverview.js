@@ -9,7 +9,7 @@ function SafeOverview({ allBalance }) {
     "p-5 mr-6",
   ];
 
-  const tokensWithPositiveBalance = allBalance
+  let tokensWithPositiveBalance = allBalance
     ? Object.entries(allBalance)
         .map((entry) => ({ type: entry[0], balance: Number(entry[1]) }))
         .filter((token) => token.balance > 0)

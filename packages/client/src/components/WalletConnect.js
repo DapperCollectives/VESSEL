@@ -32,7 +32,7 @@ const CurrentUser = ({ web3 }) => {
   }
 
   return (
-    <div className="">
+    <div>
       <p className="pl-4 has-text-grey">Connected Wallet</p>
       <SignInOutButton user={user} injectedProvider={injectedProvider} />
     </div>

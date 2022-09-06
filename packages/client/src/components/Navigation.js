@@ -12,13 +12,13 @@ const Navigation = (props) => (
       <li>
         <WalletConnect />
       </li>
-      <li className="py-4 px-4 border-light-top">
+      <li className="p-4 border-light-top">
         <NavLink to="/faq">FAQ</NavLink>
       </li>
-      <li className="py-4 px-4 border-light-top">
+      <li className="p-4 border-light-top">
         <NavLink to="/terms">Terms of Service</NavLink>
       </li>
-      <li className="py-4 px-4 mb-2 border-light-top">
+      <li className="p-4 mb-2 border-light-top">
         <NavLink to="/faq">Privacy Policy</NavLink>
       </li>
     </ul>
