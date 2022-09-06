@@ -316,31 +316,20 @@ pub contract DAOTreasuryV3 {
 
       // ------- Validate Message --------
       // message format: {vault identifier hex}{blockId}
-      var counter = 0
-      let signingBlock = getBlock(at: signaturePayload.signatureBlock)!
-      let blockId = signingBlock.id
-      let blockIds: [UInt8] = []
-
-      while (counter < blockId.length) {
-          blockIds.append(blockId[counter])
-          counter = counter + 1
-      }
-
-      let blockIdHex = String.encodeHex(blockIds)
+      
       let identifier = vault.getType().identifier
       let vaultIdHex = String.encodeHex(identifier.utf8)
 
       let message = signaturePayload.message
+
       // Vault Identifier
       assert(
         vaultIdHex == message.slice(from: 0, upTo: vaultIdHex.length),
         message: "Invalid Message: incorrect vault identifier"
       )
-      // Block ID
-      assert(
-        blockIdHex == message.slice(from: vaultIdHex.length, upTo: message.length),
-        message: "Invalid Message: invalid blockId"
-      )
+
+      // ------ Validate Block ID --------
+      MyMultiSigV3.validateMessageBlockId(blockHeight: signaturePayload.signatureBlock, messageBlockId: message.slice(from: vaultIdHex.length, upTo: message.length))
 
       // ------ Validate Signature -------
       let signatureValidationResponse = FCLCrypto.verifyUserSignatures(
