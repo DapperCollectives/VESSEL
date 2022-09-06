@@ -17,8 +17,8 @@ pub contract DAOTreasuryV3 {
   pub event ActionProposed(treasuryUUID: UInt64, actionUUID: UInt64, proposer: Address, actionView: MyMultiSigV3.ActionView)
   pub event ActionExecuted(treasuryUUID: UInt64, actionUUID: UInt64, executor: Address, actionView: MyMultiSigV3.ActionView, signerResponses: {Address: UInt})
   pub event ActionDestroyed(treasuryUUID: UInt64, actionUUID: UInt64, signerResponses: {Address: UInt})
-  pub event ActionApprovedBySigner(treasuryUUID: UInt64, address: Address, uuid: UInt64, signerResponses: {Address: UInt})
-  pub event ActionRejectedBySigner(treasuryUUID: UInt64, address: Address, uuid: UInt64, signerResponses: {Address: UInt})
+  pub event ActionApprovedBySigner(treasuryUUID: UInt64, address: Address, actionUUID: UInt64, signerResponses: {Address: UInt})
+  pub event ActionRejectedBySigner(treasuryUUID: UInt64, address: Address, actionUUID: UInt64, signerResponses: {Address: UInt})
 
   // Vaults
   pub event VaultDeposited(treasuryUUID: UInt64, signerAddr: Address, vaultID: String)
@@ -63,13 +63,13 @@ pub contract DAOTreasuryV3 {
     pub fun signerApproveAction(actionUUID: UInt64, messageSignaturePayload: MyMultiSigV3.MessageSignaturePayload) {
       self.multiSignManager.signerApproveAction(actionUUID: actionUUID, messageSignaturePayload: messageSignaturePayload) 
       let signerResponses = self.multiSignManager.getSignerResponsesForAction(actionUUID: actionUUID)
-      emit ActionApprovedBySigner(treasuryUUID: self.uuid, address: messageSignaturePayload.signingAddr, uuid: self.uuid, signerResponses: signerResponses)
+      emit ActionApprovedBySigner(treasuryUUID: self.uuid, address: messageSignaturePayload.signingAddr, actionUUID: actionUUID, signerResponses: signerResponses)
     }
 
     pub fun signerRejectAction(actionUUID: UInt64, messageSignaturePayload: MyMultiSigV3.MessageSignaturePayload) {
       self.multiSignManager.signerRejectAction(actionUUID: actionUUID, messageSignaturePayload: messageSignaturePayload) 
       let signerResponses = self.multiSignManager.getSignerResponsesForAction(actionUUID: actionUUID)
-      emit ActionRejectedBySigner(treasuryUUID: self.uuid, address: messageSignaturePayload.signingAddr, uuid: self.uuid, signerResponses: signerResponses)
+      emit ActionRejectedBySigner(treasuryUUID: self.uuid, address: messageSignaturePayload.signingAddr, actionUUID: actionUUID, signerResponses: signerResponses)
 
       // Destroy action if there are sufficient rejections
       if self.multiSignManager.canDestroyAction(actionUUID: actionUUID) {
@@ -81,10 +81,11 @@ pub contract DAOTreasuryV3 {
     pub fun proposeAction(action: {MyMultiSigV3.Action}, signaturePayload: MyMultiSigV3.MessageSignaturePayload): UInt64 {
       self.validateTreasurySigner(identifier: action.intent, signaturePayload: signaturePayload)
 
-      let uuid = self.multiSignManager.createMultiSign(action: action)
-      let action = self.multiSignManager.borrowAction(actionUUID: uuid)
-      emit ActionProposed(treasuryUUID: self.uuid, actionUUID: uuid, proposer: action.proposer, actionView: action.getView())
-      return uuid
+      let actionUUID = self.multiSignManager.createMultiSign(action: action)
+      let _action = self.multiSignManager.borrowAction(actionUUID: actionUUID)
+      let actionView = _action.getView()
+      emit ActionProposed(treasuryUUID: self.uuid, actionUUID: actionUUID, proposer: actionView.proposer, actionView: actionView)
+      return actionUUID
     }
 
     /*
@@ -191,7 +192,7 @@ pub contract DAOTreasuryV3 {
       // If all asserts passed, remove vault from the Treasury and destroy
       let vault <- self.vaults.remove(key: identifier)
       destroy vault
-      emit VaultDestroyed(treasuryUUID: self.uuid, vaultID: identifier)
+      emit VaultDestroyed(treasuryUUID: self.uuid, signerAddr: signaturePayload.signingAddr, vaultID: identifier)
     }
 
     // Deposit a Vault //
@@ -202,7 +203,6 @@ pub contract DAOTreasuryV3 {
       } else {
         self.vaults[identifier] <-! vault
       }
-      emit VaultDeposited(treasuryUUID: self.uuid, vaultID: identifier)
     }
 
     // Withdraw some tokens //
@@ -233,7 +233,8 @@ pub contract DAOTreasuryV3 {
       let message = signaturePayload.message
 
       // ------- Validate Collection Identifier -------
-      let collectionIdHex = String.encodeHex(collection.getType().identifier.utf8)
+      let identifier = collection.getType().identifier
+      let collectionIdHex = String.encodeHex(identifier.utf8)
       assert(
         collectionIdHex == message.slice(from: 0, upTo: collectionIdHex.length),
         message: "Invalid Message: incorrect collection identifier"
@@ -256,6 +257,7 @@ pub contract DAOTreasuryV3 {
 
       // If all asserts passed, deposit vault into Treasury
       self.depositCollection(collection: <- collection)
+      emit CollectionDeposited(treasuryUUID: self.uuid, signerAddr: signaturePayload.signingAddr, collectionID: identifier)
     }
 
     pub fun signerRemoveCollection(identifier: String, signaturePayload: MyMultiSigV3.MessageSignaturePayload) {
@@ -297,14 +299,13 @@ pub contract DAOTreasuryV3 {
       // If all asserts passed, remove vault from the Treasury and destroy
       let collection <- self.collections.remove(key: identifier)
       destroy collection
-      emit CollectionDestroyed(treasuryUUID: self.uuid, collectionID: identifier)
+      emit CollectionDestroyed(treasuryUUID: self.uuid, signerAddr: signaturePayload.signingAddr, collectionID: identifier)
     }
 
     // Deposit a Collection //
     pub fun depositCollection(collection: @NonFungibleToken.Collection) {
       let identifier = collection.getType().identifier
       self.collections[identifier] <-! collection
-      emit CollectionDeposited(treasuryUUID: self.uuid, collectionID: identifier)
     }
 
     // ------- Vaults ------- 
@@ -326,7 +327,8 @@ pub contract DAOTreasuryV3 {
       }
 
       let blockIdHex = String.encodeHex(blockIds)
-      let vaultIdHex = String.encodeHex(vault.getType().identifier.utf8)
+      let identifier = vault.getType().identifier
+      let vaultIdHex = String.encodeHex(identifier.utf8)
 
       let message = signaturePayload.message
       // Vault Identifier
@@ -354,6 +356,7 @@ pub contract DAOTreasuryV3 {
 
       // If all asserts passed, deposit vault into Treasury
       self.depositVault(vault: <- vault)
+      emit VaultDeposited(treasuryUUID: self.uuid, signerAddr: signaturePayload.signingAddr, vaultID: identifier)
     }
 
     // Deposit tokens //
