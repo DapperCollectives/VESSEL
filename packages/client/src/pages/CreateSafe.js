@@ -129,6 +129,10 @@ function CreateSafe({ web3 }) {
     setSafeOwners(newSafeOwners);
     // skip first safe owner since it's the connected user and won't have an address
     checkSafeOwnerAddressesValidity(newSafeOwners.slice(1));
+    // force signer amount to not exceed amount of safe owners
+    if (newSafeOwners.length < signersAmount) {
+      setSignersAmount(newSafeOwners.length);
+    }
   };
   const onCreateTreasuryClick = async (treasuryData) => {
     setCreatingTreasury(true);
