@@ -77,19 +77,10 @@ function Safe({ web3 }) {
 
   const currentTab = tab ?? "home";
   const buttons = ["home", "transactions", "assets", "contacts", "settings"];
-  const buttonClasses = [
-    "button rounded-sm border-none",
-    "is-capitalized",
-    "mr-2",
-  ];
+  const buttonClasses = ["button is-nav", "is-capitalized", "mr-2"];
 
   const ButtonCpts = buttons.map((btn, i) => {
-    const classes = [
-      ...buttonClasses,
-      currentTab === btn
-        ? "has-background-purple has-text-primary-purple"
-        : "has-text-grey",
-    ];
+    const classes = [...buttonClasses, currentTab === btn ? "is-focused" : ""];
     const baseUrl = `/safe/${address}`;
     const to = btn === "home" ? baseUrl : `${baseUrl}/${btn}`;
     return (
@@ -165,7 +156,10 @@ function Safe({ web3 }) {
       />
     ),
     contacts: (
-      <SafeContacts safeOwners={safeData?.safeOwners} key="safe-contacts" />
+      <SafeContacts 
+        key="safe-contacts" 
+        address={address}
+      />
     ),
     settings: <SafeSettings key="safe-settings" />,
   };
@@ -212,16 +206,10 @@ function Safe({ web3 }) {
         <div className="is-flex">{ButtonCpts}</div>
         <div className="is-flex flex-1 is-justify-content-end">
           <div className="w-auto">
-            <button
-              className="button py-4 px-5 pointer mr-2"
-              onClick={onReceive}
-            >
+            <button className="button is-border mr-2" onClick={onReceive}>
               Receive <ArrowDown className="ml-2" />
             </button>
-            <button
-              className="button py-4 px-5 pointer is-link"
-              onClick={onSend}
-            >
+            <button className="is-primary button" onClick={onSend}>
               Send <ArrowUp className="ml-2 has-text-white" />
             </button>
           </div>
