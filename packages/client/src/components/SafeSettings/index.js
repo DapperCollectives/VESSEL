@@ -14,8 +14,10 @@ const SafeSettings = () => {
   const {
     setTreasury,
     proposeRemoveSigner,
-    proposeAddVault,
-    proposeAddCollection,
+    addVault,
+    addCollection,
+    removeVault,
+    removeCollection,
   } = web3;
   return (
     <React.Fragment>
@@ -24,8 +26,10 @@ const SafeSettings = () => {
       <Owners treasury={treasury} proposeRemoveSigner={proposeRemoveSigner} />
       <Assets
         treasury={treasury}
-        proposeAddVault={proposeAddVault}
-        proposeAddCollection={proposeAddCollection}
+        addVault={addVault}
+        addCollection={addCollection}
+        removeVault={removeVault}
+        removeCollection={removeCollection}
       />
     </React.Fragment>
   );

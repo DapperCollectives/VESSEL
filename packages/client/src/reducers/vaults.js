@@ -11,10 +11,7 @@ const reducer = (state = INITIAL_STATE, action) => {
                 ...state,
                 vaults: {
                     ...state.vaults,
-                    [address]: {
-                        ...state.vaults[address],
-                        ...action.payload[address],
-                    },
+                    [address]: action.payload[address],
                 },
                 loadingVaults: false,
                 error: null,

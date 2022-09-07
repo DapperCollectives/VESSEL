@@ -1,35 +1,18 @@
 import { useEffect, useReducer } from "react";
-import { mutate, query, tx, config } from "@onflow/fcl";
-import { syncSafeOwnersWithSigners, getVaultId, removeAddressPrefix } from "../utils";
-import { COIN_TYPE_TO_META } from "constants/maps";
-import reducer, { INITIAL_STATE } from "../reducers/treasuries";
+import { mutate, query, tx } from "@onflow/fcl";
 import {
   CREATE_TREASURY_LIMIT,
   EXECUTE_ACTION_LIMIT,
   SIGNED_LIMIT,
   SIGNER_APPROVE_LIMIT,
-  UPDATE_SIGNER_LIMIT,
+  UPDATE_SIGNER_LIMIT
 } from "constants/constants";
-import { createSignature } from "../contexts/Web3";
-import {
-  GET_SIGNERS,
-  GET_THRESHOLD,
-  INITIALIZE_TREASURY,
-  GET_PROPOSED_ACTIONS,
-  SIGNER_APPROVE,
-  GET_SIGNERS_FOR_ACTION,
-  EXECUTE_ACTION,
-  GET_TREASURY_IDENTIFIERS,
-  UPDATE_THRESHOLD,
-  ADD_SIGNER,
-  UPDATE_SIGNER,
-  REMOVE_SIGNER,
-  GET_VAULT_BALANCE,
-  PROPOSE_TRANSFER,
-  ADD_VAULT,
-  ADD_COLLECTION,
-} from "../flow";
 import { COIN_TYPES } from "constants/enums";
+import { COIN_TYPE_TO_META } from "constants/maps";
+import { createSignature } from "contexts/Web3";
+import { ADD_SIGNER, EXECUTE_ACTION, GET_PROPOSED_ACTIONS, GET_SIGNERS, GET_SIGNERS_FOR_ACTION, GET_THRESHOLD, GET_TREASURY_IDENTIFIERS, GET_VAULT_BALANCE, INITIALIZE_TREASURY, PROPOSE_TRANSFER, REMOVE_SIGNER, SIGNER_APPROVE, UPDATE_SIGNER, UPDATE_THRESHOLD } from "../flow";
+import reducer, { INITIAL_STATE } from "../reducers/treasuries";
+import { getVaultId, syncSafeOwnersWithSigners } from "../utils";
 
 const storageKey = "vessel-treasuries";
 
@@ -158,42 +141,6 @@ const doProposeRemoveSigner = async (treasuryAddr, signerToBeRemovedAddress) => 
     args: (arg, t) => [
       arg(treasuryAddr, t.Address),
       arg(signerToBeRemovedAddress, t.Address),
-      arg(message, t.String),
-      arg(keyIds, t.Array(t.UInt64)),
-      arg(signatures, t.Array(t.String)),
-      arg(height, t.UInt64),
-    ],
-    limit: SIGNED_LIMIT,
-  });
-};
-
-const doProposeAddVault = async (treasuryAddr, contractName) => {
-  const contractAddress = await config().get(`0x${contractName}`);
-
-  const intent = `A.${removeAddressPrefix(contractAddress)}.${contractName}.Vault`;
-  const { message, keyIds, signatures, height } = await createSignature(intent);
-
-  return await mutate({
-    cadence: ADD_VAULT(contractName),
-    args: (arg, t) => [
-      arg(treasuryAddr, t.Address),
-      arg(message, t.String),
-      arg(keyIds, t.Array(t.UInt64)),
-      arg(signatures, t.Array(t.String)),
-      arg(height, t.UInt64),
-    ],
-    limit: SIGNED_LIMIT,
-  });
-};
-
-const doProposeAddCollection = async (treasuryAddr, contractName, contractAddress) => {
-  const intent = `A.${removeAddressPrefix(contractAddress)}.${contractName}.Collection`;
-  const { message, keyIds, signatures, height } = await createSignature(intent);
-
-  return await mutate({
-    cadence: ADD_COLLECTION(contractName, contractAddress),
-    args: (arg, t) => [
-      arg(treasuryAddr, t.Address),
       arg(message, t.String),
       arg(keyIds, t.Array(t.UInt64)),
       arg(signatures, t.Array(t.String)),
@@ -406,26 +353,6 @@ export default function useTreasury(treasuryAddr) {
     await refreshTreasury();
   };
 
-  const proposeAddVault = async (coinType) => {
-    try {
-      const contractName = COIN_TYPE_TO_META[coinType].contractName;
-      const res = await doProposeAddVault(treasuryAddr, contractName);
-      await tx(res).onceSealed();
-      await refreshTreasury();
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const proposeAddCollection = async (contractName, contractAddress) => {
-    try {
-      const res = await doProposeAddCollection(treasuryAddr, contractName, contractAddress);
-      await tx(res).onceSealed();
-      await refreshTreasury();
-    } catch (error) {
-      console.error(error);
-    }
-  };
   return {
     ...state,
     refreshTreasury,
@@ -439,8 +366,6 @@ export default function useTreasury(treasuryAddr) {
     proposeAddSigner,
     updateSigner,
     proposeRemoveSigner,
-    getVaultBalance,
-    proposeAddVault,
-    proposeAddCollection,
+    getVaultBalance
   };
 }

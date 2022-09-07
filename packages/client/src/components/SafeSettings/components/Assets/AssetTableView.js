@@ -3,7 +3,7 @@ import { useClipboard } from "hooks";
 import { formatAddress, getFlowscanUrlForContract } from "utils";
 import { Copy } from "components/Svg";
 
-const AssetTableView = ({ assets }) => {
+const AssetTableView = ({ assets, onRemoveClick }) => {
     const clipboard = useClipboard();
 
     return (
@@ -28,7 +28,7 @@ const AssetTableView = ({ assets }) => {
                             rel="noreferrer">
                             View on Flowscan
                         </a>
-                        <button className="column is-flex is-justify-content-end has-text-purple button border-none">
+                        <button className="column is-flex is-justify-content-end has-text-purple button border-none" onClick={() => onRemoveClick(asset, name)}>
                             Remove
                         </button>
                     </div>

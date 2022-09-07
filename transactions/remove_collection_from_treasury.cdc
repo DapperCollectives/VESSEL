@@ -1,5 +1,3 @@
-import NonFungibleToken from "../contracts/core/NonFungibleToken.cdc"
-import ExampleNFT from "../contracts/core/ExampleNFT.cdc"
 import DAOTreasuryV3 from "../contracts/DAOTreasury.cdc"
 import MyMultiSigV3 from "../contracts/MyMultiSig.cdc"
 

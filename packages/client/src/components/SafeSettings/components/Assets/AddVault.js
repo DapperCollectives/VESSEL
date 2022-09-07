@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { COIN_TYPE_TO_META } from "constants/maps";
 import Dropdown from "components/Dropdown";
+import { Close } from "components/Svg";
+
 const AddVault = ({ onCancel, onNext }) => {
   const onNextClick = () => {
     onNext({
@@ -15,16 +17,19 @@ const AddVault = ({ onCancel, onNext }) => {
     displayText: type[1].displayName,
   }));
 
-  const [coinType, setCoinType] = useState(coinTypes[0].itemValue);
+  const [coinType, setCoinType] = useState("Select Token");
 
   return (
     <>
-      <div className="p-5">
-        <h2 className="is-size-4 has-text-black">Add Vault</h2>
+      <div className="px-5 pt-5 columns is-vcentered is-multiline is-mobile">
+        <h2 className="is-size-4 has-text-black column">Add Token Vault</h2>
+        <span className="pointer" onClick={onCancel}>
+          <Close className="mr-4" />
+        </span>
       </div>
       <div className="border-light-top p-5 has-text-grey">
         <div className="flex-1 is-flex is-flex-direction-column">
-          <label className="has-text-grey mb-2">Contract Name</label>
+          <label className="has-text-grey mb-2">Tokens</label>
           <Dropdown
             value={coinType}
             values={coinTypes}
@@ -37,7 +42,7 @@ const AddVault = ({ onCancel, onNext }) => {
             Cancel
           </button>
           <button className={nextButtonClasses.join(" ")} onClick={onNextClick}>
-            Next
+            Confirm
           </button>
         </div>
       </div>

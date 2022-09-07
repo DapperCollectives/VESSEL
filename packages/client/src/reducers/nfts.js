@@ -11,10 +11,7 @@ const reducer = (state = INITIAL_STATE, action) => {
         ...state,
         NFTs: {
           ...state.NFTs,
-          [address]: {
-            ...state.NFTs[address],
-            ...action.payload[address],
-          },
+          [address]: action.payload[address],
         },
         loadingNFTs: false,
         error: null,

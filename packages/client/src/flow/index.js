@@ -21,3 +21,5 @@ export { PROPOSE_NFT_TRANSFER } from "./proposeNFTTransfer.tx";
 export { GET_FLOW_FEES_ESTIMATION } from "./getFlowFeesEstimation.tx";
 export { ADD_VAULT } from "./addVault.tx";
 export { ADD_COLLECTION } from "./addCollection.tx";
+export { REMOVE_VAULT } from "./removeVault.tx";
+export { REMOVE_COLLECTION } from "./removeCollection.tx";
