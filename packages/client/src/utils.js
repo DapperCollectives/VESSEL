@@ -77,6 +77,12 @@ export const getFlowscanUrlForTransaction = (hash) => {
   }flowscan.org/transaction/${hash}`;
 };
 
+export const getFlowscanUrlForContract = (address, name) => {
+  return `https://${
+    process.env.REACT_APP_FLOW_ENV === "mainnet" ? "" : "testnet."
+  }flowscan.org/contract/A.${address}.${name}`;
+}
+
 export const syncSafeOwnersWithSigners = (signers, safeOwners) => {
   const verifiedSigners = Object.keys(signers).filter((key) => signers[key]);
 

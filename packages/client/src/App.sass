@@ -7,6 +7,7 @@ $navWidth: 260px
 $bodyBg: #162c4e
 $bodyColor: #bbc6ce
 $primaryPurple: #7464F0
+$lightPurple: #F0F0FE
 $backgroundPurple: #9B8FF9
 $darkPurple: #000E64
 
@@ -96,6 +97,8 @@ code
   height: 100%
 .has-text-red
   color: red
+.has-text-purple
+  color: $primary
 .has-background-white-rounded
   background-color: white
   border-top-left-radius: 30px
@@ -149,6 +152,11 @@ label
 .button:hover.is-link
   color: white
   background-color: #0C14D0
+.button.is-add
+  color: $primaryPurple
+  background-color: $lightPurple
+  border-radius: 8px
+  border: none
 .progress-bit
   width: 3px
   border-radius: 4px
@@ -171,3 +179,5 @@ input:focus-visible
   height: auto
 .button
   height: auto
+.table-border > :not(:last-child)
+  border-bottom: 1px solid $grey-light

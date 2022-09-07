@@ -10,7 +10,7 @@ import {
   GET_TREASURY_IDENTIFIERS,
 } from "../flow";
 
-const storageKey = "vessel-assets";
+const storageKey = "vessel-collections";
 
 const doSendNFTToTreasury = async (treasuryAddr, tokenId) => {
   return await mutate({
@@ -83,7 +83,7 @@ export default function useNFTs() {
       type: "SET_NFTS",
       payload: {
         [treasuryAddr]: {
-          [identifier]: tokens,
+          [identifier]: tokens || {},
         },
       },
     });

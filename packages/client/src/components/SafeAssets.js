@@ -10,7 +10,7 @@ function SafeAssets({
   address,
 }) {
   const assetComponents = [];
-  const { getTreasuryCollections } = web3;
+  const { getTreasuryCollections, getTreasuryVaults } = web3;
   const userAddr = web3?.user?.addr;
   const modalContext = useModalContext();
 
@@ -21,7 +21,12 @@ function SafeAssets({
     const getCollections = async () => {
       await getTreasuryCollections(address);
     };
+
+    const getVaults = async () => {
+      await getTreasuryVaults(address);
+    }
     getCollections();
+    getVaults();
     // eslint-disable-next-line
   }, [userAddr]);
 
