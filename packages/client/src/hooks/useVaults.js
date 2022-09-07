@@ -25,7 +25,6 @@ export default function useVaults() {
         }).catch(console.error);
 
         const vaults = (identifiers && identifiers[0]) ?? [];
-        console.log(vaults);
 
         dispatch({
             type: "SET_VAULTS",
