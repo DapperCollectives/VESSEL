@@ -1,10 +1,10 @@
 import React from "react";
 import { isEmpty } from "lodash";
 import TransactionList from "./TransactionList";
-import { useFlowgraphTransactions } from "../hooks";
+import { useTreasuryTransactions } from "../hooks";
 
 function TransactionHistory({ safeData, address }) {
-  const transactions = useFlowgraphTransactions(address);
+  const { data: transactions } = useTreasuryTransactions(address);
   let TransactionsComponent = null;
 
   if (isEmpty(transactions)) {

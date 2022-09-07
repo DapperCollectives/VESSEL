@@ -170,7 +170,10 @@ function Safe({ web3 }) {
       />
     ),
     contacts: (
-      <SafeContacts safeOwners={safeData?.safeOwners} key="safe-contacts" />
+      <SafeContacts 
+        key="safe-contacts" 
+        address={address}
+      />
     ),
     settings: <SafeSettings key="safe-settings" />,
   };

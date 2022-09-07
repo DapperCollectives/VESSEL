@@ -1,23 +1,23 @@
 export const PROPOSE_NFT_TRANSFER = `
-	import TreasuryActionsV3 from 0xTreasuryActionsV3
-	import DAOTreasuryV3 from 0xDAOTreasuryV3
+	import TreasuryActionsV4 from 0xTreasuryActionsV4
+	import DAOTreasuryV4 from 0xDAOTreasuryV4
 	import NonFungibleToken from 0xNonFungibleToken
-	import MyMultiSigV3 from 0xMyMultiSigV3
-	import ZeedzINO from 0xZeedzINO
+	import MyMultiSigV4 from 0xMyMultiSigV4
+	import ExampleNFT from 0xExampleNFT
 	
 	transaction(treasuryAddr: Address, recipientAddr: Address, id: UInt64, message: String, keyIds: [UInt64], signatures: [String], signatureBlock: UInt64) {
 	
-	  let treasury: &DAOTreasuryV3.Treasury{DAOTreasuryV3.TreasuryPublic}
+	  let treasury: &DAOTreasuryV4.Treasury{DAOTreasuryV4.TreasuryPublic}
 	  let recipientCollection: Capability<&{NonFungibleToken.CollectionPublic}>
-	  let action: AnyStruct{MyMultiSigV3.Action}
-	  let messageSignaturePayload: MyMultiSigV3.MessageSignaturePayload
+	  let action: AnyStruct{MyMultiSigV4.Action}
+	  let messageSignaturePayload: MyMultiSigV4.MessageSignaturePayload
 	  
 	  prepare(signer: AuthAccount) {
-		self.treasury = getAccount(treasuryAddr).getCapability(DAOTreasuryV3.TreasuryPublicPath)
-						.borrow<&DAOTreasuryV3.Treasury{DAOTreasuryV3.TreasuryPublic}>()
-						?? panic("A DAOTreasuryV3 doesn't exist here.")
-		self.recipientCollection = getAccount(recipientAddr).getCapability<&{NonFungibleToken.CollectionPublic}>(ZeedzINO.CollectionPublicPath)
-		self.action = TreasuryActionsV3.TransferNFT(recipientCollection: self.recipientCollection, nftID: id, proposer: signer.address)
+		self.treasury = getAccount(treasuryAddr).getCapability(DAOTreasuryV4.TreasuryPublicPath)
+						.borrow<&DAOTreasuryV4.Treasury{DAOTreasuryV4.TreasuryPublic}>()
+						?? panic("A DAOTreasuryV4 doesn't exist here.")
+		self.recipientCollection = getAccount(recipientAddr).getCapability<&{NonFungibleToken.CollectionPublic}>(ExampleNFT.CollectionPublicPath)
+		self.action = TreasuryActionsV4.TransferNFT(recipientCollection: self.recipientCollection, nftID: id, proposer: signer.address)
 		
 		var _keyIds: [Int] = []
 	
@@ -25,7 +25,7 @@ export const PROPOSE_NFT_TRANSFER = `
 			_keyIds.append(Int(keyId))
 		}
 	
-		self.messageSignaturePayload = MyMultiSigV3.MessageSignaturePayload(
+		self.messageSignaturePayload = MyMultiSigV4.MessageSignaturePayload(
 			signingAddr: signer.address, message: message, keyIds: _keyIds, signatures: signatures, signatureBlock: signatureBlock
 		)
 	  }
