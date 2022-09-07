@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useHistory, NavLink } from "react-router-dom";
 import {
   WalletPrompt,
@@ -107,16 +107,9 @@ function CreateSafe({ web3 }) {
     submittedTransaction,
     createTreasury,
   } = web3;
-  const [safeOwners, setSafeOwners] = useState();
-
-  useEffect(() => {
-    if (address) {
-      setSafeOwners([
-        { name: "", address, verified: true },
-      ])
-    }
-  }, [address]);
-
+  const [safeOwners, setSafeOwners] = useState([
+    { name: "", address, verified: true },
+  ]);
   const [safeOwnersValidByAddress, setSafeOwnersValidByAddress] = useState({});
   const { isAddressValid } = useAddressValidation(injectedProvider);
 
@@ -169,9 +162,8 @@ function CreateSafe({ web3 }) {
         </div>
         <div className="column is-half">
           <div
-            className={`border rounded-sm p-4 ${
-              submittedTransaction ? "" : "opacity-5"
-            }`}
+            className={`border rounded-sm p-4 ${submittedTransaction ? "" : "opacity-5"
+              }`}
           >
             <div className="is-flex column is-full p-0">
               <div className="flex-1 py-6">
@@ -192,9 +184,8 @@ function CreateSafe({ web3 }) {
       <div className="columns column is-full p-0">
         <div className="column is-half">
           <div
-            className={`border rounded-sm p-4 ${
-              createdTreasury ? "" : "opacity-5"
-            }`}
+            className={`border rounded-sm p-4 ${createdTreasury ? "" : "opacity-5"
+              }`}
           >
             <div className="is-flex column is-full p-0">
               <div className="flex-1 py-6">
@@ -213,9 +204,8 @@ function CreateSafe({ web3 }) {
         </div>
         <div className="column is-half">
           <div
-            className={`border rounded-sm p-4 ${
-              createdTreasury ? "" : "opacity-5"
-            }`}
+            className={`border rounded-sm p-4 ${createdTreasury ? "" : "opacity-5"
+              }`}
           >
             <div className="is-flex column is-full p-0">
               <div className="flex-1 py-6">
@@ -236,44 +226,39 @@ function CreateSafe({ web3 }) {
     </>
   ) : (
     <>
-      {safeOwners &&
-        <>
-          <SafeDetails
-            safeType={safeType}
-            setSafeType={setSafeType}
-            safeName={safeName}
-            setSafeName={setSafeName}
-          />
-          <SafeOwners
-            address={address}
-            safeOwners={safeOwners}
-            safeOwnersValidByAddress={safeOwnersValidByAddress}
-            setSafeOwners={onSafeOwnersChange}
-          />
-          <SignatureRequirements
-            safeOwners={safeOwners}
-            signersAmount={signersAmount}
-            setSignersAmount={setSignersAmount}
-          />
-        </>}
+      <SafeDetails
+        safeType={safeType}
+        setSafeType={setSafeType}
+        safeName={safeName}
+        setSafeName={setSafeName}
+      />
+      <SafeOwners
+        address={address}
+        safeOwners={safeOwners}
+        safeOwnersValidByAddress={safeOwnersValidByAddress}
+        setSafeOwners={onSafeOwnersChange}
+      />
+      <SignatureRequirements
+        safeOwners={safeOwners}
+        signersAmount={signersAmount}
+        setSignersAmount={setSignersAmount}
+      />
     </>
   );
 
   return (
     <section className="section is-flex is-flex-direction-column is-align-items-center has-text-black">
-      {safeOwners &&
-        <AuthorizeTreasury
-          address={address}
-          safeName={safeName}
-          safeType={safeType}
-          safeOwners={safeOwners}
-          safeOwnersValidByAddress={safeOwnersValidByAddress}
-          signersAmount={signersAmount}
-          createTreasury={onCreateTreasuryClick}
-          creatingTreasury={creatingTreasury}
-          createdTreasury={createdTreasury}
-        />
-      }
+      <AuthorizeTreasury
+        address={address}
+        safeName={safeName}
+        safeType={safeType}
+        safeOwners={safeOwners}
+        safeOwnersValidByAddress={safeOwnersValidByAddress}
+        signersAmount={signersAmount}
+        createTreasury={onCreateTreasuryClick}
+        creatingTreasury={creatingTreasury}
+        createdTreasury={createdTreasury}
+      />
       {BodyComponents}
     </section>
   );
