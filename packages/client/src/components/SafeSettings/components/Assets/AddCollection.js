@@ -40,17 +40,19 @@ const AddCollection = ({ onCancel, onNext }) => {
       <div className="border-light-top p-5 has-text-grey">
         <div className="flex-1 is-flex is-flex-direction-column">
           <label className="has-text-grey mb-2">NFT Contract Address</label>
-          <input
-            className="p-4 rounded-sm column is-full border-light"
-            type="text"
-            value={address}
-            onChange={(e) => onAddressChange(e.target.value)}
-          />
-          {addressValid && (
-            <div style={{ position: "absolute", right: 17, top: 14 }}>
-              <Check />
-            </div>
-          )}
+          <div style={{ position: "relative" }}>
+            <input
+              className="p-4 rounded-sm column is-full border-light"
+              type="text"
+              value={address}
+              onChange={(e) => onAddressChange(e.target.value)}
+            />
+            {addressValid && (
+              <div style={{ position: "absolute", right: 17, top: 14 }}>
+                <Check />
+              </div>
+            )}
+          </div>
           <div className="flex-1 is-flex is-flex-direction-column mt-4">
             <label className="has-text-grey mb-2">NFT Collection Name</label>
             <input

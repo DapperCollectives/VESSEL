@@ -126,7 +126,7 @@ const Assets = ({ treasury, addVault, addCollection, removeVault, removeCollecti
           <Plus style={{ position: "relative", left: 5 }} />
         </button>
       </div>
-      {NFTs && NFTs[address] && NFTs[address].length > 0 &&
+      {NFTs && NFTs[address] && Object.keys(NFTs[address]).length > 0 &&
         <AssetTableView assets={Object.keys(NFTs[address])} onRemoveClick={openRemoveCollectionModal} />
       }
     </div>
