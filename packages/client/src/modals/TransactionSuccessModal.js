@@ -6,7 +6,7 @@ import { getFlowscanUrlForTransaction } from "utils";
 import { ASSET_TYPES } from "../constants/enums";
 import { COIN_TYPE_TO_META, CONTRACT_NAME_TO_COIN_TYPE } from "../constants/maps";
 
-const SuccessModal = ({ actionData, actionType, txID, onClose, safeName, safeAddress }) => {
+const TransactionSuccessModal = ({ actionData, actionType, txID, onClose, safeName, safeAddress }) => {
     const { getNFTReference } = useContext(Web3Context);
     const clipboard = useClipboard();
     const [image, setImage] = useState();
@@ -128,4 +128,4 @@ const SuccessModal = ({ actionData, actionType, txID, onClose, safeName, safeAdd
     );
 }
 
-export default SuccessModal;
+export default TransactionSuccessModal;
