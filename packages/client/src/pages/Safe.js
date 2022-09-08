@@ -14,6 +14,7 @@ import {
 import { ArrowDown, ArrowUp } from "../components/Svg";
 import { Web3Consumer, useModalContext } from "../contexts";
 import { useClipboard, useErrorMessage } from "../hooks";
+import { TransactionSuccessModal } from "modals";
 
 const ReceiveTokens = ({ name, address }) => {
   const modalContext = useModalContext();
@@ -56,7 +57,7 @@ const ReceiveTokens = ({ name, address }) => {
 function Safe({ web3 }) {
   const params = useParams();
   const { address, tab } = params;
-  const modalContext = useModalContext();
+  const { openModal, closeModal } = useModalContext();
   const clipboard = useClipboard();
 
   const { showErrorModal } = useErrorMessage();
@@ -72,6 +73,22 @@ function Safe({ web3 }) {
           Couldn't find this safe's data...
         </div>
       </section>
+    );
+  }
+
+  const showTransactionSuccessModal = (action, safeName, safeAddress) => {
+    const actionData = action.data.actionView;
+    openModal(
+      <TransactionSuccessModal
+        safeName={safeName}
+        safeAddress={safeAddress}
+        actionData={actionData}
+        txID={action.transactionId}
+        onClose={closeModal}
+      />,
+      {
+        headerTitle: "Success",
+      }
     );
   }
 
@@ -134,7 +151,11 @@ function Safe({ web3 }) {
   };
 
   const onConfirmAction = async ({ uuid }) => {
-    await executeAction(uuid).catch((error) => showErrorModal(error));
+    const events = await executeAction(uuid).catch((error) => showErrorModal(error));
+    if (events) {
+      const action = events.find(e => e.type.endsWith("ActionExecuted"));
+      showTransactionSuccessModal(action, safeData.name, safeData.address);
+    }
   };
 
   const tabMap = {
@@ -165,8 +186,8 @@ function Safe({ web3 }) {
       />
     ),
     contacts: (
-      <SafeContacts 
-        key="safe-contacts" 
+      <SafeContacts
+        key="safe-contacts"
         address={address}
       />
     ),
@@ -176,13 +197,13 @@ function Safe({ web3 }) {
   const BodyComponent = tabMap[currentTab];
 
   const onSend = () => {
-    modalContext.openModal(
+    openModal(
       <SendTokens name={safeData.name} address={address} />
     );
   };
 
   const onReceive = () => {
-    modalContext.openModal(
+    openModal(
       <ReceiveTokens name={safeData.name} address={address} />
     );
   };

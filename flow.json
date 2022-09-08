@@ -38,10 +38,10 @@
         "testnet": "0x631e88ae7f1d7c20"
       }
     },
-    "ExampleNFT": {
-      "source": "./contracts/core/ExampleNFT.cdc",
+    "ZeedzINO": {
+      "source": "./contracts/core/ZeedzINO.cdc",
       "aliases": {
-        "testnet": "0x48bc5b54d3728e9e"
+        "testnet": "0x7dc7430a06f38af3"
       }
     },
     "MyMultiSigV4": {
@@ -216,7 +216,7 @@
         "BloctoToken",
         "NonFungibleToken",
         "MetadataViews",
-        "ExampleNFT",
+        "ZeedzINO",
         "MyMultiSigV4",
         "DAOTreasuryV4",
         "TreasuryActionsV4",
