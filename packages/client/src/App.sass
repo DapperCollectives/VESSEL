@@ -3,50 +3,107 @@
 @import "@fontsource/dm-mono"
 $navWidth: 260px
 
-// Set your brand colors
-$bodyBg: #162c4e
-$bodyColor: #bbc6ce
-$primaryPurple: #7464F0
-$backgroundPurple: #9B8FF9
-$darkPurple: #000E64
+/**********************Initial variables - Colors *******************/
+//black
+$black: #000000
+$black-40: rgba(0,0,0,0.4)
+$black-20: rgba(0,0,0,0.2)
+$black-10: rgba(0,0,0,0.1)
+$black-6: rgba(0,0,0,0.06)
 
-// Update Bulma's global variables
-$grey-dark: $bodyColor
-$grey-darker: $bodyColor
-$grey-light: $bodyColor
-$link: white
-$primary: $primaryPurple
-$light: $backgroundPurple
+//white
+$white: #FFFFFF
+$white-60: rgba(255,255,255, 0.6)
+$white-40: rgba(255,255,255, 0.4)
+$white-20: rgba(255,255,255, 0.2)
+
+//grey:
+$grey-primary: #939393
+$grey-dark: #6D6D6D
+$grey-secondary: #DDDDDD
+$grey-tertiary: #EEEEEE
+
+//purple
+$purple-primary: #7464F0
+$purple-dark: #000E64
+$purple-secondary: #9B8FF9
+$purple-tertiary: #DFDBFF
+$purple-background: #F0F0FE
+
+//green
+$green-primary: #DCFABF
+$green-dark: #A4C881
+
+//yellow
+$yellow-primary: #D6D71C
+$yellow-dark: #695A0D
+$yellow-secondary: #FFE780
+$yellow-tertiary: #FEFFDD
+
+//other
+$success-green: #18AA01
+$warning-orange: #F26300
+$error-red: #E30C0C
+
+/*********************Initial variables -  Font Sizes********************/
+$bodyBg: $white
+$bodyColor: $white
+$link: $white
+$primary: $purple-primary
+$light: $purple-tertiary
 $family-sans-serif: "DM Sans"
 $family-monospace: "DM Mono"
+$size-1: 4rem
+$size-2: 3.5rem
+$gap: 40px
+$speed: 300ms
+
+/*********************Derived variables -  Component Colors********************/
+$primary: $purple-primary
+$info: $green-primary
+$success: $success-green
+$warning: $warning-orange
+$danger: $error-red
+$border: $grey-dark
+$background: $bodyBg
+$text: $black
+$text-invert: $white
+$link: $black
+$link-hover: $purple-dark
+$link-focus: $purple-dark
 
 // sets a max width of 960px on .container
 $widescreen-enabled: false
 $fullhd-enabled: false
 
-// Update some of Bulma's component variables
+/*********************Component variables -  Body********************/
 $body-background-color: $bodyBg
 $control-border-width: 1px
+$body-font-size: 14px
+
+/*********************Component variables -  Input********************/
 $input-border-width: 1px
 $input-focus-border-color: transparent
 $input-border-color: black
 $input-shadow: none
+$input-color: black
+
+/*********************Component variables -  Button********************/
 $button-background-color: transparent
 $button-border-color: #7464F0
 $button-active-border-color: black
-$button-hover-border-color: $darkPurple
-$button-hover-color: $darkPurple
+$button-hover-border-color: $purple-dark
+$button-hover-color: $purple-dark
 $button-focus-border-color: black
 $button-color: #7464F0
 $button-font: DM Sans
 $button-font-weight: 700
-$title-size: 2.5rem
-$input-color: black
-$body-font-size: 14px
+
+/*********************Component variables -  Modal********************/
 $modal-background-background-color: rgba(1, 1, 1, 0.5)
 $modal-content-width: 430px
 
-// Import only what you need from Bulma
+/********************* Bulma imports ********************/
 @import '~bulma/sass/utilities/_all.sass'
 @import '~bulma/sass/base/_all.sass'
 @import '~bulma/sass/grid/_all.sass'
@@ -68,7 +125,7 @@ $modal-content-width: 430px
 *
   box-sizing: border-box
 
-// main app containers
+/********************* Main app containers ********************/
 html
   overflow-y: auto
   height: 100%
@@ -81,58 +138,46 @@ body
 .sidebar
   position: fixed
   width: $navWidth
-  background: linear-gradient(180deg, $bodyBg 0%, #000C1E 100%)
+  background: $purple-background
 .body
   width: calc(100% - #{$navWidth})
   min-height: 100vh
   position: relative
   left: $navWidth
-// custom utility css
 code
   color: $bodyBg
+.title
+  font-size: 16rem
+  font-weight: 500
+h1
+  font-size: 10rem
+  font-weight: 500
+h2
+  font-size: 6rem
+  font-weight: 400
+
+/********************* Custom utility css - Dimension ********************/
 .screen-height
   height: 100vh
 .full-height
   height: 100%
+
+/********************* Custom utility css - Text ********************/
 .has-text-red
-  color: red
-.has-background-white-rounded
-  background-color: white
-  border-top-left-radius: 30px
-.has-background-blue-light
-  background-color:#1F3C66
-.has-safe-gradient
-  background: linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), linear-gradient(265.24deg, rgba(209, 224, 227, 0.7) 0%, rgba(128, 175, 216, 0.7) 25.29%, rgba(137, 133, 197, 0.7) 51.56%, rgba(96, 56, 148, 0.7) 74.48%, rgba(19, 24, 67, 0.7) 100%)
-.has-shadow
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.05)
-.has-background-blue-dark
-  background: #1B2738
+  color: $error-red
+.has-text-grey
+  color: $grey-primary
+.has-text-purple
+  color: $purple-primary
 .is-size-4
   font-size: 1.8rem !important
 .is-size-6
   font-size: .9rem !important
-.rounded-sm
-  border-radius: 8px
-.rounded-lg
-  border-radius: 20px
-.rounded-full
-  border-radius: 50%
-.flex-1
-  flex: 1 0 0
-.flex-2
-  flex: 2 0 0
-.pointer
-  cursor: pointer
-.is-disabled
-  pointer-events: none
-  svg
-    opacity: 0.5
-hr
-  background-color: grey
-  margin: 0
-  height: 1px
-label
-  user-select: none
+.has-text-heighlight
+  font-family: $family-monospace
+
+/********************* Custom utility css - Border ********************/
+
 .border
   border: 1px solid black
   &-none
@@ -145,15 +190,41 @@ label
       border-bottom: 1px solid $grey-light
     &-right
       border-right: 1px solid $grey-light
+
+/********************* Custom utility css - Border radius********************/
+.rounded-sm
+  border-radius: 8px
+.rounded-lg
+  border-radius: 20px
+.rounded-full
+  border-radius: 50%
+
+/********************* Custom utility css - Backgrounds ********************/
+.has-background-white-rounded
+  background-color: $white
+  border-top-left-radius: 30px
+.has-background-transparent-black
+  background: $black-6
+.has-background-purple
+  background: $purple-background
+.has-background-primary-purple
+  background: $purple-primary
+.has-background-secondary-purple
+  background: $purple-secondary
+
+/********************* Custom utility css - Button ********************/
 .button.is-link,
 .button:hover.is-link
   color: white
   background-color: #0C14D0
-.progress-bit
-  width: 3px
-  border-radius: 4px
-.opacity-5
-  opacity: 50%
+.button
+  height: auto
+
+/********************* Custom utility css - Label ********************/
+label
+  user-select: none
+
+/********************* Custom utility css - Input ********************/
 input
   font-size: 1rem
 input,
@@ -165,9 +236,34 @@ input[type=number]::-webkit-inner-spin-button
   margin: 0
 input:focus-visible
   outline: none
+
+/********************* Custom utility css - Dropdown ********************/
 .dropdown-item
   padding: 1rem
   line-height: 1em
   height: auto
-.button
-  height: auto
+
+/********************* Custom utility css - Flex ********************/
+.flex-1
+  flex: 1 0 0
+.flex-2
+  flex: 2 0 0
+
+/********************* Custom utility css - Misc ********************/
+.has-shadow
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.05)
+.pointer
+  cursor: pointer
+.is-disabled
+  pointer-events: none
+  svg
+    opacity: 0.5
+hr
+  background-color: grey
+  margin: 0
+  height: 1px
+.opacity-5
+  opacity: 50%
+.progress-bit
+  width: 3px
+  border-radius: 4px

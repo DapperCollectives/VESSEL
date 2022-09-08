@@ -78,7 +78,7 @@ function Safe({ web3 }) {
   const currentTab = tab ?? "home";
   const buttons = ["home", "transactions", "assets", "contacts", "settings"];
   const buttonClasses = [
-    "button rounded-lg border-none",
+    "button rounded-sm border-none",
     "is-capitalized",
     "mr-2",
   ];
@@ -87,7 +87,7 @@ function Safe({ web3 }) {
     const classes = [
       ...buttonClasses,
       currentTab === btn
-        ? "has-background-black has-text-white"
+        ? "has-background-purple has-text-primary-purple"
         : "has-text-grey",
     ];
     const baseUrl = `/safe/${address}`;
@@ -120,7 +120,7 @@ function Safe({ web3 }) {
 
     let keyId = sigResponse[0].keyId;
     let signature = sigResponse[0].signature;
-    
+
     const keyIds = [keyId];
     const signatures = [signature];
 
@@ -198,7 +198,7 @@ function Safe({ web3 }) {
         {process.env.REACT_APP_FLOW_ENV !== "mainnet" && (
           <TestToolBox address={address} />
         )}
-        <h2 className="is-size-4 mb-2">{safeData.name}</h2>
+        <h1 className="is-size-4 mb-2">{safeData.name}</h1>
         <p>
           <span className="has-text-grey">
             Safe address {shortenAddr(address)}

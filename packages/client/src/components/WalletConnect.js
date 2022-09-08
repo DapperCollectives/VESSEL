@@ -1,6 +1,5 @@
 import React from "react";
 import { Web3Consumer } from "../contexts/Web3";
-import { shortenAddr } from "../utils";
 import { useHistory } from "react-router-dom";
 
 const SignInOutButton = ({ user: { loggedIn, addr }, injectedProvider }) => {
@@ -16,7 +15,7 @@ const SignInOutButton = ({ user: { loggedIn, addr }, injectedProvider }) => {
   };
   return (
     <>
-      {loggedIn && <div className="p-4">Wallet: {shortenAddr(addr)}</div>}
+      {loggedIn && <div className="p-4">{addr}</div>}
       {loggedIn && <hr />}
       <div onClick={signInOrOut} className="is-underlined p-4 pointer">
         {loggedIn ? "Disconnect" : "Connect"}
@@ -32,7 +31,8 @@ const CurrentUser = ({ web3 }) => {
   }
 
   return (
-    <div className="has-background-blue-dark has-text-white rounded-sm">
+    <div>
+      <p className="pl-4 has-text-grey">Connected Wallet</p>
       <SignInOutButton user={user} injectedProvider={injectedProvider} />
     </div>
   );
