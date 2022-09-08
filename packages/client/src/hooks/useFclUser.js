@@ -7,7 +7,7 @@ export default function useFclUser(provider) {
     () =>
       provider.currentUser().subscribe(async (user) => {
         if (!user.addr) {
-          return setUser({ balance: 0, loaded: true });
+          return setUser({ balance: 0 });
         }
 
         const account = await provider

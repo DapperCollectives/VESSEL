@@ -96,13 +96,9 @@ export default function Web3Provider({
     ...props,
   };
 
-  // User is fetched asynchronously, so components should be rendered when the user.loaded is set to true or when the user is logged in
-  // When the user is logged in the address won't be undefined
-  const shouldRenderComponents = user.loaded || user.addr;
-
   return (
     <Web3Context.Provider value={providerProps}>
-      {shouldRenderComponents && children}
+      {children}
     </Web3Context.Provider>
   );
 }
