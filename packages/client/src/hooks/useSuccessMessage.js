@@ -1,6 +1,5 @@
 import { useModalContext } from "contexts";
 import { TransactionSuccessModal } from "modals";
-import { ASSET_TYPES, ACTION_TYPES } from "../constants/enums";
 
 export default function useSuccessMessage() {
     const { openModal, closeModal } = useModalContext();
@@ -12,7 +11,7 @@ export default function useSuccessMessage() {
                 safeName={safeName}
                 safeAddress={safeAddress}
                 actionData={actionData}
-                actionType={getActionType(actionData.type)}
+                actionType={actionData.type}
                 txID={action.transactionId}
                 onClose={closeSuccessModal}
             />,
@@ -20,17 +19,6 @@ export default function useSuccessMessage() {
                 headerTitle: "Success",
             }
         );
-    }
-
-    const getActionType = (type) => {
-        switch (type) {
-            case ACTION_TYPES.TRANSFER_NFT:
-                return ASSET_TYPES.NFT;
-            case ACTION_TYPES.TRANSFER_TOKEN:
-                return ASSET_TYPES.TOKEN;
-            default:
-                return undefined;
-        }
     }
 
     const closeSuccessModal = () => {

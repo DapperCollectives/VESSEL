@@ -3,7 +3,7 @@ import { Web3Context } from "contexts/Web3";
 import { useClipboard, useContacts } from "../hooks";
 import { Copy, ArrowUp, OpenNewTab } from "../components/Svg";
 import { getFlowscanUrlForTransaction } from "utils";
-import { ASSET_TYPES } from "../constants/enums";
+import { ACTION_TYPES } from "../constants/enums";
 import { COIN_TYPE_TO_META, CONTRACT_NAME_TO_COIN_TYPE } from "../constants/maps";
 
 const TransactionSuccessModal = ({ actionData, actionType, txID, onClose, safeName, safeAddress }) => {
@@ -19,7 +19,7 @@ const TransactionSuccessModal = ({ actionData, actionType, txID, onClose, safeNa
     const NFTName = collectionId?.split(".")[2];
 
     useEffect(() => {
-        if (actionType === ASSET_TYPES.NFT) {
+        if (actionType === ACTION_TYPES.TRANSFER_NFT) {
             const getImageURL = async () => {
                 const result = await getNFTReference(recipient, nftId);
                 setImage(result);
@@ -47,7 +47,7 @@ const TransactionSuccessModal = ({ actionData, actionType, txID, onClose, safeNa
                     Sent <ArrowUp className="ml-2 has-text-white" />
                 </button>
                 <div className="pl-4">
-                    {actionType === ASSET_TYPES.NFT &&
+                    {actionType === ACTION_TYPES.TRANSFER_NFT &&
                         <>
                             <img className="columns is-vcentered is-multiline is-mobile mr-2 mt-2 success-modal-image" src={imageURI} alt={imageName} />
                             <span className="columns is-vcentered is-multiline is-mobile mr-2 is-size-2 is-family-monospace">
@@ -58,7 +58,7 @@ const TransactionSuccessModal = ({ actionData, actionType, txID, onClose, safeNa
                             </span>
                         </>
                     }
-                    {actionType === ASSET_TYPES.TOKEN &&
+                    {actionType === ACTION_TYPES.TRANSFER_TOKEN &&
                         <>
                             <span className="columns is-vcentered is-multiline is-mobile mr-2 mt-2 is-size-2 is-family-monospace">
                                 {Number(tokenAmount)}
