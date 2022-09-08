@@ -4,7 +4,7 @@ import { TransactionSuccessModal } from "modals";
 export default function useSuccessMessage() {
     const { openModal, closeModal } = useModalContext();
 
-    const showSuccessTransactionModal = (action, safeName, safeAddress) => {
+    const showTransactionSuccessModal = (action, safeName, safeAddress) => {
         const actionData = action.data.actionView;
         openModal(
             <TransactionSuccessModal
@@ -20,5 +20,5 @@ export default function useSuccessMessage() {
         );
     }
 
-    return { showSuccessTransactionModal };
+    return { showTransactionSuccessModal };
 }
