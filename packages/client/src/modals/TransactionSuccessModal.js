@@ -2,9 +2,8 @@ import React, { useContext, useEffect, useState } from "react";
 import { Web3Context } from "contexts/Web3";
 import { useClipboard, useContacts } from "../hooks";
 import { Copy, ArrowUp, OpenNewTab } from "../components/Svg";
-import { getFlowscanUrlForTransaction, formatAddress } from "utils";
+import { getFlowscanUrlForTransaction, formatAddress, getTokenMeta, getNFTMeta } from "utils";
 import { ACTION_TYPES } from "../constants/enums";
-import { COIN_TYPE_TO_META, CONTRACT_NAME_TO_COIN_TYPE } from "../constants/maps";
 
 const TransactionSuccessModal = ({ actionData, txID, onClose, safeName, safeAddress }) => {
     const { getNFTReference } = useContext(Web3Context);
@@ -14,12 +13,10 @@ const TransactionSuccessModal = ({ actionData, txID, onClose, safeName, safeAddr
 
     const { recipient, nftId, collectionId, vaultId, tokenAmount } = actionData;
     const { displayName, icon } = getTokenMeta(vaultId) || {};
+    const { NFTName, NFTAddress } = getNFTMeta(collectionId) || {};
     const { name: imageName, imageURI } = image || {};
 
     const actionType = actionData.type;
-    
-    const NFTName = collectionId?.split(".")[2];
-    const NFTAddress = collectionId?.split(".")[1];
 
     useEffect(() => {
         if (actionType === ACTION_TYPES.TRANSFER_NFT) {
@@ -30,13 +27,6 @@ const TransactionSuccessModal = ({ actionData, txID, onClose, safeName, safeAddr
             getImageURL().catch(console.error);
         }
     }, [actionType, NFTName, NFTAddress, nftId, recipient, getNFTReference])
-
-    function getTokenMeta(vaultId) {
-        if (vaultId) {
-            const tokenName = vaultId.split(".")[2];
-            return COIN_TYPE_TO_META[CONTRACT_NAME_TO_COIN_TYPE[tokenName]];
-        }
-    }
 
     function getSafeContactName(address) {
         const contact = contacts.find(contact => contact.address === address);
@@ -76,8 +66,7 @@ const TransactionSuccessModal = ({ actionData, txID, onClose, safeName, safeAddr
             <div className="mt-4 border-light-top">
                 <div className="column is-vcentered is-multiline is-mobile border-light-bottom is-flex is-full">
                     <span className="flex-1 has-text-grey">Sent From</span>
-                    &nbsp;
-                    <div className="flex-1" style={{ position: "relative" }}>
+                    <div>
                         <span className="has-text-weight-bold">
                             {safeName}
                         </span>
@@ -93,8 +82,7 @@ const TransactionSuccessModal = ({ actionData, txID, onClose, safeName, safeAddr
                 </div>
                 <div className="column is-vcentered is-multiline is-mobile border-light-bottom is-flex is-full">
                     <span className="has-text-grey flex-1">Sent To</span>
-                    &nbsp;
-                    <div className="flex-1" style={{ position: "relative" }}>
+                    <div>
                         <span className="has-text-weight-bold">
                             {getSafeContactName(recipient)}
                         </span>
