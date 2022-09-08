@@ -42,7 +42,9 @@ const TransactionSuccessModal = ({ actionData, txID, onClose, safeName, safeAddr
                 <div className="pl-4">
                     {actionType === ACTION_TYPES.TRANSFER_NFT &&
                         <>
-                            <img className="columns is-vcentered is-multiline is-mobile mr-2 mt-2 success-modal-image" src={imageURI} alt={imageName} />
+                            {imageURI &&
+                                <img className="columns is-vcentered is-multiline is-mobile mr-2 mt-2 success-modal-image" src={imageURI} alt={imageName} />
+                            }
                             <span className="columns is-vcentered is-multiline is-mobile mr-2 is-size-2 is-family-monospace">
                                 #{nftId}
                             </span>
