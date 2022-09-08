@@ -79,22 +79,14 @@ export default function useVaults(treasuryAddr) {
     };
 
     const addVault = async (coinType) => {
-        try {
-            const contractName = COIN_TYPE_TO_META[coinType].contractName;
-            const res = await doAddVault(treasuryAddr, contractName);
-            await tx(res).onceSealed();
-        } catch (error) {
-            console.error(error);
-        }
+        const contractName = COIN_TYPE_TO_META[coinType].contractName;
+        const res = await doAddVault(treasuryAddr, contractName);
+        await tx(res).onceSealed();
     };
 
     const removeVault = async (identifier) => {
-        try {
-            const res = await doRemoveVault(treasuryAddr, identifier);
-            await tx(res).onceSealed();
-        } catch (error) {
-            console.error(error);
-        }
+        const res = await doRemoveVault(treasuryAddr, identifier);
+        await tx(res).onceSealed();
     };
 
     return {

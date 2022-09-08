@@ -109,7 +109,11 @@ export const removeAddressPrefix = (address) => address.replace("0x", "");
 export const getTokenMeta = (vaultId) => {
   if (vaultId) {
     const tokenName = vaultId.split(".")[2];
-    return COIN_TYPE_TO_META[CONTRACT_NAME_TO_COIN_TYPE[tokenName]];
+    const tokenAddress = vaultId.split(".")[1];
+    return {
+      ...COIN_TYPE_TO_META[CONTRACT_NAME_TO_COIN_TYPE[tokenName]],
+      tokenAddress
+    };
   }
 }
 

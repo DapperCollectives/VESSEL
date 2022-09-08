@@ -1,6 +1,7 @@
 import React, { useContext, useEffect } from "react";
 import { useModalContext } from "contexts";
-import { formatAddress } from "utils";
+import { formatAddress, getNFTMeta, getTokenMeta } from "utils";
+import { useErrorMessage } from "hooks";
 
 import { Web3Context } from "contexts/Web3";
 import { Plus } from "components/Svg";
@@ -9,12 +10,11 @@ import AddCollection from "./AddCollection";
 import AssetTableView from "./AssetTableView";
 import RemoveVault from "./RemoveVault";
 import RemoveCollection from "./RemoveCollection";
-import { useHistory } from "react-router-dom";
 
 const Assets = ({ treasury, addVault, addCollection, removeVault, removeCollection }) => {
   const { address } = treasury;
   const { openModal, closeModal } = useModalContext();
-  const history = useHistory();
+  const { showErrorModal } = useErrorMessage();
 
   const { getTreasuryCollections, getTreasuryVaults, vaults, NFTs } = useContext(Web3Context);
 
@@ -36,33 +36,41 @@ const Assets = ({ treasury, addVault, addCollection, removeVault, removeCollecti
   }, [address]);
 
   const onAddVaultSubmit = async (form) => {
-    await addVault(form.coinType);
-
-    closeModal();
-    history.push(`/safe/${address}`);
+    try {
+      await addVault(form.coinType);
+      closeModal();
+    } catch (error) {
+      showErrorModal(error);
+    }
   };
 
   const onAddCollectionSubmit = async (form) => {
-    await addCollection(form.contractName, formatAddress(form.address));
-
-    closeModal();
-    history.push(`/safe/${address}`);
+    try {
+      await addCollection(form.contractName, formatAddress(form.address));
+      closeModal();
+    } catch (error) {
+      showErrorModal(error);
+    }
   };
 
   const onRemoveVaultSubmit = async (identifier) => {
-    await removeVault(identifier);
-
-    closeModal();
-    history.push(`/safe/${address}`);
-
+    try {
+      await removeVault(identifier);
+      closeModal();
+    }
+    catch (error) {
+      showErrorModal(error);
+    }
   };
 
   const onRemoveCollectionSubmit = async (identifier) => {
-    await removeCollection(identifier);
-    
-    closeModal();
-    history.push(`/safe/${address}`);
-
+    try {
+      await removeCollection(identifier);
+      closeModal();
+    }
+    catch (error) {
+      showErrorModal(error);
+    }
   };
 
   const openAddVaultModal = () => {
@@ -80,20 +88,24 @@ const Assets = ({ treasury, addVault, addCollection, removeVault, removeCollecti
     );
   };
 
-  const openRemoveVaultModal = (identifier, name) => {
+  const openRemoveVaultModal = (identifier) => {
+    const { displayName, tokenAddress } = getTokenMeta(identifier);
     openModal(
       <RemoveVault
-        name={name}
+        name={displayName}
+        address={formatAddress(tokenAddress)}
         onCancel={() => closeModal()}
         onNext={() => onRemoveVaultSubmit(identifier)}
       />
     );
   };
 
-  const openRemoveCollectionModal = (identifier, name) => {
+  const openRemoveCollectionModal = (identifier) => {
+    const { NFTName, NFTAddress } = getNFTMeta(identifier);
     openModal(
       <RemoveCollection
-        name={name}
+        name={NFTName}
+        address={formatAddress(NFTAddress)}
         onCancel={() => closeModal()}
         onNext={() => onRemoveCollectionSubmit(identifier)}
       />
@@ -112,8 +124,12 @@ const Assets = ({ treasury, addVault, addCollection, removeVault, removeCollecti
           <Plus style={{ position: "relative", left: 5 }} />
         </button>
       </div>
-      {vaults && vaults[address] && vaults[address].length > 0 &&
-        <AssetTableView assets={Object.values(vaults[address])} onRemoveClick={openRemoveVaultModal} />
+      {vaults && vaults[address] &&
+        <AssetTableView
+          assets={Object.values(vaults[address])}
+          emptyPlaceholder="You don't have any Token Vaults yet."
+          onRemoveClick={openRemoveVaultModal}
+        />
       }
 
       <div className="p-0 mt-5 columns">
@@ -126,8 +142,12 @@ const Assets = ({ treasury, addVault, addCollection, removeVault, removeCollecti
           <Plus style={{ position: "relative", left: 5 }} />
         </button>
       </div>
-      {NFTs && NFTs[address] && Object.keys(NFTs[address]).length > 0 &&
-        <AssetTableView assets={Object.keys(NFTs[address])} onRemoveClick={openRemoveCollectionModal} />
+      {NFTs && NFTs[address] &&
+        <AssetTableView
+          assets={Object.keys(NFTs[address])}
+          emptyPlaceholder="You don't have any NFT Collections yet."
+          onRemoveClick={openRemoveCollectionModal}
+        />
       }
     </div>
   );

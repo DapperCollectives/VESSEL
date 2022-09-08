@@ -176,21 +176,13 @@ export default function useNFTs(treasuryAddr) {
   };
 
   const addCollection = async (contractName, contractAddress) => {
-    try {
-      const res = await doAddCollection(treasuryAddr, contractName, contractAddress);
-      await tx(res).onceSealed();
-    } catch (error) {
-      console.error(error);
-    }
+    const res = await doAddCollection(treasuryAddr, contractName, contractAddress);
+    await tx(res).onceSealed();
   };
 
   const removeCollection = async (identifier) => {
-    try {
-      const res = await doRemoveCollection(treasuryAddr, identifier);
-      await tx(res).onceSealed();
-    } catch (error) {
-      console.error(error);
-    }
+    const res = await doRemoveCollection(treasuryAddr, identifier);
+    await tx(res).onceSealed();
   };
 
   return {

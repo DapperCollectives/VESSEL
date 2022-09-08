@@ -1,6 +1,6 @@
 import { Close } from "components/Svg";
 
-const RemoveCollection = ({ name, onCancel, onNext }) => {
+const RemoveCollection = ({ name, address, onCancel, onNext }) => {
     const nextButtonClasses = ["button flex-1 p-4", "is-link"];
 
     return (
@@ -13,7 +13,13 @@ const RemoveCollection = ({ name, onCancel, onNext }) => {
             </div>
             <div className="border-light-top p-5 has-text-grey">
                 <div className="flex-1 is-flex is-flex-direction-column">
-                    <p>Are you sure you want to remove {name} from your NFT collections list?</p>
+                    <p>
+                        This action will&nbsp;
+                        <span className="has-text-weight-bold">
+                            remove {name} ({address})
+                        </span>
+                        &nbsp;from the treasury. This is only possible if you don’t have any NFT from this collection in your treasury.
+                    </p>
                 </div>
                 <div className="is-flex is-align-items-center mt-5">
                     <button className="button flex-1 p-4 mr-2" onClick={onCancel}>

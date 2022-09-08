@@ -18,7 +18,7 @@ export default function useErrorMessage() {
     const extractError = (error) => {
         if (typeof error == "string" && error.includes("\n") && error.includes(": ")) {
             const errorMessage = error.split("\n")[1];
-            return errorMessage.split(": ")[2];
+            return errorMessage.split(": ")[2] || errorMessage.split(": ")[1];
         }
         return "Unknown error occured.";
     }
@@ -30,7 +30,7 @@ export default function useErrorMessage() {
                 <ErrorModal error={errorMessage} onClose={closeErrorModal} />
             );
         }
-    // eslint-disable-next-line
+        // eslint-disable-next-line
     }, [error])
 
     return { showErrorModal };
