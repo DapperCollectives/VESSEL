@@ -11,18 +11,13 @@ export default function useSuccessMessage() {
                 safeName={safeName}
                 safeAddress={safeAddress}
                 actionData={actionData}
-                actionType={actionData.type}
                 txID={action.transactionId}
-                onClose={closeSuccessModal}
+                onClose={closeModal}
             />,
             {
                 headerTitle: "Success",
             }
         );
-    }
-
-    const closeSuccessModal = () => {
-        closeModal();
     }
 
     return { showSuccessTransactionModal };

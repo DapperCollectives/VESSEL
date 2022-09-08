@@ -2,11 +2,11 @@ import React, { useContext, useEffect, useState } from "react";
 import { Web3Context } from "contexts/Web3";
 import { useClipboard, useContacts } from "../hooks";
 import { Copy, ArrowUp, OpenNewTab } from "../components/Svg";
-import { getFlowscanUrlForTransaction } from "utils";
+import { getFlowscanUrlForTransaction, formatAddress } from "utils";
 import { ACTION_TYPES } from "../constants/enums";
 import { COIN_TYPE_TO_META, CONTRACT_NAME_TO_COIN_TYPE } from "../constants/maps";
 
-const TransactionSuccessModal = ({ actionData, actionType, txID, onClose, safeName, safeAddress }) => {
+const TransactionSuccessModal = ({ actionData, txID, onClose, safeName, safeAddress }) => {
     const { getNFTReference } = useContext(Web3Context);
     const clipboard = useClipboard();
     const [image, setImage] = useState();
@@ -16,12 +16,14 @@ const TransactionSuccessModal = ({ actionData, actionType, txID, onClose, safeNa
     const { displayName, icon } = getTokenMeta(vaultId) || {};
     const { name: imageName, imageURI } = image || {};
 
+    const actionType = actionData.type;
+    const NFTAddress = formatAddress(collectionId?.split(".")[1]);
     const NFTName = collectionId?.split(".")[2];
 
     useEffect(() => {
         if (actionType === ACTION_TYPES.TRANSFER_NFT) {
             const getImageURL = async () => {
-                const result = await getNFTReference(recipient, nftId);
+                const result = await getNFTReference(NFTName, NFTAddress, recipient, nftId);
                 setImage(result);
             };
             getImageURL().catch(console.error);
