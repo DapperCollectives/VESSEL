@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import * as fcl from "@onflow/fcl";
 import networks from "../networks";
 import { useRouteMatch } from "react-router-dom";
-import { useFclUser, useTreasury, useNFTs } from "../hooks";
+import { useFclUserBalance, useTreasury, useNFTs } from "../hooks";
 import { CURRENT_USER_SESSION_KEY } from "constants/constants";
 // create our app context
 export const Web3Context = React.createContext({});
@@ -63,7 +63,12 @@ export default function Web3Provider({
       });
     } catch (e) {}
   }, [network]);
-  const user = useFclUser(fcl);
+  const userBalance = useFclUserBalance(fcl);
+  const userSession = window.sessionStorage.getItem(CURRENT_USER_SESSION_KEY);
+  const user = {
+    ...(userSession ? JSON.parse(userSession) : {}),
+    balance: userBalance,
+  };
   // if on a safe page, get safe's treasury info
   const match = useRouteMatch({
     path: ["/safe/:address", "/safe/:address/:tab"],
@@ -87,9 +92,7 @@ export default function Web3Provider({
       errorMessage: transactionError,
     },
     injectedProvider: fcl,
-    user: user.addr
-      ? user
-      : JSON.parse(window.sessionStorage.getItem(CURRENT_USER_SESSION_KEY)),
+    user: user,
     address: user.addr,
     logOut,
     ...nftProps,

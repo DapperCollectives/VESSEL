@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react";
 
-export default function useFclUser(provider) {
-  const [user, setUser] = useState({});
+export default function useFclUserBalance(provider) {
+  const [userBalance, setUserBalance] = useState({});
 
   useEffect(
     () =>
       provider.currentUser().subscribe(async (user) => {
         if (!user.addr) {
-          return setUser({ balance: 0 });
+          return setUserBalance(0);
         }
 
         const account = await provider
@@ -16,10 +16,10 @@ export default function useFclUser(provider) {
 
         const balance = account.balance / Math.pow(10, 8);
 
-        return setUser({ ...user, balance });
+        return setUserBalance(balance);
       }),
     [provider]
   );
 
-  return user;
+  return userBalance;
 }
