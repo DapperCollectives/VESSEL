@@ -1,6 +1,11 @@
 import "./App.sass";
 import React from "react";
-import { HashRouter as Router, Switch, Route } from "react-router-dom";
+import {
+  HashRouter as Router,
+  Switch,
+  Route,
+  Redirect,
+} from "react-router-dom";
 import { Web3Provider, ModalProvider, Web3Consumer } from "./contexts";
 import { Home, Safe, LoadSafe, CreateSafe } from "./pages";
 import { Logo, Navigation, Transactions } from "./components";
@@ -12,31 +17,40 @@ const Sidebar = ({ children }) => (
     {children}
   </div>
 );
-
-const Body = ({ web3 }) => (
-  <div className="body has-background-white-rounded">
-    <Transactions />
-    <Switch>
-      <Route exact path="/">
-        <Home />
-      </Route>
-      {web3?.user?.addr && (
-        <>
-          <Route exact path="/load-safe">
-            <LoadSafe />
-          </Route>
-          <Route exact path="/create-safe">
-            <CreateSafe />
-          </Route>
-          <Route path={["/safe/:address/:tab", "/safe/:address"]}>
-            <Safe />
-          </Route>
-        </>
-      )}
-    </Switch>
-  </div>
-);
+const PrivateRoutes = ({ canAccess }) => {
+  if (canAccess) {
+    return (
+      <>
+        <Route exact path="/load-safe">
+          <LoadSafe />
+        </Route>
+        <Route exact path="/create-safe">
+          <CreateSafe />
+        </Route>
+        <Route path={["/safe/:address/:tab", "/safe/:address"]}>
+          <Safe />
+        </Route>
+      </>
+    );
+  } else {
+    return <Redirect to="/" />;
+  }
+};
+const Body = ({ web3 }) => {
+  return (
+    <div className="body has-background-white-rounded">
+      <Transactions />
+      <Switch>
+        <Route exact path="/">
+          <Home />
+        </Route>
+        <PrivateRoutes canAccess={web3?.user?.addr && web3?.user?.loggedIn} />
+      </Switch>
+    </div>
+  );
+};
 const BodyWithContext = Web3Consumer(Body);
+
 function App() {
   return (
     <Router>

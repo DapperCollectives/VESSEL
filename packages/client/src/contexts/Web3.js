@@ -3,7 +3,7 @@ import * as fcl from "@onflow/fcl";
 import networks from "../networks";
 import { useRouteMatch } from "react-router-dom";
 import { useFclUser, useTreasury, useNFTs } from "../hooks";
-
+import { CURRENT_USER_SESSION_KEY } from "constants/constants";
 // create our app context
 export const Web3Context = React.createContext({});
 
@@ -63,7 +63,6 @@ export default function Web3Provider({
       });
     } catch (e) {}
   }, [network]);
-
   const user = useFclUser(fcl);
   // if on a safe page, get safe's treasury info
   const match = useRouteMatch({
@@ -88,7 +87,9 @@ export default function Web3Provider({
       errorMessage: transactionError,
     },
     injectedProvider: fcl,
-    user,
+    user: user.addr
+      ? user
+      : JSON.parse(window.sessionStorage.getItem(CURRENT_USER_SESSION_KEY)),
     address: user.addr,
     logOut,
     ...nftProps,
@@ -116,19 +117,15 @@ export function Web3Consumer(Component) {
 export const createSignature = async (intent) => {
   try {
     const latestBlock = await fcl.send([fcl.getBlock(true)]).then(fcl.decode);
-
     const { height, id } = latestBlock;
     const intentHex = Buffer.from(intent).toString("hex");
     const message = `${intentHex}${id}`;
     const messageHex = Buffer.from(message).toString("hex");
-
     let sigResponse = await fcl.currentUser().signUserMessage(messageHex);
     let keyId = sigResponse[0].keyId;
     let signature = sigResponse[0].signature;
-
     const keyIds = [keyId];
     const signatures = [signature];
-
     return {
       message,
       keyIds,
