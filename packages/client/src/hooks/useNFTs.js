@@ -3,6 +3,7 @@ import { mutate, query, tx } from "@onflow/fcl";
 import reducer, { INITIAL_STATE } from "../reducers/nfts";
 import { REGULAR_LIMIT, SIGNED_LIMIT } from "constants/constants";
 import { createSignature } from "../contexts/Web3";
+import { formatAddress } from "utils";
 import {
   CHECK_TREASURY_NFT_COLLECTION,
   PROPOSE_NFT_TRANSFER,
@@ -24,15 +25,17 @@ const doSendNFTToTreasury = async (treasuryAddr, tokenId) => {
   });
 };
 
-const doProposeNFTTransfer = async (contractName, contractAddress, treasuryAddr, recipient, nft) => {
+const doProposeNFTTransfer = async (treasuryAddr, recipient, nft) => {
   // Example: A.f8d6e0586b0a20c7.ZeedzINO.Collection-0
   // First part will contain the collection identifier, and the second will contain the tokenId
   const tokenInfo = nft.split("-");
+  const contractName = nft.split(".")[2];
+  const contractAddress = nft.split(".")[1];
   const intent = `Transfer ${tokenInfo[0]} NFT from the treasury to ${recipient}`;
   const { message, keyIds, signatures, height } = await createSignature(intent);
 
   return await mutate({
-    cadence: PROPOSE_NFT_TRANSFER(contractName, contractAddress),
+    cadence: PROPOSE_NFT_TRANSFER(contractName, formatAddress(contractAddress)),
     args: (arg, t) => [
       arg(treasuryAddr, t.Address),
       arg(recipient, t.Address),
@@ -118,8 +121,8 @@ export default function useNFTs() {
     await tx(res).onceSealed();
   };
 
-  const proposeNFTTransfer = async (contractName, contractAddress, treasuryAddr, recipient, nft) => {
-    const res = await doProposeNFTTransfer(contractName, contractAddress, treasuryAddr, recipient, nft);
+  const proposeNFTTransfer = async (treasuryAddr, recipient, nft) => {
+    const res = await doProposeNFTTransfer(treasuryAddr, recipient, nft);
     await tx(res).onceSealed();
     return res;
   };

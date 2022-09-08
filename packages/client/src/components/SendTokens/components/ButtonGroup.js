@@ -47,11 +47,7 @@ const ButtonGroup = () => {
           coinType
         );
       } else {
-        const NFTAddress = selectedNFT.split(".")[1];
-        const NFTName = selectedNFT.split(".")[2];
         await web3.proposeNFTTransfer(
-          NFTName,
-          formatAddress(NFTAddress),
           formatAddress(address),
           formatAddress(recipient),
           selectedNFT
