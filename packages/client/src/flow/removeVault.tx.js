@@ -1,6 +1,6 @@
 export const REMOVE_VAULT  = `
-    import DAOTreasuryV3 from 0xDAOTreasuryV3
-    import MyMultiSigV3 from 0xMyMultiSigV3
+    import DAOTreasuryV4 from 0xDAOTreasuryV4
+    import MyMultiSigV4 from 0xMyMultiSigV4
 
     transaction(treasuryAddr: Address, identifier: String, message: String, keyIds: [UInt64], signatures: [String], signatureBlock: UInt64) {
 
@@ -16,7 +16,7 @@ export const REMOVE_VAULT  = `
                 _keyIds.append(Int(keyId))
             }
     
-            let messageSignaturePayload = MyMultiSigV3.MessageSignaturePayload(
+            let messageSignaturePayload = MyMultiSigV4.MessageSignaturePayload(
                 signingAddr: signer.address, message: message, keyIds: _keyIds, signatures: signatures, signatureBlock: signatureBlock
             )
             // Execute removing vault

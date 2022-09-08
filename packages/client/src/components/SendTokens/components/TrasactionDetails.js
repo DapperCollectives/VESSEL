@@ -8,10 +8,13 @@ const TransactionDetails = () => {
   const [sendModalState] = useContext(SendTokensContext);
   const { assetType, tokenAmount, selectedNFTUrl, recipient } = sendModalState;
   const { getProposeSendTokenEstimation } = useFlowFees();
-  useEffect(async () => {
-    const fee = await getProposeSendTokenEstimation();
-    setTransactionFee(fee);
-  }, []);
+  useEffect(() => {
+    const fetchEstimation = async () => {
+      const fee = await getProposeSendTokenEstimation();
+      setTransactionFee(fee);
+    };
+    fetchEstimation();
+  }, [getProposeSendTokenEstimation]);
   return (
     <div>
       {assetType === ASSET_TYPES.TOKEN && (
