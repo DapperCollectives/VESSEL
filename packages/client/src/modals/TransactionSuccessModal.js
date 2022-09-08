@@ -17,18 +17,19 @@ const TransactionSuccessModal = ({ actionData, txID, onClose, safeName, safeAddr
     const { name: imageName, imageURI } = image || {};
 
     const actionType = actionData.type;
-    const NFTAddress = formatAddress(collectionId?.split(".")[1]);
+    
     const NFTName = collectionId?.split(".")[2];
+    const NFTAddress = collectionId?.split(".")[1];
 
     useEffect(() => {
         if (actionType === ACTION_TYPES.TRANSFER_NFT) {
             const getImageURL = async () => {
-                const result = await getNFTReference(NFTName, NFTAddress, recipient, nftId);
+                const result = await getNFTReference(NFTName, formatAddress(NFTAddress), recipient, nftId);
                 setImage(result);
             };
             getImageURL().catch(console.error);
         }
-    }, [actionType, nftId, recipient, getNFTReference])
+    }, [actionType, NFTName, NFTAddress, nftId, recipient, getNFTReference])
 
     function getTokenMeta(vaultId) {
         if (vaultId) {
