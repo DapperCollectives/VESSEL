@@ -9,24 +9,22 @@ export default function useSuccessMessage() {
     const [type, setType] = useState();
     const [safeName, setSafeName] = useState();
     const [safeAddress, setSafeAddress] = useState();
-    const [safeOwners, setSafeOwners] = useState();
     const [transactionId, setTransactionId] = useState();
 
-    const showSuccessModal = (action, safeName, safeAddress, safeOwners) => {
-        const type = getActionType(action.type.split(".")[3]);
-        setType(type);
-        setData(action.data);
+    const showSuccessModal = (action, safeName, safeAddress) => {
+        const actionData = action.data.actionView;
+        setType(getActionType(actionData.type));
+        setData(actionData);
         setTransactionId(action.transactionId);
         setSafeName(safeName);
         setSafeAddress(safeAddress);
-        setSafeOwners(safeOwners);
     }
 
     const getActionType = (type) => {
         switch (type) {
-            case "TransferNFTToAccountActionExecuted":
+            case "TransferNFT":
                 return ASSET_TYPES.NFT;
-            case "TransferTokenToAccountActionExecuted":
+            case "TransferToken":
                 return ASSET_TYPES.TOKEN;
             default:
                 return undefined;
@@ -39,13 +37,23 @@ export default function useSuccessMessage() {
     }
 
     useEffect(() => {
-        if (type && data && safeName && safeOwners) {
+        if (type && data && safeName && safeAddress) {
             openModal(
-                <SuccessModal safeName={safeName} safeAddress={safeAddress} safeOwners={safeOwners} actionData={data} actionType={type} txID={transactionId} onClose={closeSuccessModal} />
+                <SuccessModal
+                    safeName={safeName}
+                    safeAddress={safeAddress}
+                    actionData={data}
+                    actionType={type}
+                    txID={transactionId}
+                    onClose={closeSuccessModal}
+                />,
+                {
+                    headerTitle: "Success",
+                }
             );
         }
         // eslint-disable-next-line
-    }, [data, safeName, safeOwners])
+    }, [data, safeName, safeAddress])
 
     return { showSuccessModal };
 }

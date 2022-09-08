@@ -1,30 +1,30 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Web3Context } from "contexts/Web3";
-import { useClipboard } from "../hooks";
+import { useClipboard, useContacts } from "../hooks";
 import { Copy, ArrowUp, OpenNewTab, Close } from "../components/Svg";
 import { getFlowscanUrlForTransaction } from "utils";
 import { ASSET_TYPES } from "../constants/enums";
 import { COIN_TYPE_TO_META, CONTRACT_NAME_TO_COIN_TYPE } from "../constants/maps";
 
-const SuccessModal = ({ actionData, actionType, txID, onClose, safeName, safeAddress, safeOwners }) => {
+const SuccessModal = ({ actionData, actionType, txID, onClose, safeName, safeAddress }) => {
     const { getNFTReference } = useContext(Web3Context);
     const clipboard = useClipboard();
-
-    const { recipientAddr, nftID, collectionID, vaultID, amount } = actionData;
-    const { displayName, icon } = getTokenMeta(vaultID) || {};
-
     const [image, setImage] = useState();
+    const { contacts } = useContacts(safeAddress);
+
+    const { recipient, nftId, collectionId, vaultId, tokenAmount } = actionData;
+    const { displayName, icon } = getTokenMeta(vaultId) || {};
     const { name: imageName, imageURI } = image || {};
 
     useEffect(() => {
         if (actionType === ASSET_TYPES.NFT) {
             const getImageURL = async () => {
-                const result = await getNFTReference(recipientAddr, nftID);
+                const result = await getNFTReference(recipient, nftId);
                 setImage(result);
             };
             getImageURL().catch(console.error);
         }
-    }, [actionType, nftID, recipientAddr, getNFTReference])
+    }, [actionType, nftId, recipient, getNFTReference])
 
     function getNFTName(collectionId) {
         return collectionId.split(".")[2];
@@ -37,21 +37,14 @@ const SuccessModal = ({ actionData, actionType, txID, onClose, safeName, safeAdd
         }
     }
 
-    function getSafeOwnerName(address) {
-        const owner = safeOwners.filter(owner => owner.address === address);
-        return owner && owner[0].name;
+    function getSafeContactName(address) {
+        const contact = contacts.find(contact => contact.address === address);
+        return contact?.name;
     }
 
     return (
         <div className="p-5 has-text-black has-text-left">
-            <div className="border-light-bottom columns is-vcentered is-multiline is-mobile">
-                <h2 className="pb-4 is-size-5 has-text-black column">Success</h2>
-                <span className="pointer" onClick={onClose}>
-                    <Close className="mr-4" />
-                </span>
-            </div>
-
-            <div className="mt-4 p-5 success-modal-background">
+            <div className="p-5 success-modal-background">
                 <button className="button flex-1 is-info mb-1">
                     Sent <ArrowUp className="ml-2 has-text-white" />
                 </button>
@@ -60,17 +53,17 @@ const SuccessModal = ({ actionData, actionType, txID, onClose, safeName, safeAdd
                         <>
                             <img className="columns is-vcentered is-multiline is-mobile mr-2 mt-2 success-modal-image" src={imageURI} alt={imageName} />
                             <span className="columns is-vcentered is-multiline is-mobile mr-2 is-size-2 is-family-monospace">
-                                #{nftID}
+                                #{nftId}
                             </span>
                             <span className="columns is-vcentered is-multiline is-mobile is-size-6 has-text-weight-bold">
-                                {getNFTName(collectionID)}
+                                {getNFTName(collectionId)}
                             </span>
                         </>
                     }
                     {actionType === ASSET_TYPES.TOKEN &&
                         <>
                             <span className="columns is-vcentered is-multiline is-mobile mr-2 mt-2 is-size-2 is-family-monospace">
-                                {Number(amount)}
+                                {Number(tokenAmount)}
                             </span>
                             <span className="columns is-vcentered is-multiline is-mobile is-size-6 has-text-weight-bold">
                                 {icon} &nbsp; {displayName}
@@ -102,13 +95,13 @@ const SuccessModal = ({ actionData, actionType, txID, onClose, safeName, safeAdd
                     &nbsp;
                     <div className="flex-1" style={{ position: "relative" }}>
                         <span className="has-text-weight-bold">
-                            {getSafeOwnerName(recipientAddr)}
+                            {getSafeContactName(recipient)}
                         </span>
                         <div >
                             <span className="has-text-grey">
-                                {recipientAddr}
+                                {recipient}
                             </span>
-                            <span className="pointer" onClick={() => clipboard.copy(recipientAddr)}>
+                            <span className="pointer" onClick={() => clipboard.copy(recipient)}>
                                 <Copy className="mt-1 ml-2 pointer" />
                             </span>
                         </div>

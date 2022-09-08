@@ -3,7 +3,7 @@ export const PROPOSE_NFT_TRANSFER = `
 	import DAOTreasuryV4 from 0xDAOTreasuryV4
 	import NonFungibleToken from 0xNonFungibleToken
 	import MyMultiSigV4 from 0xMyMultiSigV4
-	import ExampleNFT from 0xExampleNFT
+	import ZeedzINO from 0xZeedzINO
 	
 	transaction(treasuryAddr: Address, recipientAddr: Address, id: UInt64, message: String, keyIds: [UInt64], signatures: [String], signatureBlock: UInt64) {
 	
@@ -16,7 +16,7 @@ export const PROPOSE_NFT_TRANSFER = `
 		self.treasury = getAccount(treasuryAddr).getCapability(DAOTreasuryV4.TreasuryPublicPath)
 						.borrow<&DAOTreasuryV4.Treasury{DAOTreasuryV4.TreasuryPublic}>()
 						?? panic("A DAOTreasuryV4 doesn't exist here.")
-		self.recipientCollection = getAccount(recipientAddr).getCapability<&{NonFungibleToken.CollectionPublic}>(ExampleNFT.CollectionPublicPath)
+		self.recipientCollection = getAccount(recipientAddr).getCapability<&{NonFungibleToken.CollectionPublic}>(ZeedzINO.CollectionPublicPath)
 		self.action = TreasuryActionsV4.TransferNFT(recipientCollection: self.recipientCollection, nftID: id, proposer: signer.address)
 		
 		var _keyIds: [Int] = []

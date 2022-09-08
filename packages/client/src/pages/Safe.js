@@ -137,8 +137,8 @@ function Safe({ web3 }) {
   const onConfirmAction = async ({ uuid }) => {
     const events = await executeAction(uuid).catch((error) => showErrorModal(error));
     if (events) {
-      const actions = events.filter(e => e.type.endsWith("ActionExecuted"));
-      showSuccessModal(actions[0], safeData.name, safeData.address, safeData.safeOwners);
+      const action = events.find(e => e.type.endsWith("ActionExecuted"));
+      showSuccessModal(action, safeData.name, safeData.address);
     }
   };
 
@@ -170,8 +170,8 @@ function Safe({ web3 }) {
       />
     ),
     contacts: (
-      <SafeContacts 
-        key="safe-contacts" 
+      <SafeContacts
+        key="safe-contacts"
         address={address}
       />
     ),
