@@ -325,7 +325,14 @@ h2
 .button.is-nav.is-focused
   background-color: $purple-background
   color: $purple-primary
-
+/********************* Custom utility css - Link ********************/
+.is-link
+  color: $black
+.is-link:hover, .is-link:visited
+  color: $purple-dark
+  cursor: pointer
+.is-link.disabled
+  color: $grey-secondary
 /********************* Custom utility css - Label ********************/
 label
   user-select: none

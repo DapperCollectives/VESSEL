@@ -50,12 +50,12 @@ function ActionsList({ actions = [], onSign, onConfirm, safeData }) {
           <div className="pl-6" style={{ position: "relative" }}>
             {totalSigned} of {safeData.threshold} signatures
           </div>
-          <div
-            className="pl-6 is-underlined pointer"
+          <button
+            className="button is-tertiary ml-3 py-1"
             onClick={() => actionFn(action)}
           >
             {actionCopy}
-          </div>
+          </button>
         </div>
       );
     });

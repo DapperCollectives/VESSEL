@@ -91,7 +91,7 @@ function TransactionDetails({ safeOwners, transaction, onClose }) {
               href={getFlowscanUrlForTransaction(transaction.flowTransactionId)}
               target="_blank"
               rel="noopen noreferrer"
-              className="is-underlined has-text-black"
+              className="is-link"
             >
               {shortenAddr(transaction.flowTransactionId)}
             </a>
@@ -166,12 +166,12 @@ function TransactionListItem({
         {date.toLocaleTimeString("en-us")}
       </div>
       <div className="column has-text-right">
-        <span
-          className="is-underlined pointer"
+        <button
+          className="button is-transparent"
           onClick={() => onView(transaction)}
         >
           View
-        </span>
+        </button>
       </div>
     </div>
   );

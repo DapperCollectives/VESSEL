@@ -189,20 +189,16 @@ function SafeContacts({ address }) {
       ) : (
         <div className="column p-0 mt-4 is-flex is-flex-direction-column is-full rounded-sm border-light has-shadow">
           <div className="is-flex is-align-items-center is-justify-content-space-between column is-full p-5 border-light-bottom">
-            <div className="mr-5" style={{ width: addressWidth }}>
-              Address
-            </div>
-            <div className="px-2 mr-6" style={{ width: minWidth }}>
-              Name
-            </div>
-            <div style={{ width: minWidth }}>Actions</div>
+            <div className="flex-2">Address</div>
+            <div className="flex-1">Name</div>
+            <div className="flex-1">Actions</div>
           </div>
           {contacts.map((contact, index) => (
             <div
               className="is-flex is-align-items-center is-justify-content-space-between column is-full p-5 border-light-bottom"
               key={contact.address}
             >
-              <div className="mr-5" style={{ width: addressWidth }}>
+              <div className="flex-2">
                 <span
                   className="pointer"
                   onClick={() => clipboard.copy(contact.address)}
@@ -217,22 +213,20 @@ function SafeContacts({ address }) {
                   </span>
                 </span>
               </div>
-              <div className="px-2 mr-6" style={{ minWidth }}>
-                {contact?.name}
-              </div>
-              <div className="is-underlined" style={{ width: minWidth }}>
-                <span
-                  className="mr-5 pointer"
+              <div className="flex-1">{contact?.name}</div>
+              <div className="is-flex flex-1">
+                <button
+                  className="button is-transparent pl-0 pr-3 py-0"
                   onClick={() => openEditModal(index, contact)}
                 >
                   Edit
-                </span>
-                <span
-                  className="mr-5 pointer"
+                </button>
+                <button
+                  className="button is-transparent ml-5 px-5 py-0"
                   onClick={() => openRemoveModal(index, contact)}
                 >
                   Remove
-                </span>
+                </button>
               </div>
             </div>
           ))}

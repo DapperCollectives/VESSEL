@@ -18,7 +18,7 @@ const SignInOutButton = ({ user: { loggedIn, addr }, injectedProvider }) => {
     <>
       {loggedIn && <div className="p-4">{addr}</div>}
       {loggedIn && <hr />}
-      <div onClick={signInOrOut} className="is-underlined p-4 pointer">
+      <div onClick={signInOrOut} className="is-link p-4">
         {loggedIn ? "Disconnect" : "Connect"}
       </div>
     </>

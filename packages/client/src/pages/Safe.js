@@ -30,16 +30,21 @@ const ReceiveTokens = ({ name, address }) => {
           <span className="is-underlined">{shortenAddr(address)}</span>
         </div>
       </div>
-      <div className="border-light-top mt-5 pt-6">
-        <QRCode value={`https://flowscan.org/account/${address}`} />
-        <div
-          className="is-underlined mt-5 pointer"
+      <div className="border-light-top mt-5 pt-6 is-flex is-flex-direction-column">
+        <div>
+          <QRCode
+            className="ml-5"
+            value={`https://flowscan.org/account/${address}`}
+          />
+        </div>
+        <button
+          className="button is-transparent py-0 mt-5"
           onClick={() => clipboard.copy(address)}
         >
           {clipboard.textJustCopied === address
             ? "Copied"
             : "Copy Safe Address"}
-        </div>
+        </button>
       </div>
       <div className="is-flex is-align-items-center mt-6">
         <button

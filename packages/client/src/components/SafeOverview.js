@@ -45,7 +45,7 @@ function SafeOverview({ allBalance }) {
               <label>Tokens</label>
               {!!tokensWithPositiveBalance.length && (
                 <Link to={(location) => `${location.pathname}/assets`}>
-                  <strong>View All</strong>
+                  <strong className="has-text-white">View All</strong>
                 </Link>
               )}
             </div>

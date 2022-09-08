@@ -68,16 +68,16 @@ const Owners = ({ treasury, proposeRemoveSigner }) => {
               </div>
               <div className="flex-1">{so.address}</div>
               <div>
-                <span
-                  className="is-underlined mr-5 pointer"
+                <button
+                  className="button is-transparent py-0"
                   onClick={() => ownersAddressClipboard.copy(so.address)}
                 >
                   {ownersAddressClipboard.textJustCopied === so.address
                     ? "Copied"
                     : "Copy Address"}
-                </span>
+                </button>
                 <span
-                  className="is-underlined pointer"
+                  className="button is-transparent py-0"
                   onClick={() => openRemoveOwnerModal(so)}
                 >
                   Remove
