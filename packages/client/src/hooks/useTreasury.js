@@ -324,9 +324,10 @@ export default function useTreasury(treasuryAddr) {
 
   const executeAction = async (actionUUID) => {
     const res = await doExecuteAction(treasuryAddr, actionUUID);
-    await tx(res).onceSealed();
+    const result = await tx(res).onceSealed();
     await refreshTreasury();
     await updateOwnerList(treasuryAddr);
+    return result.events;
   };
 
   const updateThreshold = async (newThreshold) => {

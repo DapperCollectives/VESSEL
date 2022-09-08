@@ -1,4 +1,6 @@
 import { ASSET_TYPES, COIN_TYPES, SAFE_TYPES } from "./enums";
+import { FlowCoin } from "../components/Svg";
+
 export const ASSET_TYPE_TO_META = {
   [ASSET_TYPES.TOKEN]: {
     displayName: "Coins",
@@ -16,6 +18,7 @@ export const COIN_TYPE_TO_META = {
     publicReceiverPath: { domain: "public", identifier: "flowTokenReceiver" },
     publicBalancePath: { domain: "public", identifier: "flowTokenBalance" },
     storageVaultPath: { domain: "storage", identifier: "flowTokenVault" },
+    icon: <FlowCoin />
   },
   [COIN_TYPES.FUSD]: {
     contractName: "FUSD",
