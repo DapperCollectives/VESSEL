@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Web3Context } from "contexts/Web3";
 import { useClipboard, useContacts } from "../hooks";
-import { Copy, ArrowUp, OpenNewTab, Close } from "../components/Svg";
+import { Copy, ArrowUp, OpenNewTab } from "../components/Svg";
 import { getFlowscanUrlForTransaction } from "utils";
 import { ASSET_TYPES } from "../constants/enums";
 import { COIN_TYPE_TO_META, CONTRACT_NAME_TO_COIN_TYPE } from "../constants/maps";
@@ -16,6 +16,8 @@ const SuccessModal = ({ actionData, actionType, txID, onClose, safeName, safeAdd
     const { displayName, icon } = getTokenMeta(vaultId) || {};
     const { name: imageName, imageURI } = image || {};
 
+    const NFTName = collectionId?.split(".")[2];
+
     useEffect(() => {
         if (actionType === ASSET_TYPES.NFT) {
             const getImageURL = async () => {
@@ -25,10 +27,6 @@ const SuccessModal = ({ actionData, actionType, txID, onClose, safeName, safeAdd
             getImageURL().catch(console.error);
         }
     }, [actionType, nftId, recipient, getNFTReference])
-
-    function getNFTName(collectionId) {
-        return collectionId.split(".")[2];
-    }
 
     function getTokenMeta(vaultId) {
         if (vaultId) {
@@ -56,7 +54,7 @@ const SuccessModal = ({ actionData, actionType, txID, onClose, safeName, safeAdd
                                 #{nftId}
                             </span>
                             <span className="columns is-vcentered is-multiline is-mobile is-size-6 has-text-weight-bold">
-                                {getNFTName(collectionId)}
+                                {NFTName}
                             </span>
                         </>
                     }
