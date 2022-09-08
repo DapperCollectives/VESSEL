@@ -11,7 +11,7 @@ export default function useSuccessMessage() {
     const [safeAddress, setSafeAddress] = useState();
     const [transactionId, setTransactionId] = useState();
 
-    const showSuccessModal = (action, safeName, safeAddress) => {
+    const showSuccessTransactionModal = (action, safeName, safeAddress) => {
         const actionData = action.data.actionView;
         setType(getActionType(actionData.type));
         setData(actionData);
@@ -55,5 +55,5 @@ export default function useSuccessMessage() {
         // eslint-disable-next-line
     }, [data, safeName, safeAddress])
 
-    return { showSuccessModal };
+    return { showSuccessTransactionModal };
 }

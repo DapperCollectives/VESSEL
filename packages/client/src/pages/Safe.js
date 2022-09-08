@@ -60,7 +60,7 @@ function Safe({ web3 }) {
   const clipboard = useClipboard();
 
   const { showErrorModal } = useErrorMessage();
-  const { showSuccessModal } = useSuccessMessage();
+  const { showSuccessTransactionModal } = useSuccessMessage();
 
   const safeData = web3?.treasuries?.[address];
   const actions = web3?.actions?.[address];
@@ -138,7 +138,7 @@ function Safe({ web3 }) {
     const events = await executeAction(uuid).catch((error) => showErrorModal(error));
     if (events) {
       const action = events.find(e => e.type.endsWith("ActionExecuted"));
-      showSuccessModal(action, safeData.name, safeData.address);
+      showSuccessTransactionModal(action, safeData.name, safeData.address);
     }
   };
 
