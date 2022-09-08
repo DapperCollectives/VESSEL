@@ -25,10 +25,7 @@ const SafeHeader = ({
     }
   }
 
-  const btnClasses = [
-    "button p-4",
-    continueReady ? "is-link" : "is-light is-disabled",
-  ];
+  const btnClasses = ["button is-primary", continueReady ? "" : "disabled"];
 
   const stepMessage = "Load an existing safe";
   const stepSubtitle =
@@ -45,7 +42,7 @@ const SafeHeader = ({
         </div>
         <div className="is-flex is-align-items-center">
           <NavLink to="/">
-            <button className="button p-4 mr-2">Cancel</button>
+            <button className="button is-border mr-2">Cancel</button>
           </NavLink>
           <button className={btnClasses.join(" ")} onClick={onContinue}>
             {stepBtnText}
@@ -134,9 +131,7 @@ function LoadSafe({ web3 }) {
       safeOwnerCpts.push(
         <div className="column is-flex is-full" key={so.address}>
           <div className="flex-1 is-flex is-flex-direction-column pr-5">
-            <label className="has-text-grey mb-2">
-              Owner Name
-            </label>
+            <label className="has-text-grey mb-2">Owner Name</label>
             <input
               className="p-4 rounded-sm border-light"
               type="text"

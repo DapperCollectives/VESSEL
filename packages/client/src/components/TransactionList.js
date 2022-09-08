@@ -111,7 +111,10 @@ function TransactionDetails({ safeOwners, transaction, onClose }) {
               ? shortenAddr(lastTokenTransfer?.counterparty?.address)
               : ""
           )}
-          {renderRow("Executed", shortenAddr(transaction.blockEventData.proposer))}
+          {renderRow(
+            "Executed",
+            shortenAddr(transaction.blockEventData.proposer)
+          )}
           {renderRow(
             "Created",
             `${date.toLocaleDateString("en-us", {
@@ -121,7 +124,7 @@ function TransactionDetails({ safeOwners, transaction, onClose }) {
             })}, ${date.toLocaleTimeString("en-us")}`
           )}
           <div className="is-flex is-align-items-center mt-4">
-            <button className="button flex-1 p-4" onClick={onClose}>
+            <button className="button flex-1 is-border" onClick={onClose}>
               Close
             </button>
           </div>

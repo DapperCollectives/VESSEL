@@ -43,7 +43,7 @@ const ReceiveTokens = ({ name, address }) => {
       </div>
       <div className="is-flex is-align-items-center mt-6">
         <button
-          className="button flex-1 p-4 mr-2"
+          className="button flex-1 is-border mr-2"
           onClick={() => modalContext.closeModal()}
         >
           Cancel
@@ -155,12 +155,7 @@ function Safe({ web3 }) {
         key="safe-assets"
       />
     ),
-    contacts: (
-      <SafeContacts 
-        key="safe-contacts" 
-        address={address}
-      />
-    ),
+    contacts: <SafeContacts key="safe-contacts" address={address} />,
     settings: <SafeSettings key="safe-settings" />,
   };
 

@@ -6,6 +6,7 @@ import EditThreshold from "../EditThreshold";
 import RemoveSafeOwner from "./RemoveSafeOwner";
 import AddSafeOwner from "./AddSafeOwner";
 import { formatAddress } from "utils";
+import { Plus } from "components/Svg";
 
 const Owners = ({ treasury, proposeRemoveSigner }) => {
   const modalContext = useModalContext();
@@ -48,8 +49,12 @@ const Owners = ({ treasury, proposeRemoveSigner }) => {
   };
   return (
     <div>
-      <div className="column p-0 mt-5 is-flex is-full">
+      <div className="column p-0 mt-5 is-flex is-full is-justify-content-space-between">
         <h4 className="is-size-5">Owners</h4>
+        <button className="button is-secondary" onClick={openAddOwnerModal}>
+          Add new owner
+          <Plus style={{ position: "relative", left: 5 }} />
+        </button>
       </div>
       <div className="column p-0 mt-4 is-flex is-flex-direction-column is-full rounded-sm border-light has-shadow">
         {Array.isArray(verifiedSafeOwners) &&
@@ -81,13 +86,6 @@ const Owners = ({ treasury, proposeRemoveSigner }) => {
             </div>
           ))}
       </div>
-      <button
-        style={{ width: "100%" }}
-        className="button mt-4 p-4 border-light is-full"
-        onClick={openAddOwnerModal}
-      >
-        Add new owner
-      </button>
     </div>
   );
 };
