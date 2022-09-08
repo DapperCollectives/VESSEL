@@ -4,12 +4,18 @@
 $navWidth: 260px
 
 /**********************Initial variables - Colors *******************/
+//black
 $black: #000000
-$transparent-black: rgba(0,0,0,0.06)
+$black-40: rgba(0,0,0,0.4)
+$black-20: rgba(0,0,0,0.2)
+$black-10: rgba(0,0,0,0.1)
+$black-6: rgba(0,0,0,0.06)
+
+//white
 $white: #FFFFFF
-$success-green: #18AA01
-$warning-orange: #F26300
-$error-red: #E30C0C
+$white-60: rgba(255,255,255, 0.6)
+$white-40: rgba(255,255,255, 0.4)
+$white-20: rgba(255,255,255, 0.2)
 
 //grey:
 $grey-primary: #939393
@@ -34,6 +40,10 @@ $yellow-dark: #695A0D
 $yellow-secondary: #FFE780
 $yellow-tertiary: #FEFFDD
 
+//other
+$success-green: #18AA01
+$warning-orange: #F26300
+$error-red: #E30C0C
 
 /*********************Initial variables -  Font Sizes********************/
 $bodyBg: $white
@@ -177,7 +187,6 @@ h2
     &-right
       border-right: 1px solid $grey-light
 
-
 /********************* Custom utility css - Border radius********************/
 .rounded-sm
   border-radius: 8px
@@ -191,7 +200,7 @@ h2
   background-color: $white
   border-top-left-radius: 30px
 .has-background-transparent-black
-  background: $transparent-black
+  background: $black-6
 .has-background-purple
   background: $purple-background
 .has-background-primary-purple
