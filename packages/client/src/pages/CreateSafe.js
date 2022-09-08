@@ -166,8 +166,9 @@ function CreateSafe({ web3 }) {
         </div>
         <div className="column is-half">
           <div
-            className={`border rounded-sm p-4 ${submittedTransaction ? "" : "opacity-5"
-              }`}
+            className={`border rounded-sm p-4 ${
+              submittedTransaction ? "" : "opacity-5"
+            }`}
           >
             <div className="is-flex column is-full p-0">
               <div className="flex-1 py-6">
@@ -188,8 +189,9 @@ function CreateSafe({ web3 }) {
       <div className="columns column is-full p-0">
         <div className="column is-half">
           <div
-            className={`border rounded-sm p-4 ${createdTreasury ? "" : "opacity-5"
-              }`}
+            className={`border rounded-sm p-4 ${
+              createdTreasury ? "" : "opacity-5"
+            }`}
           >
             <div className="is-flex column is-full p-0">
               <div className="flex-1 py-6">
@@ -208,8 +210,9 @@ function CreateSafe({ web3 }) {
         </div>
         <div className="column is-half">
           <div
-            className={`border rounded-sm p-4 ${createdTreasury ? "" : "opacity-5"
-              }`}
+            className={`border rounded-sm p-4 ${
+              createdTreasury ? "" : "opacity-5"
+            }`}
           >
             <div className="is-flex column is-full p-0">
               <div className="flex-1 py-6">
