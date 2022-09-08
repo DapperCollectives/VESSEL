@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useModalContext } from "contexts";
 import { SuccessModal } from "modals";
-import { ASSET_TYPES } from "../constants/enums";
+import { ASSET_TYPES, ACTION_TYPES } from "../constants/enums";
 
 export default function useSuccessMessage() {
     const { openModal, closeModal } = useModalContext();
@@ -22,9 +22,9 @@ export default function useSuccessMessage() {
 
     const getActionType = (type) => {
         switch (type) {
-            case "TransferNFT":
+            case ACTION_TYPES.TRANSFER_NFT:
                 return ASSET_TYPES.NFT;
-            case "TransferToken":
+            case ACTION_TYPES.TRANSFER_TOKEN:
                 return ASSET_TYPES.TOKEN;
             default:
                 return undefined;
