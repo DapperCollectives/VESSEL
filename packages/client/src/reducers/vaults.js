@@ -17,6 +17,38 @@ const reducer = (state = INITIAL_STATE, action) => {
                 error: null,
             };
         }
+        case "ADD_VAULT": {
+            const address = Object.keys(action.payload)[0];
+            return {
+                ...state,
+                vaults: {
+                    ...state.vaults,
+                    [address]: [
+                        ...state.vaults[address],
+                        action.payload[address]
+                    ]
+                },
+                loadingVaults: false,
+                error: null,
+            }
+        }
+        case "REMOVE_VAULT": {
+            const address = Object.keys(action.payload)[0];
+            const vaults = state.vaults[address];
+            const vaultIdToRemove = vaults.findIndex(vault => vault === action.payload[address]);
+            return {
+                ...state,
+                vaults: {
+                    ...state.vaults,
+                    [address]: [
+                        ...vaults.slice(0, vaultIdToRemove),
+                        ...vaults.slice(vaultIdToRemove + 1)
+                    ]
+                },
+                loadingVaults: false,
+                error: null,
+            }
+        }
         case "ERROR":
             return {
                 ...state,

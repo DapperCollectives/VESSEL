@@ -2,22 +2,32 @@ import { useState } from "react";
 import { COIN_TYPE_TO_META } from "constants/maps";
 import Dropdown from "components/Dropdown";
 import { Close } from "components/Svg";
+import { useVaults } from "hooks";
 
-const AddVault = ({ onCancel, onNext }) => {
+const AddVault = ({ address, onCancel, onNext }) => {
   const onNextClick = () => {
     onNext({
       coinType,
     });
   };
+  const vaultProps = useVaults(address);
 
-  const nextButtonClasses = ["button flex-1 p-4", "is-link"];
+  const [coinType, setCoinType] = useState("Select Token");
+  const vaultName = COIN_TYPE_TO_META[coinType]?.vaultName;
+
+  const isFormValid = vaultName && !vaultProps.vaults[address]?.find(
+    (id) => id.indexOf(vaultName) >= 0
+  );
+
+  const nextButtonClasses = [
+    "button flex-1 p-4",
+    isFormValid ? "is-link" : "is-light is-disabled",
+  ];
 
   const coinTypes = Object.entries(COIN_TYPE_TO_META).map((type) => ({
     itemValue: type[0],
     displayText: type[1].displayName,
   }));
-
-  const [coinType, setCoinType] = useState("Select Token");
 
   return (
     <>
@@ -36,6 +46,9 @@ const AddVault = ({ onCancel, onNext }) => {
             setValue={setCoinType}
             style={{ height: "45px" }}
           />
+          {vaultName && !isFormValid &&
+            <p className="has-text-red mt-2">This vault has already been added.</p>
+          }
         </div>
         <div className="is-flex is-align-items-center mt-6">
           <button className="button flex-1 p-4 mr-2" onClick={onCancel}>

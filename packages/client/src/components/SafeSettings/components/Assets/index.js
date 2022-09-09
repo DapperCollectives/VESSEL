@@ -75,7 +75,7 @@ const Assets = ({ treasury, addVault, addCollection, removeVault, removeCollecti
 
   const openAddVaultModal = () => {
     openModal(
-      <AddVault onCancel={() => closeModal()} onNext={onAddVaultSubmit} />
+      <AddVault address={address} onCancel={() => closeModal()} onNext={onAddVaultSubmit} />
     );
   };
 

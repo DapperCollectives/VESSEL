@@ -13,8 +13,7 @@ import { removeAddressPrefix } from "../utils";
 
 const storageKey = "vessel-vaults";
 
-const doAddVault = async (treasuryAddr, contractName) => {
-    const contractAddress = await config().get(`0x${contractName}`);
+const doAddVault = async (treasuryAddr, contractName, contractAddress) => {
 
     const intent = `A.${removeAddressPrefix(contractAddress)}.${contractName}.Vault`;
     const { message, keyIds, signatures, height } = await createSignature(intent);
@@ -80,13 +79,30 @@ export default function useVaults(treasuryAddr) {
 
     const addVault = async (coinType) => {
         const contractName = COIN_TYPE_TO_META[coinType].contractName;
-        const res = await doAddVault(treasuryAddr, contractName);
+        const contractAddress = await config().get(`0x${contractName}`);
+        const res = await doAddVault(treasuryAddr, contractName, contractAddress);
         await tx(res).onceSealed();
+        
+        const identifier = `A.${removeAddressPrefix(contractAddress)}.${contractName}.Vault`;
+
+        dispatch({
+            type: "ADD_VAULT",
+            payload: {
+                [treasuryAddr]: identifier
+            }
+        });
     };
 
     const removeVault = async (identifier) => {
         const res = await doRemoveVault(treasuryAddr, identifier);
         await tx(res).onceSealed();
+
+        dispatch({
+            type: "REMOVE_VAULT",
+            payload: {
+                [treasuryAddr]: identifier
+            }
+        });
     };
 
     return {
