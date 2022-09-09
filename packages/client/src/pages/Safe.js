@@ -15,6 +15,7 @@ import { ArrowDown, ArrowUp } from "../components/Svg";
 import { Web3Consumer, useModalContext } from "../contexts";
 import { useClipboard, useErrorMessage } from "../hooks";
 import { TransactionSuccessModal } from "modals";
+import { ACTION_TYPES } from "constants/enums";
 
 const ReceiveTokens = ({ name, address }) => {
   const modalContext = useModalContext();
@@ -78,18 +79,20 @@ function Safe({ web3 }) {
 
   const showTransactionSuccessModal = (action, safeName, safeAddress) => {
     const actionData = action.data.actionView;
-    openModal(
-      <TransactionSuccessModal
-        safeName={safeName}
-        safeAddress={safeAddress}
-        actionData={actionData}
-        txID={action.transactionId}
-        onClose={closeModal}
-      />,
-      {
-        headerTitle: "Success",
-      }
-    );
+    if (actionData.type === ACTION_TYPES.TRANSFER_NFT || actionData.type === ACTION_TYPES.TRANSFER_TOKEN) {
+      openModal(
+        <TransactionSuccessModal
+          safeName={safeName}
+          safeAddress={safeAddress}
+          actionData={actionData}
+          txID={action.transactionId}
+          onClose={closeModal}
+        />,
+        {
+          headerTitle: "Success",
+        }
+      );
+    }
   }
 
   const currentTab = tab ?? "home";
