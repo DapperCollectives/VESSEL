@@ -10,11 +10,11 @@ function Safes(props) {
 
   if (isEmpty(treasuries)) {
     return (
-      <div className="has-background-blue-light has-text-white p-4 rounded-sm is-size-6">
+      <div className="has-background-transparent-black p-4 is-size-6">
         <h3>
           <b>Setup tips</b>
         </h3>
-        <p className="mt-2 has-text-grey-light">
+        <p className="mt-2">
           Create or load your first safe to get started. We’ll pull in your
           information shortly after.
         </p>
@@ -29,7 +29,9 @@ function Safes(props) {
         return (
           <NavLink to={`/safe/${k}`} key={i}>
             <div
-              className={`is-flex ${isActive && "has-background-blue-light"}`}
+              className={`is-flex ${
+                isActive && "has-background-transparent-black"
+              }`}
               style={{ position: "relative" }}
             >
               {isActive && (

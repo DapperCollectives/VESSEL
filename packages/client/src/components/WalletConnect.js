@@ -1,6 +1,5 @@
 import React from "react";
 import { Web3Consumer } from "../contexts/Web3";
-import { shortenAddr } from "../utils";
 import { useHistory } from "react-router-dom";
 
 const SignInOutButton = ({ user, injectedProvider }) => {
@@ -30,7 +29,8 @@ const SignInOutButton = ({ user, injectedProvider }) => {
 const CurrentUser = ({ web3 }) => {
   const { user, injectedProvider } = web3;
   return (
-    <div className="has-background-blue-dark has-text-white rounded-sm">
+    <div>
+      <p className="pl-4 has-text-grey">Connected Wallet</p>
       <SignInOutButton user={user} injectedProvider={injectedProvider} />
     </div>
   );

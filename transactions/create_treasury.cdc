@@ -1,4 +1,4 @@
-import DAOTreasuryV3 from "../contracts/DAOTreasury.cdc"
+import DAOTreasuryV4 from "../contracts/DAOTreasury.cdc"
 import FlowToken from "../contracts/core/FlowToken.cdc"
 import FiatToken from "../contracts/core/FiatToken.cdc"
 import FUSD from "../contracts/core/FUSD.cdc"
@@ -6,7 +6,7 @@ import FUSD from "../contracts/core/FUSD.cdc"
 transaction(initialSigners: [Address], initialThreshold: UInt) {
   
   prepare(signer: AuthAccount) {
-    let treasury <- DAOTreasuryV3.createTreasury(initialSigners: initialSigners, initialThreshold: initialThreshold)
+    let treasury <- DAOTreasuryV4.createTreasury(initialSigners: initialSigners, initialThreshold: initialThreshold)
 
     // Seed Treasury with commonly used vaults
     let flowVault <- FlowToken.createEmptyVault()
@@ -18,7 +18,7 @@ transaction(initialSigners: [Address], initialThreshold: UInt) {
     treasury.depositVault(vault: <- fusdVault)
 
     // Save Treasury to the account
-    signer.save(<- treasury, to: DAOTreasuryV3.TreasuryStoragePath)
-    signer.link<&DAOTreasuryV3.Treasury{DAOTreasuryV3.TreasuryPublic}>(DAOTreasuryV3.TreasuryPublicPath, target: DAOTreasuryV3.TreasuryStoragePath)
+    signer.save(<- treasury, to: DAOTreasuryV4.TreasuryStoragePath)
+    signer.link<&DAOTreasuryV4.Treasury{DAOTreasuryV4.TreasuryPublic}>(DAOTreasuryV4.TreasuryPublicPath, target: DAOTreasuryV4.TreasuryStoragePath)
   }
 }

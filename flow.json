@@ -38,25 +38,25 @@
         "testnet": "0x631e88ae7f1d7c20"
       }
     },
-    "ExampleNFT": {
-      "source": "./contracts/core/ExampleNFT.cdc",
+    "ZeedzINO": {
+      "source": "./contracts/core/ZeedzINO.cdc",
       "aliases": {
-        "testnet": "0x48bc5b54d3728e9e"
+        "testnet": "0x7dc7430a06f38af3"
       }
     },
-    "MyMultiSigV3": {
+    "MyMultiSigV4": {
       "source": "./contracts/MyMultiSig.cdc",
       "aliases": {
         "testnet": "0x68a4fe55ec686656"
       }
     },
-    "DAOTreasuryV3": {
+    "DAOTreasuryV4": {
       "source": "./contracts/DAOTreasury.cdc",
       "aliases": {
         "testnet": "0x68a4fe55ec686656"
       }
     },
-    "TreasuryActionsV3": {
+    "TreasuryActionsV4": {
       "source": "./contracts/TreasuryActions.cdc",
       "aliases": {
         "testnet": "0x68a4fe55ec686656"
@@ -216,10 +216,10 @@
         "BloctoToken",
         "NonFungibleToken",
         "MetadataViews",
-        "ExampleNFT",
-        "MyMultiSigV3",
-        "DAOTreasuryV3",
-        "TreasuryActionsV3",
+        "ZeedzINO",
+        "MyMultiSigV4",
+        "DAOTreasuryV4",
+        "TreasuryActionsV4",
         "OnChainMultiSig",
         "FCLCrypto"
       ],
@@ -247,7 +247,7 @@
       "emulator-treasuryOwner": []
     },
     "testnet": {
-      "testnet-account": ["MyMultiSigV3", "DAOTreasuryV3", "TreasuryActionsV3"]
+      "testnet-account": ["MyMultiSigV4", "DAOTreasuryV4", "TreasuryActionsV4"]
     }
   }
 }

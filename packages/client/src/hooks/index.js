@@ -7,3 +7,4 @@ export { default as useNFTs } from "./useNFTs";
 export { default as useFlowFees } from "./useFlowFees";
 export { default as useErrorMessage } from "./useErrorMessage";
 export { default as useAccount } from "./useAccount";
+export { default as useContacts } from "./useContacts";
