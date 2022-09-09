@@ -4,11 +4,7 @@ import { useModalContext } from "../contexts";
 import { ASSET_TYPES } from "constants/enums";
 import SendTokens from "./SendTokens";
 
-function SafeAssets({
-  web3,
-  name,
-  address,
-}) {
+function SafeAssets({ web3, name, address }) {
   const assetComponents = [];
   const { getTreasuryCollections, getTreasuryVaults } = web3;
   const userAddr = web3?.user?.addr;

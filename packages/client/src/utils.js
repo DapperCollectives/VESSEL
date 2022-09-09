@@ -72,8 +72,9 @@ export const getProgressPercentageForSignersAmount = (signersAmount) => {
 };
 
 export const getFlowscanUrlForTransaction = (hash) => {
-  return `https://${process.env.REACT_APP_FLOW_ENV === "mainnet" ? "" : "testnet."
-    }flowscan.org/transaction/${hash}`;
+  return `https://${
+    process.env.REACT_APP_FLOW_ENV === "mainnet" ? "" : "testnet."
+  }flowscan.org/transaction/${hash}`;
 };
 
 export const getFlowscanUrlForContract = (address, name) => {
@@ -115,12 +116,13 @@ export const getTokenMeta = (vaultId) => {
       tokenAddress
     };
   }
-}
+};
 
 export const getNFTMeta = (collectionId) => {
   const NFTName = collectionId?.split(".")[2];
   const NFTAddress = collectionId?.split(".")[1];
   return {
-    NFTName, NFTAddress
+    NFTName,
+    NFTAddress,
   };
-}
+};

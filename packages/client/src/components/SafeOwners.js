@@ -22,9 +22,7 @@ function SafeOwners({
   let safeOwnerCpts = [
     <div className="column is-flex is-full" key={address}>
       <div className="flex-1 is-flex is-flex-direction-column pr-5">
-        <label className="has-text-grey mb-2">
-          Owner Name
-        </label>
+        <label className="has-text-grey mb-2">Owner Name</label>
         <input
           className="p-4 rounded-sm border-light"
           type="text"
@@ -57,9 +55,7 @@ function SafeOwners({
       safeOwnerCpts.push(
         <div className="column is-flex is-full" key={`extra-owner-${idx}`}>
           <div className="flex-1 is-flex is-flex-direction-column pr-5">
-            <label className="has-text-grey mb-2">
-              Owner Name
-            </label>
+            <label className="has-text-grey mb-2">Owner Name</label>
             <input
               className="p-4 rounded-sm border-light"
               type="text"
