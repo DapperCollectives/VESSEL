@@ -12,27 +12,25 @@ const Sidebar = ({ children }) => (
     {children}
   </div>
 );
-const Body = () => {
-  return (
-    <div className="body has-background-white-rounded">
-      <Transactions />
-      <Switch>
-        <Route exact path="/">
-          <Home />
-        </Route>
-        <Route exact path="/load-safe">
-          <LoadSafe />
-        </Route>
-        <Route exact path="/create-safe">
-          <CreateSafe />
-        </Route>
-        <Route path={["/safe/:address/:tab", "/safe/:address"]}>
-          <Safe />
-        </Route>
-      </Switch>
-    </div>
-  );
-};
+const Body = () => (
+  <div className="body has-background-white-rounded">
+    <Transactions />
+    <Switch>
+      <Route exact path="/">
+        <Home />
+      </Route>
+      <Route exact path="/load-safe">
+        <LoadSafe />
+      </Route>
+      <Route exact path="/create-safe">
+        <CreateSafe />
+      </Route>
+      <Route path={["/safe/:address/:tab", "/safe/:address"]}>
+        <Safe />
+      </Route>
+    </Switch>
+  </div>
+);
 
 function App() {
   return (
