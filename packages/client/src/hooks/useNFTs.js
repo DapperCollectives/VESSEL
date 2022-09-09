@@ -178,11 +178,27 @@ export default function useNFTs(treasuryAddr) {
   const addCollection = async (contractName, contractAddress) => {
     const res = await doAddCollection(treasuryAddr, contractName, contractAddress);
     await tx(res).onceSealed();
+
+    const identifier = `A.${removeAddressPrefix(contractAddress)}.${contractName}.Collection`;
+
+    dispatch({
+      type: "ADD_COLLECTION",
+      payload: {
+        [treasuryAddr]: { [identifier]: [] }
+      }
+    });
   };
 
   const removeCollection = async (identifier) => {
     const res = await doRemoveCollection(treasuryAddr, identifier);
     await tx(res).onceSealed();
+
+    dispatch({
+      type: "REMOVE_COLLECTION",
+      payload: {
+        [treasuryAddr]: identifier
+      }
+    });
   };
 
   return {

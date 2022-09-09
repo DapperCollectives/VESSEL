@@ -10,12 +10,43 @@ const reducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         NFTs: {
-          ...state.NFTs,
           [address]: action.payload[address],
         },
         loadingNFTs: false,
         error: null,
       };
+    }
+    case "ADD_COLLECTION": {
+      const address = Object.keys(action.payload)[0];
+
+      return {
+        ...state,
+        NFTs: {
+          ...state.NFTs,
+          [address]: {
+            ...state.NFTs[address],
+            ...action.payload[address]
+          }
+        },
+        loadingNFTs: false,
+        error: null,
+      }
+    }
+    case "REMOVE_COLLECTION": {
+      const address = Object.keys(action.payload)[0];
+      const key = action.payload[address];
+      const originalState = state.NFTs[address];
+
+      const { [key]: value, ...collections } = originalState;
+      return {
+        ...state,
+        NFTs: {
+          ...state.NFTs,
+          [address]: collections
+        },
+        loadingNFTs: false,
+        error: null,
+      }
     }
     case "ERROR":
       return {

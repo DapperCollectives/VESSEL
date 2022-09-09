@@ -1,20 +1,16 @@
-import { useState, useContext } from "react";
-import { Web3Context } from "contexts/Web3";
-import { useAddressValidation } from "hooks";
-import { isAddr } from "utils";
-import { Check, Close } from "components/Svg";
+import { useState } from "react";
+import { Close } from "components/Svg";
+import InputAddress from "../../../InputAddress";
 
 const AddCollection = ({ onCancel, onNext }) => {
-  const web3 = useContext(Web3Context);
-  const { isAddressValid } = useAddressValidation(web3.injectedProvider);
   const [contractName, setContractName] = useState("");
   const [address, setAddress] = useState("");
   const [addressValid, setAddressValid] = useState(false);
   const isFormValid = contractName?.trim().length > 0 && addressValid;
 
-  const onAddressChange = async (newAddress) => {
-    setAddress(newAddress);
-    setAddressValid(isAddr(newAddress) && (await isAddressValid(newAddress)));
+  const onAddressChange = ({ value, isValid }) => {
+    setAddress(value);
+    setAddressValid(isValid);
   };
 
   const onNextClick = () => {
@@ -40,19 +36,10 @@ const AddCollection = ({ onCancel, onNext }) => {
       <div className="border-light-top p-5 has-text-grey">
         <div className="flex-1 is-flex is-flex-direction-column">
           <label className="has-text-grey mb-2">NFT Contract Address</label>
-          <div style={{ position: "relative" }}>
-            <input
-              className="p-4 rounded-sm column is-full border-light"
-              type="text"
-              value={address}
-              onChange={(e) => onAddressChange(e.target.value)}
-            />
-            {addressValid && (
-              <div style={{ position: "absolute", right: 17, top: 14 }}>
-                <Check />
-              </div>
-            )}
-          </div>
+          <InputAddress
+            value={address}
+            isValid={addressValid}
+            onChange={onAddressChange} />
           <div className="flex-1 is-flex is-flex-direction-column mt-4">
             <label className="has-text-grey mb-2">NFT Collection Name</label>
             <input
