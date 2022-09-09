@@ -336,6 +336,8 @@ h2
 .button.is-transparent
   background-color: transparent
   color: $purple-primary
+  padding-top: 0
+  padding-bottom: 0
 .button.is-transparent:hover, .button.is-transparent:focus
   color: $purple-dark
   box-shadow:none
@@ -355,7 +357,7 @@ h2
   color: $grey-dark
   font-weight: 500
   padding: 1rem
-.button.is-nav:hover:not(:focus)
+.button.is-nav:hover:not(.is-focused)
   animation-duration: 300ms
   animation-name: nav-button-animation
   background-color: $black-6

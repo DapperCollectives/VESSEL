@@ -183,7 +183,7 @@ function SafeContacts({ address }) {
         <h4 className="is-size-5">Saved Addresses</h4>
         {!isEmpty(contacts) && (
           <button
-            className="button is-primary with-icon"
+            className="button is-secondary is-small with-icon"
             onClick={openAddModal}
           >
             Add Contact <Plus />
@@ -222,13 +222,13 @@ function SafeContacts({ address }) {
               <div className="flex-1">{contact?.name}</div>
               <div className="is-flex flex-1">
                 <button
-                  className="button is-transparent pl-0 pr-3 py-0"
+                  className="button is-transparent pl-0 pr-3"
                   onClick={() => openEditModal(index, contact)}
                 >
                   Edit
                 </button>
                 <button
-                  className="button is-transparent ml-5 px-5 py-0"
+                  className="button is-transparent ml-5 px-5"
                   onClick={() => openRemoveModal(index, contact)}
                 >
                   Remove

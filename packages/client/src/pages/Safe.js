@@ -40,7 +40,7 @@ const ReceiveTokens = ({ name, address }) => {
           />
         </div>
         <button
-          className="button is-transparent py-0 mt-5"
+          className="button is-transparent mt-5"
           onClick={() => clipboard.copy(address)}
         >
           {clipboard.textJustCopied === address

@@ -26,7 +26,7 @@ const SignatureThreshold = ({ treasury }) => {
         </div>
         <div>
           <button
-            className="button is-transparent py-0"
+            className="button is-transparent"
             onClick={() => openEditSignatureThresholdModal()}
           >
             Edit

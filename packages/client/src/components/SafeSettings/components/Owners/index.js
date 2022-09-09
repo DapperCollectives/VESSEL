@@ -72,7 +72,7 @@ const Owners = ({ treasury, proposeRemoveSigner }) => {
               <div className="flex-1">{so.address}</div>
               <div>
                 <button
-                  className="button is-transparent py-0"
+                  className="button is-transparent"
                   onClick={() => ownersAddressClipboard.copy(so.address)}
                 >
                   {ownersAddressClipboard.textJustCopied === so.address
@@ -80,7 +80,7 @@ const Owners = ({ treasury, proposeRemoveSigner }) => {
                     : "Copy Address"}
                 </button>
                 <span
-                  className="button is-transparent py-0"
+                  className="button is-transparent"
                   onClick={() => openRemoveOwnerModal(so)}
                 >
                   Remove

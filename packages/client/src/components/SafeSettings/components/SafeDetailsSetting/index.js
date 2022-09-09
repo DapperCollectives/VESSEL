@@ -30,7 +30,7 @@ const SafeDetailsSetting = ({ treasury, setTreasury }) => {
           <div className="mt-1 is-flex is-justify-content-space-between">
             <div>{name}</div>
             <button
-              className="button is-transparent py-0"
+              className="button is-transparent"
               onClick={openEditNameModal}
             >
               Edit
@@ -42,7 +42,7 @@ const SafeDetailsSetting = ({ treasury, setTreasury }) => {
           <div className="mt-1 is-flex is-justify-content-space-between">
             <div>{address}</div>
             <button
-              className="button is-transparent py-0"
+              className="button is-transparent"
               onClick={() => safeAddressClipboard.copy(address)}
             >
               {safeAddressClipboard.textJustCopied === address
@@ -55,7 +55,7 @@ const SafeDetailsSetting = ({ treasury, setTreasury }) => {
           <div className="has-text-grey">Contract Version</div>
           <div className="mt-1 is-flex is-justify-content-space-between">
             <div>Flow 1.2</div>
-            <button className="button is-transparent py-0">Details</button>
+            <button className="button is-transparent">Details</button>
           </div>
         </div>
       </div>
