@@ -14,6 +14,8 @@ import {
 import { ArrowDown, ArrowUp } from "../components/Svg";
 import { Web3Consumer, useModalContext } from "../contexts";
 import { useClipboard, useErrorMessage } from "../hooks";
+import { TransactionSuccessModal } from "modals";
+import { ACTION_TYPES } from "constants/enums";
 
 const ReceiveTokens = ({ name, address }) => {
   const modalContext = useModalContext();
@@ -61,7 +63,7 @@ const ReceiveTokens = ({ name, address }) => {
 function Safe({ web3 }) {
   const params = useParams();
   const { address, tab } = params;
-  const modalContext = useModalContext();
+  const { openModal, closeModal } = useModalContext();
   const clipboard = useClipboard();
 
   const { showErrorModal } = useErrorMessage();
@@ -79,6 +81,27 @@ function Safe({ web3 }) {
       </section>
     );
   }
+
+  const showTransactionSuccessModal = (action, safeName, safeAddress) => {
+    const actionData = action.data.actionView;
+    if (
+      actionData.type === ACTION_TYPES.TRANSFER_NFT ||
+      actionData.type === ACTION_TYPES.TRANSFER_TOKEN
+    ) {
+      openModal(
+        <TransactionSuccessModal
+          safeName={safeName}
+          safeAddress={safeAddress}
+          actionData={actionData}
+          txID={action.transactionId}
+          onClose={closeModal}
+        />,
+        {
+          headerTitle: "Success",
+        }
+      );
+    }
+  };
 
   const currentTab = tab ?? "home";
   const buttons = ["home", "transactions", "assets", "contacts", "settings"];
@@ -130,7 +153,13 @@ function Safe({ web3 }) {
   };
 
   const onConfirmAction = async ({ uuid }) => {
-    await executeAction(uuid).catch((error) => showErrorModal(error));
+    const events = await executeAction(uuid).catch((error) =>
+      showErrorModal(error)
+    );
+    if (events) {
+      const action = events.find((e) => e.type.endsWith("ActionExecuted"));
+      showTransactionSuccessModal(action, safeData.name, safeData.address);
+    }
   };
 
   const tabMap = {
@@ -167,15 +196,11 @@ function Safe({ web3 }) {
   const BodyComponent = tabMap[currentTab];
 
   const onSend = () => {
-    modalContext.openModal(
-      <SendTokens name={safeData.name} address={address} />
-    );
+    openModal(<SendTokens name={safeData.name} address={address} />);
   };
 
   const onReceive = () => {
-    modalContext.openModal(
-      <ReceiveTokens name={safeData.name} address={address} />
-    );
+    openModal(<ReceiveTokens name={safeData.name} address={address} />);
   };
 
   return (

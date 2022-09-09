@@ -26,3 +26,8 @@ export const SIGNER_RESPONSES = {
   REJECTED: "rejected",
   PENDING: "pending",
 }
+
+export const ACTION_TYPES = {
+  TRANSFER_TOKEN: "TransferToken",
+  TRANSFER_NFT: "TransferNFT"
+}

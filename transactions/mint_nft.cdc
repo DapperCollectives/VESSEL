@@ -1,9 +1,6 @@
 import NonFungibleToken from "../contracts/core/NonFungibleToken.cdc"
-import ExampleNFT from "../contracts/core/ExampleNFT.cdc"
+import ZeedzINO from "../contracts/core/ZeedzINO.cdc"
 
-// This script uses the NFTMinter resource to mint a new NFT
-// It must be run with the account that has the minter resource
-// stored in /storage/NFTMinter
 transaction(
     recipient: Address,
     name: String,
@@ -12,27 +9,33 @@ transaction(
 ) {
 
     // local variable for storing the minter reference
-    let minter: &ExampleNFT.NFTMinter
+    let minter: &ZeedzINO.Administrator
 
     prepare(signer: AuthAccount) {
         // borrow a reference to the NFTMinter resource in storage
-        self.minter = signer.borrow<&ExampleNFT.NFTMinter>(from: ExampleNFT.MinterStoragePath)
+        self.minter = signer.borrow<&ZeedzINO.Administrator>(from: ZeedzINO.AdminStoragePath)
             ?? panic("Could not borrow a reference to the NFT minter")
     }
 
     execute {
         // Borrow the recipient's public NFT collection reference
         let receiver = getAccount(recipient)
-            .getCapability(ExampleNFT.CollectionPublicPath)
+            .getCapability(ZeedzINO.CollectionPublicPath)
             .borrow<&{NonFungibleToken.CollectionPublic}>()
             ?? panic("Could not get receiver reference to the NFT Collection")
 
         // Mint the NFT and deposit it to the recipient's collection
         self.minter.mintNFT(
-            recipient: receiver,
-            name: name,
-            description: description,
-            thumbnail: thumbnail,
+            recipient: receiver, 
+            name: name, 
+            description: description, 
+            typeID: 0, 
+            serialNumber: "123", 
+            edition: 0, 
+            editionCap: 0, 
+            evolutionStage: 0, 
+            rarity: "rare", 
+            imageURI: thumbnail
         )
     }
 }
