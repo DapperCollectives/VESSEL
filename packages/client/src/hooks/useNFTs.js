@@ -51,9 +51,10 @@ const doProposeNFTTransfer = async (treasuryAddr, recipient, nft) => {
   });
 };
 
-
 const doAddCollection = async (treasuryAddr, contractName, contractAddress) => {
-  const intent = `A.${removeAddressPrefix(contractAddress)}.${contractName}.Collection`;
+  const intent = `A.${removeAddressPrefix(
+    contractAddress
+  )}.${contractName}.Collection`;
   const { message, keyIds, signatures, height } = await createSignature(intent);
 
   return await mutate({
@@ -70,7 +71,9 @@ const doAddCollection = async (treasuryAddr, contractName, contractAddress) => {
 };
 
 const doRemoveCollection = async (treasuryAddr, identifier) => {
-  const { message, keyIds, signatures, height } = await createSignature(identifier);
+  const { message, keyIds, signatures, height } = await createSignature(
+    identifier
+  );
 
   return await mutate({
     cadence: REMOVE_COLLECTION,
@@ -86,9 +89,7 @@ const doRemoveCollection = async (treasuryAddr, identifier) => {
   });
 };
 
-
 export default function useNFTs(treasuryAddr) {
-
   const [state, dispatch] = useReducer(reducer, [], (initial) => ({
     ...initial,
     ...INITIAL_STATE,
@@ -178,16 +179,22 @@ export default function useNFTs(treasuryAddr) {
   };
 
   const addCollection = async (contractName, contractAddress) => {
-    const res = await doAddCollection(treasuryAddr, contractName, contractAddress);
+    const res = await doAddCollection(
+      treasuryAddr,
+      contractName,
+      contractAddress
+    );
     await tx(res).onceSealed();
 
-    const identifier = `A.${removeAddressPrefix(contractAddress)}.${contractName}.Collection`;
+    const identifier = `A.${removeAddressPrefix(
+      contractAddress
+    )}.${contractName}.Collection`;
 
     dispatch({
       type: "ADD_COLLECTION",
       payload: {
-        [treasuryAddr]: { [identifier]: [] }
-      }
+        [treasuryAddr]: { [identifier]: [] },
+      },
     });
   };
 
@@ -198,8 +205,8 @@ export default function useNFTs(treasuryAddr) {
     dispatch({
       type: "REMOVE_COLLECTION",
       payload: {
-        [treasuryAddr]: identifier
-      }
+        [treasuryAddr]: identifier,
+      },
     });
   };
 
