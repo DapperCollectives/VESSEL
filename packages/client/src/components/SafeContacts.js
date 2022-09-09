@@ -117,8 +117,11 @@ function EmptyContacts({ openAddModal }) {
         <h2 className="is-size-5">
           This safe doesn't have any saved addresses.
         </h2>
-        <button className="button is-primary mt-4" onClick={openAddModal}>
-          Add Contact <Plus className="ml-2" />
+        <button
+          className="button is-primary mt-4 with-icon"
+          onClick={openAddModal}
+        >
+          Add Contact <Plus />
         </button>
       </div>
     </section>
@@ -179,8 +182,11 @@ function SafeContacts({ address }) {
       <div className="column p-0 mt-5 is-flex is-align-items-center is-justify-content-space-between is-full">
         <h4 className="is-size-5">Saved Addresses</h4>
         {!isEmpty(contacts) && (
-          <button className="button is-primary" onClick={openAddModal}>
-            Add Contact <Plus className="ml-2" />
+          <button
+            className="button is-primary with-icon"
+            onClick={openAddModal}
+          >
+            Add Contact <Plus />
           </button>
         )}
       </div>

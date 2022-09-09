@@ -231,11 +231,14 @@ function Safe({ web3 }) {
         <div className="is-flex">{ButtonCpts}</div>
         <div className="is-flex flex-1 is-justify-content-end">
           <div className="w-auto">
-            <button className="button is-border mr-2" onClick={onReceive}>
-              Receive <ArrowDown className="ml-2" />
+            <button
+              className="button is-border mr-2 with-icon"
+              onClick={onReceive}
+            >
+              Receive <ArrowDown />
             </button>
-            <button className="is-primary button" onClick={onSend}>
-              Send <ArrowUp className="ml-2 has-text-white" />
+            <button className="is-primary button with-icon" onClick={onSend}>
+              Send <ArrowUp />
             </button>
           </div>
         </div>

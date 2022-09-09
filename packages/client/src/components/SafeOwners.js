@@ -108,7 +108,7 @@ function SafeOwners({
       <div className="column mt-5 is-flex is-full is-justify-content-space-between">
         <h4 className="is-size-5">Safe Owners</h4>
         <button
-          className="button is-secondary"
+          className="button is-secondary is-small"
           onClick={() => {
             setSafeOwners(safeOwners.concat({ name: "", address: "" }));
           }}

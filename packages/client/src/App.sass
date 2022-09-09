@@ -234,8 +234,17 @@ h2
   font-size:0.875rem
   border: none
   box-shadow:none
+  border-radius: 8px !important
 .button.disabled
   animation: none !important
+.button.is-small
+  padding: 8px 12px
+  font-size: 0.875rem
+  border-radius: 8px !important
+.button.with-icon>svg
+  margin-left:12px
+.button.is-small.with-icon>svg
+  transform: scale(0.7)
 
 //primary button
 @keyframes primary-button-animation 
@@ -341,7 +350,7 @@ h2
   0% 
     background-color: transparent
   100%
-    background-color: $transparent-black
+    background-color: $black-6
 .button.is-nav
   color: $grey-dark
   font-weight: 500
@@ -349,7 +358,7 @@ h2
 .button.is-nav:hover:not(:focus)
   animation-duration: 300ms
   animation-name: nav-button-animation
-  background-color: $transparent-black
+  background-color: $black-6
 .button.is-nav.is-focused
   background-color: $purple-background
   color: $purple-primary

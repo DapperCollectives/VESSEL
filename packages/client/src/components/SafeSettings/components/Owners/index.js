@@ -51,7 +51,10 @@ const Owners = ({ treasury, proposeRemoveSigner }) => {
     <div>
       <div className="column p-0 mt-5 is-flex is-full is-justify-content-space-between">
         <h4 className="is-size-5">Owners</h4>
-        <button className="button is-secondary" onClick={openAddOwnerModal}>
+        <button
+          className="button is-secondary is-small with-icon"
+          onClick={openAddOwnerModal}
+        >
           Add new owner
           <Plus style={{ position: "relative", left: 5 }} />
         </button>
