@@ -29,8 +29,13 @@ function EditContactModal({
   const updateBtnClasses = [
     "button",
     "flex-1",
+<<<<<<< HEAD
     "is-primary",
     canConfirm ? "" : "disabled",
+=======
+    "p-4",
+    canConfirm ? "is-link" : "",
+>>>>>>> 04511fdd6c45cd122829f5b88bbc2c54fd31b6c9
   ];
 
   return (
@@ -94,7 +99,11 @@ function RemoveContactModal({ contact, onConfirm, confirmText, closeModal }) {
           Cancel
         </button>
         <button
+<<<<<<< HEAD
           className="button is-primary flex-1"
+=======
+          className="button is-link flex-1 p-4"
+>>>>>>> 04511fdd6c45cd122829f5b88bbc2c54fd31b6c9
           onClick={() => {
             closeModal();
             onConfirm();
@@ -117,11 +126,16 @@ function EmptyContacts({ openAddModal }) {
         <h2 className="is-size-5">
           This safe doesn't have any saved addresses.
         </h2>
+<<<<<<< HEAD
         <button
           className="button is-primary mt-4 with-icon"
           onClick={openAddModal}
         >
           Add Contact <Plus />
+=======
+        <button className="button is-link mt-4" onClick={openAddModal}>
+          Add Contact <Plus className="ml-2" />
+>>>>>>> 04511fdd6c45cd122829f5b88bbc2c54fd31b6c9
         </button>
       </div>
     </section>

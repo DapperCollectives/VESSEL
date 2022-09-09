@@ -18,7 +18,7 @@ export default function useContacts(address) {
 
   const setContact = (index, newContact) => {
     dispatch({
-      type: 'SET_CONTACT',
+      type: "SET_CONTACT",
       payload: {
         [address]: { index, newContact },
       },
@@ -27,13 +27,12 @@ export default function useContacts(address) {
 
   const removeContact = (index) => {
     dispatch({
-      type: 'REMOVE_CONTACT',
+      type: "REMOVE_CONTACT",
       payload: {
         [address]: { index },
       },
     });
   };
-
 
   return {
     contacts: state.contacts?.[address] ?? [],

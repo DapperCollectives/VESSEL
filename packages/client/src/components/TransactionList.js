@@ -91,7 +91,7 @@ function TransactionDetails({ safeOwners, transaction, onClose }) {
               href={getFlowscanUrlForTransaction(transaction.flowTransactionId)}
               target="_blank"
               rel="noopen noreferrer"
-              className="is-link"
+              className="is-underlined has-text-black"
             >
               {shortenAddr(transaction.flowTransactionId)}
             </a>
@@ -124,7 +124,7 @@ function TransactionDetails({ safeOwners, transaction, onClose }) {
             })}, ${date.toLocaleTimeString("en-us")}`
           )}
           <div className="is-flex is-align-items-center mt-4">
-            <button className="button flex-1 is-border" onClick={onClose}>
+            <button className="button flex-1 p-4" onClick={onClose}>
               Close
             </button>
           </div>
@@ -166,12 +166,12 @@ function TransactionListItem({
         {date.toLocaleTimeString("en-us")}
       </div>
       <div className="column has-text-right">
-        <button
-          className="button is-transparent"
+        <span
+          className="is-underlined pointer"
           onClick={() => onView(transaction)}
         >
           View
-        </button>
+        </span>
       </div>
     </div>
   );

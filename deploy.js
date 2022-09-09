@@ -1,6 +1,6 @@
 const fs = require("fs");
 const path = require("path");
-const { exec } = require('child_process');
+const { exec } = require("child_process");
 const { updateContractAddresses } = require("./updateContractAddresses");
 
 // emulator, testnet, mainnet
@@ -8,16 +8,17 @@ const NETWORK = process.env.NETWORK ?? "emulator";
 const FLOW_JSON = path.resolve(__dirname, "flow.json");
 const FIAT_TX = "transactions/deploy_contract_with_auth.cdc";
 
-const execPromise = (command) => new Promise((resolve, reject) => {
-  exec(command, (error, stdout) => {
-    if (error) {
-      reject(error);
-      return;
-    }
+const execPromise = (command) =>
+  new Promise((resolve, reject) => {
+    exec(command, (error, stdout) => {
+      if (error) {
+        reject(error);
+        return;
+      }
 
-    resolve(stdout.trim());
+      resolve(stdout.trim());
+    });
   });
-});
 
 const addAccounts = async () => {
   await execPromise(`flow accounts create -f ${FLOW_JSON}`);
@@ -32,28 +33,31 @@ const deployFiatToken = async () => {
     { type: "Bool", value: false }, // initPaused,
   ];
 
-  const txArgs = transactionArgs.map(ta => ta.value).join(" ");
+  const txArgs = transactionArgs.map((ta) => ta.value).join(" ");
   const execStr = `flow transactions send ${FIAT_TX} ${txArgs}`;
 
   await execPromise(execStr);
 };
 
 const deployContracts = () => {
-  exec(`flow project deploy --network=${NETWORK}`, async (error, stdout, stderr) => {
-    if (error?.message || stderr) {
-      console.log(`error: ${error.message}`);
-      return;
-    }
+  exec(
+    `flow project deploy --network=${NETWORK}`,
+    async (error, stdout, stderr) => {
+      if (error?.message || stderr) {
+        console.log(`error: ${error.message}`);
+        return;
+      }
 
-    updateContractAddresses(NETWORK);
+      updateContractAddresses(NETWORK);
 
-    console.log(stdout);
-    // create accounts / deploy fiat if using emulator
-    if (NETWORK === "emulator") {
-      await addAccounts();
-      await deployFiatToken();
+      console.log(stdout);
+      // create accounts / deploy fiat if using emulator
+      if (NETWORK === "emulator") {
+        await addAccounts();
+        await deployFiatToken();
+      }
     }
-  });
+  );
 };
 
 const deploy = () => {

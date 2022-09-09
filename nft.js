@@ -11,13 +11,14 @@ const deployNFTCollection = () => {
   const mintNFT = `${basePath}/mint_nft.cdc`;
   const sendNFT = `${basePath}/send_nft_to_treasury.cdc`;
 
-  exec(`flow transactions send ${createCollection}`,
+  exec(
+    `flow transactions send ${createCollection}`,
     (error, stdout, stderr) => {
       if (error?.message || stderr) {
         console.log(`error creating collection: ${error.message}`);
         return;
       }
-      
+
       console.log(stdout);
 
       exec(
@@ -43,7 +44,8 @@ const deployNFTCollection = () => {
           );
         }
       );
-    });
+    }
+  );
 };
 
 deployNFTCollection();
