@@ -18,7 +18,7 @@ export const COIN_TYPE_TO_META = {
     publicReceiverPath: { domain: "public", identifier: "flowTokenReceiver" },
     publicBalancePath: { domain: "public", identifier: "flowTokenBalance" },
     storageVaultPath: { domain: "storage", identifier: "flowTokenVault" },
-    icon: <FlowCoin />
+    icon: <FlowCoin />,
   },
   [COIN_TYPES.FUSD]: {
     contractName: "FUSD",
