@@ -2,7 +2,7 @@ import { useState, useContext } from "react";
 import { Web3Context } from "contexts/Web3";
 import { useAddressValidation } from "hooks";
 import { isAddr } from "utils";
-import { Check } from "components/Svg";
+import Svg from "library/Svg";
 const AddCollection = ({ onCancel, onNext }) => {
   const web3 = useContext(Web3Context);
   const { isAddressValid } = useAddressValidation(web3.injectedProvider);
@@ -53,7 +53,7 @@ const AddCollection = ({ onCancel, onNext }) => {
               />
               {addressValid && (
                 <div style={{ position: "absolute", right: 17, top: 14 }}>
-                  <Check />
+                  <Svg nam="Check" />
                 </div>
               )}
             </div>

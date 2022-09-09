@@ -11,7 +11,7 @@ import {
   SendTokens,
   TestToolBox,
 } from "../components";
-import { ArrowDown, ArrowUp } from "../components/Svg";
+import Svg from "library/Svg";
 import { Web3Consumer, useModalContext } from "../contexts";
 import { useClipboard, useErrorMessage } from "../hooks";
 import { TransactionSuccessModal } from "modals";
@@ -79,7 +79,10 @@ function Safe({ web3 }) {
 
   const showTransactionSuccessModal = (action, safeName, safeAddress) => {
     const actionData = action.data.actionView;
-    if (actionData.type === ACTION_TYPES.TRANSFER_NFT || actionData.type === ACTION_TYPES.TRANSFER_TOKEN) {
+    if (
+      actionData.type === ACTION_TYPES.TRANSFER_NFT ||
+      actionData.type === ACTION_TYPES.TRANSFER_TOKEN
+    ) {
       openModal(
         <TransactionSuccessModal
           safeName={safeName}
@@ -93,7 +96,7 @@ function Safe({ web3 }) {
         }
       );
     }
-  }
+  };
 
   const currentTab = tab ?? "home";
   const buttons = ["home", "transactions", "assets", "contacts", "settings"];
@@ -154,9 +157,11 @@ function Safe({ web3 }) {
   };
 
   const onConfirmAction = async ({ uuid }) => {
-    const events = await executeAction(uuid).catch((error) => showErrorModal(error));
+    const events = await executeAction(uuid).catch((error) =>
+      showErrorModal(error)
+    );
     if (events) {
-      const action = events.find(e => e.type.endsWith("ActionExecuted"));
+      const action = events.find((e) => e.type.endsWith("ActionExecuted"));
       showTransactionSuccessModal(action, safeData.name, safeData.address);
     }
   };
@@ -188,27 +193,18 @@ function Safe({ web3 }) {
         key="safe-assets"
       />
     ),
-    contacts: (
-      <SafeContacts
-        key="safe-contacts"
-        address={address}
-      />
-    ),
+    contacts: <SafeContacts key="safe-contacts" address={address} />,
     settings: <SafeSettings key="safe-settings" />,
   };
 
   const BodyComponent = tabMap[currentTab];
 
   const onSend = () => {
-    openModal(
-      <SendTokens name={safeData.name} address={address} />
-    );
+    openModal(<SendTokens name={safeData.name} address={address} />);
   };
 
   const onReceive = () => {
-    openModal(
-      <ReceiveTokens name={safeData.name} address={address} />
-    );
+    openModal(<ReceiveTokens name={safeData.name} address={address} />);
   };
 
   return (
@@ -243,13 +239,13 @@ function Safe({ web3 }) {
               className="button py-4 px-5 pointer mr-2"
               onClick={onReceive}
             >
-              Receive <ArrowDown className="ml-2" />
+              Receive <Svg name="ArrowDown" className="ml-2" />
             </button>
             <button
               className="button py-4 px-5 pointer is-link"
               onClick={onSend}
             >
-              Send <ArrowUp className="ml-2 has-text-white" />
+              Send <Svg name="ArrowUp" className="ml-2 has-text-white" />
             </button>
           </div>
         </div>

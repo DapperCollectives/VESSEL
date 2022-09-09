@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 const Svg = ({ name, ...props }) => {
   const [ImportedSvg, setImportedSvg] = useState(null);
@@ -13,7 +13,7 @@ const Svg = ({ name, ...props }) => {
     };
     importSvg();
   }, [name]);
-  if (!ImportedSvg) return <span>Icon not found</span>;
+  if (!ImportedSvg) return null;
   return ImportedSvg;
 };
 export default Svg;

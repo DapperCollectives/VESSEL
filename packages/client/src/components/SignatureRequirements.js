@@ -1,6 +1,6 @@
 import React from "react";
 import ProgressBar from "./ProgressBar";
-import { Person, Minus, Plus } from "./Svg";
+import Svg from "library/Svg";
 import { getProgressPercentageForSignersAmount } from "../utils";
 
 function SignatureRequirements({
@@ -51,7 +51,7 @@ function SignatureRequirements({
           </label>
           <div className="is-flex border-light rounded-sm">
             <div className="px-5 border-light-right">
-              <Person />
+              <Svg name="Pearson" />
             </div>
             <div className="flex-1 is-flex is-align-items-center px-5 border-light-right">
               {signersAmount} of {Math.max(safeOwners.length, 1)} owner(s)
@@ -61,14 +61,14 @@ function SignatureRequirements({
               style={{ width: 48 }}
               onClick={onMinusSigner}
             >
-              <Minus />
+              <Svg name="Minus" />
             </div>
             <div
               className={plusSignerClasses.join(" ")}
               style={{ width: 48 }}
               onClick={onPlusSigner}
             >
-              <Plus />
+              <Svg name="Plus" />
             </div>
           </div>
         </div>

@@ -2,7 +2,7 @@ import { useContext } from "react";
 import { Web3Context } from "contexts/Web3";
 import { SendTokensContext } from "../sendTokensContext";
 import { useAddressValidation } from "hooks";
-import { Check } from "components/Svg";
+import Svg from "library/Svg";
 import { isAddr, formatAddress } from "utils";
 const AddressInput = () => {
   const [sendModalState, setSendModalState] = useContext(SendTokensContext);
@@ -40,7 +40,7 @@ const AddressInput = () => {
           />
           {recipientValid && (
             <div style={{ position: "absolute", right: 17, top: 20 }}>
-              <Check />
+              <Svg name="Check" />
             </div>
           )}
         </div>

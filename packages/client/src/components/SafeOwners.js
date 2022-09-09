@@ -1,5 +1,5 @@
 import React from "react";
-import { Trash, Check } from "./Svg";
+import Svg from "library/Svg";
 
 function SafeOwners({
   address,
@@ -22,9 +22,7 @@ function SafeOwners({
   let safeOwnerCpts = [
     <div className="column is-flex is-full" key={address}>
       <div className="flex-1 is-flex is-flex-direction-column pr-5">
-        <label className="has-text-grey mb-2">
-          Owner Name
-        </label>
+        <label className="has-text-grey mb-2">Owner Name</label>
         <input
           className="p-4 rounded-sm border-light"
           type="text"
@@ -44,7 +42,7 @@ function SafeOwners({
             disabled
           />
           <div style={{ position: "absolute", right: 17, top: 14 }}>
-            <Check />
+            <Svg name="Check" />
           </div>
         </div>
       </div>
@@ -57,9 +55,7 @@ function SafeOwners({
       safeOwnerCpts.push(
         <div className="column is-flex is-full" key={`extra-owner-${idx}`}>
           <div className="flex-1 is-flex is-flex-direction-column pr-5">
-            <label className="has-text-grey mb-2">
-              Owner Name
-            </label>
+            <label className="has-text-grey mb-2">Owner Name</label>
             <input
               className="p-4 rounded-sm border-light"
               type="text"
@@ -85,7 +81,7 @@ function SafeOwners({
                 />
                 {safeOwnersValidByAddress[so.address] && (
                   <div style={{ position: "absolute", right: 17, top: 14 }}>
-                    <Check />
+                    <Svg name="Check" />
                   </div>
                 )}
               </div>
@@ -98,7 +94,7 @@ function SafeOwners({
                   setSafeOwners(newOwners);
                 }}
               >
-                <Trash />
+                <Svg name="Trash" />
               </button>
             </div>
           </div>

@@ -1,6 +1,6 @@
 import React from "react";
 import { isEmpty } from "lodash";
-import { Search } from "./Svg";
+import Svg from "library/Svg";
 import TransactionList from "./TransactionList";
 import { useTreasuryTransactions } from "../hooks";
 
@@ -29,7 +29,7 @@ function SafeTransactions({ safeData, address }) {
   return (
     <>
       <div className="column p-4 my-5 is-flex is-full rounded-sm border-light">
-        <Search className="mr-4" /> Search Transactions
+        <Svg name="Search" className="mr-4" /> Search Transactions
       </div>
       {TransactionsComponent}
     </>

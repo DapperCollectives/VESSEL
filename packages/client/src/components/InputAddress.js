@@ -1,7 +1,7 @@
 import React from "react";
 import { Web3Consumer } from "contexts/Web3";
 import { useAddressValidation } from "hooks";
-import { Check } from "components/Svg";
+import Svg from "library/Svg";
 import { isAddr, formatAddress } from "utils";
 
 const InputAddress = ({ web3, value, isValid, onChange }) => {
@@ -29,7 +29,7 @@ const InputAddress = ({ web3, value, isValid, onChange }) => {
         />
         {isValid && (
           <div style={{ position: "absolute", right: 17, top: 20 }}>
-            <Check />
+            <Svg name="Check" />
           </div>
         )}
       </div>
@@ -38,4 +38,3 @@ const InputAddress = ({ web3, value, isValid, onChange }) => {
 };
 
 export default Web3Consumer(InputAddress);
-

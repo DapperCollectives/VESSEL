@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react";
 import { useAddressValidation } from "hooks";
 import { isAddr, formatAddress } from "utils";
-import { Check } from "components/Svg";
+import Svg from "library/Svg";
 import { Web3Context } from "contexts/Web3";
 
 const AddSafeOwner = ({ onCancel, onNext, safeOwners }) => {
@@ -50,9 +50,7 @@ const AddSafeOwner = ({ onCancel, onNext, safeOwners }) => {
       </div>
       <div className="border-light-top p-5 has-text-grey">
         <div className="flex-1 is-flex is-flex-direction-column">
-          <label className="has-text-grey mb-2">
-            Owner Name
-          </label>
+          <label className="has-text-grey mb-2">Owner Name</label>
           <input
             className="p-4 rounded-sm border-light"
             type="text"
@@ -75,7 +73,7 @@ const AddSafeOwner = ({ onCancel, onNext, safeOwners }) => {
             />
             {addressValid && (
               <div style={{ position: "absolute", right: 17, top: 14 }}>
-                <Check />
+                <Svg name="Check" />
               </div>
             )}
           </div>
