@@ -12,6 +12,7 @@ const Sidebar = ({ children }) => (
     {children}
   </div>
 );
+
 const Body = () => (
   <div className="body has-background-white-rounded">
     <Transactions />
