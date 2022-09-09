@@ -78,7 +78,11 @@ const AuthorizeTreasury = ({
             >
               Cancel
             </button>
-            <button className={authorizeClases.join(" ")} onClick={onAuthorize}>
+            <button
+              className={authorizeClases.join(" ")}
+              onClick={onAuthorize}
+              disabled={!isAuthorizeReady}
+            >
               {stepBtnText}
             </button>
           </div>

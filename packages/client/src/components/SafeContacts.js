@@ -71,6 +71,7 @@ function EditContactModal({
               closeModal();
             }
           }}
+          disabled={!canConfirm}
         >
           {confirmText}
         </button>
