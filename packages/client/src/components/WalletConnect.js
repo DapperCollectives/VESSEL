@@ -1,7 +1,7 @@
 import React from "react";
 import { Web3Consumer } from "../contexts/Web3";
 import { useHistory } from "react-router-dom";
-
+import { shortenAddr } from "utils";
 const SignInOutButton = ({ user, injectedProvider }) => {
   const history = useHistory();
   const signInOrOut = async (event) => {
