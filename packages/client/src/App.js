@@ -4,6 +4,7 @@ import { HashRouter as Router, Switch, Route } from "react-router-dom";
 import { Web3Provider, ModalProvider } from "./contexts";
 import { Home, Safe, LoadSafe, CreateSafe } from "./pages";
 import { Logo, Navigation, Transactions } from "./components";
+import Svg from "library/Svg";
 
 const Wrapper = ({ children }) => <div className="App">{children}</div>;
 
@@ -40,7 +41,7 @@ function App() {
         <ModalProvider>
           <Wrapper>
             <Sidebar>
-              <Logo className="mb-6 px-4" />
+              <Svg name="Logo" className="mb-6 px-4" />
               <Navigation />
             </Sidebar>
             <Body />
