@@ -1,6 +1,6 @@
 import { useEffect, useReducer } from "react";
 import { mutate, query, tx, config } from "@onflow/fcl";
-import { syncSafeOwnersWithSigners, getVaultId, removeAddressPrefix } from "../utils";
+import { syncSafeOwnersWithSigners, getVaultId, removeAddressPrefix, formatAddress } from "../utils";
 import { COIN_TYPE_TO_META } from "constants/maps";
 import reducer, { INITIAL_STATE } from "../reducers/treasuries";
 import {
@@ -335,7 +335,7 @@ export default function useTreasury(treasuryAddr) {
 
   const createTreasury = async (treasuryData) => {
     const { safeOwners, threshold } = treasuryData;
-    const signerAddresses = safeOwners.map((is) => is.address);
+    const signerAddresses = safeOwners.map((is) => formatAddress(is.address));
     const creatorAddr = signerAddresses[0];
     const res = await doCreateTreasury(signerAddresses, threshold);
     if (res) {
