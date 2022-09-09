@@ -29,10 +29,6 @@ const SignInOutButton = ({ user, injectedProvider }) => {
 
 const CurrentUser = ({ web3 }) => {
   const { user, injectedProvider } = web3;
-  // if (!user) {
-  //   return null;
-  // }
-
   return (
     <div className="has-background-blue-dark has-text-white rounded-sm">
       <SignInOutButton user={user} injectedProvider={injectedProvider} />

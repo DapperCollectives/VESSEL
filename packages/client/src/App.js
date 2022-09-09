@@ -1,12 +1,7 @@
 import "./App.sass";
 import React from "react";
-import {
-  HashRouter as Router,
-  Switch,
-  Route,
-  Redirect,
-} from "react-router-dom";
-import { Web3Provider, ModalProvider, Web3Consumer } from "./contexts";
+import { HashRouter as Router, Switch, Route } from "react-router-dom";
+import { Web3Provider, ModalProvider } from "./contexts";
 import { Home, Safe, LoadSafe, CreateSafe } from "./pages";
 import { Logo, Navigation, Transactions } from "./components";
 
@@ -17,10 +12,14 @@ const Sidebar = ({ children }) => (
     {children}
   </div>
 );
-const PrivateRoutes = ({ canAccess }) => {
-  if (canAccess) {
-    return (
-      <>
+const Body = () => {
+  return (
+    <div className="body has-background-white-rounded">
+      <Transactions />
+      <Switch>
+        <Route exact path="/">
+          <Home />
+        </Route>
         <Route exact path="/load-safe">
           <LoadSafe />
         </Route>
@@ -30,26 +29,10 @@ const PrivateRoutes = ({ canAccess }) => {
         <Route path={["/safe/:address/:tab", "/safe/:address"]}>
           <Safe />
         </Route>
-      </>
-    );
-  } else {
-    return <Redirect to="/" />;
-  }
-};
-const Body = ({ web3 }) => {
-  return (
-    <div className="body has-background-white-rounded">
-      <Transactions />
-      <Switch>
-        <Route exact path="/">
-          <Home />
-        </Route>
-        <PrivateRoutes canAccess={web3?.user?.addr && web3?.user?.loggedIn} />
       </Switch>
     </div>
   );
 };
-const BodyWithContext = Web3Consumer(Body);
 
 function App() {
   return (
@@ -61,7 +44,7 @@ function App() {
               <Logo className="mb-6 px-4" />
               <Navigation />
             </Sidebar>
-            <BodyWithContext />
+            <Body />
           </Wrapper>
         </ModalProvider>
       </Web3Provider>
