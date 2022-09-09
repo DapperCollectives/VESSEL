@@ -38,4 +38,3 @@ const InputAddress = ({ web3, value, isValid, onChange }) => {
 };
 
 export default Web3Consumer(InputAddress);
-

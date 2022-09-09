@@ -50,9 +50,7 @@ const AddSafeOwner = ({ onCancel, onNext, safeOwners }) => {
       </div>
       <div className="border-light-top p-5 has-text-grey">
         <div className="flex-1 is-flex is-flex-direction-column">
-          <label className="has-text-grey mb-2">
-            Owner Name
-          </label>
+          <label className="has-text-grey mb-2">Owner Name</label>
           <input
             className="p-4 rounded-sm border-light"
             type="text"
