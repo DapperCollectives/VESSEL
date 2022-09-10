@@ -3,7 +3,7 @@ import { mutate, query, tx } from "@onflow/fcl";
 import { REGULAR_LIMIT, SIGNED_LIMIT } from "constants/constants";
 import { createSignature } from "../contexts/Web3";
 import reducer, { INITIAL_STATE } from "../reducers/nfts";
-import { formatAddress, removeAddressPrefix } from "utils";
+import { formatAddress, parseIdentifier, removeAddressPrefix } from "utils";
 import {
   CHECK_TREASURY_NFT_COLLECTION,
   PROPOSE_NFT_TRANSFER,
@@ -31,8 +31,7 @@ const doProposeNFTTransfer = async (treasuryAddr, recipient, nft) => {
   // Example: A.f8d6e0586b0a20c7.ZeedzINO.Collection-0
   // First part will contain the collection identifier, and the second will contain the tokenId
   const tokenInfo = nft.split("-");
-  const contractName = nft.split(".")[2];
-  const contractAddress = nft.split(".")[1];
+  const { contractName, contractAddress } = parseIdentifier(nft);
   const intent = `Transfer ${tokenInfo[0]} NFT from the treasury to ${recipient}`;
   const { message, keyIds, signatures, height } = await createSignature(intent);
 
@@ -127,7 +126,7 @@ export default function useNFTs(treasuryAddr) {
       type: "SET_NFTS",
       payload: {
         [treasuryAddr]: {
-          [identifier]: tokens || {},
+          [identifier]: tokens,
         },
       },
     });

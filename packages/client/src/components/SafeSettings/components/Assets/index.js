@@ -1,6 +1,6 @@
 import React from "react";
 import { useModalContext } from "contexts";
-import { formatAddress, getNFTMeta, getTokenMeta } from "utils";
+import { formatAddress, getTokenMeta, parseIdentifier } from "utils";
 import { useErrorMessage } from "hooks";
 
 import { Plus } from "components/Svg";
@@ -65,7 +65,8 @@ const Assets = ({
         address={address}
         onCancel={() => closeModal()}
         onNext={onAddVaultSubmit}
-      />
+      />,
+      { headerTitle: "Add Token Vault" }
     );
   };
 
@@ -74,7 +75,8 @@ const Assets = ({
       <AddCollection
         onCancel={() => closeModal()}
         onNext={onAddCollectionSubmit}
-      />
+      />,
+      { headerTitle: "Add NFT Collection" }
     );
   };
 
@@ -86,19 +88,21 @@ const Assets = ({
         address={formatAddress(tokenAddress)}
         onCancel={() => closeModal()}
         onNext={() => onRemoveVaultSubmit(identifier)}
-      />
+      />,
+      { headerTitle: "Remove Token Vault" }
     );
   };
 
   const openRemoveCollectionModal = (identifier) => {
-    const { NFTName, NFTAddress } = getNFTMeta(identifier);
+    const { contractName, contractAddress } = parseIdentifier(identifier);
     openModal(
       <RemoveCollection
-        name={NFTName}
-        address={formatAddress(NFTAddress)}
+        name={contractName}
+        address={formatAddress(contractAddress)}
         onCancel={() => closeModal()}
         onNext={() => onRemoveCollectionSubmit(identifier)}
-      />
+      />,
+      { headerTitle: "Remove NFT Collection" }
     );
   };
 

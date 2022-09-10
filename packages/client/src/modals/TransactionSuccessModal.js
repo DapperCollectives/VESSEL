@@ -6,7 +6,7 @@ import {
   getFlowscanUrlForTransaction,
   formatAddress,
   getTokenMeta,
-  getNFTMeta,
+  parseIdentifier,
 } from "utils";
 import { ACTION_TYPES } from "../constants/enums";
 
@@ -24,7 +24,8 @@ const TransactionSuccessModal = ({
 
   const { recipient, nftId, collectionId, vaultId, tokenAmount } = actionData;
   const { displayName, icon } = getTokenMeta(vaultId) || {};
-  const { NFTName, NFTAddress } = getNFTMeta(collectionId) || {};
+  const { contractName: NFTName, contractAddress: NFTAddress } =
+    parseIdentifier(collectionId) || {};
   const { name: imageName, imageURI } = image || {};
 
   const actionType = actionData.type;
