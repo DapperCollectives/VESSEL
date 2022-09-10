@@ -9,7 +9,7 @@ const RemoveCollection = ({ name, address, onCancel, onNext }) => {
         &nbsp;from the treasury. This is only possible if you don’t have any NFT
         from this collection in your treasury.
       </p>
-      <div className="is-flex is-align-items-center mt-5">
+      <div className="is-flex mt-5">
         <button className="button flex-1 p-4 mr-2" onClick={onCancel}>
           Cancel
         </button>
