@@ -25,10 +25,7 @@ const SafeHeader = ({
     }
   }
 
-  const btnClasses = [
-    "button p-4",
-    continueReady ? "is-link" : "is-light is-disabled",
-  ];
+  const btnClasses = ["button is-primary", continueReady ? "" : "disabled"];
 
   const stepMessage = "Load an existing safe";
   const stepSubtitle =
@@ -45,7 +42,7 @@ const SafeHeader = ({
         </div>
         <div className="is-flex is-align-items-center">
           <NavLink to="/">
-            <button className="button p-4 mr-2">Cancel</button>
+            <button className="button is-border mr-2">Cancel</button>
           </NavLink>
           <button className={btnClasses.join(" ")} onClick={onContinue}>
             {stepBtnText}

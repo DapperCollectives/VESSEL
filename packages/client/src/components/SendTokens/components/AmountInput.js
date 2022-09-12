@@ -18,11 +18,12 @@ const AmountInput = () => {
       <label className="has-text-grey">
         Amount<span className="has-text-red"> *</span>
       </label>
-      <div style={{ position: "relative" }}>
+      <div className="is-flex is-justify-content-space-between">
         <input
           type="number"
-          className="is-size-2 border-none column is-full p-0 mb-4"
+          className="is-size-2 border-none p-0 mb-4"
           value={tokenAmount}
+          style={{ maxWidth: "70%" }}
           onChange={(e) =>
             setSendModalState((prevState) => ({
               ...prevState,
@@ -31,9 +32,9 @@ const AmountInput = () => {
           }
         />
 
-        <div style={{ position: "absolute", top: "5px", right: "0px" }}>
+        <div>
           <button
-            className="button mr-1 border-light p-2"
+            className="button is-primary flex-1 mt-2"
             onClick={handleMaxButtonClick}
           >
             Max

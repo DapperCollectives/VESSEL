@@ -38,18 +38,18 @@ const Assets = ({ treasury, proposeAddVault, proposeAddCollection }) => {
     <div className="p-0 mt-5">
       <h4 className="is-size-5">Assets</h4>
       <button
-        className="button mt-4 is-full p-4 border-light is-align-self-flex-end"
+        className="button mt-4 is-full is-secondary is-small with-icon is-align-self-flex-end"
         onClick={openAddVaultModal}
       >
         Add Vault
-        <Plus style={{ position: "relative", left: 5 }} />
+        <Plus />
       </button>
       <button
-        className="button mt-4 is-full p-4 border-light is-align-self-flex-end"
+        className="button mt-4 is-full is-secondary is-small with-icon is-align-self-flex-end"
         onClick={openAddCollectionModal}
       >
         Add Collection
-        <Plus style={{ position: "relative", left: 5 }} />
+        <Plus />
       </button>
     </div>
   );

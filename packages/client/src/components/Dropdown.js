@@ -61,7 +61,7 @@ const Dropdown = ({ value, values, setValue, style, renderItemAddOn }) => {
     >
       <div className="dropdown-trigger columns m-0 is-flex-grow-1">
         <button
-          className="button rounded-sm is-outlined border-light column m-0 py-0 px-3 is-full full-height"
+          className="rounded-sm is-outlined border-light column m-0 py-0 px-3 is-full full-height has-background-white"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
           onClick={openCloseDrowdown}

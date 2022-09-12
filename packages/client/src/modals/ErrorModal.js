@@ -12,7 +12,7 @@ const ErrorModal = ({ error, onClose }) => {
         <span className="mr-2 mt-2  has-text-grey">{error}</span>
       </div>
       <div className="is-flex is-align-items-center mt-5">
-        <button className="button flex-1 p-4 mr-2 rounded-sm" onClick={onClose}>
+        <button className="button is-border mr-2 flex-1" onClick={onClose}>
           Close
         </button>
       </div>
