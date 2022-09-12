@@ -105,16 +105,18 @@ export default function useNFTs() {
     }
   };
 
-  const getNFTReference = async (contractName, contractAddress, accountAddr, nftId) => {
+  const getNFTReference = async (
+    contractName,
+    contractAddress,
+    accountAddr,
+    nftId
+  ) => {
     const nftRef = await query({
       cadence: GET_NFT_REF(contractName, contractAddress),
-      args: (arg, t) => [
-        arg(accountAddr, t.Address),
-        arg(nftId, t.UInt64),
-      ],
+      args: (arg, t) => [arg(accountAddr, t.Address), arg(nftId, t.UInt64)],
     }).catch(console.error);
     return nftRef;
-  }
+  };
 
   const sendNFTToTreasury = async (treasuryAddr, tokenId) => {
     const res = await doSendNFTToTreasury(treasuryAddr, tokenId);

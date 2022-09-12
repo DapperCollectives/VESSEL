@@ -111,7 +111,10 @@ function TransactionDetails({ safeOwners, transaction, onClose }) {
               ? shortenAddr(lastTokenTransfer?.counterparty?.address)
               : ""
           )}
-          {renderRow("Executed", shortenAddr(transaction.blockEventData.proposer))}
+          {renderRow(
+            "Executed",
+            shortenAddr(transaction.blockEventData.proposer)
+          )}
           {renderRow(
             "Created",
             `${date.toLocaleDateString("en-us", {
