@@ -1,11 +1,18 @@
-import { lazy, Suspense } from "react";
+import { useState, useEffect } from "react";
 
 const Svg = ({ name, ...props }) => {
-  const SvgComponent = lazy(() => import(`./${name}`));
-  return (
-    <Suspense fallback={<p>loading svg...</p>}>
-      <SvgComponent {...props} />
-    </Suspense>
-  );
+  const [svgComponent, setSvgComponent] = useState(null);
+  useEffect(() => {
+    (async () => {
+      try {
+        const svgComponent = await import(`./${name}`);
+        setSvgComponent(svgComponent.default(props));
+      } catch (e) {
+        console.log(e);
+      }
+    })();
+  }, [name]);
+  if (!svgComponent) return null;
+  return svgComponent;
 };
 export default Svg;

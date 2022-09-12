@@ -1,6 +1,6 @@
 import { getProgressPercentageForSignersAmount } from "utils";
 import Svg from "library/Svg";
-import ProgressBar from "components/ProgressBar";
+import { ProgressBar } from "library/components";
 
 const EditThresholdForm = ({
   newThreshold,

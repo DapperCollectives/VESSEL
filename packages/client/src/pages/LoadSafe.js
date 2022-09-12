@@ -5,7 +5,7 @@ import { WalletPrompt } from "../components";
 import { isAddr, getProgressPercentageForSignersAmount } from "../utils";
 import { Web3Consumer } from "../contexts/Web3";
 import Svg from "library/Svg";
-import { ProgressBar } from "../components";
+import { ProgressBar } from "library/components";
 import { useAddressValidation } from "../hooks";
 
 const SafeHeader = ({

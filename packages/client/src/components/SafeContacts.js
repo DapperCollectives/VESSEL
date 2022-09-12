@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { isEmpty } from "lodash";
-import InputAddress from "./InputAddress";
-import InputText from "./InputText";
+import { InputAddress } from "library/components";
 import Svg from "library/Svg";
 import { useClipboard, useContacts } from "../hooks";
 import { useModalContext } from "contexts";
@@ -53,7 +52,15 @@ function EditContactModal({
         </div>
         <div className="mt-5">
           <p className="has-text-grey">Name</p>
-          <InputText value={currentName} onChange={onNameChange} />
+          <div className="is-flex">
+            <input
+              style={{ height: 48 }}
+              className="border-light rounded-sm column is-full p-2 mt-2"
+              type="text"
+              value={currentName}
+              onChange={(e) => onNameChange(e.target)}
+            />
+          </div>
         </div>
       </div>
       <div className="is-flex is-align-items-center mt-5 px-5">
