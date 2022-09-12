@@ -129,7 +129,7 @@ function EmptyContacts({ openAddModal }) {
           className="button is-primary mt-4 with-icon"
           onClick={openAddModal}
         >
-        Add Contact <Svg name="Plus" />
+          Add Contact <Svg name="Plus" />
         </button>
       </div>
     </section>
@@ -190,16 +190,11 @@ function SafeContacts({ address }) {
       <div className="column p-0 mt-5 is-flex is-align-items-center is-justify-content-space-between is-full">
         <h4 className="is-size-5">Saved Addresses</h4>
         {!isEmpty(contacts) && (
-<<<<<<< HEAD
-          <button className="button is-link" onClick={openAddModal}>
-            Add Contact <Svg name="Plus" className="ml-2" />
-=======
           <button
             className="button is-secondary is-small with-icon"
             onClick={openAddModal}
           >
-            Add Contact <Plus />
->>>>>>> fc50b86398b8d184f7f6551c7c4e9f267ae028e8
+            Add Contact <Svg name="Plus" />
           </button>
         )}
       </div>
