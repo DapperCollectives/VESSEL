@@ -52,9 +52,9 @@ const TransactionSuccessModal = ({
   return (
     <div className="p-5 has-text-black has-text-left">
       <div className="p-5 success-modal-background">
-        <button className="button flex-1 is-info mb-1">
-          Sent <ArrowUp className="ml-2 has-text-white" />
-        </button>
+        <label className="has-background-primary-purple has-text-white px-3 py-2 rounded-lg mb-1">
+          Sent <ArrowUp className="ml-1" />
+        </label>
         <div className="pl-4">
           {actionType === ACTION_TYPES.TRANSFER_NFT && (
             <>

@@ -51,7 +51,7 @@ function ActionsList({ actions = [], onSign, onConfirm, safeData }) {
             {totalSigned} of {safeData.threshold} signatures
           </div>
           <button
-            className="button is-tertiary ml-3 py-1"
+            className="button is-tertiary ml-3"
             onClick={() => actionFn(action)}
           >
             {actionCopy}
