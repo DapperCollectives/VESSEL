@@ -140,17 +140,18 @@ export default function useNFTs(treasuryAddr) {
 
     const collections = (identifiers && identifiers[1]) ?? [];
 
-    for (const identifier in collections) {
-      await checkCollection(treasuryAddr, collections[identifier]);
-      return;
+    if (collections.length === 0) {
+      dispatch({
+        type: "SET_NFTS",
+        payload: {
+          [treasuryAddr]: {},
+        },
+      });
     }
 
-    dispatch({
-      type: "SET_NFTS",
-      payload: {
-        [treasuryAddr]: {},
-      },
-    });
+    for (const identifier in collections) {
+      await checkCollection(treasuryAddr, collections[identifier]);
+    }
   };
 
   const getNFTReference = async (
