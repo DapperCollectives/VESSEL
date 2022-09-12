@@ -121,7 +121,7 @@ const TransactionSuccessModal = ({
       </div>
       <div className="is-flex is-align-items-center mt-5">
         <a
-          className="button flex-1 p-4 mr-2 rounded-sm"
+          className="button is-border flex-1"
           href={getFlowscanUrlForTransaction(txID)}
           target="_blank"
           rel="noreferrer"
@@ -129,10 +129,7 @@ const TransactionSuccessModal = ({
           Flowscan &nbsp;
           <OpenNewTab />
         </a>
-        <button
-          className="button flex-1 p-4 rounded-sm is-done"
-          onClick={onClose}
-        >
+        <button className="button is-primary flex-1" onClick={onClose}>
           Done
         </button>
       </div>
