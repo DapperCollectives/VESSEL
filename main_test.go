@@ -9,7 +9,7 @@ import (
 
 var FlowTokenVaultID = "A.0ae53cb6e3f42a79.FlowToken.Vault"
 var FUSDTokenVaultID = "A.f8d6e0586b0a20c7.FUSD.Vault"
-var NonFungibleTokenCollectionID = "A.f8d6e0586b0a20c7.ExampleNFT.Collection"
+var NonFungibleTokenCollectionID = "A.f8d6e0586b0a20c7.ZeedzINO.Collection"
 var DefaultAccountBalance uint64 = 1e5
 var TransferAmount float64 = 100
 var TransferAmountUInt64 uint64 = 100e8
@@ -869,14 +869,14 @@ func TestDestroyCollectionAndVault(t *testing.T) {
 		otu.RemoveVaultFromTreasury("signer1", "treasuryOwner", "A.0ae53cb6e3f42a79.FlowToken.Vault")
 	})
 	t.Run("Signer should be able to remove empty collection", func(t *testing.T) {
-		otu.RemoveCollectionFromTreasury("signer1", "treasuryOwner", "A.f8d6e0586b0a20c7.ExampleNFT.Collection")
+		otu.RemoveCollectionFromTreasury("signer1", "treasuryOwner", "A.f8d6e0586b0a20c7.ZeedzINO.Collection")
 	})
 	t.Run("Signer should not be able to remove non-empty collection", func(t *testing.T) {
 		otu.CreateNFTCollection("signer1")
 		otu.MintNFT("signer1")
 		otu.SendCollectionToTreasury("signer1", "treasuryOwner")
 		otu.SendNFTToTreasury("signer1", "treasuryOwner", 0)
-		otu.RemoveCollectionFromTreasuryFailure("signer1", "treasuryOwner", "A.0ae53cb6e3f42a79.FlowToken.Vault")
+		otu.RemoveCollectionFromTreasuryFailure("signer1", "treasuryOwner", "A.f8d6e0586b0a20c7.ZeedzINO.Collection")
 	})
 
 }

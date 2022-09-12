@@ -8,8 +8,6 @@ const AddVault = ({ onCancel, onNext }) => {
     });
   };
 
-  const nextButtonClasses = ["button flex-1 p-4", "is-link"];
-
   const coinTypes = Object.entries(COIN_TYPE_TO_META).map((type) => ({
     itemValue: type[0],
     displayText: type[1].displayName,
@@ -33,10 +31,10 @@ const AddVault = ({ onCancel, onNext }) => {
           />
         </div>
         <div className="is-flex is-align-items-center mt-6">
-          <button className="button flex-1 p-4 mr-2" onClick={onCancel}>
+          <button className="button flex-1 is-border mr-2" onClick={onCancel}>
             Cancel
           </button>
-          <button className={nextButtonClasses.join(" ")} onClick={onNextClick}>
+          <button className="button flex-1 is-primary" onClick={onNextClick}>
             Next
           </button>
         </div>

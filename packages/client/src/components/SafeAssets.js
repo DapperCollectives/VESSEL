@@ -4,11 +4,7 @@ import { useModalContext } from "../contexts";
 import { ASSET_TYPES } from "constants/enums";
 import SendTokens from "./SendTokens";
 
-function SafeAssets({
-  web3,
-  name,
-  address,
-}) {
+function SafeAssets({ web3, name, address }) {
   const assetComponents = [];
   const { getTreasuryCollections } = web3;
   const userAddr = web3?.user?.addr;
@@ -61,13 +57,13 @@ function SafeAssets({
         </div>
         <div className="is-flex is-align-items-center mt-6">
           <button
-            className="button flex-1 p-4 mr-2"
+            className="button is-border flex-1 mr-2"
             onClick={() => modalContext.closeModal()}
           >
             Cancel
           </button>
           <button
-            className="button flex-1 p-4 is-link"
+            className="button is-primary flex-1"
             onClick={() =>
               modalContext.openModal(
                 <SendTokens

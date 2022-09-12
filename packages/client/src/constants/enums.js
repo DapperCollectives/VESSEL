@@ -9,7 +9,7 @@ export const COIN_TYPES = {
   USDC: "USDC",
   BLT: "BLT",
   STARLY: "STARLY",
-  REVV: "REVV"
+  REVV: "REVV",
 };
 
 export const SAFE_TYPES = {
@@ -25,4 +25,9 @@ export const SIGNER_RESPONSES = {
   APPROVED: "approved",
   REJECTED: "rejected",
   PENDING: "pending",
-}
+};
+
+export const ACTION_TYPES = {
+  TRANSFER_TOKEN: "TransferToken",
+  TRANSFER_NFT: "TransferNFT",
+};

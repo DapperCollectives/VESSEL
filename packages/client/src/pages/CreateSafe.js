@@ -35,8 +35,8 @@ const AuthorizeTreasury = ({
   }
 
   const authorizeClases = [
-    "button p-4",
-    isAuthorizeReady ? "is-link" : "is-light is-disabled",
+    "button is-primary",
+    isAuthorizeReady ? "" : "disabled",
   ];
 
   const onAuthorize = async () => {
@@ -61,9 +61,7 @@ const AuthorizeTreasury = ({
       "This may take a few minutes. If the transaction fails, you can cancel or retry below";
   if (createdTreasury) stepSubtitle = "";
 
-  const stepBtnText = creatingTreasury
-    ? "Retry transaction"
-    : "Sign & Authorize";
+  const stepBtnText = creatingTreasury ? "Retry transaction" : "Create Safe";
 
   return (
     <>
@@ -74,10 +72,17 @@ const AuthorizeTreasury = ({
         </div>
         {!createdTreasury && (
           <div className="is-flex is-align-items-center">
-            <button onClick={onCancelCreatingSafe} className="button p-4 mr-2">
+            <button
+              onClick={onCancelCreatingSafe}
+              className="button is-border mr-2"
+            >
               Cancel
             </button>
-            <button className={authorizeClases.join(" ")} onClick={onAuthorize}>
+            <button
+              className={authorizeClases.join(" ")}
+              onClick={onAuthorize}
+              disabled={!isAuthorizeReady}
+            >
               {stepBtnText}
             </button>
           </div>
@@ -85,7 +90,7 @@ const AuthorizeTreasury = ({
         {createdTreasury && (
           <div className="is-flex is-align-items-center">
             <NavLink to={`/safe/${address}`}>
-              <button className="button is-link p-4 mr-2">Go to safe</button>
+              <button className="button is-primary mr-2">Go to safe</button>
             </NavLink>
           </div>
         )}
@@ -129,6 +134,10 @@ function CreateSafe({ web3 }) {
     setSafeOwners(newSafeOwners);
     // skip first safe owner since it's the connected user and won't have an address
     checkSafeOwnerAddressesValidity(newSafeOwners.slice(1));
+    // force signer amount to not exceed amount of safe owners
+    if (newSafeOwners.length < signersAmount) {
+      setSignersAmount(newSafeOwners.length);
+    }
   };
   const onCreateTreasuryClick = async (treasuryData) => {
     setCreatingTreasury(true);

@@ -1,4 +1,5 @@
 import React, { useCallback, useState } from "react";
+import { Close } from "components/Svg";
 
 /**
  *
@@ -31,6 +32,7 @@ const ModalProvider = ({ children }) => {
   const [content, setContent] = useState(null);
   const [modalConfig, setModalConfig] = useState({
     // more configuration can be added here
+    headerTitle: "",
     closeOnBackgroundClick: true,
     showCloseButton: true,
     classNameModalContent: "",
@@ -93,6 +95,22 @@ const ModalProvider = ({ children }) => {
                 : " has-background-white"
             } ${modalConfig.classNameModalContent}`}
           >
+            {modalConfig.headerTitle && (
+              <div className="p-5 border-light-bottom">
+                <div className="is-flex has-text-black">
+                  <div className="flex-1 is-size-4">
+                    {modalConfig.headerTitle}
+                  </div>
+                  <div
+                    onClick={closeModal}
+                    style={{ width: 40 }}
+                    className="pointer is-flex is-align-items-center is-justify-content-end"
+                  >
+                    <Close />
+                  </div>
+                </div>
+              </div>
+            )}
             {!!content ? content : <p>Empty Modal</p>}
           </div>
           {modalConfig.showCloseButton && (

@@ -26,11 +26,10 @@ const ButtonGroup = () => {
   const continueReady =
     recipientValid &&
     (assetType === ASSET_TYPES.TOKEN ? tokenAmount > 0 : selectedNFT);
-  const btnText = continueReady ? "Sign & Deploy" : "Next";
+  const btnText = currentStep === 1 && continueReady ? "Sign & Deploy" : "Next";
   const btnClasses = [
-    "button p-4 flex-1",
-    continueReady ? "is-link" : "is-light is-disabled",
-    currentStep === 1 ? "has-background-success" : "",
+    "button is-primary flex-1",
+    continueReady ? "" : "disabled",
   ];
   const onSubmit = async () => {
     if (currentStep === 0) {
@@ -61,7 +60,7 @@ const ButtonGroup = () => {
   return (
     <div className="is-flex is-align-items-center mt-6">
       <button
-        className="button flex-1 p-4 mr-2"
+        className="button is-border flex-1 mr-2"
         onClick={() => modalContext.closeModal()}
       >
         Cancel

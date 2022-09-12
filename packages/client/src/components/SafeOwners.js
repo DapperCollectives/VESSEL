@@ -22,9 +22,7 @@ function SafeOwners({
   let safeOwnerCpts = [
     <div className="column is-flex is-full" key={address}>
       <div className="flex-1 is-flex is-flex-direction-column pr-5">
-        <label className="has-text-grey mb-2">
-          Owner Name
-        </label>
+        <label className="has-text-grey mb-2">Owner Name</label>
         <input
           className="p-4 rounded-sm border-light"
           type="text"
@@ -57,9 +55,7 @@ function SafeOwners({
       safeOwnerCpts.push(
         <div className="column is-flex is-full" key={`extra-owner-${idx}`}>
           <div className="flex-1 is-flex is-flex-direction-column pr-5">
-            <label className="has-text-grey mb-2">
-              Owner Name
-            </label>
+            <label className="has-text-grey mb-2">Owner Name</label>
             <input
               className="p-4 rounded-sm border-light"
               type="text"
@@ -90,7 +86,7 @@ function SafeOwners({
                 )}
               </div>
               <button
-                className="button ml-2 p-4"
+                className="button is-border ml-2 p-4"
                 onClick={() => {
                   const newOwners = safeOwners.filter(
                     (_, soIdx) => soIdx !== idx + 1
@@ -109,19 +105,19 @@ function SafeOwners({
 
   return (
     <>
-      <div className="column mt-5 is-flex is-full">
+      <div className="column mt-5 is-flex is-full is-justify-content-space-between">
         <h4 className="is-size-5">Safe Owners</h4>
-      </div>
-      {safeOwnerCpts}
-      <div className="column is-flex is-flex-direction-column is-full">
         <button
-          className="button column is-full p-4 border-light"
+          className="button is-secondary is-small"
           onClick={() => {
             setSafeOwners(safeOwners.concat({ name: "", address: "" }));
           }}
         >
           Add another owner
         </button>
+      </div>
+      {safeOwnerCpts}
+      <div className="column is-flex is-flex-direction-column is-full">
         <p className="mt-4 has-text-grey">
           Tip: For additional security, add more than one owner. More owners can
           also be added after your safe is deployed.

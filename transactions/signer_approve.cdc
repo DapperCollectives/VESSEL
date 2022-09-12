@@ -1,21 +1,21 @@
-import DAOTreasuryV3 from "../contracts/DAOTreasury.cdc"
-import MyMultiSigV3 from "../contracts/MyMultiSig.cdc"
+import DAOTreasuryV4 from "../contracts/DAOTreasury.cdc"
+import MyMultiSigV4 from "../contracts/MyMultiSig.cdc"
 
 transaction(treasuryAddr: Address, actionUUID: UInt64, message: String, keyIds: [UInt64], signatures: [String], signatureBlock: UInt64) {
 
   var isValid: Bool
-  let action: &MyMultiSigV3.MultiSignAction 
-  let manager: &MyMultiSigV3.Manager{MyMultiSigV3.ManagerPublic}
-  let messageSignaturePayload: MyMultiSigV3.MessageSignaturePayload
+  let action: &MyMultiSigV4.MultiSignAction 
+  let treasury: &DAOTreasuryV4.Treasury{DAOTreasuryV4.TreasuryPublic}
+  let messageSignaturePayload: MyMultiSigV4.MessageSignaturePayload
 
   prepare(signer: AuthAccount) {
     self.isValid = false
-    let treasury = getAccount(treasuryAddr).getCapability(DAOTreasuryV3.TreasuryPublicPath)
-                    .borrow<&DAOTreasuryV3.Treasury{DAOTreasuryV3.TreasuryPublic}>()
-                    ?? panic("A DAOTreasuryV3 doesn't exist here.")
+    self.treasury = getAccount(treasuryAddr).getCapability(DAOTreasuryV4.TreasuryPublicPath)
+                    .borrow<&DAOTreasuryV4.Treasury{DAOTreasuryV4.TreasuryPublic}>()
+                    ?? panic("A DAOTreasuryV4 doesn't exist here.")
 
-    self.manager = treasury.borrowManagerPublic()
-    self.action = self.manager.borrowAction(actionUUID: actionUUID)
+    let manager = self.treasury.borrowManagerPublic()
+    self.action = manager.borrowAction(actionUUID: actionUUID)
 
     var _keyIds: [Int] = []
 
@@ -23,16 +23,16 @@ transaction(treasuryAddr: Address, actionUUID: UInt64, message: String, keyIds: 
       _keyIds.append(Int(keyId))
     }
 
-    self.messageSignaturePayload = MyMultiSigV3.MessageSignaturePayload(
+    self.messageSignaturePayload = MyMultiSigV4.MessageSignaturePayload(
         signingAddr: signer.address, message: message, keyIds: _keyIds, signatures: signatures, signatureBlock: signatureBlock
     )
   }
   
   execute {
-    self.manager.signerApproveAction(actionUUID: actionUUID, messageSignaturePayload: self.messageSignaturePayload)
+    self.treasury.signerApproveAction(actionUUID: actionUUID, messageSignaturePayload: self.messageSignaturePayload)
   }
 
   post {
-    self.action.signerResponses[self.messageSignaturePayload.signingAddr] == MyMultiSigV3.SignerResponse.approved: "Error: tx completed but signer approval not registered"
+    self.action.signerResponses[self.messageSignaturePayload.signingAddr] == MyMultiSigV4.SignerResponse.approved: "Error: tx completed but signer approval not registered"
   }
 }

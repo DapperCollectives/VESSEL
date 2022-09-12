@@ -53,10 +53,10 @@ const ReviewSafeEdits = ({
         {newOwner && renderRow("Address", newOwner.address)}
         {renderRow("Transaction date", new Date().toLocaleDateString("en-US"))}
         <div className="is-flex is-align-items-center mt-5">
-          <button className="button flex-1 p-4 mr-2" onClick={onBack}>
+          <button className="button flex-1 is-border mr-2" onClick={onBack}>
             Back
           </button>
-          <button className="button flex-1 p-4 is-link" onClick={onSubmitClick}>
+          <button className="button flex-1 is-primary" onClick={onSubmitClick}>
             Submit
           </button>
         </div>

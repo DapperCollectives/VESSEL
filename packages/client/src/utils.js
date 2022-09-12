@@ -100,3 +100,19 @@ export const getVaultId = (identifiers, coinType) => {
 };
 
 export const removeAddressPrefix = (address) => address.replace("0x", "");
+
+export const getTokenMeta = (vaultId) => {
+  if (vaultId) {
+    const tokenName = vaultId.split(".")[2];
+    return COIN_TYPE_TO_META[CONTRACT_NAME_TO_COIN_TYPE[tokenName]];
+  }
+};
+
+export const getNFTMeta = (collectionId) => {
+  const NFTName = collectionId?.split(".")[2];
+  const NFTAddress = collectionId?.split(".")[1];
+  return {
+    NFTName,
+    NFTAddress,
+  };
+};

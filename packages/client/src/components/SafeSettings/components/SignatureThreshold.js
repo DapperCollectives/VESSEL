@@ -25,12 +25,12 @@ const SignatureThreshold = ({ treasury }) => {
           required to confirm a new transaction
         </div>
         <div>
-          <span
-            className="is-underlined pointer"
+          <button
+            className="button is-transparent"
             onClick={() => openEditSignatureThresholdModal()}
           >
             Edit
-          </span>
+          </button>
         </div>
       </div>
     </div>

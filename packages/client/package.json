@@ -3,10 +3,11 @@
   "version": "1.0.0",
   "private": true,
   "dependencies": {
+    "@fontsource/dm-mono": "^4.5.9",
+    "@fontsource/dm-sans": "^4.5.8",
     "@onflow/fcl": "^1.1.0",
     "bulma": "0.9.3",
     "cookies-js": "^1.2.3",
-    "graphql-hooks": "^5.11.4",
     "lodash": "4.17.21",
     "prettier": "^2.0.5",
     "react": "^17.0.2",

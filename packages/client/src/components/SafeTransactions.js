@@ -2,10 +2,10 @@ import React from "react";
 import { isEmpty } from "lodash";
 import { Search } from "./Svg";
 import TransactionList from "./TransactionList";
-import { useFlowgraphTransactions } from "../hooks";
+import { useTreasuryTransactions } from "../hooks";
 
 function SafeTransactions({ safeData, address }) {
-  const transactions = useFlowgraphTransactions(address);
+  const { data: transactions } = useTreasuryTransactions(address);
   let TransactionsComponent = null;
 
   if (isEmpty(transactions)) {
