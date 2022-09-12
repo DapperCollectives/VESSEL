@@ -29,8 +29,8 @@ function EditContactModal({
   const updateBtnClasses = [
     "button",
     "flex-1",
-    "p-4",
-    canConfirm ? "is-link" : "",
+    "is-primary",
+    canConfirm ? "" : "disabled",
   ];
 
   return (
@@ -57,7 +57,7 @@ function EditContactModal({
         </div>
       </div>
       <div className="is-flex is-align-items-center mt-5 px-5">
-        <button className="button flex-1 p-4 mr-2" onClick={closeModal}>
+        <button className="button is-border flex-1 mr-2" onClick={closeModal}>
           Cancel
         </button>
         <button
@@ -71,6 +71,7 @@ function EditContactModal({
               closeModal();
             }
           }}
+          disabled={!canConfirm}
         >
           {confirmText}
         </button>
@@ -90,11 +91,11 @@ function RemoveContactModal({ contact, onConfirm, confirmText, closeModal }) {
         </p>
       </div>
       <div className="is-flex is-align-items-center mt-5 px-5">
-        <button className="button flex-1 p-4 mr-2" onClick={closeModal}>
+        <button className="button is-border flex-1 mr-2" onClick={closeModal}>
           Cancel
         </button>
         <button
-          className="button is-link flex-1 p-4"
+          className="button is-primary flex-1"
           onClick={() => {
             closeModal();
             onConfirm();
@@ -117,8 +118,11 @@ function EmptyContacts({ openAddModal }) {
         <h2 className="is-size-5">
           This safe doesn't have any saved addresses.
         </h2>
-        <button className="button is-link mt-4" onClick={openAddModal}>
-          Add Contact <Plus className="ml-2" />
+        <button
+          className="button is-primary mt-4 with-icon"
+          onClick={openAddModal}
+        >
+          Add Contact <Plus />
         </button>
       </div>
     </section>
@@ -129,10 +133,7 @@ function SafeContacts({ address }) {
   const { openModal, closeModal } = useModalContext();
   const clipboard = useClipboard();
   const { contacts, setContact, removeContact } = useContacts(address);
-
-  const minWidth = 120;
-  const addressWidth = 160;
-
+  
   const openAddModal = () =>
     openModal(
       <EditContactModal
@@ -179,8 +180,11 @@ function SafeContacts({ address }) {
       <div className="column p-0 mt-5 is-flex is-align-items-center is-justify-content-space-between is-full">
         <h4 className="is-size-5">Saved Addresses</h4>
         {!isEmpty(contacts) && (
-          <button className="button is-link" onClick={openAddModal}>
-            Add Contact <Plus className="ml-2" />
+          <button
+            className="button is-secondary is-small with-icon"
+            onClick={openAddModal}
+          >
+            Add Contact <Plus />
           </button>
         )}
       </div>
@@ -189,20 +193,16 @@ function SafeContacts({ address }) {
       ) : (
         <div className="column p-0 mt-4 is-flex is-flex-direction-column is-full rounded-sm border-light has-shadow">
           <div className="is-flex is-align-items-center is-justify-content-space-between column is-full p-5 border-light-bottom">
-            <div className="mr-5" style={{ width: addressWidth }}>
-              Address
-            </div>
-            <div className="px-2 mr-6" style={{ width: minWidth }}>
-              Name
-            </div>
-            <div style={{ width: minWidth }}>Actions</div>
+            <div className="flex-2">Address</div>
+            <div className="flex-1">Name</div>
+            <div className="flex-1">Actions</div>
           </div>
           {contacts.map((contact, index) => (
             <div
               className="is-flex is-align-items-center is-justify-content-space-between column is-full p-5 border-light-bottom"
               key={contact.address}
             >
-              <div className="mr-5" style={{ width: addressWidth }}>
+              <div className="flex-2">
                 <span
                   className="pointer"
                   onClick={() => clipboard.copy(contact.address)}
@@ -217,22 +217,20 @@ function SafeContacts({ address }) {
                   </span>
                 </span>
               </div>
-              <div className="px-2 mr-6" style={{ minWidth }}>
-                {contact?.name}
-              </div>
-              <div className="is-underlined" style={{ width: minWidth }}>
-                <span
-                  className="mr-5 pointer"
+              <div className="flex-1">{contact?.name}</div>
+              <div className="is-flex flex-1">
+                <button
+                  className="button is-transparent pl-0 pr-3"
                   onClick={() => openEditModal(index, contact)}
                 >
                   Edit
-                </span>
-                <span
-                  className="mr-5 pointer"
+                </button>
+                <button
+                  className="button is-transparent ml-5 px-5"
                   onClick={() => openRemoveModal(index, contact)}
                 >
                   Remove
-                </span>
+                </button>
               </div>
             </div>
           ))}

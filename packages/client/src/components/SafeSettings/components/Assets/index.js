@@ -108,35 +108,45 @@ const Assets = ({
 
   return (
     <div>
-      <div className="px-0 mt-5 columns">
-        <h4 className="is-size-5 column">Token Vaults</h4>
-        <button className="button is-add mr-3" onClick={openAddVaultModal}>
+      <div className="column p-0 mt-5 is-flex is-full is-justify-content-space-between">
+        <h4 className="is-size-5">Token Vaults</h4>
+        <button
+          className="button is-secondary is-small with-icon"
+          onClick={openAddVaultModal}
+        >
           Add Token Vault
           <Plus style={{ position: "relative", left: 5 }} />
         </button>
       </div>
-      {vaults && vaults[address] && (
-        <AssetTableView
-          assets={Object.values(vaults[address])}
-          emptyPlaceholder="You don't have any Token Vaults yet."
-          onRemoveClick={openRemoveVaultModal}
-        />
-      )}
+      <div className="column p-0 mt-4 is-flex is-flex-direction-column is-full rounded-sm border-light has-shadow">
+        {vaults && vaults[address] && (
+          <AssetTableView
+            assets={Object.values(vaults[address])}
+            emptyPlaceholder="You don't have any Token Vaults yet."
+            onRemoveClick={openRemoveVaultModal}
+          />
+        )}
+      </div>
 
-      <div className="p-0 mt-5 columns">
-        <h4 className="is-size-5 column">NFT Collections</h4>
-        <button className="button is-add mr-3" onClick={openAddCollectionModal}>
+      <div className="column p-0 mt-5 is-flex is-full is-justify-content-space-between">
+        <h4 className="is-size-5">NFT Collections</h4>
+        <button
+          className="button is-secondary is-small with-icon"
+          onClick={openAddCollectionModal}
+        >
           Add NFT Collection
           <Plus style={{ position: "relative", left: 5 }} />
         </button>
       </div>
-      {NFTs && NFTs[address] && (
-        <AssetTableView
-          assets={Object.keys(NFTs[address])}
-          emptyPlaceholder="You don't have any NFT Collections yet."
-          onRemoveClick={openRemoveCollectionModal}
-        />
-      )}
+      <div className="column p-0 mt-4 is-flex is-flex-direction-column is-full rounded-sm border-light has-shadow">
+        {NFTs && NFTs[address] && (
+          <AssetTableView
+            assets={Object.keys(NFTs[address])}
+            emptyPlaceholder="You don't have any NFT Collections yet."
+            onRemoveClick={openRemoveCollectionModal}
+          />
+        )}
+      </div>
     </div>
   );
 };

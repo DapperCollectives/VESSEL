@@ -53,9 +53,9 @@ const TransactionSuccessModal = ({
   return (
     <div className="p-5 has-text-black has-text-left">
       <div className="p-5 success-modal-background">
-        <button className="button flex-1 is-info mb-1">
-          Sent <ArrowUp className="ml-2 has-text-white" />
-        </button>
+        <label className="has-background-primary-purple has-text-white px-3 py-2 rounded-lg mb-1">
+          Sent <ArrowUp className="ml-1" />
+        </label>
         <div className="pl-4">
           {actionType === ACTION_TYPES.TRANSFER_NFT && (
             <>
@@ -120,9 +120,9 @@ const TransactionSuccessModal = ({
           </div>
         </div>
       </div>
-      <div className="is-flex is-align-items-center mt-5">
+      <div className="is-flex is-justify-content-space-between mt-5">
         <a
-          className="button flex-1 p-4 mr-2 rounded-sm"
+          className="button is-border flex-1"
           href={getFlowscanUrlForTransaction(txID)}
           target="_blank"
           rel="noreferrer"
@@ -130,10 +130,7 @@ const TransactionSuccessModal = ({
           Flowscan &nbsp;
           <OpenNewTab />
         </a>
-        <button
-          className="button flex-1 p-4 rounded-sm is-done"
-          onClick={onClose}
-        >
+        <button className="button is-primary flex-1 ml-2" onClick={onClose}>
           Done
         </button>
       </div>

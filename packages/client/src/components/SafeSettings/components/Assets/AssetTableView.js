@@ -11,7 +11,7 @@ const AssetTableView = ({ assets, emptyPlaceholder, onRemoveClick }) => {
   const clipboard = useClipboard();
 
   return (
-    <div className="border-light rounded-sm py-3 table-border">
+    <div className="rounded-sm py-3 table-border">
       {assets.length > 0 ? (
         assets.map((asset) => {
           const { contractName, contractAddress } = parseIdentifier(asset);
@@ -26,7 +26,7 @@ const AssetTableView = ({ assets, emptyPlaceholder, onRemoveClick }) => {
                   className="pointer"
                   onClick={() => clipboard.copy(formattedAddress)}
                 >
-                  <Copy className="mt-1 ml-2 pointer" />
+                  <Copy className="mt-1 ml-1 pointer" />
                 </span>
               </div>
               <a

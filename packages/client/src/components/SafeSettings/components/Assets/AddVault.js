@@ -18,8 +18,7 @@ const AddVault = ({ address, onCancel, onNext }) => {
     vaultName &&
     !vaultProps.vaults[address]?.find((id) => id.indexOf(vaultName) >= 0);
 
-  const nextButtonClasses = [
-    "button flex-1 p-4",
+  const isDisabled = [
     isFormValid ? "is-link" : "is-light is-disabled",
   ];
 
@@ -45,10 +44,10 @@ const AddVault = ({ address, onCancel, onNext }) => {
         )}
       </div>
       <div className="is-flex is-align-items-center mt-6">
-        <button className="button flex-1 p-4 mr-2" onClick={onCancel}>
+        <button className="button flex-1 is-border mr-2" onClick={onCancel}>
           Cancel
         </button>
-        <button className={nextButtonClasses.join(" ")} onClick={onNextClick}>
+        <button className={`button flex-1 is-primary ${isDisabled}`} onClick={onNextClick}>
           Confirm
         </button>
       </div>
