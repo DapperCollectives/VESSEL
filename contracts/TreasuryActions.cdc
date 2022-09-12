@@ -306,7 +306,6 @@ pub contract TreasuryActionsV4 {
 
       // Add Signer
       manager.addSigner(signer: self.signer)
-      log("\n\nEXECUTINGGGGG!!!!!!!!!\n\n")
       // Update Threshold
       manager.updateThreshold(newThreshold: self.threshold)
     }
