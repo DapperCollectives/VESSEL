@@ -36,8 +36,8 @@ const AddSafeOwner = ({ onCancel, onNext, safeOwners }) => {
   };
 
   const nextButtonClasses = [
-    "button flex-1 p-4",
-    addressValid ? "is-link" : "is-light is-disabled",
+    "button flex-1 is-primary",
+    addressValid ? "" : "disabled",
   ];
 
   return (
@@ -79,7 +79,7 @@ const AddSafeOwner = ({ onCancel, onNext, safeOwners }) => {
           </div>
         </div>
         <div className="is-flex is-align-items-center mt-6">
-          <button className="button flex-1 p-4 mr-2" onClick={onCancel}>
+          <button className="button flex-1 is-border mr-2" onClick={onCancel}>
             Cancel
           </button>
           <button

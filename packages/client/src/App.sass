@@ -89,15 +89,11 @@ $input-shadow: none
 $input-color: black
 
 /*********************Component variables -  Button********************/
-$button-background-color: transparent
-$button-border-color: #7464F0
-$button-active-border-color: black
-$button-hover-border-color: $purple-dark
-$button-hover-color: $purple-dark
-$button-focus-border-color: black
-$button-color: #7464F0
+
 $button-font: DM Sans
 $button-font-weight: 700
+$button-focus-box-shadow-size: 0
+$button-hover-color: $purple-primary
 
 /*********************Component variables -  Modal********************/
 $modal-background-background-color: rgba(1, 1, 1, 0.5)
@@ -232,24 +228,150 @@ h2
   background: $purple-secondary
 
 /********************* Custom utility css - Button ********************/
-.button.is-link,
-.button:hover.is-link
-  color: white
-  background-color: #0C14D0
-.button.is-info,
-.button:hover.is-info
-  color: white
-  background-color: $purple-primary
-  border-radius: 100px
-  padding: 4px 12px
-  height: 26px
-  cursor: default
-.button.is-done
-  color: white
-  background-color: $purple-primary
 .button
-  height: auto
+  height: auto !important
+  padding: 16px 32px
+  font-size:0.875rem
+  border: none
+  box-shadow:none
+  border-radius: 8px !important
+.button.disabled
+  animation: none !important
+.button.is-small
+  padding: 8px 12px
+  font-size: 0.875rem
+  border-radius: 8px !important
+.button.with-icon>svg
+  margin-left:12px
+.button.is-small.with-icon>svg
+  transform: scale(0.7)
 
+//primary button
+@keyframes primary-button-animation 
+  0% 
+    background-color: $purple-primary
+  100%
+    background-color: $purple-dark
+.button.is-primary
+  background-color: $purple-primary
+  color:$white
+
+.button.is-primary:hover, .button.is-primary:focus
+  background-color: $purple-dark
+  box-shadow:none
+.button.is-primary:hover
+  animation-duration: 300ms
+  animation-name: primary-button-animation
+.button.is-primary.disabled
+  background:$grey-secondary
+  color:$black
+
+//secondary button
+@keyframes secondary-button-animation 
+  0% 
+    background-color: $purple-background
+  100%
+    background-color: $purple-tertiary
+.button.is-secondary
+  background-color: $purple-background
+  color:$purple-primary
+.button.is-secondary:hover, .button.is-secondary:focus
+  background-color: $purple-tertiary
+  box-shadow:none
+.button.is-secondary:hover
+  animation-duration: 300ms
+  animation-name: secondary-button-animation
+.button.is-secondary.disabled
+  background:$grey-secondary
+  color:$black
+
+//tertiary button
+@keyframes tertiary-button-animation 
+  0% 
+    background-color: $green-primary
+  100%
+    background-color: $green-dark
+.button.is-tertiary
+  background-color: $green-primary
+  color:$black
+.button.is-tertiary:hover, .button.is-tertiary:focus
+  background-color: $green-dark
+  box-shadow:none
+.button.is-tertiary:hover
+  animation-duration: 300ms
+  animation-name: tertiary-button-animation
+.button.is-tertiary.disabled
+  background:$grey-tertiary
+  color:$black
+
+//border button
+@keyframes border-button-animation 
+  0% 
+    border: 1px solid $purple-primary
+    color: $purple-primary
+  100%
+    border: 1px solid $purple-dark
+    color: $purple-dark
+.button.is-border
+  background-color: $white
+  color: $purple-primary
+  border: 1px solid $purple-primary
+.button.is-border:hover, .button.is-border:focus
+  border: 1px solid $purple-dark
+  color: $purple-dark
+  box-shadow:none
+.button.is-border:hover
+  animation-duration: 300ms
+  animation-name: border-button-animation
+.button.is-border.disabled
+  background:$white
+  color:$grey-dark
+
+//transparent button
+@keyframes transparent-button-animation 
+  0% 
+    color: $purple-primary
+  100%
+    color: $purple-dark
+.button.is-transparent
+  background-color: transparent
+  color: $purple-primary
+  padding-top: 0
+  padding-bottom: 0
+.button.is-transparent:hover, .button.is-transparent:focus
+  color: $purple-dark
+  box-shadow:none
+.button.is-transparent:hover
+  animation-duration: 300ms
+  animation-name: transparent-button-animation
+.button.is-transparent.disabled
+  color:$grey-dark
+
+//nav button
+@keyframes nav-button-animation 
+  0% 
+    background-color: transparent
+  100%
+    background-color: $black-6
+.button.is-nav
+  color: $grey-dark
+  font-weight: 500
+  padding: 1rem
+.button.is-nav:hover:not(.is-focused)
+  animation-duration: 300ms
+  animation-name: nav-button-animation
+  background-color: $black-6
+.button.is-nav.is-focused
+  background-color: $purple-background
+  color: $purple-primary
+/********************* Custom utility css - Link ********************/
+.is-link
+  color: $black
+.is-link:hover, .is-link:visited
+  color: $purple-dark
+  cursor: pointer
+.is-link.disabled
+  color: $grey-secondary
 /********************* Custom utility css - Label ********************/
 label
   user-select: none
@@ -278,6 +400,17 @@ input:focus-visible
   flex: 1 0 0
 .flex-2
   flex: 2 0 0
+
+/********************* Custom utility css - Animation ********************/
+@keyframes purple-background-animation 
+  0% 
+    background-color: $white
+  100%
+    background-color: $purple-background
+.has-purple-background-hover-animation:hover
+  animation-name: purple-background-animation !important
+  animation-duration: 300ms !important
+  background-color: $purple-background
 
 /********************* Custom utility css - Misc ********************/
 .has-shadow

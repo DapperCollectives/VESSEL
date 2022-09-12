@@ -27,8 +27,8 @@ const EditThresholdForm = ({
       : "is-disabled",
   ];
   const reviewButtonClasses = [
-    "button flex-1 p-4",
-    canContinueToReview ? "is-link" : "is-light is-disabled",
+    "button is-primary flex-1",
+    canContinueToReview ? "" : "disabled",
   ];
   const progress = getProgressPercentageForSignersAmount(newThreshold);
 
@@ -79,7 +79,7 @@ const EditThresholdForm = ({
           </div>
         </div>
         <div className="is-flex is-align-items-center mt-6">
-          <button className="button flex-1 p-4 mr-2" onClick={closeModal}>
+          <button className="button flex-1 is-border mr-2" onClick={closeModal}>
             Cancel
           </button>
           <button

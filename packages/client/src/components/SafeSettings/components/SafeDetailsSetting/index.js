@@ -29,30 +29,33 @@ const SafeDetailsSetting = ({ treasury, setTreasury }) => {
           <div className="has-text-grey">Name</div>
           <div className="mt-1 is-flex is-justify-content-space-between">
             <div>{name}</div>
-            <div className="is-underlined pointer" onClick={openEditNameModal}>
+            <button
+              className="button is-transparent"
+              onClick={openEditNameModal}
+            >
               Edit
-            </div>
+            </button>
           </div>
         </div>
         <div className="border-light-right pr-5 mr-5 flex-1">
           <div className="has-text-grey">Address</div>
           <div className="mt-1 is-flex is-justify-content-space-between">
             <div>{address}</div>
-            <div
-              className="is-underlined pointer"
+            <button
+              className="button is-transparent"
               onClick={() => safeAddressClipboard.copy(address)}
             >
               {safeAddressClipboard.textJustCopied === address
                 ? "Copied"
                 : "Copy"}
-            </div>
+            </button>
           </div>
         </div>
         <div className="flex-1">
           <div className="has-text-grey">Contract Version</div>
           <div className="mt-1 is-flex is-justify-content-space-between">
             <div>Flow 1.2</div>
-            <div className="is-underlined">Details</div>
+            <button className="button is-transparent">Details</button>
           </div>
         </div>
       </div>

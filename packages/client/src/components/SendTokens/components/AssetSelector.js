@@ -28,8 +28,7 @@ const AssetSelector = () => {
         <div className="border-light rounded-sm p-1 is-flex column is-full">
           <button
             className={`button border-none flex-1 ${
-              assetType === ASSET_TYPES.TOKEN &&
-              "has-background-black has-text-white"
+              assetType === ASSET_TYPES.TOKEN && "has-background-info"
             }`}
             onClick={() =>
               setSendModalState((prevState) => ({
@@ -42,8 +41,7 @@ const AssetSelector = () => {
           </button>
           <button
             className={`button border-none flex-1 ${
-              assetType === ASSET_TYPES.NFT &&
-              "has-background-black has-text-white"
+              assetType === ASSET_TYPES.NFT && "has-background-info"
             }`}
             onClick={() =>
               setSendModalState((prevState) => ({

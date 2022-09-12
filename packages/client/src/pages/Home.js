@@ -19,13 +19,11 @@ const SafeLinks = () => (
       </p>
       <div className="is-flex">
         <NavLink className="has-text-black" to="/load-safe">
-          <button className="button py-4 px-6 pointer flex-1 mr-2">
-            Load safe
-          </button>
+          <button className="button is-border  flex-1 mr-2">Load safe</button>
         </NavLink>
         <NavLink to="/create-safe">
-          <button className="button py-4 px-6 pointer flex-1 is-link">
-            <Svg name="Plus" className="mr-2" /> Create new safe
+          <button className="button is-primary flex-1">
+            <Svg name="Plus" /> Create new safe
           </button>
         </NavLink>
       </div>

@@ -46,7 +46,7 @@ function SafeOverview({ allBalance }) {
               <label>Tokens</label>
               {!!tokensWithPositiveBalance.length && (
                 <Link to={(location) => `${location.pathname}/assets`}>
-                  <strong>View All</strong>
+                  <strong className="has-text-white">View All</strong>
                 </Link>
               )}
             </div>
@@ -54,7 +54,7 @@ function SafeOverview({ allBalance }) {
               <div className="p-3 mb-1">
                 <div className="is-flex is-flex-direction-column is-justify-content-center is-align-items-center">
                   <p className="has-text-white ">You don't have any tokens</p>
-                  <button className="button column is-half has-text-small has-background-white mt-2 p-3 rounded-sm">
+                  <button className="button column is-half mt-2 has-purple-background-hover-animation has-text-purple">
                     Deposit Tokens
                   </button>
                 </div>

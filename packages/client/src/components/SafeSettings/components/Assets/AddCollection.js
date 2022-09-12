@@ -24,8 +24,8 @@ const AddCollection = ({ onCancel, onNext }) => {
   };
 
   const nextButtonClasses = [
-    "button flex-1 p-4",
-    isFormValid ? "is-link" : "is-light is-disabled",
+    "button flex-1 is-primary",
+    isFormValid ? "" : "disabled",
   ];
 
   return (
@@ -60,7 +60,7 @@ const AddCollection = ({ onCancel, onNext }) => {
           </div>
         </div>
         <div className="is-flex is-align-items-center mt-6">
-          <button className="button flex-1 p-4 mr-2" onClick={onCancel}>
+          <button className="button is-border flex-1 mr-2" onClick={onCancel}>
             Cancel
           </button>
           <button
