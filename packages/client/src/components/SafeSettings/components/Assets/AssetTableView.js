@@ -30,7 +30,7 @@ const AssetTableView = ({ assets, emptyPlaceholder, onRemoveClick }) => {
                 </span>
               </div>
               <a
-                className="column is-flex is-justify-content-end has-text-purple button border-none"
+                className="column button is-flex is-justify-content-end is-transparent"
                 href={getFlowscanUrlForContract(contractAddress, contractName)}
                 target="_blank"
                 rel="noreferrer"
@@ -38,7 +38,7 @@ const AssetTableView = ({ assets, emptyPlaceholder, onRemoveClick }) => {
                 View on Flowscan
               </a>
               <button
-                className="column is-flex is-justify-content-end has-text-purple button border-none"
+                className="column button is-flex is-justify-content-end is-transparent"
                 onClick={() => onRemoveClick(asset, contractName)}
               >
                 Remove

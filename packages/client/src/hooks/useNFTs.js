@@ -150,7 +150,7 @@ export default function useNFTs(treasuryAddr) {
     }
 
     for (const identifier in collections) {
-      await checkCollection(treasuryAddr, collections[identifier]);
+      checkCollection(treasuryAddr, collections[identifier]);
     }
   };
 

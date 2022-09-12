@@ -11,16 +11,14 @@ const AddVault = ({ address, onCancel, onNext }) => {
   };
   const vaultProps = useVaults(address);
 
-  const [coinType, setCoinType] = useState("Select Token");
+  const [coinType, setCoinType] = useState();
   const vaultName = COIN_TYPE_TO_META[coinType]?.vaultName;
 
   const isFormValid =
     vaultName &&
     !vaultProps.vaults[address]?.find((id) => id.indexOf(vaultName) >= 0);
 
-  const isDisabled = [
-    isFormValid ? "is-link" : "is-light is-disabled",
-  ];
+  const isDisabled = isFormValid ? "" : "disabled";
 
   const coinTypes = Object.entries(COIN_TYPE_TO_META).map((type) => ({
     itemValue: type[0],
@@ -47,7 +45,10 @@ const AddVault = ({ address, onCancel, onNext }) => {
         <button className="button flex-1 is-border mr-2" onClick={onCancel}>
           Cancel
         </button>
-        <button className={`button flex-1 is-primary ${isDisabled}`} onClick={onNextClick}>
+        <button
+          className={`button flex-1 is-primary ${isDisabled}`}
+          onClick={onNextClick}
+        >
           Confirm
         </button>
       </div>
