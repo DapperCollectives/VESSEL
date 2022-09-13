@@ -145,7 +145,7 @@ const Assets = ({
       </div>
       <div className="column p-0 mt-4 is-flex is-flex-direction-column is-full rounded-sm border-light has-shadow">
         <AssetTableView
-          assets={vaults[address] && Object.values(vaults[address])}
+          assets={Object.values(vaults[address] || [])}
           emptyPlaceholder="You don't have any Token Vaults yet."
           onRemoveClick={openRemoveVaultModal}
         />
@@ -163,7 +163,7 @@ const Assets = ({
       </div>
       <div className="column p-0 mt-4 is-flex is-flex-direction-column is-full rounded-sm border-light has-shadow">
         <AssetTableView
-          assets={NFTs[address] && Object.keys(NFTs[address])}
+          assets={Object.keys(NFTs[address] || {})}
           emptyPlaceholder="You don't have any NFT Collections yet."
           onRemoveClick={openRemoveCollectionModal}
         />

@@ -19,11 +19,13 @@ const vaultsReducer = (state = VAULTS_INITIAL_STATE, action) => {
     }
     case "ADD_VAULT": {
       const address = Object.keys(action.payload)[0];
+      const existingVaults = state.vaults[address] || [];
+
       return {
         ...state,
         vaults: {
           ...state.vaults,
-          [address]: [...state.vaults[address], action.payload[address]],
+          [address]: [ ...existingVaults, action.payload[address]],
         },
         loadingVaults: false,
         error: null,

@@ -12,7 +12,7 @@ const AssetTableView = ({ assets, emptyPlaceholder, onRemoveClick }) => {
 
   return (
     <div className="rounded-sm py-3 table-border">
-      {assets && assets.length > 0 ? (
+      {assets.length > 0 ? (
         assets.map((asset) => {
           const { contractName, contractAddress } = parseIdentifier(asset);
           const formattedAddress = formatAddress(contractAddress);
