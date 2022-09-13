@@ -12,10 +12,13 @@ const SafeSettings = () => {
   const web3 = useContext(Web3Context);
   const treasury = web3?.treasuries?.[treasuryAddress];
   const {
+    address,
     setTreasury,
     proposeRemoveSigner,
     vaults,
     NFTs,
+    getTreasuryVaults,
+    getTreasuryCollections,
     addVault,
     addCollection,
     removeVault,
@@ -28,11 +31,14 @@ const SafeSettings = () => {
       <SignatureThreshold treasury={treasury} />
       <Owners treasury={treasury} proposeRemoveSigner={proposeRemoveSigner} />
       <Assets
+        userAddr={address}
         treasury={treasury}
         vaults={vaults}
         NFTs={NFTs}
         addVault={addVault}
         addCollection={addCollection}
+        getTreasuryVaults={getTreasuryVaults}
+        getTreasuryCollections={getTreasuryCollections}
         removeVault={removeVault}
         removeCollection={removeCollection}
       />

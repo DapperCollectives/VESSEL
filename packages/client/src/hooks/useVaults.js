@@ -66,12 +66,14 @@ export default function useVaults(treasuryAddr) {
 
     const vaults = (identifiers && identifiers[0]) ?? [];
 
-    dispatch({
-      type: "SET_VAULTS",
-      payload: {
-        [treasuryAddr]: vaults,
-      },
-    });
+    if (vaults.length !== 0) {
+      dispatch({
+        type: "SET_VAULTS",
+        payload: {
+          [treasuryAddr]: vaults,
+        },
+      });
+    }
   };
 
   const addVault = async (coinType) => {

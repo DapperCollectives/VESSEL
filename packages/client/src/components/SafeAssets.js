@@ -6,7 +6,7 @@ import SendTokens from "./SendTokens";
 
 function SafeAssets({ web3, name, address }) {
   const assetComponents = [];
-  const { getTreasuryCollections, getTreasuryVaults } = web3;
+  const { getTreasuryCollections } = web3;
   const userAddr = web3?.user?.addr;
   const modalContext = useModalContext();
 
@@ -18,15 +18,11 @@ function SafeAssets({ web3, name, address }) {
       await getTreasuryCollections(address);
     };
 
-    const getVaults = async () => {
-      await getTreasuryVaults(address);
-    };
     getCollections();
-    getVaults();
     // eslint-disable-next-line
   }, [userAddr]);
 
-  const userNFTs = web3?.NFTs?.[userAddr] ?? [];
+  const userNFTs = web3?.NFTs?.[address] ?? [];
   const nftsToDisplay = Object.entries(userNFTs)
     .map(([key, tokens]) => {
       if (isEmpty(tokens)) {

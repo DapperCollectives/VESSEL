@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useModalContext } from "contexts";
 import { formatAddress, getTokenMeta, parseIdentifier } from "utils";
 import { useErrorMessage } from "hooks";
@@ -10,9 +10,12 @@ import AssetTableView from "./AssetTableView";
 import RemoveAsset from "./RemoveAsset";
 
 const Assets = ({
+  userAddr,
   treasury,
   vaults,
   NFTs,
+  getTreasuryVaults,
+  getTreasuryCollections,
   addVault,
   addCollection,
   removeVault,
@@ -21,6 +24,23 @@ const Assets = ({
   const { address } = treasury;
   const { openModal, closeModal } = useModalContext();
   const { showErrorModal } = useErrorMessage();
+
+  useEffect(() => {
+    if (!userAddr) {
+      return;
+    }
+    const getVaults = async () => {
+      await getTreasuryVaults(address);
+    };
+
+    const getCollections = async () => {
+      await getTreasuryCollections(address);
+    };
+
+    getVaults();
+    getCollections();
+    // eslint-disable-next-line
+  }, [userAddr]);
 
   const onAddVaultSubmit = async (form) => {
     try {
