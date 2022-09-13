@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext } from "react";
 import { useLocation } from "react-router-dom";
 import { Web3Context } from "contexts/Web3";
 import SafeDetailsSetting from "./components/SafeDetailsSetting";
@@ -16,30 +16,11 @@ const SafeSettings = () => {
     proposeRemoveSigner,
     vaults,
     NFTs,
-    getTreasuryVaults,
-    getTreasuryCollections,
     addVault,
     addCollection,
     removeVault,
     removeCollection,
   } = web3;
-
-  useEffect(() => {
-    if (!treasuryAddress) {
-      return;
-    }
-
-    const getCollections = async () => {
-      await getTreasuryCollections(treasuryAddress);
-    };
-
-    const getVaults = async () => {
-      await getTreasuryVaults(treasuryAddress);
-    };
-    getCollections();
-    getVaults();
-    // eslint-disable-next-line
-  }, [treasuryAddress]);
 
   return (
     <React.Fragment>
