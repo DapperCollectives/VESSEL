@@ -6,13 +6,13 @@ import { useVaults } from "hooks";
 const AddVault = ({ address, onCancel, onNext }) => {
   const onNextClick = () => {
     onNext({
-      coinType,
+      selectedCoinType,
     });
   };
   const vaultProps = useVaults(address);
 
-  const [coinType, setCoinType] = useState();
-  const vaultName = COIN_TYPE_TO_META[coinType]?.vaultName;
+  const [selectedCoinType, setSelectedCoinType] = useState();
+  const vaultName = COIN_TYPE_TO_META[selectedCoinType]?.vaultName;
 
   const isFormValid =
     vaultName &&
@@ -30,10 +30,11 @@ const AddVault = ({ address, onCancel, onNext }) => {
       <div className="flex-1 is-flex is-flex-direction-column">
         <label className="has-text-grey mb-2">Tokens</label>
         <Dropdown
-          value={coinType}
+          value={selectedCoinType}
           values={coinTypes}
-          setValue={setCoinType}
+          setValue={setSelectedCoinType}
           style={{ height: "45px" }}
+          defaultText="Select Token"
         />
         {vaultName && !isFormValid && (
           <p className="has-text-red mt-2">
