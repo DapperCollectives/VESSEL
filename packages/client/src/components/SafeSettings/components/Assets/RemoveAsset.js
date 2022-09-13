@@ -1,4 +1,4 @@
-const RemoveVault = ({ name, address, onCancel, onNext }) => {
+const RemoveAsset = ({ name, address, explanation, onCancel, onNext }) => {
   return (
     <div className="p-5">
       <p>
@@ -6,8 +6,7 @@ const RemoveVault = ({ name, address, onCancel, onNext }) => {
         <span className="has-text-weight-bold">
           remove {name} ({address})
         </span>
-        &nbsp;from the treasury. This is only possible if your balance for this
-        token is 0.
+        &nbsp;from the treasury. {explanation}
       </p>
       <div className="is-flex mt-5">
         <button className="button flex-1 is-border mr-2" onClick={onCancel}>
@@ -21,4 +20,4 @@ const RemoveVault = ({ name, address, onCancel, onNext }) => {
   );
 };
 
-export default RemoveVault;
+export default RemoveAsset;

@@ -7,8 +7,7 @@ import { Plus } from "components/Svg";
 import AddVault from "./AddVault";
 import AddCollection from "./AddCollection";
 import AssetTableView from "./AssetTableView";
-import RemoveVault from "./RemoveVault";
-import RemoveCollection from "./RemoveCollection";
+import RemoveAsset from "./RemoveAsset";
 
 const Assets = ({
   treasury,
@@ -83,9 +82,12 @@ const Assets = ({
   const openRemoveVaultModal = (identifier) => {
     const { displayName, tokenAddress } = getTokenMeta(identifier);
     openModal(
-      <RemoveVault
+      <RemoveAsset
         name={displayName}
         address={formatAddress(tokenAddress)}
+        explanation={
+          "This is only possible if your balance for this token is 0."
+        }
         onCancel={() => closeModal()}
         onNext={() => onRemoveVaultSubmit(identifier)}
       />,
@@ -96,9 +98,12 @@ const Assets = ({
   const openRemoveCollectionModal = (identifier) => {
     const { contractName, contractAddress } = parseIdentifier(identifier);
     openModal(
-      <RemoveCollection
+      <RemoveAsset
         name={contractName}
         address={formatAddress(contractAddress)}
+        explanation={
+          "This is only possible if you don’t have any NFT from this collection in your treasury."
+        }
         onCancel={() => closeModal()}
         onNext={() => onRemoveCollectionSubmit(identifier)}
       />,
