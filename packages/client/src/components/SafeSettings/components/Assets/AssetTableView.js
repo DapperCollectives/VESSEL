@@ -5,7 +5,7 @@ import {
   getFlowscanUrlForContract,
   parseIdentifier,
 } from "utils";
-import { Copy } from "components/Svg";
+import Svg from "library/Svg";
 
 const AssetTableView = ({ assets, emptyPlaceholder, onRemoveClick }) => {
   const clipboard = useClipboard();
@@ -26,7 +26,7 @@ const AssetTableView = ({ assets, emptyPlaceholder, onRemoveClick }) => {
                   className="pointer"
                   onClick={() => clipboard.copy(formattedAddress)}
                 >
-                  <Copy className="mt-1 ml-1 pointer" />
+                  <Svg name="Copy" className="mt-1 ml-1 pointer" />
                 </span>
               </div>
               <div className="column">

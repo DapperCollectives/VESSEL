@@ -111,9 +111,11 @@ export const getTokenMeta = (vaultId) => {
   if (vaultId) {
     const tokenName = vaultId.split(".")[2];
     const tokenAddress = vaultId.split(".")[1];
+    const tokenType = CONTRACT_NAME_TO_COIN_TYPE[tokenName];
     return {
       ...COIN_TYPE_TO_META[CONTRACT_NAME_TO_COIN_TYPE[tokenName]],
       tokenAddress,
+      tokenType,
     };
   }
 };

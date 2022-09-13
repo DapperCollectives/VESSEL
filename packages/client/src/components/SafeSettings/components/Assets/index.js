@@ -3,9 +3,9 @@ import { useModalContext } from "contexts";
 import { formatAddress, getTokenMeta, parseIdentifier } from "utils";
 import { useErrorMessage } from "hooks";
 
-import { Plus } from "components/Svg";
 import AddVault from "./AddVault";
 import AddCollection from "./AddCollection";
+import Svg from "library/Svg";
 import AssetTableView from "./AssetTableView";
 import RemoveAsset from "./RemoveAsset";
 
@@ -140,7 +140,7 @@ const Assets = ({
           onClick={openAddVaultModal}
         >
           Add Token Vault
-          <Plus style={{ position: "relative", left: 5 }} />
+          <Svg name="Plus" style={{ position: "relative", left: 5 }} />
         </button>
       </div>
       <div className="column p-0 mt-4 is-flex is-flex-direction-column is-full rounded-sm border-light has-shadow">
@@ -158,7 +158,7 @@ const Assets = ({
           onClick={openAddCollectionModal}
         >
           Add NFT Collection
-          <Plus style={{ position: "relative", left: 5 }} />
+          <Svg name="Plus" style={{ position: "relative", left: 5 }} />
         </button>
       </div>
       <div className="column p-0 mt-4 is-flex is-flex-direction-column is-full rounded-sm border-light has-shadow">

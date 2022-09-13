@@ -1,7 +1,7 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 import { WalletPrompt } from "../components";
-import { Plus } from "../components/Svg";
+import Svg from "library/Svg";
 import { Web3Consumer } from "../contexts/Web3";
 
 const SafeLinks = () => (
@@ -22,8 +22,8 @@ const SafeLinks = () => (
           <button className="button is-border  flex-1 mr-2">Load safe</button>
         </NavLink>
         <NavLink to="/create-safe">
-          <button className="button is-primary flex-1">
-            <Plus className="mr-2" /> Create new safe
+          <button className="button is-primary flex-1 with-icon">
+            Create new safe <Svg name="Plus" />
           </button>
         </NavLink>
       </div>

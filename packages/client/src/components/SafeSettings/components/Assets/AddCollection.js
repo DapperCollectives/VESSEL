@@ -1,5 +1,5 @@
 import { useState } from "react";
-import InputAddress from "../../../InputAddress";
+import { InputAddress } from "library/components";
 
 const AddCollection = ({ onCancel, onNext }) => {
   const [contractName, setContractName] = useState("");

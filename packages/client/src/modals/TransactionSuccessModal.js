@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Web3Context } from "contexts/Web3";
 import { useClipboard, useContacts } from "../hooks";
-import { Copy, ArrowUp, OpenNewTab } from "../components/Svg";
+import Svg from "library/Svg";
 import {
   getFlowscanUrlForTransaction,
   formatAddress,
@@ -23,7 +23,7 @@ const TransactionSuccessModal = ({
   const { contacts } = useContacts(safeAddress);
 
   const { recipient, nftId, collectionId, vaultId, tokenAmount } = actionData;
-  const { displayName, icon } = getTokenMeta(vaultId) || {};
+  const { displayName, tokenType } = getTokenMeta(vaultId) || {};
   const { contractName: NFTName, contractAddress: NFTAddress } =
     parseIdentifier(collectionId) || {};
   const { name: imageName, imageURI } = image || {};
@@ -54,7 +54,7 @@ const TransactionSuccessModal = ({
     <div className="p-5 has-text-black has-text-left">
       <div className="p-5 success-modal-background">
         <label className="has-background-primary-purple has-text-white px-3 py-2 rounded-lg mb-1">
-          Sent <ArrowUp className="ml-1" />
+          Sent <Svg name="ArrowUp" />
         </label>
         <div className="pl-4">
           {actionType === ACTION_TYPES.TRANSFER_NFT && (
@@ -80,7 +80,7 @@ const TransactionSuccessModal = ({
                 {Number(tokenAmount)}
               </span>
               <span className="columns is-vcentered is-multiline is-mobile is-size-6 has-text-weight-bold">
-                {icon} &nbsp; {displayName}
+                <Svg name={tokenType} /> &nbsp; {displayName}
               </span>
             </>
           )}
@@ -97,7 +97,7 @@ const TransactionSuccessModal = ({
                 className="pointer"
                 onClick={() => clipboard.copy(safeAddress)}
               >
-                <Copy className="mt-1 ml-2 pointer" />
+                <Svg name="Copy" className="mt-1 ml-2 pointer" />
               </span>
             </div>
           </div>
@@ -114,7 +114,7 @@ const TransactionSuccessModal = ({
                 className="pointer"
                 onClick={() => clipboard.copy(recipient)}
               >
-                <Copy className="mt-1 ml-2 pointer" />
+                <Svg name="Copy" className="mt-1 ml-2 pointer" />
               </span>
             </div>
           </div>
@@ -128,7 +128,7 @@ const TransactionSuccessModal = ({
           rel="noreferrer"
         >
           Flowscan &nbsp;
-          <OpenNewTab />
+          <Svg name="OpenNewTab" />
         </a>
         <button className="button is-primary flex-1 ml-2" onClick={onClose}>
           Done

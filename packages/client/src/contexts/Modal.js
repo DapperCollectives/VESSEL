@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from "react";
-import { Close } from "components/Svg";
+import Svg from "library/Svg";
 
 /**
  *
@@ -106,7 +106,7 @@ const ModalProvider = ({ children }) => {
                     style={{ width: 40 }}
                     className="pointer is-flex is-align-items-center is-justify-content-end"
                   >
-                    <Close />
+                    <Svg name="Close" />
                   </div>
                 </div>
               </div>

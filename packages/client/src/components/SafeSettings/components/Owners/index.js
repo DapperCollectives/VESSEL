@@ -6,7 +6,7 @@ import EditThreshold from "../EditThreshold";
 import RemoveSafeOwner from "./RemoveSafeOwner";
 import AddSafeOwner from "./AddSafeOwner";
 import { formatAddress } from "utils";
-import { Plus } from "components/Svg";
+import Svg from "library/Svg";
 
 const Owners = ({ treasury, proposeRemoveSigner }) => {
   const modalContext = useModalContext();
@@ -56,7 +56,7 @@ const Owners = ({ treasury, proposeRemoveSigner }) => {
           onClick={openAddOwnerModal}
         >
           Add new owner
-          <Plus style={{ position: "relative", left: 5 }} />
+          <Svg name="Plus" />
         </button>
       </div>
       <div className="column p-0 mt-4 is-flex is-flex-direction-column is-full rounded-sm border-light has-shadow">
