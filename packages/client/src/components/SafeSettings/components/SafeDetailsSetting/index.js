@@ -20,7 +20,7 @@ const SafeDetailsSetting = ({ treasury, setTreasury }) => {
     modalContext.closeModal();
   };
   return (
-    <div>
+    <div id="safeDetails">
       <div className="column p-0 mt-5 is-flex is-full">
         <h2>Safe Details</h2>
       </div>

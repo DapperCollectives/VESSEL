@@ -12,7 +12,7 @@ const SignatureThreshold = ({ treasury }) => {
     openModal(<EditThreshold treasury={treasury} />);
   };
   return (
-    <div>
+    <div id="signatureThreshold">
       <div className="column p-0 mt-5 is-flex is-full">
         <h4 className="is-size-5">Signature Threshold</h4>
       </div>

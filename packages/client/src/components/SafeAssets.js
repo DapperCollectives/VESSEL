@@ -67,7 +67,6 @@ function SafeAssets({ web3, name, address }) {
             onClick={() =>
               modalContext.openModal(
                 <SendTokens
-                  name={name}
                   address={address}
                   initialState={{
                     assetType: ASSET_TYPES.NFT,

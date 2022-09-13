@@ -10,7 +10,6 @@ const CoinTypeDropDown = ({ coinType, setCoinType, address }) => {
     itemValue: type[0],
     displayText: type[1].displayName,
   }));
-
   return (
     <Dropdown
       value={coinType}
