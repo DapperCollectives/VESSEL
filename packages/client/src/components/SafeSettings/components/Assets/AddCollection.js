@@ -53,7 +53,7 @@ const AddCollection = ({ onCancel, onNext }) => {
               />
               {addressValid && (
                 <div style={{ position: "absolute", right: 17, top: 14 }}>
-                  <Svg nam="Check" />
+                  <Svg name="Check" />
                 </div>
               )}
             </div>

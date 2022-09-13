@@ -11,6 +11,7 @@ const Svg = ({ name, ...props }) => {
         console.log(e);
       }
     })();
+    //eslint-disable-next-line
   }, [name]);
   if (!svgComponent) return null;
   return svgComponent;

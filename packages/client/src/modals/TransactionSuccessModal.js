@@ -53,7 +53,7 @@ const TransactionSuccessModal = ({
     <div className="p-5 has-text-black has-text-left">
       <div className="p-5 success-modal-background">
         <label className="has-background-primary-purple has-text-white px-3 py-2 rounded-lg mb-1">
-          Sent <ArrowUp className="ml-1" />
+          Sent <Svg name="ArrowUp" />
         </label>
         <div className="pl-4">
           {actionType === ACTION_TYPES.TRANSFER_NFT && (

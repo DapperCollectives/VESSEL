@@ -22,8 +22,8 @@ const SafeLinks = () => (
           <button className="button is-border  flex-1 mr-2">Load safe</button>
         </NavLink>
         <NavLink to="/create-safe">
-          <button className="button is-primary flex-1">
-            <Svg name="Plus" /> Create new safe
+          <button className="button is-primary flex-1 with-icon">
+            Create new safe <Svg name="Plus" />
           </button>
         </NavLink>
       </div>

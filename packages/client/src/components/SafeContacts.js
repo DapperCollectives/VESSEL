@@ -141,9 +141,6 @@ function SafeContacts({ address }) {
   const clipboard = useClipboard();
   const { contacts, setContact, removeContact } = useContacts(address);
 
-  const minWidth = 120;
-  const addressWidth = 160;
-
   const openAddModal = () =>
     openModal(
       <EditContactModal
