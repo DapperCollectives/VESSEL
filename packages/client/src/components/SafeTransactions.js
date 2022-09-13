@@ -16,7 +16,7 @@ function SafeTransactions({ safeData, address }) {
         }}
         className="is-flex is-justify-content-center is-align-items-center is-flex-direction-column"
       >
-        <h2 className="is-size-4">You don't have any transaction history</h2>
+        <h2>You don't have any transaction history</h2>
         <p className="has-text-grey">Create a new transaction above</p>
       </div>
     );

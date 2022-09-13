@@ -181,7 +181,7 @@ function SafeContacts({ address }) {
   return (
     <>
       <div className="column p-0 mt-5 is-flex is-align-items-center is-justify-content-space-between is-full">
-        <h4 className="is-size-5">Saved Addresses</h4>
+        <h2>Saved Addresses</h2>
         {!isEmpty(contacts) && (
           <button
             className="button is-secondary is-small with-icon"

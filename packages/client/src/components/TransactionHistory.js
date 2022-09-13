@@ -27,7 +27,7 @@ function TransactionHistory({ safeData, address }) {
   return (
     <>
       <div className="column p-0 mt-5 is-flex is-full">
-        <h4 className="is-size-5 mb-4">Transaction history</h4>
+        <h2 className="mb-4">Transaction history</h2>
       </div>
       {TransactionsComponent}
     </>

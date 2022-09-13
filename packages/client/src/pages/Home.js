@@ -11,9 +11,7 @@ const SafeLinks = () => (
         className="safe-img mb-6"
         style={{ height: 220, width: 280, background: "#f6f6f6" }}
       />
-      <h1 className="title has-text-black is-size-3">
-        Create or load a Safe to get started
-      </h1>
+      <h1 className="has-text-black">Create or load a Safe to get started</h1>
       <p className="subtitle has-text-grey">
         We’ll get you onboarded after we import your data
       </p>

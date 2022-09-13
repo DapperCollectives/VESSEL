@@ -223,7 +223,7 @@ function Safe({ web3 }) {
         {process.env.REACT_APP_FLOW_ENV !== "mainnet" && (
           <TestToolBox address={address} />
         )}
-        <h1 className="is-size-4 mb-2">{safeData.name}</h1>
+        <h1 className=" mb-2">{safeData.name}</h1>
         <p>
           <span className="has-text-grey">
             Safe address {shortenAddr(address)}
