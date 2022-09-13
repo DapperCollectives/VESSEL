@@ -1,6 +1,6 @@
 import React, { useState, useContext } from "react";
 import { useAddressValidation } from "hooks";
-import { Check } from "components/Svg";
+import Svg from "library/Svg";
 import { isAddr } from "utils";
 import { Web3Context } from "contexts/Web3";
 
@@ -48,7 +48,7 @@ const RemoveSafeOwner = ({ safeOwner, onCancel, onSubmit }) => {
             />
             {addressValid && (
               <div style={{ position: "absolute", right: 17, top: 14 }}>
-                <Check />
+                <Svg name="Check" />
               </div>
             )}
           </div>

@@ -4,8 +4,8 @@ import { NavLink, useHistory } from "react-router-dom";
 import { WalletPrompt } from "../components";
 import { isAddr, getProgressPercentageForSignersAmount } from "../utils";
 import { Web3Consumer } from "../contexts/Web3";
-import { Check, Person } from "../components/Svg";
-import { ProgressBar } from "../components";
+import Svg from "library/Svg";
+import { ProgressBar } from "library/components";
 import { useAddressValidation } from "../hooks";
 
 const SafeHeader = ({
@@ -152,7 +152,7 @@ function LoadSafe({ web3 }) {
               />
               {safeOwnersValidByAddress[so.address] && (
                 <div style={{ position: "absolute", right: 17, top: 14 }}>
-                  <Check />
+                  <Svg name="Check" />
                 </div>
               )}
             </div>
@@ -205,7 +205,7 @@ function LoadSafe({ web3 }) {
             />
             {!isEmpty(safeOwners) && (
               <div style={{ position: "absolute", right: 17, top: 14 }}>
-                <Check />
+                <Svg name="Check" />
               </div>
             )}
           </div>
@@ -236,7 +236,7 @@ function LoadSafe({ web3 }) {
                 style={{ minHeight: 55 }}
               >
                 <div className="px-5 border-light-right">
-                  <Person />
+                  <Svg name="Person" />
                 </div>
                 <div className="flex-1 is-flex is-align-items-center px-5">
                   {threshold} of {safeOwners.length} owner(s)

@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import Dropdown from "components/Dropdown";
+import { Dropdown } from "library/components";
 import { COIN_TYPE_TO_META } from "constants/maps";
 import { Web3Context } from "contexts/Web3";
 const CoinTypeDropDown = ({ coinType, setCoinType, address }) => {
