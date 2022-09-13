@@ -35,7 +35,7 @@ const Assets = ({ treasury, proposeAddVault, proposeAddCollection }) => {
     );
   };
   return (
-    <div id="Assets" className="p-0 mt-5">
+    <div id="assets" className="p-0 mt-5">
       <h4 className="is-size-5">Assets</h4>
       <button
         className="button mt-4 is-full is-secondary is-small with-icon is-align-self-flex-end"

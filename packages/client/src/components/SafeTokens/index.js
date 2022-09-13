@@ -29,8 +29,7 @@ const SafeTokens = () => {
     );
   };
   const handleManageTokenVaults = () => {
-    //the location id needs to be changed once 131 is merged
-    history.push(`/safe/${treasuryAddress}/settings#Assets`);
+    history.push(`/safe/${treasuryAddress}/settings#assets`);
   };
   return (
     <div>
