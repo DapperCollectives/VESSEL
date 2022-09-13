@@ -48,6 +48,7 @@ const AddVault = ({ address, onCancel, onNext }) => {
         </button>
         <button
           className={`button flex-1 is-primary ${isDisabled}`}
+          disabled={!isFormValid}
           onClick={onNextClick}
         >
           Confirm

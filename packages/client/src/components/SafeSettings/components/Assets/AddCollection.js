@@ -19,10 +19,7 @@ const AddCollection = ({ onCancel, onNext }) => {
     });
   };
 
-  const nextButtonClasses = [
-    "button flex-1 is-primary",
-    isFormValid ? "" : "disabled",
-  ];
+  const isDisabled = isFormValid ? "" : "disabled";
 
   return (
     <div className="p-5 has-text-grey">
@@ -54,8 +51,8 @@ const AddCollection = ({ onCancel, onNext }) => {
           Cancel
         </button>
         <button
+          className={`button flex-1 is-primary ${isDisabled}`}
           disabled={!isFormValid}
-          className={nextButtonClasses.join(" ")}
           onClick={onNextClick}
         >
           Confirm
