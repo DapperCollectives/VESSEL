@@ -24,7 +24,7 @@ const Assets = ({
 
   const onAddVaultSubmit = async (form) => {
     try {
-      await addVault(form.coinType);
+      await addVault(form.selectedCoinType);
       closeModal();
     } catch (error) {
       showErrorModal(error);
@@ -124,13 +124,11 @@ const Assets = ({
         </button>
       </div>
       <div className="column p-0 mt-4 is-flex is-flex-direction-column is-full rounded-sm border-light has-shadow">
-        {vaults && vaults[address] && (
-          <AssetTableView
-            assets={Object.values(vaults[address])}
-            emptyPlaceholder="You don't have any Token Vaults yet."
-            onRemoveClick={openRemoveVaultModal}
-          />
-        )}
+        <AssetTableView
+          assets={vaults && vaults[address] && Object.values(vaults[address])}
+          emptyPlaceholder="You don't have any Token Vaults yet."
+          onRemoveClick={openRemoveVaultModal}
+        />
       </div>
 
       <div className="column p-0 mt-5 is-flex is-full is-justify-content-space-between">
@@ -144,13 +142,11 @@ const Assets = ({
         </button>
       </div>
       <div className="column p-0 mt-4 is-flex is-flex-direction-column is-full rounded-sm border-light has-shadow">
-        {NFTs && NFTs[address] && (
-          <AssetTableView
-            assets={Object.keys(NFTs[address])}
-            emptyPlaceholder="You don't have any NFT Collections yet."
-            onRemoveClick={openRemoveCollectionModal}
-          />
-        )}
+        <AssetTableView
+          assets={NFTs && NFTs[address] && Object.keys(NFTs[address])}
+          emptyPlaceholder="You don't have any NFT Collections yet."
+          onRemoveClick={openRemoveCollectionModal}
+        />
       </div>
     </div>
   );
