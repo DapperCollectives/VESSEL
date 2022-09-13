@@ -22,7 +22,7 @@ export default function useErrorMessage() {
       error.includes(": ")
     ) {
       const errorMessage = error.split("\n")[1];
-      return errorMessage.split(": ")[2];
+      return errorMessage.split(": ")[2] || errorMessage.split(": ")[1];
     }
     return "Unknown error occured.";
   };
