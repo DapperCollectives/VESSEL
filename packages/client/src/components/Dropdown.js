@@ -34,7 +34,14 @@ const TooltipWrapper = ({ isOpen, children }) => {
   );
 };
 
-const Dropdown = ({ value, values, setValue, style, renderItemAddOn, defaultText }) => {
+const Dropdown = ({
+  value,
+  values,
+  setValue,
+  style,
+  renderItemAddOn,
+  defaultText,
+}) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const openCloseDrowdown = () => {

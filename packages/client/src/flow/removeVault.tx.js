@@ -1,4 +1,4 @@
-export const REMOVE_VAULT  = `
+export const REMOVE_VAULT = `
     import DAOTreasuryV4 from 0xDAOTreasuryV4
     import MyMultiSigV4 from 0xMyMultiSigV4
 

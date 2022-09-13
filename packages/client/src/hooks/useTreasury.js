@@ -5,12 +5,27 @@ import {
   EXECUTE_ACTION_LIMIT,
   SIGNED_LIMIT,
   SIGNER_APPROVE_LIMIT,
-  UPDATE_SIGNER_LIMIT
+  UPDATE_SIGNER_LIMIT,
 } from "constants/constants";
 import { COIN_TYPES } from "constants/enums";
 import { COIN_TYPE_TO_META } from "constants/maps";
 import { createSignature } from "contexts/Web3";
-import { ADD_SIGNER, EXECUTE_ACTION, GET_PROPOSED_ACTIONS, GET_SIGNERS, GET_SIGNERS_FOR_ACTION, GET_THRESHOLD, GET_TREASURY_IDENTIFIERS, GET_VAULT_BALANCE, INITIALIZE_TREASURY, PROPOSE_TRANSFER, REMOVE_SIGNER, SIGNER_APPROVE, UPDATE_SIGNER, UPDATE_THRESHOLD } from "../flow";
+import {
+  ADD_SIGNER,
+  EXECUTE_ACTION,
+  GET_PROPOSED_ACTIONS,
+  GET_SIGNERS,
+  GET_SIGNERS_FOR_ACTION,
+  GET_THRESHOLD,
+  GET_TREASURY_IDENTIFIERS,
+  GET_VAULT_BALANCE,
+  INITIALIZE_TREASURY,
+  PROPOSE_TRANSFER,
+  REMOVE_SIGNER,
+  SIGNER_APPROVE,
+  UPDATE_SIGNER,
+  UPDATE_THRESHOLD,
+} from "../flow";
 import reducer, { INITIAL_STATE } from "../reducers/treasuries";
 import { getVaultId, syncSafeOwnersWithSigners, formatAddress } from "../utils";
 
@@ -414,6 +429,6 @@ export default function useTreasury(treasuryAddr) {
     proposeAddSigner,
     updateSigner,
     proposeRemoveSigner,
-    getVaultBalance
+    getVaultBalance,
   };
 }

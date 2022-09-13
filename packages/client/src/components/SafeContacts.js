@@ -133,7 +133,7 @@ function SafeContacts({ address }) {
   const { openModal, closeModal } = useModalContext();
   const clipboard = useClipboard();
   const { contacts, setContact, removeContact } = useContacts(address);
-  
+
   const openAddModal = () =>
     openModal(
       <EditContactModal

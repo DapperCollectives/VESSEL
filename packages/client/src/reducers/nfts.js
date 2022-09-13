@@ -25,12 +25,12 @@ const reducer = (state = INITIAL_STATE, action) => {
           ...state.NFTs,
           [address]: {
             ...state.NFTs[address],
-            ...action.payload[address]
-          }
+            ...action.payload[address],
+          },
         },
         loadingNFTs: false,
         error: null,
-      }
+      };
     }
     case "REMOVE_COLLECTION": {
       const address = Object.keys(action.payload)[0];
@@ -42,11 +42,11 @@ const reducer = (state = INITIAL_STATE, action) => {
         ...state,
         NFTs: {
           ...state.NFTs,
-          [address]: collections
+          [address]: collections,
         },
         loadingNFTs: false,
         error: null,
-      }
+      };
     }
     case "ERROR":
       return {

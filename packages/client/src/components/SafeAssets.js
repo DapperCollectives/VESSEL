@@ -20,7 +20,7 @@ function SafeAssets({ web3, name, address }) {
 
     const getVaults = async () => {
       await getTreasuryVaults(address);
-    }
+    };
     getCollections();
     getVaults();
     // eslint-disable-next-line
