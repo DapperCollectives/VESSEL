@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import { isEmpty } from "lodash";
-import InputAddress from "./InputAddress";
-import InputText from "./InputText";
-import { Copy, Plus } from "./Svg";
+import { InputAddress } from "library/components";
+import Svg from "library/Svg";
 import { useClipboard, useContacts } from "../hooks";
 import { useModalContext } from "contexts";
 
@@ -53,7 +52,15 @@ function EditContactModal({
         </div>
         <div className="mt-5">
           <p className="has-text-grey">Name</p>
-          <InputText value={currentName} onChange={onNameChange} />
+          <div className="is-flex">
+            <input
+              style={{ height: 48 }}
+              className="border-light rounded-sm column is-full p-2 mt-2"
+              type="text"
+              value={currentName}
+              onChange={(e) => onNameChange(e.target)}
+            />
+          </div>
         </div>
       </div>
       <div className="is-flex is-align-items-center mt-5 px-5">
@@ -122,7 +129,7 @@ function EmptyContacts({ openAddModal }) {
           className="button is-primary mt-4 with-icon"
           onClick={openAddModal}
         >
-          Add Contact <Plus />
+          Add Contact <Svg name="Plus" />
         </button>
       </div>
     </section>
@@ -133,9 +140,6 @@ function SafeContacts({ address }) {
   const { openModal, closeModal } = useModalContext();
   const clipboard = useClipboard();
   const { contacts, setContact, removeContact } = useContacts(address);
-
-  const minWidth = 120;
-  const addressWidth = 160;
 
   const openAddModal = () =>
     openModal(
@@ -187,7 +191,7 @@ function SafeContacts({ address }) {
             className="button is-secondary is-small with-icon"
             onClick={openAddModal}
           >
-            Add Contact <Plus />
+            Add Contact <Svg name="Plus" />
           </button>
         )}
       </div>
@@ -216,7 +220,7 @@ function SafeContacts({ address }) {
                     className="ml-2"
                     style={{ position: "relative", top: 2 }}
                   >
-                    <Copy />
+                    <Svg name="Copy" />
                   </span>
                 </span>
               </div>

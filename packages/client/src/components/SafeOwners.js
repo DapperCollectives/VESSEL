@@ -1,5 +1,5 @@
 import React from "react";
-import { Trash, Check } from "./Svg";
+import Svg from "library/Svg";
 
 function SafeOwners({
   address,
@@ -42,7 +42,7 @@ function SafeOwners({
             disabled
           />
           <div style={{ position: "absolute", right: 17, top: 14 }}>
-            <Check />
+            <Svg name="Check" />
           </div>
         </div>
       </div>
@@ -81,7 +81,7 @@ function SafeOwners({
                 />
                 {safeOwnersValidByAddress[so.address] && (
                   <div style={{ position: "absolute", right: 17, top: 14 }}>
-                    <Check />
+                    <Svg name="Check" />
                   </div>
                 )}
               </div>
@@ -94,7 +94,7 @@ function SafeOwners({
                   setSafeOwners(newOwners);
                 }}
               >
-                <Trash />
+                <Svg name="Trash" />
               </button>
             </div>
           </div>

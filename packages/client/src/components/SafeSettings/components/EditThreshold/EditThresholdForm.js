@@ -1,6 +1,6 @@
 import { getProgressPercentageForSignersAmount } from "utils";
-import { Person, Minus, Plus } from "components/Svg";
-import ProgressBar from "components/ProgressBar";
+import Svg from "library/Svg";
+import { ProgressBar } from "library/components";
 
 const EditThresholdForm = ({
   newThreshold,
@@ -44,7 +44,7 @@ const EditThresholdForm = ({
         <p className="mb-2">Signatures required to confirm a transaction</p>
         <div className="is-flex border-light rounded-sm">
           <div className="px-5 border-light-right has-text-black">
-            <Person />
+            <Svg name="Person" />
           </div>
           <div className="flex-1 is-flex is-align-items-center px-5 border-light-right has-text-black">
             {newThreshold} of {Math.max(allSafeOwners.length, 1)} owner(s)
@@ -54,14 +54,14 @@ const EditThresholdForm = ({
             style={{ width: 48 }}
             onClick={() => onChangeThreshold(false)}
           >
-            <Minus />
+            <Svg name="Minus" />
           </div>
           <div
             className={plusSignerClasses.join(" ")}
             style={{ width: 48 }}
             onClick={() => onChangeThreshold(true)}
           >
-            <Plus />
+            <Svg name="Plus" />
           </div>
         </div>
         <div className="flex-1 is-flex is-flex-direction-column mt-5">

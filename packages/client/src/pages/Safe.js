@@ -12,7 +12,7 @@ import {
   SendTokens,
   TestToolBox,
 } from "../components";
-import { ArrowDown, ArrowUp } from "../components/Svg";
+import Svg from "library/Svg";
 import { Web3Consumer, useModalContext } from "../contexts";
 import { useClipboard, useErrorMessage } from "../hooks";
 import { TransactionSuccessModal } from "modals";
@@ -244,10 +244,10 @@ function Safe({ web3 }) {
               className="button is-border mr-2 with-icon"
               onClick={onReceive}
             >
-              Receive <ArrowDown />
+              Receive <Svg name="ArrowDown" />
             </button>
             <button className="is-primary button with-icon" onClick={onSend}>
-              Send <ArrowUp />
+              Send <Svg name="ArrowUp" />
             </button>
           </div>
         </div>

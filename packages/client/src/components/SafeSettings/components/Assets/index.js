@@ -1,10 +1,10 @@
 import React from "react";
 import { useModalContext } from "contexts";
 import { useHistory } from "react-router-dom";
-import { Plus } from "components/Svg";
 import { formatAddress } from "utils";
 import AddVault from "./AddVault";
 import AddCollection from "./AddCollection";
+import Svg from "library/Svg";
 const Assets = ({ treasury, proposeAddVault, proposeAddCollection }) => {
   const { address } = treasury;
   const { openModal, closeModal } = useModalContext();
@@ -42,14 +42,14 @@ const Assets = ({ treasury, proposeAddVault, proposeAddCollection }) => {
         onClick={openAddVaultModal}
       >
         Add Vault
-        <Plus />
+        <Svg name="Plus" />
       </button>
       <button
         className="button mt-4 is-full is-secondary is-small with-icon is-align-self-flex-end"
         onClick={openAddCollectionModal}
       >
         Add Collection
-        <Plus />
+        <Svg name="Plus" />
       </button>
     </div>
   );

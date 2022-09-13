@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react";
 import { useAddressValidation } from "hooks";
 import { isAddr, formatAddress } from "utils";
-import { Check } from "components/Svg";
+import Svg from "library/Svg";
 import { Web3Context } from "contexts/Web3";
 
 const AddSafeOwner = ({ onCancel, onNext, safeOwners }) => {
@@ -73,7 +73,7 @@ const AddSafeOwner = ({ onCancel, onNext, safeOwners }) => {
             />
             {addressValid && (
               <div style={{ position: "absolute", right: 17, top: 14 }}>
-                <Check />
+                <Svg name="Check" />
               </div>
             )}
           </div>

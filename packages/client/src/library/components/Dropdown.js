@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { CaretDown } from "./Svg";
+import Svg from "library/Svg";
 
 function Tooltip({ position, text, children, classNames = "" }) {
   const positionConfig = {
@@ -71,7 +71,7 @@ const Dropdown = ({ value, values, setValue, style, renderItemAddOn }) => {
               {value}
               <span>
                 {renderItemAddOn && renderItemAddOn(value)}
-                <CaretDown className="has-text-black" />
+                <Svg name="CaretDown" className="has-text-black" />
               </span>
             </div>
           </TooltipWrapper>

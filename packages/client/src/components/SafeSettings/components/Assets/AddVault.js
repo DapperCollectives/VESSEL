@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { COIN_TYPE_TO_META } from "constants/maps";
-import Dropdown from "components/Dropdown";
+import { Dropdown } from "library/components";
 const AddVault = ({ onCancel, onNext }) => {
   const onNextClick = () => {
     onNext({

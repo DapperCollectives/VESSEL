@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import React from "react";
-import { LogoV, CoinIcon } from "components/Svg";
+import Svg from "library/Svg";
 
 function SafeOverview({ allBalance }) {
   const balanceClasses = [
@@ -32,7 +32,8 @@ function SafeOverview({ allBalance }) {
             position: "relative",
           }}
         >
-          <LogoV
+          <Svg
+            name="LogoV"
             style={{
               position: "absolute",
               top: "0px",
@@ -68,7 +69,7 @@ function SafeOverview({ allBalance }) {
                       style={{ flex: "2 1 auto", maxWidth: "50%" }}
                     >
                       <div className="is-flex is-flex-direction-row is-justify-content-flex-start mb-5">
-                        <CoinIcon coinType={type} />
+                        <Svg name={type} />
                         <label className="ml-2 pt-.5 has-text-black">
                           {type}
                         </label>
