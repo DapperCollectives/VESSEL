@@ -13,7 +13,6 @@ const Svg = ({ name, ...props }) => {
     })();
     // eslint-disable react-hooks/exhaustive-deps
   }, [name]);
-  if (!svgComponent) return null;
   return svgComponent;
 };
 export default Svg;
