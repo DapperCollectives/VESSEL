@@ -4,6 +4,7 @@ export { default as useFclUserBalance } from "./useFclUserBalance";
 export { default as useTreasuryTransactions } from "./useTreasuryTransactions";
 export { default as useTreasury } from "./useTreasury";
 export { default as useNFTs } from "./useNFTs";
+export { default as useVaults } from "./useVaults";
 export { default as useFlowFees } from "./useFlowFees";
 export { default as useErrorMessage } from "./useErrorMessage";
 export { default as useAccount } from "./useAccount";

@@ -1,12 +1,24 @@
-export const INITIAL_STATE = {
+export const NFT_INITIAL_STATE = {
   error: null,
   NFTs: {},
 };
 
-const reducer = (state = INITIAL_STATE, action) => {
+const nftReducer = (state = NFT_INITIAL_STATE, action) => {
   switch (action.type) {
     case "SET_NFTS": {
       const address = Object.keys(action.payload)[0];
+      return {
+        ...state,
+        NFTs: {
+          [address]: action.payload[address],
+        },
+        loadingNFTs: false,
+        error: null,
+      };
+    }
+    case "ADD_COLLECTION": {
+      const address = Object.keys(action.payload)[0];
+
       return {
         ...state,
         NFTs: {
@@ -15,6 +27,22 @@ const reducer = (state = INITIAL_STATE, action) => {
             ...state.NFTs[address],
             ...action.payload[address],
           },
+        },
+        loadingNFTs: false,
+        error: null,
+      };
+    }
+    case "REMOVE_COLLECTION": {
+      const address = Object.keys(action.payload)[0];
+      const key = action.payload[address];
+      const originalState = state.NFTs[address];
+
+      const { [key]: value, ...collections } = originalState;
+      return {
+        ...state,
+        NFTs: {
+          ...state.NFTs,
+          [address]: collections,
         },
         loadingNFTs: false,
         error: null,
@@ -31,4 +59,4 @@ const reducer = (state = INITIAL_STATE, action) => {
   }
 };
 
-export default reducer;
+export default nftReducer;
