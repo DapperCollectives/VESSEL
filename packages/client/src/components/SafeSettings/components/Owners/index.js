@@ -48,7 +48,7 @@ const Owners = ({ treasury, proposeRemoveSigner }) => {
     );
   };
   return (
-    <div id="Owners">
+    <div id="owners">
       <div className="column p-0 mt-5 is-flex is-full is-justify-content-space-between">
         <h4 className="is-size-5">Owners</h4>
         <button
