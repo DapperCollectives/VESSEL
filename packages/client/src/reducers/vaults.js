@@ -1,9 +1,9 @@
-export const INITIAL_STATE = {
+export const VAULTS_INITIAL_STATE = {
   error: null,
   vaults: {},
 };
 
-const reducer = (state = INITIAL_STATE, action) => {
+const vaultsReducer = (state = VAULTS_INITIAL_STATE, action) => {
   switch (action.type) {
     case "SET_VAULTS": {
       const address = Object.keys(action.payload)[0];
@@ -59,4 +59,4 @@ const reducer = (state = INITIAL_STATE, action) => {
   }
 };
 
-export default reducer;
+export default vaultsReducer;

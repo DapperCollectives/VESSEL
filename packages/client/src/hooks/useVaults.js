@@ -4,7 +4,7 @@ import { SIGNED_LIMIT } from "constants/constants";
 import { COIN_TYPE_TO_META } from "constants/maps";
 import { createSignature } from "contexts/Web3";
 import { ADD_VAULT, GET_TREASURY_IDENTIFIERS, REMOVE_VAULT } from "../flow";
-import reducer, { INITIAL_STATE } from "../reducers/vaults";
+import vaultsReducer, { VAULTS_INITIAL_STATE } from "../reducers/vaults";
 import { removeAddressPrefix } from "../utils";
 
 const storageKey = "vessel-vaults";
@@ -48,9 +48,9 @@ const doRemoveVault = async (treasuryAddr, identifier) => {
 };
 
 export default function useVaults(treasuryAddr) {
-  const [state, dispatch] = useReducer(reducer, [], (initial) => ({
+  const [state, dispatch] = useReducer(vaultsReducer, [], (initial) => ({
     ...initial,
-    ...INITIAL_STATE,
+    ...VAULTS_INITIAL_STATE,
     vaults: JSON.parse(localStorage.getItem(storageKey) || "{}"),
   }));
 

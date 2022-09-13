@@ -2,7 +2,7 @@ import { useEffect, useReducer } from "react";
 import { mutate, query, tx } from "@onflow/fcl";
 import { REGULAR_LIMIT, SIGNED_LIMIT } from "constants/constants";
 import { createSignature } from "../contexts/Web3";
-import reducer, { INITIAL_STATE } from "../reducers/nfts";
+import nftReducer, { NFT_INITIAL_STATE } from "../reducers/nfts";
 import { formatAddress, parseIdentifier, removeAddressPrefix } from "utils";
 import {
   CHECK_TREASURY_NFT_COLLECTION,
@@ -89,9 +89,9 @@ const doRemoveCollection = async (treasuryAddr, identifier) => {
 };
 
 export default function useNFTs(treasuryAddr) {
-  const [state, dispatch] = useReducer(reducer, [], (initial) => ({
+  const [state, dispatch] = useReducer(nftReducer, [], (initial) => ({
     ...initial,
-    ...INITIAL_STATE,
+    ...NFT_INITIAL_STATE,
     NFTs: JSON.parse(localStorage.getItem(storageKey) || "{}"),
   }));
 

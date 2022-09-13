@@ -1,9 +1,9 @@
-export const INITIAL_STATE = {
+export const NFT_INITIAL_STATE = {
   error: null,
   NFTs: {},
 };
 
-const reducer = (state = INITIAL_STATE, action) => {
+const nftReducer = (state = NFT_INITIAL_STATE, action) => {
   switch (action.type) {
     case "SET_NFTS": {
       const address = Object.keys(action.payload)[0];
@@ -59,4 +59,4 @@ const reducer = (state = INITIAL_STATE, action) => {
   }
 };
 
-export default reducer;
+export default nftReducer;
