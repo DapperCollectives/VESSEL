@@ -29,16 +29,21 @@ const AssetTableView = ({ assets, emptyPlaceholder, onRemoveClick }) => {
                   <Copy className="mt-1 ml-1 pointer" />
                 </span>
               </div>
-              <a
-                className="column button is-flex is-justify-content-end is-transparent"
-                href={getFlowscanUrlForContract(contractAddress, contractName)}
-                target="_blank"
-                rel="noreferrer"
-              >
-                View on Flowscan
-              </a>
+              <div className="column">
+                <a
+                  className="button is-transparent"
+                  href={getFlowscanUrlForContract(
+                    contractAddress,
+                    contractName
+                  )}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  View on Flowscan
+                </a>
+              </div>
               <button
-                className="column button is-flex is-justify-content-end is-transparent"
+                className="button is-transparent"
                 onClick={() => onRemoveClick(asset, contractName)}
               >
                 Remove
