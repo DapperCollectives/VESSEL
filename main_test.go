@@ -880,3 +880,25 @@ func TestDestroyCollectionAndVault(t *testing.T) {
 	})
 
 }
+
+func TestGetProposedActionView(t *testing.T) {
+	otu := NewOverflowTest(t)
+
+	otu.SetupTreasury("treasuryOwner", Signers, DefaultThreshold)
+	otu.ProposeFungibleTokenTransferAction("treasuryOwner", Signers[0], RecipientAcct, TransferAmount, FLOWPublicReceiverPathId, FlowTokenVaultID)
+	actions := otu.GetProposedActions("treasuryOwner")
+
+	keys := make([]uint64, 0, len(actions))
+	for k := range actions {
+		keys = append(keys, k)
+	}
+	transferTokenActionUUID := keys[0]
+
+	actionView := otu.GetActionView("treasuryOwner", transferTokenActionUUID)
+
+	assert.Equal(otu.T, otu.GetAccountAddress(Signers[0]), actionView["proposer"])
+	assert.Equal(otu.T, otu.GetAccountAddress(RecipientAcct), actionView["recipient"])
+	assert.Equal(otu.T, TransferAmount, actionView["tokenAmount"])
+	assert.Equal(otu.T, "TransferToken", actionView["type"])
+	assert.Equal(otu.T, "A.0ae53cb6e3f42a79.FlowToken.Vault", actionView["vaultId"])
+}

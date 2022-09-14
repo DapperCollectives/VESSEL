@@ -1098,3 +1098,16 @@ func (otu *OverflowTestUtils) AddBloctoVaultToTreasury(from string, to string) *
 
 	return otu
 }
+
+func (otu *OverflowTestUtils) GetActionView(treasuryAcct string, actionUUID uint64) map[string]interface{} {
+	actionView := otu.O.ScriptFromFile("get_action_view").
+		Args(otu.O.Arguments().
+			Account(treasuryAcct).
+			UInt64(actionUUID)).
+		RunReturnsJsonString()
+
+	var actionViewMap map[string]interface{}
+	json.Unmarshal([]byte(actionView), &actionViewMap)
+
+	return actionViewMap
+}
