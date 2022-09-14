@@ -1,9 +1,11 @@
 package test_main
 
 import (
+	"encoding/json"
 	"fmt"
 	"testing"
 
+	"github.com/bjartek/overflow/overflow"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -111,11 +113,15 @@ func TestTransferFungibleTokensToAccountActions(t *testing.T) {
 		transferTokenActionUUID = keys[0]
 
 		// Each signer submits an approval signature
+		var txResult overflow.TransactionResult
 		for _, signer := range Signers {
 			// Test if the action fails without all signer approvals
 			otu.ExecuteActionFailed("treasuryOwner", transferTokenActionUUID, "This action has not received a signature from every signer yet.")
-			otu.SignerApproveAction("treasuryOwner", transferTokenActionUUID, signer)
+			txResult = otu.SignerApproveAction("treasuryOwner", transferTokenActionUUID, signer)
 		}
+
+		// Assert that the SignerApproveAction event was emitted with the correct params from the last approval
+		otu.AssertActionApprovedBySignerEvent(txResult, ACTION_APPROVED_BY_SIGNER_EVENT)
 
 		// Assert that the signatures were registered
 		signersMap := otu.GetSignerResponsesForAction("treasuryOwner", transferTokenActionUUID)
@@ -127,7 +133,13 @@ func TestTransferFungibleTokensToAccountActions(t *testing.T) {
 
 	t.Run(`A signer should be able to execute a proposed action to transfer tokens once it has received
 		the required threshold of signatures`, func(t *testing.T) {
-		otu.ExecuteAction("treasuryOwner", transferTokenActionUUID)
+		txResult := otu.ExecuteAction("treasuryOwner", transferTokenActionUUID)
+
+		// Assert ActionExecuted event was emitted with correct params
+		txResult.AssertEmitEventName("A.f8d6e0586b0a20c7.DAOTreasuryV4.ActionExecuted")
+		event := txResult.Result.GetEventsWithName("A.f8d6e0586b0a20c7.DAOTreasuryV4.ActionExecuted")[0]
+		fieldsJson, _ := json.Marshal(event)
+		assert.Equal(t, TRANSFER_FUNGIBLE_TOKENS_EXECUTE_ACTION_EVENT, fieldsJson)
 
 		// Assert that all funds have been transfered out of the treasury vault
 		treasuryBalance := otu.GetTreasuryVaultBalance("treasuryOwner", FlowTokenVaultID)
@@ -341,7 +353,10 @@ func TestTransferFungibleTokensToTreasuryActions(t *testing.T) {
 
 	t.Run(`A signer should be able to execute a proposed action to transfer tokens to a Treasury once it has received
 		the required threshold of signatures`, func(t *testing.T) {
-		otu.ExecuteAction("treasuryOwner", transferTokenActionUUID)
+		txResult := otu.ExecuteAction("treasuryOwner", transferTokenActionUUID)
+
+		// Assert ActionExecuted event is called with expected params
+		otu.AssertActionExecutedEventsMatch(txResult, TRANSFER_FUNGIBLE_TOKENS_TO_TREASURY_EXECUTE_ACTION_EVENT)
 
 		// Assert that all funds have been transfered out of the treasury vault
 		treasuryBalance := otu.GetTreasuryVaultBalance("treasuryOwner", FlowTokenVaultID)
@@ -406,7 +421,10 @@ func TestTransferNonFungibleTokensToAccountActions(t *testing.T) {
 
 	t.Run(`A signer should be able to execute a proposed action to transfer a non-fungible token to an account once it has received
 		the required threshold of signatures`, func(t *testing.T) {
-		otu.ExecuteAction("treasuryOwner", transferNFTActionUUID)
+		txResult := otu.ExecuteAction("treasuryOwner", transferNFTActionUUID)
+
+		// Assert ActionExecuted event was emitted with correct params
+		otu.AssertActionExecutedEventsMatch(txResult, TRANSFER_NON_FUNGIBLE_TOKENS_EXECUTE_ACTION_EVENT)
 
 		// Assert that the NFT has been transfered out of the treasury vault
 		collectionIds := otu.GetTreasuryIdentifiers("treasuryOwner")
@@ -468,7 +486,10 @@ func TestTransferNonFungibleTokensToTreasuryActions(t *testing.T) {
 		otu.CreateNFTCollection("signer1")
 		otu.SendCollectionToTreasury("signer1", "recipient")
 
-		otu.ExecuteAction("treasuryOwner", transferNFTActionUUID)
+		txResult := otu.ExecuteAction("treasuryOwner", transferNFTActionUUID)
+
+		// Assert ActionExecuted event was emitted with correct params
+		otu.AssertActionExecutedEventsMatch(txResult, TRANSFER_NON_FUNGIBLE_TOKENS_TO_TREASURY_EXECUTE_ACTION_EVENT)
 
 		// Assert that the NFT has been transfered out of the treasury vault
 		collectionIds := otu.GetTreasuryIdentifiers("treasuryOwner")
@@ -525,7 +546,11 @@ func TestSignerRejectApproval(t *testing.T) {
 
 	t.Run("If inverse threshold of rejections is reached, action should be deleted", func(t *testing.T) {
 		// Last signer rejects approval
-		otu.SignerRejectApproval("treasuryOwner", transferTokenActionUUID, Signers[len(Signers)-1])
+		txResult := otu.SignerRejectApproval("treasuryOwner", transferTokenActionUUID, Signers[len(Signers)-1])
+
+		// Assert event is emitted with correct params
+		otu.AssertActionRejectedBySignerEvent(txResult, ACTION_REJECTED_BY_SIGNER_EVENT)
+
 		actionsMap := otu.GetProposedActions("treasuryOwner")
 		// Action should no longer exist under proposed actions
 		assert.Empty(otu.T, actionsMap[transferTokenActionUUID])
