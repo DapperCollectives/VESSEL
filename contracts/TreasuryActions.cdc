@@ -342,10 +342,10 @@ pub contract TreasuryActionsV4 {
       let treasuryRef: &DAOTreasuryV4.Treasury = params["treasury"]! as! &DAOTreasuryV4.Treasury
       let manager = treasuryRef.borrowManager()
 
-      // Remove Signer
-      manager.removeSigner(signer: self.signer)
       // Update Threshold
       manager.updateThreshold(newThreshold: self.threshold)
+      // Remove Signer
+      manager.removeSigner(signer: self.signer)
     }
 
     pub fun getView(): MyMultiSigV4.ActionView {
