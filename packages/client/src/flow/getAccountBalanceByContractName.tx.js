@@ -6,9 +6,11 @@ export const GetAccountBalanceByContractName = (contractName) => `
         let account = getAccount(address)
 
         //this might break for contracts with configurable vault path
-        let vaultRef = account.getCapability(vaultPath)!
-            .borrow<&${contractName}.Vault{FungibleToken.Balance}>()
-            ?? panic("Could not borrow Balance reference to the Vault")
-
-        return vaultRef.balance
+        let vaultCap = getAccount(address).getCapability<&${contractName}.Vault{FungibleToken.Balance}>(vaultPath)
+        if vaultCap.check() {
+            let vaultRef: &${contractName}.Vault{FungibleToken.Balance} = vaultCap.borrow()??panic("Could not borrow Balance reference to the Vault")
+            return vaultRef.balance
+        } else{
+            return 0.00
+        }
     }`;
