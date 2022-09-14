@@ -17,11 +17,12 @@ function SafeAssets({ web3, name, address }) {
     const getCollections = async () => {
       await getTreasuryCollections(address);
     };
+
     getCollections();
     // eslint-disable-next-line
   }, [userAddr]);
 
-  const userNFTs = web3?.NFTs?.[userAddr] ?? [];
+  const userNFTs = web3?.NFTs?.[address] ?? [];
   const nftsToDisplay = Object.entries(userNFTs)
     .map(([key, tokens]) => {
       if (isEmpty(tokens)) {

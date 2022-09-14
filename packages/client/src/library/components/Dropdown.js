@@ -34,7 +34,14 @@ const TooltipWrapper = ({ isOpen, children }) => {
   );
 };
 
-const Dropdown = ({ value, values, setValue, style, renderItemAddOn }) => {
+const Dropdown = ({
+  value,
+  values,
+  setValue,
+  style,
+  renderItemAddOn,
+  defaultText,
+}) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const openCloseDrowdown = () => {
@@ -68,7 +75,7 @@ const Dropdown = ({ value, values, setValue, style, renderItemAddOn }) => {
         >
           <TooltipWrapper isOpen={isOpen}>
             <div className="is-flex is-flex-grow-1 is-align-items-center is-justify-content-space-between has-text-grey small-text">
-              {value}
+              {value ?? defaultText}
               <span>
                 {renderItemAddOn && renderItemAddOn(value)}
                 <Svg name="CaretDown" className="has-text-black" />

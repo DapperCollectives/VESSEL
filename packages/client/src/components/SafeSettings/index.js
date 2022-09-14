@@ -12,20 +12,35 @@ const SafeSettings = () => {
   const web3 = useContext(Web3Context);
   const treasury = web3?.treasuries?.[treasuryAddress];
   const {
+    address,
     setTreasury,
     proposeRemoveSigner,
-    proposeAddVault,
-    proposeAddCollection,
+    vaults,
+    NFTs,
+    getTreasuryVaults,
+    getTreasuryCollections,
+    addVault,
+    addCollection,
+    removeVault,
+    removeCollection,
   } = web3;
+
   return (
     <React.Fragment>
       <SafeDetailsSetting treasury={treasury} setTreasury={setTreasury} />
       <SignatureThreshold treasury={treasury} />
       <Owners treasury={treasury} proposeRemoveSigner={proposeRemoveSigner} />
       <Assets
+        userAddr={address}
         treasury={treasury}
-        proposeAddVault={proposeAddVault}
-        proposeAddCollection={proposeAddCollection}
+        vaults={vaults}
+        NFTs={NFTs}
+        addVault={addVault}
+        addCollection={addCollection}
+        getTreasuryVaults={getTreasuryVaults}
+        getTreasuryCollections={getTreasuryCollections}
+        removeVault={removeVault}
+        removeCollection={removeCollection}
       />
     </React.Fragment>
   );

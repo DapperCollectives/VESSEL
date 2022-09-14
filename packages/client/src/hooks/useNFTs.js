@@ -1,18 +1,20 @@
 import { useEffect, useReducer } from "react";
 import { mutate, query, tx } from "@onflow/fcl";
-import reducer, { INITIAL_STATE } from "../reducers/nfts";
 import { REGULAR_LIMIT, SIGNED_LIMIT } from "constants/constants";
 import { createSignature } from "../contexts/Web3";
-import { formatAddress } from "utils";
+import nftReducer, { NFT_INITIAL_STATE } from "../reducers/nfts";
+import { formatAddress, parseIdentifier, removeAddressPrefix } from "utils";
 import {
   CHECK_TREASURY_NFT_COLLECTION,
   PROPOSE_NFT_TRANSFER,
   SEND_NFT_TO_TREASURY,
   GET_TREASURY_IDENTIFIERS,
   GET_NFT_REF,
+  ADD_COLLECTION,
+  REMOVE_COLLECTION,
 } from "../flow";
 
-const storageKey = "vessel-assets";
+const storageKey = "vessel-collections";
 
 const doSendNFTToTreasury = async (treasuryAddr, tokenId) => {
   return await mutate({
@@ -29,8 +31,7 @@ const doProposeNFTTransfer = async (treasuryAddr, recipient, nft) => {
   // Example: A.f8d6e0586b0a20c7.ZeedzINO.Collection-0
   // First part will contain the collection identifier, and the second will contain the tokenId
   const tokenInfo = nft.split("-");
-  const contractName = nft.split(".")[2];
-  const contractAddress = nft.split(".")[1];
+  const { contractName, contractAddress } = parseIdentifier(nft);
   const intent = `Transfer ${tokenInfo[0]} NFT from the treasury to ${recipient}`;
   const { message, keyIds, signatures, height } = await createSignature(intent);
 
@@ -49,10 +50,48 @@ const doProposeNFTTransfer = async (treasuryAddr, recipient, nft) => {
   });
 };
 
-export default function useNFTs() {
-  const [state, dispatch] = useReducer(reducer, [], (initial) => ({
+const doAddCollection = async (treasuryAddr, contractName, contractAddress) => {
+  const intent = `A.${removeAddressPrefix(
+    contractAddress
+  )}.${contractName}.Collection`;
+  const { message, keyIds, signatures, height } = await createSignature(intent);
+
+  return await mutate({
+    cadence: ADD_COLLECTION(contractName, contractAddress),
+    args: (arg, t) => [
+      arg(treasuryAddr, t.Address),
+      arg(message, t.String),
+      arg(keyIds, t.Array(t.UInt64)),
+      arg(signatures, t.Array(t.String)),
+      arg(height, t.UInt64),
+    ],
+    limit: SIGNED_LIMIT,
+  });
+};
+
+const doRemoveCollection = async (treasuryAddr, identifier) => {
+  const { message, keyIds, signatures, height } = await createSignature(
+    identifier
+  );
+
+  return await mutate({
+    cadence: REMOVE_COLLECTION,
+    args: (arg, t) => [
+      arg(treasuryAddr, t.Address),
+      arg(identifier, t.String),
+      arg(message, t.String),
+      arg(keyIds, t.Array(t.UInt64)),
+      arg(signatures, t.Array(t.String)),
+      arg(height, t.UInt64),
+    ],
+    limit: SIGNED_LIMIT,
+  });
+};
+
+export default function useNFTs(treasuryAddr) {
+  const [state, dispatch] = useReducer(nftReducer, [], (initial) => ({
     ...initial,
-    ...INITIAL_STATE,
+    ...NFT_INITIAL_STATE,
     NFTs: JSON.parse(localStorage.getItem(storageKey) || "{}"),
   }));
 
@@ -100,8 +139,9 @@ export default function useNFTs() {
     }).catch(console.error);
 
     const collections = (identifiers && identifiers[1]) ?? [];
+
     for (const identifier in collections) {
-      await checkCollection(treasuryAddr, collections[identifier]);
+      checkCollection(treasuryAddr, collections[identifier]);
     }
   };
 
@@ -129,11 +169,45 @@ export default function useNFTs() {
     return res;
   };
 
+  const addCollection = async (contractName, contractAddress) => {
+    const res = await doAddCollection(
+      treasuryAddr,
+      contractName,
+      contractAddress
+    );
+    await tx(res).onceSealed();
+
+    const identifier = `A.${removeAddressPrefix(
+      contractAddress
+    )}.${contractName}.Collection`;
+
+    dispatch({
+      type: "ADD_COLLECTION",
+      payload: {
+        [treasuryAddr]: { [identifier]: [] },
+      },
+    });
+  };
+
+  const removeCollection = async (identifier) => {
+    const res = await doRemoveCollection(treasuryAddr, identifier);
+    await tx(res).onceSealed();
+
+    dispatch({
+      type: "REMOVE_COLLECTION",
+      payload: {
+        [treasuryAddr]: identifier,
+      },
+    });
+  };
+
   return {
     ...state,
     getTreasuryCollections,
     proposeNFTTransfer,
     sendNFTToTreasury,
     getNFTReference,
+    addCollection,
+    removeCollection,
   };
 }

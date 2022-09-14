@@ -164,7 +164,7 @@ pub contract DAOTreasuryV4 {
       assert(signers[signaturePayload.signingAddr] == true, message: "Address is not a signer on this Treasury")
 
       // ------- Validate Message --------
-      // message format: {collection identifier hex}{blockId}
+      // message format: {vault identifier hex}{blockId}
       let message = signaturePayload.message
 
       // ----- Validate Vault Identifier -----

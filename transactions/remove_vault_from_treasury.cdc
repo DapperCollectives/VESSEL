@@ -1,4 +1,3 @@
-import NonFungibleToken from "../contracts/core/NonFungibleToken.cdc"
 import DAOTreasuryV4 from "../contracts/DAOTreasury.cdc"
 import MyMultiSigV4 from "../contracts/MyMultiSig.cdc"
 
