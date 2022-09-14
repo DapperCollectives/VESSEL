@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { isEmpty } from "lodash";
-import { InputAddress } from "library/components";
+import { InputAddress, EmptyTableWithCTA } from "library/components";
 import Svg from "library/Svg";
 import { useClipboard, useContacts } from "../hooks";
 import { useModalContext } from "contexts";
@@ -115,27 +115,6 @@ function RemoveContactModal({ contact, onConfirm, confirmText, closeModal }) {
   );
 }
 
-function EmptyContacts({ openAddModal }) {
-  return (
-    <section
-      className="section is-flex is-align-items-center has-background-white-ter mt-4 rounded-lg"
-      style={{ height: "calc(100vh - 340px)" }}
-    >
-      <div className="container is-flex is-flex-direction-column is-justify-content-center is-align-items-center has-text-black">
-        <h2 className="is-size-5">
-          This safe doesn't have any saved addresses.
-        </h2>
-        <button
-          className="button is-primary mt-4 with-icon"
-          onClick={openAddModal}
-        >
-          Add Contact <Svg name="Plus" />
-        </button>
-      </div>
-    </section>
-  );
-}
-
 function SafeContacts({ address }) {
   const { openModal, closeModal } = useModalContext();
   const clipboard = useClipboard();
@@ -196,7 +175,12 @@ function SafeContacts({ address }) {
         )}
       </div>
       {isEmpty(contacts) ? (
-        <EmptyContacts setContact={setContact} openAddModal={openAddModal} />
+        <EmptyTableWithCTA
+          message="This safe doesn't have any saved addresses."
+          onButtonClick={openAddModal}
+          buttonText="Add Contact"
+          buttonIcon={<Svg name="Plus" />}
+        />
       ) : (
         <div className="column p-0 mt-4 is-flex is-flex-direction-column is-full rounded-sm border-light has-shadow">
           <div className="is-flex is-align-items-center is-justify-content-space-between column is-full p-5 border-light-bottom">

@@ -48,9 +48,9 @@ const Owners = ({ treasury, proposeRemoveSigner }) => {
     );
   };
   return (
-    <div id="owners">
+    <div>
       <div className="column p-0 mt-5 is-flex is-full is-justify-content-space-between">
-        <h4 className="is-size-5">Owners</h4>
+        <h2>Owners</h2>
         <button
           className="button is-secondary is-small with-icon"
           onClick={openAddOwnerModal}
