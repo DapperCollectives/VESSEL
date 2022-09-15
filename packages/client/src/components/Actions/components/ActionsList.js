@@ -1,9 +1,49 @@
-import React from "react";
-import { formatActionString } from "../utils";
+import React, { useContext } from "react";
+import { formatActionString } from "utils";
 import { SIGNER_RESPONSES } from "constants/enums";
+import { useModalContext } from "contexts";
+import { Web3Context } from "contexts/Web3";
+import ActionRequired from "./ActionRequired";
+import { useErrorMessage } from "hooks";
 
-function ActionsList({ actions = [], onSign, onConfirm, safeData }) {
+function ActionsList({ actions = [], onSign, onReject, onConfirm, safeData }) {
   const ActionComponents = [];
+
+  const { getActionView } = useContext(Web3Context);
+  const { showErrorModal } = useErrorMessage();
+  const { openModal, closeModal } = useModalContext();
+
+  const onSignAction = async (action) => {
+    try {
+      await onSign(action);
+      closeModal();
+    } catch (error) {
+      showErrorModal(error);
+    }
+  };
+
+  const onRejectAction = async (action) => {
+    try {
+      await onReject(action);
+      closeModal();
+    } catch (error) {
+      showErrorModal(error);
+    }
+  };
+
+  const openSignRejectModal = async (action) => {
+    const view = await getActionView(safeData.address, action.uuid);
+    console.log(view);
+    openModal(
+      <ActionRequired
+        address={safeData.address}
+        onReject={() => onRejectAction(action)}
+        onApprove={() => onSignAction(action)}
+      />,
+      { headerTitle: "Action Required" }
+    );
+  };
+
   if (!actions.length) {
     ActionComponents.push(
       <div
@@ -26,7 +66,7 @@ function ActionsList({ actions = [], onSign, onConfirm, safeData }) {
         ? "Confirm Transaction"
         : "Signature Required";
       const actionCopy = confirmReady ? "Confirm" : "Sign";
-      const actionFn = confirmReady ? onConfirm : onSign;
+      const actionFn = confirmReady ? onConfirm : openSignRejectModal;
       ActionComponents.push(
         <div
           key={action.uuid}

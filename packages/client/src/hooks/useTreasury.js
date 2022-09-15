@@ -14,6 +14,7 @@ import {
   ADD_SIGNER,
   EXECUTE_ACTION,
   GET_PROPOSED_ACTIONS,
+  GET_ACTION_VIEW,
   GET_SIGNERS,
   GET_SIGNERS_FOR_ACTION,
   GET_THRESHOLD,
@@ -23,6 +24,7 @@ import {
   PROPOSE_TRANSFER,
   REMOVE_SIGNER,
   SIGNER_APPROVE,
+  SIGNER_REJECT,
   UPDATE_SIGNER,
   UPDATE_THRESHOLD,
 } from "../flow";
@@ -89,6 +91,28 @@ const doSignApprove = async (
 ) => {
   return await mutate({
     cadence: SIGNER_APPROVE,
+    args: (arg, t) => [
+      arg(treasuryAddr, t.Address),
+      arg(actionUUID, t.UInt64),
+      arg(message, t.String),
+      arg(keyIds, t.Array(t.UInt64)),
+      arg(signatures, t.Array(t.String)),
+      arg(signatureBlock, t.UInt64),
+    ],
+    limit: SIGNER_APPROVE_LIMIT,
+  });
+};
+
+const doSignReject = async (
+  treasuryAddr,
+  actionUUID,
+  message,
+  keyIds,
+  signatures,
+  signatureBlock
+) => {
+  return await mutate({
+    cadence: SIGNER_REJECT,
     args: (arg, t) => [
       arg(treasuryAddr, t.Address),
       arg(actionUUID, t.UInt64),
@@ -198,6 +222,13 @@ const getThreshold = async (address) => {
 
 const getProposedActions = async (address) => {
   return await doQuery(GET_PROPOSED_ACTIONS, address);
+};
+
+const getActionView = async (address, actionUUID) => {
+  return await query({
+    cadence: GET_ACTION_VIEW,
+    args: (arg, t) => [arg(address, t.Address), arg(actionUUID, t.UInt64)],
+  }).catch(console.error);
 };
 
 const getSignersForAction = async (address, actionUUID) => {
@@ -381,6 +412,25 @@ export default function useTreasury(treasuryAddr) {
     await refreshTreasury();
   };
 
+  const signerReject = async (
+    actionUUID,
+    message,
+    keyIds,
+    signatures,
+    signatureBlock
+  ) => {
+    const res = await doSignReject(
+      treasuryAddr,
+      actionUUID,
+      message,
+      keyIds,
+      signatures,
+      signatureBlock
+    );
+    await tx(res).onceSealed();
+    await refreshTreasury();
+  };
+
   const executeAction = async (actionUUID) => {
     const res = await doExecuteAction(treasuryAddr, actionUUID);
     const result = await tx(res).onceSealed();
@@ -424,11 +474,13 @@ export default function useTreasury(treasuryAddr) {
     setTreasury,
     proposeTransfer,
     signerApprove,
+    signerReject,
     executeAction,
     updateThreshold,
     proposeAddSigner,
     updateSigner,
     proposeRemoveSigner,
     getVaultBalance,
+    getActionView,
   };
 }

@@ -120,7 +120,7 @@ function Safe({ web3 }) {
     );
   });
 
-  const { injectedProvider, signerApprove, executeAction } = web3;
+  const { injectedProvider, signerApprove, signerReject, executeAction } = web3;
 
   const onSignAction = async ({ uuid, intent }) => {
     const latestBlock = await injectedProvider
@@ -152,6 +152,36 @@ function Safe({ web3 }) {
     ).catch((error) => showErrorModal(error));
   };
 
+  const onRejectAction = async ({ uuid, intent }) => {
+    const latestBlock = await injectedProvider
+      .send([injectedProvider.getBlock(true)])
+      .then(injectedProvider.decode);
+
+    const { height, id } = latestBlock;
+    const intentHex = Buffer.from(intent).toString("hex");
+
+    const message = `${uuid}${intentHex}${id}`;
+    const messageHex = Buffer.from(message).toString("hex");
+
+    let sigResponse = await injectedProvider
+      .currentUser()
+      .signUserMessage(messageHex);
+
+    let keyId = sigResponse[0].keyId;
+    let signature = sigResponse[0].signature;
+
+    const keyIds = [keyId];
+    const signatures = [signature];
+
+    await signerReject(
+      parseInt(uuid, 10),
+      message,
+      keyIds,
+      signatures,
+      height
+    ).catch((error) => showErrorModal(error));
+  };
+
   const onConfirmAction = async ({ uuid }) => {
     const events = await executeAction(uuid).catch((error) =>
       showErrorModal(error)
@@ -171,6 +201,7 @@ function Safe({ web3 }) {
         actions={actions}
         address={address}
         onSign={onSignAction}
+        onReject={onRejectAction}
         onConfirm={onConfirmAction}
       />
     ),
