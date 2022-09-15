@@ -9,7 +9,15 @@ import AssetTableView from "./AssetTableView";
 import RemoveAsset from "./RemoveAsset";
 
 const TokenAsset = (
-  { userAddr, treasury, vaults, getTreasuryVaults, addVault, removeVault },
+  {
+    userAddr,
+    treasury,
+    vaults,
+    getTreasuryVaults,
+    addVault,
+    removeVault,
+    refreshTreasury,
+  },
   ref
 ) => {
   const { address } = treasury;
@@ -30,6 +38,7 @@ const TokenAsset = (
   const onAddVaultSubmit = async (form) => {
     try {
       await addVault(form.selectedCoinType);
+      await refreshTreasury();
       closeModal();
     } catch (error) {
       showErrorModal(error);
@@ -39,6 +48,7 @@ const TokenAsset = (
   const onRemoveVaultSubmit = async (identifier) => {
     try {
       await removeVault(identifier);
+      await refreshTreasury();
       closeModal();
     } catch (error) {
       showErrorModal(error);

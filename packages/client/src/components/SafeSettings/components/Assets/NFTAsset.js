@@ -15,6 +15,7 @@ const NFTAsset = (
     getTreasuryCollections,
     addCollection,
     removeCollection,
+    refreshTreasury,
   },
   ref
 ) => {
@@ -37,6 +38,7 @@ const NFTAsset = (
   const onAddCollectionSubmit = async (form) => {
     try {
       await addCollection(form.contractName, formatAddress(form.address));
+      await refreshTreasury();
       closeModal();
     } catch (error) {
       showErrorModal(error);
@@ -46,6 +48,7 @@ const NFTAsset = (
   const onRemoveCollectionSubmit = async (identifier) => {
     try {
       await removeCollection(identifier);
+      await refreshTreasury();
       closeModal();
     } catch (error) {
       showErrorModal(error);

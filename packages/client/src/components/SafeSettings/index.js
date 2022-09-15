@@ -15,6 +15,7 @@ const SafeSettings = () => {
   const {
     address,
     setTreasury,
+    refreshTreasury,
     proposeRemoveSigner,
     vaults,
     NFTs,
@@ -46,6 +47,7 @@ const SafeSettings = () => {
         addVault={addVault}
         getTreasuryVaults={getTreasuryVaults}
         removeVault={removeVault}
+        refreshTreasury={refreshTreasury}
       />
       <NFTAsset
         ref={scrollTo === "#nftAsset" ? targetElementRef : null}
@@ -55,6 +57,7 @@ const SafeSettings = () => {
         addCollection={addCollection}
         getTreasuryCollections={getTreasuryCollections}
         removeCollection={removeCollection}
+        refreshTreasury={refreshTreasury}
       />
     </React.Fragment>
   );
