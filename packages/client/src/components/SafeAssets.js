@@ -17,11 +17,12 @@ function SafeAssets({ web3, name, address }) {
     const getCollections = async () => {
       await getTreasuryCollections(address);
     };
+
     getCollections();
     // eslint-disable-next-line
   }, [userAddr]);
 
-  const userNFTs = web3?.NFTs?.[userAddr] ?? [];
+  const userNFTs = web3?.NFTs?.[address] ?? [];
   const nftsToDisplay = Object.entries(userNFTs)
     .map(([key, tokens]) => {
       if (isEmpty(tokens)) {
@@ -57,13 +58,13 @@ function SafeAssets({ web3, name, address }) {
         </div>
         <div className="is-flex is-align-items-center mt-6">
           <button
-            className="button flex-1 p-4 mr-2"
+            className="button is-border flex-1 mr-2"
             onClick={() => modalContext.closeModal()}
           >
             Cancel
           </button>
           <button
-            className="button flex-1 p-4 is-link"
+            className="button is-primary flex-1"
             onClick={() =>
               modalContext.openModal(
                 <SendTokens

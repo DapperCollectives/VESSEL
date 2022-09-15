@@ -9,8 +9,8 @@ const EditSafeName = ({ name, onCancel, onSubmit }) => {
   };
 
   const submitButtonClasses = [
-    "button flex-1 p-4",
-    isNameValid ? "is-link" : "is-light is-disabled",
+    "button flex-1 is-primary",
+    isNameValid ? "" : "disabled",
   ];
 
   return (
@@ -30,7 +30,7 @@ const EditSafeName = ({ name, onCancel, onSubmit }) => {
             onChange={(e) => setCurrSafeName(e.target.value)}
           />
           <div className="is-flex is-align-items-center mt-6">
-            <button className="button flex-1 p-4 mr-2" onClick={onCancel}>
+            <button className="button flex-1 is-border mr-2" onClick={onCancel}>
               Cancel
             </button>
             <button

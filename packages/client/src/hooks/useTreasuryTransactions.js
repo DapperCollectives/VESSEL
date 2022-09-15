@@ -16,15 +16,17 @@ export default function useTreasuryTransactions(address) {
         .then((data) => {
           // temporary filter/map while events are updated to provide more data
           const newData = data
-            .filter((d) => d.blockEventData.proposer === address)
+            .filter(
+              (d) =>
+                d.blockEventData.address === address ||
+                d.blockEventData.executor === address
+            )
             .map((d) => ({
               ...d,
               status: "confirmed",
-              authorizers: [
-                {
-                  address: d.blockEventData.proposer,
-                },
-              ],
+              authorizers: Object.entries(d.blockEventData.signerResponses)
+                .filter(([_, value]) => value === 0)
+                .map(([key, _]) => ({ address: key })),
               tokenTransfers: [],
             }));
           setData(newData);

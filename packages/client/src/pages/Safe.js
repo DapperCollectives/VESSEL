@@ -11,7 +11,7 @@ import {
   SendTokens,
   TestToolBox,
 } from "../components";
-import { ArrowDown, ArrowUp } from "../components/Svg";
+import Svg from "library/Svg";
 import { Web3Consumer, useModalContext } from "../contexts";
 import { useClipboard, useErrorMessage } from "../hooks";
 import { TransactionSuccessModal } from "modals";
@@ -32,20 +32,25 @@ const ReceiveTokens = ({ name, address }) => {
           <span className="is-underlined">{shortenAddr(address)}</span>
         </div>
       </div>
-      <div className="border-light-top mt-5 pt-6">
-        <QRCode value={`https://flowscan.org/account/${address}`} />
-        <div
-          className="is-underlined mt-5 pointer"
+      <div className="border-light-top mt-5 pt-6 is-flex is-flex-direction-column">
+        <div>
+          <QRCode
+            className="ml-5"
+            value={`https://flowscan.org/account/${address}`}
+          />
+        </div>
+        <button
+          className="button is-transparent mt-5"
           onClick={() => clipboard.copy(address)}
         >
           {clipboard.textJustCopied === address
             ? "Copied"
             : "Copy Safe Address"}
-        </div>
+        </button>
       </div>
       <div className="is-flex is-align-items-center mt-6">
         <button
-          className="button flex-1 p-4 mr-2"
+          className="button flex-1 is-border mr-2"
           onClick={() => modalContext.closeModal()}
         >
           Cancel
@@ -100,19 +105,10 @@ function Safe({ web3 }) {
 
   const currentTab = tab ?? "home";
   const buttons = ["home", "transactions", "assets", "contacts", "settings"];
-  const buttonClasses = [
-    "button rounded-sm border-none",
-    "is-capitalized",
-    "mr-2",
-  ];
+  const buttonClasses = ["button is-nav", "is-capitalized", "mr-2"];
 
   const ButtonCpts = buttons.map((btn, i) => {
-    const classes = [
-      ...buttonClasses,
-      currentTab === btn
-        ? "has-background-purple has-text-primary-purple"
-        : "has-text-grey",
-    ];
+    const classes = [...buttonClasses, currentTab === btn ? "is-focused" : ""];
     const baseUrl = `/safe/${address}`;
     const to = btn === "home" ? baseUrl : `${baseUrl}/${btn}`;
     return (
@@ -236,16 +232,13 @@ function Safe({ web3 }) {
         <div className="is-flex flex-1 is-justify-content-end">
           <div className="w-auto">
             <button
-              className="button py-4 px-5 pointer mr-2"
+              className="button is-border mr-2 with-icon"
               onClick={onReceive}
             >
-              Receive <ArrowDown className="ml-2" />
+              Receive <Svg name="ArrowDown" />
             </button>
-            <button
-              className="button py-4 px-5 pointer is-link"
-              onClick={onSend}
-            >
-              Send <ArrowUp className="ml-2 has-text-white" />
+            <button className="is-primary button with-icon" onClick={onSend}>
+              Send <Svg name="ArrowUp" />
             </button>
           </div>
         </div>

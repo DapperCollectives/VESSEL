@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { CaretDown } from "./Svg";
+import Svg from "library/Svg";
 
 function Tooltip({ position, text, children, classNames = "" }) {
   const positionConfig = {
@@ -34,7 +34,14 @@ const TooltipWrapper = ({ isOpen, children }) => {
   );
 };
 
-const Dropdown = ({ value, values, setValue, style, renderItemAddOn }) => {
+const Dropdown = ({
+  value,
+  values,
+  setValue,
+  style,
+  renderItemAddOn,
+  defaultText,
+}) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const openCloseDrowdown = () => {
@@ -61,17 +68,17 @@ const Dropdown = ({ value, values, setValue, style, renderItemAddOn }) => {
     >
       <div className="dropdown-trigger columns m-0 is-flex-grow-1">
         <button
-          className="button rounded-sm is-outlined border-light column m-0 py-0 px-3 is-full full-height"
+          className="rounded-sm is-outlined border-light column m-0 py-0 px-3 is-full full-height has-background-white"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
           onClick={openCloseDrowdown}
         >
           <TooltipWrapper isOpen={isOpen}>
             <div className="is-flex is-flex-grow-1 is-align-items-center is-justify-content-space-between has-text-grey small-text">
-              {value}
+              {value ?? defaultText}
               <span>
                 {renderItemAddOn && renderItemAddOn(value)}
-                <CaretDown className="has-text-black" />
+                <Svg name="CaretDown" className="has-text-black" />
               </span>
             </div>
           </TooltipWrapper>

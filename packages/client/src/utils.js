@@ -77,6 +77,12 @@ export const getFlowscanUrlForTransaction = (hash) => {
   }flowscan.org/transaction/${hash}`;
 };
 
+export const getFlowscanUrlForContract = (address, name) => {
+  return `https://${
+    process.env.REACT_APP_FLOW_ENV === "mainnet" ? "" : "testnet."
+  }flowscan.org/contract/A.${address}.${name}`;
+};
+
 export const syncSafeOwnersWithSigners = (signers, safeOwners) => {
   const verifiedSigners = Object.keys(signers).filter((key) => signers[key]);
 
@@ -104,15 +110,25 @@ export const removeAddressPrefix = (address) => address.replace("0x", "");
 export const getTokenMeta = (vaultId) => {
   if (vaultId) {
     const tokenName = vaultId.split(".")[2];
-    return COIN_TYPE_TO_META[CONTRACT_NAME_TO_COIN_TYPE[tokenName]];
+    const tokenAddress = vaultId.split(".")[1];
+    const tokenType = CONTRACT_NAME_TO_COIN_TYPE[tokenName];
+    return {
+      ...COIN_TYPE_TO_META[CONTRACT_NAME_TO_COIN_TYPE[tokenName]],
+      tokenAddress,
+      tokenType,
+    };
   }
 };
 
-export const getNFTMeta = (collectionId) => {
-  const NFTName = collectionId?.split(".")[2];
-  const NFTAddress = collectionId?.split(".")[1];
+// This can be used to fetch the contract name and address for vault and collection identifiers
+export const parseIdentifier = (identifier) => {
+  if (!identifier) {
+    return {};
+  }
+  const contractName = identifier.split(".")[2];
+  const contractAddress = identifier.split(".")[1];
   return {
-    NFTName,
-    NFTAddress,
+    contractName,
+    contractAddress,
   };
 };

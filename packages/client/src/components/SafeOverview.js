@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import React from "react";
-import { LogoV, CoinIcon } from "components/Svg";
+import Svg from "library/Svg";
 
 function SafeOverview({ allBalance }) {
   const balanceClasses = [
@@ -32,7 +32,8 @@ function SafeOverview({ allBalance }) {
             position: "relative",
           }}
         >
-          <LogoV
+          <Svg
+            name="LogoV"
             style={{
               position: "absolute",
               top: "0px",
@@ -45,7 +46,7 @@ function SafeOverview({ allBalance }) {
               <label>Tokens</label>
               {!!tokensWithPositiveBalance.length && (
                 <Link to={(location) => `${location.pathname}/assets`}>
-                  <strong>View All</strong>
+                  <strong className="has-text-white">View All</strong>
                 </Link>
               )}
             </div>
@@ -53,7 +54,7 @@ function SafeOverview({ allBalance }) {
               <div className="p-3 mb-1">
                 <div className="is-flex is-flex-direction-column is-justify-content-center is-align-items-center">
                   <p className="has-text-white ">You don't have any tokens</p>
-                  <button className="button column is-half has-text-small has-background-white mt-2 p-3 rounded-sm">
+                  <button className="button column is-half mt-2 has-purple-background-hover-animation has-text-purple">
                     Deposit Tokens
                   </button>
                 </div>
@@ -68,7 +69,7 @@ function SafeOverview({ allBalance }) {
                       style={{ flex: "2 1 auto", maxWidth: "50%" }}
                     >
                       <div className="is-flex is-flex-direction-row is-justify-content-flex-start mb-5">
-                        <CoinIcon coinType={type} />
+                        <Svg name={type} />
                         <label className="ml-2 pt-.5 has-text-black">
                           {type}
                         </label>

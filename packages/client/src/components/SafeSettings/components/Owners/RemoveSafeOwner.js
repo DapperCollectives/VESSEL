@@ -1,6 +1,6 @@
 import React, { useState, useContext } from "react";
 import { useAddressValidation } from "hooks";
-import { Check } from "components/Svg";
+import Svg from "library/Svg";
 import { isAddr } from "utils";
 import { Web3Context } from "contexts/Web3";
 
@@ -21,8 +21,8 @@ const RemoveSafeOwner = ({ safeOwner, onCancel, onSubmit }) => {
   };
 
   const submitButtonClasses = [
-    "button flex-1 p-4",
-    isFormValid ? "is-link" : "is-light is-disabled",
+    "button flex-1 is-primary",
+    isFormValid ? "" : "disabled",
   ];
 
   return (
@@ -48,13 +48,13 @@ const RemoveSafeOwner = ({ safeOwner, onCancel, onSubmit }) => {
             />
             {addressValid && (
               <div style={{ position: "absolute", right: 17, top: 14 }}>
-                <Check />
+                <Svg name="Check" />
               </div>
             )}
           </div>
         </div>
         <div className="is-flex is-align-items-center mt-6">
-          <button className="button flex-1 p-4 mr-2" onClick={onCancel}>
+          <button className="button flex-1 is-border mr-2" onClick={onCancel}>
             Cancel
           </button>
           <button

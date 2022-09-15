@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react";
 import { useAddressValidation } from "hooks";
 import { isAddr, formatAddress } from "utils";
-import { Check } from "components/Svg";
+import Svg from "library/Svg";
 import { Web3Context } from "contexts/Web3";
 
 const AddSafeOwner = ({ onCancel, onNext, safeOwners }) => {
@@ -36,8 +36,8 @@ const AddSafeOwner = ({ onCancel, onNext, safeOwners }) => {
   };
 
   const nextButtonClasses = [
-    "button flex-1 p-4",
-    addressValid ? "is-link" : "is-light is-disabled",
+    "button flex-1 is-primary",
+    addressValid ? "" : "disabled",
   ];
 
   return (
@@ -73,13 +73,13 @@ const AddSafeOwner = ({ onCancel, onNext, safeOwners }) => {
             />
             {addressValid && (
               <div style={{ position: "absolute", right: 17, top: 14 }}>
-                <Check />
+                <Svg name="Check" />
               </div>
             )}
           </div>
         </div>
         <div className="is-flex is-align-items-center mt-6">
-          <button className="button flex-1 p-4 mr-2" onClick={onCancel}>
+          <button className="button flex-1 is-border mr-2" onClick={onCancel}>
             Cancel
           </button>
           <button
