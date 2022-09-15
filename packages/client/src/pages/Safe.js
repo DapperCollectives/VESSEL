@@ -8,6 +8,7 @@ import {
   SafeAssets,
   SafeContacts,
   SafeSettings,
+  SafeTokens,
   SendTokens,
   TestToolBox,
 } from "../components";
@@ -104,7 +105,14 @@ function Safe({ web3 }) {
   };
 
   const currentTab = tab ?? "home";
-  const buttons = ["home", "transactions", "assets", "contacts", "settings"];
+  const buttons = [
+    "home",
+    "transactions",
+    "tokens",
+    "assets",
+    "contacts",
+    "settings",
+  ];
   const buttonClasses = ["button is-nav", "is-capitalized", "mr-2"];
 
   const ButtonCpts = buttons.map((btn, i) => {
@@ -181,6 +189,7 @@ function Safe({ web3 }) {
         address={address}
       />
     ),
+    tokens: <SafeTokens key="safe-tokens" />,
     assets: (
       <SafeAssets
         web3={web3}
@@ -214,7 +223,7 @@ function Safe({ web3 }) {
         {process.env.REACT_APP_FLOW_ENV !== "mainnet" && (
           <TestToolBox address={address} />
         )}
-        <h1 className="is-size-4 mb-2">{safeData.name}</h1>
+        <h1 className=" mb-2">{safeData.name}</h1>
         <p>
           <span className="has-text-grey">
             Safe address {shortenAddr(address)}

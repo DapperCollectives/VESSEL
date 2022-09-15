@@ -22,7 +22,7 @@ const SafeDetailsSetting = ({ treasury, setTreasury }) => {
   return (
     <div>
       <div className="column p-0 mt-5 is-flex is-full">
-        <h4 className="is-size-5">Safe Details</h4>
+        <h2>Safe Details</h2>
       </div>
       <div className="column p-5 mt-4 mb-5 is-flex is-full rounded-sm border-light has-shadow">
         <div className="border-light-right pr-5 mr-5 flex-1">

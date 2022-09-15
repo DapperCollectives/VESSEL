@@ -10,7 +10,7 @@ const safeTypes = Object.entries(SAFE_TYPES_TO_META).map((type) => ({
 const SafeDetails = ({ safeType, setSafeType, safeName, setSafeName }) => (
   <>
     <div className="column mt-5 is-flex is-full">
-      <h4 className="is-size-5">Safe Details</h4>
+      <h2>Safe Details</h2>
     </div>
     <div className="column is-flex is-full">
       <div className="flex-1 is-flex is-flex-direction-column pr-5">
