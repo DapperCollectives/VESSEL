@@ -597,16 +597,18 @@ func TestSignerRevokeApproval(t *testing.T) {
 	})
 }
 
-func TestAddSignerAction(t *testing.T) {
+func TestAddSignerUpdateThresholdAction(t *testing.T) {
 	var addSignerActionUUID uint64
 
 	var signers = []string{"treasuryOwner", "signer1", "signer2", "signer3"}
 
 	otu := NewOverflowTest(t)
-	otu.SetupTreasury("treasuryOwner", signers, len(signers))
+	originalThreshold := len(signers)
+	newThreshold := uint(len(signers) + 1)
+	otu.SetupTreasury("treasuryOwner", signers, originalThreshold)
 
 	t.Run("User should be able to propose a signer to be added", func(t *testing.T) {
-		otu.ProposeAddSignerAction("treasuryOwner", "treasuryOwner", "signer4")
+		otu.ProposeAddSignerUpdateThresholdAction("treasuryOwner", "treasuryOwner", "signer4", newThreshold)
 	})
 
 	t.Run("Signers should be able to sign to approve a proposed action to add a new signer", func(t *testing.T) {
@@ -636,12 +638,23 @@ func TestAddSignerAction(t *testing.T) {
 		otu.ExecuteAction("treasuryOwner", addSignerActionUUID)
 
 		signers := otu.GetTreasurySigners("treasuryOwner").String()
+		threshold := otu.GetTreasuryThreshold("treasuryOwner")
 
 		assert.Contains(otu.T, signers, otu.GetAccountAddress("signer4"))
+		assert.Equal(otu.T, newThreshold, uint(threshold))
 	})
+}
+
+func TestAddSignerUpdateThresholdFailures(t *testing.T) {
+	var addSignerActionUUID uint64
+
+	var signers = []string{"treasuryOwner", "signer1", "signer2", "signer3"}
+
+	otu := NewOverflowTest(t)
+	otu.SetupTreasury("treasuryOwner", signers, len(signers))
 
 	t.Run("User shouldn't be able to add a same signer twice", func(t *testing.T) {
-		otu.ProposeAddSignerAction("treasuryOwner", "treasuryOwner", "signer4")
+		otu.ProposeAddSignerUpdateThresholdAction("treasuryOwner", "treasuryOwner", "signer3", uint(len(signers)))
 		actions := otu.GetProposedActions("treasuryOwner")
 		keys := make([]uint64, 0, len(actions))
 		for k := range actions {
@@ -651,7 +664,6 @@ func TestAddSignerAction(t *testing.T) {
 
 		// Each signer submits an approval signature
 		for _, signer := range signers {
-			otu.ExecuteActionFailed("treasuryOwner", addSignerActionUUID, "This action has not received a signature from every signer yet.")
 			otu.SignerApproveAction("treasuryOwner", addSignerActionUUID, signer)
 		}
 
@@ -665,14 +677,16 @@ func TestAddSignerAction(t *testing.T) {
 	})
 }
 
-func TestRemoveSignerAction(t *testing.T) {
+func TestRemoveSignerActionUpdateThreshold(t *testing.T) {
 	var removeSignerActionUUID uint64
 
 	otu := NewOverflowTest(t)
-	otu.SetupTreasury("treasuryOwner", Signers, 3)
+	originalThreshold := len(Signers)
+	newThreshold := uint(len(Signers) - 1)
+	otu.SetupTreasury("treasuryOwner", Signers, originalThreshold)
 
 	t.Run("User should be able to propose a signer to be removed", func(t *testing.T) {
-		otu.ProposeRemoveSignerAction("treasuryOwner", "treasuryOwner", "signer4")
+		otu.ProposeRemoveSignerUpdateThresholdAction("treasuryOwner", "treasuryOwner", "signer4", newThreshold)
 	})
 
 	t.Run("Signers should be able to sign to approve a proposed action to remove a signer", func(t *testing.T) {
@@ -701,8 +715,10 @@ func TestRemoveSignerAction(t *testing.T) {
 		otu.ExecuteAction("treasuryOwner", removeSignerActionUUID)
 
 		signers := otu.GetTreasurySigners("treasuryOwner").String()
+		threshold := otu.GetTreasuryThreshold("treasuryOwner")
 
 		assert.NotContains(otu.T, signers, otu.GetAccountAddress("signer4"))
+		assert.Equal(otu.T, newThreshold, uint(threshold))
 	})
 }
 
@@ -713,7 +729,7 @@ func TestRemoveSignerActionErrors(t *testing.T) {
 	otu.SetupTreasury("treasuryOwner", Signers, DefaultThreshold)
 
 	t.Run("User should be able to propose a signer to be removed", func(t *testing.T) {
-		otu.ProposeRemoveSignerAction("treasuryOwner", "treasuryOwner", "signer4")
+		otu.ProposeRemoveSignerUpdateThresholdAction("treasuryOwner", "treasuryOwner", "signer4", uint(DefaultThreshold+1))
 	})
 
 	t.Run("Signers should be able to sign to approve a proposed action to remove a signer", func(t *testing.T) {
@@ -740,7 +756,7 @@ func TestRemoveSignerActionErrors(t *testing.T) {
 	})
 
 	t.Run("A treasuryOwner shouldn't be able to execute a proposed action to remove a signer because the threshold will be higher than the number of signers", func(t *testing.T) {
-		otu.ExecuteActionFailed("treasuryOwner", removeSignerActionUUID, "Cannot remove signer, number of signers must be equal or higher than the threshold.")
+		otu.ExecuteActionFailed("treasuryOwner", removeSignerActionUUID, "Cannot update threshold, number of signers must be equal or higher than the threshold.")
 
 		signers := otu.GetTreasurySigners("treasuryOwner").String()
 

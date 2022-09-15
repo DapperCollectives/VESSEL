@@ -161,7 +161,10 @@ pub contract MyMultiSigV4 {
         access(account) fun executeAction(actionUUID: UInt64, _ params: {String: AnyStruct}) {
             pre {
                 self.readyToExecute(actionUUID: actionUUID):
-                    "This action has not received a signature from every signer yet."
+                    "This action has not received a signature from every signer yet. Signed: "
+                        .concat(self.getTotalApprovedForAction(actionUUID: actionUUID).toString())
+                        .concat(" - Threshold: ")
+                        .concat(self.threshold.toString())
             }
             
             let action <- self.actions.remove(key: actionUUID) ?? panic("This action does not exist.")
