@@ -215,7 +215,7 @@ const getVaultBalance = async (address, vaultId) => {
   return await query({
     cadence: GET_VAULT_BALANCE,
     args: (arg, t) => [arg(address, t.Address), arg(vaultId, t.String)],
-  }).catch(console.error);
+  });
 };
 
 const getAllVaultBalance = async (address) => {
