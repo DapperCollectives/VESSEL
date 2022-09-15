@@ -11,7 +11,7 @@ const TestToolBox = ({ address }) => {
   const { getUserBalances, initDepositTokensToTreasury } = useAccount();
   const { sendNFTToTreasury, getTreasuryCollections, balances, user } = web3;
 
-  const treasuryBalances = balances[address];
+  const treasuryBalances = balances?.[address];
   const onDeposit = async () => {
     await initDepositTokensToTreasury(address);
   };
@@ -80,9 +80,15 @@ const TestToolBox = ({ address }) => {
                 <li>
                   <span>Treasury:</span>
                   <ul className="ml-3">
-                    <li>Flow: {treasuryBalances[COIN_TYPES.FLOW]}</li>
-                    <li>FUSD: {treasuryBalances[COIN_TYPES.FUSD]}</li>
-                    <li>USDC: {treasuryBalances[COIN_TYPES.USDC]}</li>
+                    {treasuryBalances?.[COIN_TYPES.FLOW] && (
+                      <li>Flow: {treasuryBalances[COIN_TYPES.FLOW]}</li>
+                    )}
+                    {treasuryBalances?.[COIN_TYPES.FUSD] && (
+                      <li>FUSD: {treasuryBalances[COIN_TYPES.FUSD]}</li>
+                    )}
+                    {treasuryBalances?.[COIN_TYPES.USDC] && (
+                      <li>USDC: {treasuryBalances[COIN_TYPES.USDC]}</li>
+                    )}
                   </ul>
                 </li>
               </ul>
