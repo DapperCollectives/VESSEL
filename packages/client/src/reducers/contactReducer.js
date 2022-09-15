@@ -2,11 +2,11 @@
  * contacts is an object of { <treasury address>: [contact objects] }
  * where each contact object has { name: <string>, address: <string> }
  */
-export const INITIAL_STATE = {
+export const CONTACT_INITIAL_STATE = {
   contacts: {},
 };
 
-const reducer = (state, action) => {
+const contactReducer = (state, action) => {
   const address = Object.keys(action.payload)[0];
   const body = action.payload[address];
   const treasuryContacts = (state.contacts?.[address] ?? []).slice(0);
@@ -41,4 +41,4 @@ const reducer = (state, action) => {
   }
 };
 
-export default reducer;
+export default contactReducer;

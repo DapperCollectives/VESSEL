@@ -1,4 +1,4 @@
-export const INITIAL_STATE = {
+export const TREASURY_INITIAL_STATE = {
   loadingTreasuries: "Loading Treasuries",
   error: null,
   submittedTransaction: false,
@@ -7,7 +7,7 @@ export const INITIAL_STATE = {
   balances: {},
 };
 
-const reducer = (state, action) => {
+const treasuryReducer = (state, action) => {
   switch (action.type) {
     case "CLEAR_TREASURIES": {
       return {
@@ -69,4 +69,4 @@ const reducer = (state, action) => {
   }
 };
 
-export default reducer;
+export default treasuryReducer;

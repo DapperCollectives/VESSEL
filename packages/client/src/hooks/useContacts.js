@@ -1,12 +1,12 @@
 import { useEffect, useReducer, useMemo } from "react";
-import reducer, { INITIAL_STATE } from "../reducers/contacts";
+import contactReducer, { CONTACT_INITIAL_STATE } from "reducers/contactReducer";
 
 const storageKey = "vessel-contacts";
 
 export default function useContacts(address) {
-  const [state, dispatch] = useReducer(reducer, [], (initial) => ({
+  const [state, dispatch] = useReducer(contactReducer, [], (initial) => ({
     ...initial,
-    ...INITIAL_STATE,
+    ...CONTACT_INITIAL_STATE,
     contacts: JSON.parse(localStorage.getItem(storageKey) || "{}"),
   }));
 
