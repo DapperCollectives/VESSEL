@@ -8,15 +8,10 @@ import Svg from "library/Svg";
 import AssetTableView from "./AssetTableView";
 import RemoveAsset from "./RemoveAsset";
 
-const TokenAsset = ({
-  userAddr,
-  treasury,
-  vaults,
-  getTreasuryVaults,
-  addVault,
-  removeVault,
-  scrollToRef,
-}) => {
+const TokenAsset = (
+  { userAddr, treasury, vaults, getTreasuryVaults, addVault, removeVault },
+  ref
+) => {
   const { address } = treasury;
   const { openModal, closeModal } = useModalContext();
   const { showErrorModal } = useErrorMessage();
@@ -80,7 +75,7 @@ const TokenAsset = ({
   return (
     <div>
       <div
-        ref={scrollToRef}
+        ref={ref}
         className="column p-0 mt-5 is-flex is-full is-justify-content-space-between"
       >
         <h2>Token Vaults</h2>

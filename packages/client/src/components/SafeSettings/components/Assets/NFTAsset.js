@@ -7,15 +7,17 @@ import Svg from "library/Svg";
 import AssetTableView from "./AssetTableView";
 import RemoveAsset from "./RemoveAsset";
 
-const NFTAsset = ({
-  userAddr,
-  treasury,
-  NFTs,
-  getTreasuryCollections,
-  addCollection,
-  removeCollection,
-  scrollToRef,
-}) => {
+const NFTAsset = (
+  {
+    userAddr,
+    treasury,
+    NFTs,
+    getTreasuryCollections,
+    addCollection,
+    removeCollection,
+  },
+  ref
+) => {
   const { address } = treasury;
   const { openModal, closeModal } = useModalContext();
   const { showErrorModal } = useErrorMessage();
@@ -77,7 +79,7 @@ const NFTAsset = ({
   };
 
   return (
-    <div ref={scrollToRef}>
+    <div ref={ref}>
       <div className="column p-0 mt-5 is-flex is-full is-justify-content-space-between">
         <h2>NFT Collections</h2>
         <button

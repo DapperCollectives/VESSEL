@@ -39,7 +39,7 @@ const SafeSettings = () => {
       <SignatureThreshold treasury={treasury} />
       <Owners treasury={treasury} proposeRemoveSigner={proposeRemoveSigner} />
       <TokenAsset
-        scrollToRef={scrollTo === "#tokenAsset" ? targetElementRef : null}
+        ref={scrollTo === "#tokenAsset" ? targetElementRef : null}
         userAddr={address}
         treasury={treasury}
         vaults={vaults}
@@ -48,7 +48,7 @@ const SafeSettings = () => {
         removeVault={removeVault}
       />
       <NFTAsset
-        scrollToRef={scrollTo === "#nftAsset" ? targetElementRef : null}
+        ref={scrollTo === "#nftAsset" ? targetElementRef : null}
         userAddr={address}
         treasury={treasury}
         NFTs={NFTs}

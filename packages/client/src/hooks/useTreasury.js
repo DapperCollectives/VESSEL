@@ -7,7 +7,6 @@ import {
   SIGNER_APPROVE_LIMIT,
   UPDATE_SIGNER_LIMIT,
 } from "constants/constants";
-import { COIN_TYPES } from "constants/enums";
 import { COIN_TYPE_TO_META } from "constants/maps";
 import { createSignature } from "contexts/Web3";
 import {
@@ -27,7 +26,12 @@ import {
   UPDATE_THRESHOLD,
 } from "../flow";
 import reducer, { INITIAL_STATE } from "../reducers/treasuries";
-import { getVaultId, syncSafeOwnersWithSigners, formatAddress } from "../utils";
+import {
+  getVaultId,
+  syncSafeOwnersWithSigners,
+  formatAddress,
+  getTokenMeta,
+} from "../utils";
 
 const storageKey = "vessel-treasuries";
 
@@ -207,23 +211,25 @@ const getSignersForAction = async (address, actionUUID) => {
   }).catch(console.error);
 };
 
-const getVaultBalance = async (address, coinType = COIN_TYPES.FLOW) => {
-  const identifiers = await doQuery(GET_TREASURY_IDENTIFIERS, address);
-  const vaultId = getVaultId(identifiers, coinType);
-  if (vaultId) {
-    return await query({
-      cadence: GET_VAULT_BALANCE,
-      args: (arg, t) => [arg(address, t.Address), arg(vaultId, t.String)],
-    }).catch(console.error);
-  }
-
-  return 0;
+const getVaultBalance = async (address, vaultId) => {
+  return await query({
+    cadence: GET_VAULT_BALANCE,
+    args: (arg, t) => [arg(address, t.Address), arg(vaultId, t.String)],
+  }).catch(console.error);
 };
+
 const getAllVaultBalance = async (address) => {
-  const allBalance = Object.assign({}, COIN_TYPES);
-  for await (const coinType of Object.keys(COIN_TYPES)) {
-    const balance = await getVaultBalance(address, coinType);
-    allBalance[coinType] = balance;
+  const allBalance = {};
+  try {
+    const identifiers = await doQuery(GET_TREASURY_IDENTIFIERS, address);
+    const vaultIdentifiers = identifiers[0];
+    for await (const vaultId of vaultIdentifiers) {
+      const balance = await getVaultBalance(address, vaultId);
+      const { tokenType } = getTokenMeta(vaultId);
+      allBalance[tokenType] = balance;
+    }
+  } catch (e) {
+    console.log(e);
   }
   return allBalance;
 };
