@@ -107,9 +107,78 @@ var TRANSFER_NON_FUNGIBLE_TOKENS_TO_TREASURY_EXECUTE_ACTION_EVENT, _ = json.Mars
 	},
 )
 
+// Update Threshold
+
+var UPDATE_THRESHOLD_EXECUTE_ACTION_EVENT, _ = json.Marshal(
+	map[string]interface{}{
+		"actionUUID": 129,
+		"actionView": map[string]interface{}{
+			"intent":       "Update the threshold of signers to 5.",
+			"newThreshold": DefaultThreshold,
+			"proposer":     "0xec4809cd812aee0a",
+			"type":         "UpdateThreshold",
+		},
+		"executor": "0xec4809cd812aee0a",
+		"signerResponses": map[string]interface{}{
+			"0x06909bc5ba14c266": 0,
+			"0x179b6b1cb6755e31": 0,
+			"0x1beecc6fef95b62e": 0,
+			"0xec4809cd812aee0a": 0,
+			"0xf4a3472b32eac8d8": 0,
+		},
+		"treasuryUUID": 124,
+	},
+)
+
+// Add Signer Update Threshold
+var ADD_SIGNER_UPDATE_THRESHOLD_EXECUTE_ACTION_EVENT, _ = json.Marshal(
+	map[string]interface{}{
+		"actionUUID": 129,
+		"actionView": map[string]interface{}{
+			"intent":       "Add signer 0x1beecc6fef95b62e. Update the threshold of signers to 5.",
+			"newThreshold": 5,
+			"proposer":     "0xec4809cd812aee0a",
+			"signerAddr":   "0x1beecc6fef95b62e",
+			"type":         "AddSignerUpdateThreshold",
+		},
+		"executor": "0xec4809cd812aee0a",
+		"signerResponses": map[string]interface{}{
+			"0x06909bc5ba14c266": 0,
+			"0x179b6b1cb6755e31": 0,
+			"0xec4809cd812aee0a": 0,
+			"0xf4a3472b32eac8d8": 0,
+		},
+		"treasuryUUID": 124,
+	},
+)
+
+// Remove Signer Update Threshold
+var REMOVE_SIGNER_UPDATE_THRESHOLD_EXECUTE_ACTION_EVENT, _ = json.Marshal(
+	map[string]interface{}{
+		"actionUUID": 129,
+		"actionView": map[string]interface{}{
+			"intent":       "Remove signer 0x1beecc6fef95b62e. Update the threshold of signers to 4.",
+			"newThreshold": 4,
+			"proposer":     "0xec4809cd812aee0a",
+			"signerAddr":   "0x1beecc6fef95b62e",
+			"type":         "RemoveSignerUpdateThreshold",
+		},
+		"executor": "0xec4809cd812aee0a",
+		"signerResponses": map[string]interface{}{
+			"0x06909bc5ba14c266": 0,
+			"0x179b6b1cb6755e31": 0,
+			"0x1beecc6fef95b62e": 0,
+			"0xec4809cd812aee0a": 0,
+			"0xf4a3472b32eac8d8": 0,
+		},
+		"treasuryUUID": 124,
+	},
+)
+
 ///////////////////////////////////////////
 // Signer Approve/Reject Action Events //
 ///////////////////////////////////////////
+
 // Signer Approve Action
 var ACTION_APPROVED_BY_SIGNER_EVENT, _ = json.Marshal(
 	map[string]interface{}{
@@ -142,9 +211,12 @@ var ACTION_REJECTED_BY_SIGNER_EVENT, _ = json.Marshal(
 	},
 )
 
+//////////////////////////
+// Test Event Functions //
+//////////////////////////
+
 func (otu *OverflowTestUtils) AssertActionExecutedEventsMatch(txResult overflow.TransactionResult, expected []byte) {
 	txResult.AssertEmitEventName("A.f8d6e0586b0a20c7.DAOTreasuryV4.ActionExecuted")
-	// txResult.AssertEmitEventJson("sticks")
 	event := txResult.Result.GetEventsWithName("A.f8d6e0586b0a20c7.DAOTreasuryV4.ActionExecuted")[0]
 	fieldsJson, _ := json.Marshal(event)
 	assert.Equal(otu.T, string(expected), string(fieldsJson))
@@ -152,7 +224,6 @@ func (otu *OverflowTestUtils) AssertActionExecutedEventsMatch(txResult overflow.
 
 func (otu *OverflowTestUtils) AssertActionApprovedBySignerEvent(txResult overflow.TransactionResult, expected []byte) {
 	txResult.AssertEmitEventName("A.f8d6e0586b0a20c7.DAOTreasuryV4.ActionApprovedBySigner")
-	// txResult.AssertEmitEventJson("sticks")
 	event := txResult.Result.GetEventsWithName("A.f8d6e0586b0a20c7.DAOTreasuryV4.ActionApprovedBySigner")[0]
 	fieldsJson, _ := json.Marshal(event)
 	assert.Equal(otu.T, string(expected), string(fieldsJson))
@@ -160,7 +231,6 @@ func (otu *OverflowTestUtils) AssertActionApprovedBySignerEvent(txResult overflo
 
 func (otu *OverflowTestUtils) AssertActionRejectedBySignerEvent(txResult overflow.TransactionResult, expected []byte) {
 	txResult.AssertEmitEventName("A.f8d6e0586b0a20c7.DAOTreasuryV4.ActionRejectedBySigner")
-	// txResult.AssertEmitEventJson("sticks")
 	event := txResult.Result.GetEventsWithName("A.f8d6e0586b0a20c7.DAOTreasuryV4.ActionRejectedBySigner")[0]
 	fieldsJson, _ := json.Marshal(event)
 	assert.Equal(otu.T, string(expected), string(fieldsJson))
