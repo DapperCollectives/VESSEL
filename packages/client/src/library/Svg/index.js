@@ -11,7 +11,7 @@ const Svg = ({ name, ...props }) => {
         console.log(e);
       }
     })();
-    // eslint-disable react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [name]);
   return svgComponent;
 };
