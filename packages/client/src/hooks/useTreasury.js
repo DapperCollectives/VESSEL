@@ -25,7 +25,9 @@ import {
   UPDATE_SIGNER,
   UPDATE_THRESHOLD,
 } from "../flow";
-import reducer, { INITIAL_STATE } from "../reducers/treasuries";
+import treasuryReducer, {
+  TREASURY_INITIAL_STATE,
+} from "../reducers/treasuryReducer";
 import {
   getVaultId,
   syncSafeOwnersWithSigners,
@@ -234,9 +236,9 @@ const getAllVaultBalance = async (address) => {
   return allBalance;
 };
 export default function useTreasury(treasuryAddr) {
-  const [state, dispatch] = useReducer(reducer, [], (initial) => ({
+  const [state, dispatch] = useReducer(treasuryReducer, [], (initial) => ({
     ...initial,
-    ...INITIAL_STATE,
+    ...TREASURY_INITIAL_STATE,
     treasuries: JSON.parse(localStorage.getItem(storageKey)) || {},
   }));
 

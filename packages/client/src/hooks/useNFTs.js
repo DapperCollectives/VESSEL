@@ -2,7 +2,7 @@ import { useEffect, useReducer } from "react";
 import { mutate, query, tx } from "@onflow/fcl";
 import { REGULAR_LIMIT, SIGNED_LIMIT } from "constants/constants";
 import { createSignature } from "../contexts/Web3";
-import nftReducer, { NFT_INITIAL_STATE } from "../reducers/nfts";
+import nftReducer, { NFT_INITIAL_STATE } from "../reducers/nftReducer";
 import { formatAddress, parseIdentifier, removeAddressPrefix } from "utils";
 import {
   CHECK_TREASURY_NFT_COLLECTION,

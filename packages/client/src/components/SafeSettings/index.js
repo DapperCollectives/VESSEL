@@ -27,11 +27,11 @@ const SafeSettings = () => {
     removeCollection,
   } = web3;
   useEffect(() => {
-    () => {
+    (() => {
       if (targetElementRef.current) {
         targetElementRef.current.scrollIntoView({ behavior: "smooth" });
       }
-    };
+    })();
     //eslint-disable-next-line
   }, []);
   return (
