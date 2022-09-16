@@ -33,10 +33,10 @@ function ActionsList({ actions = [], onSign, onReject, onConfirm, safeData }) {
 
   const openSignRejectModal = async (action) => {
     const view = await getActionView(safeData.address, action.uuid);
-    console.log(view);
     openModal(
       <ActionRequired
-        address={safeData.address}
+        safeData={safeData}
+        actionView={view}
         onReject={() => onRejectAction(action)}
         onApprove={() => onSignAction(action)}
       />,

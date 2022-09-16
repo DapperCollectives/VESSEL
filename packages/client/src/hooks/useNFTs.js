@@ -9,7 +9,8 @@ import {
   PROPOSE_NFT_TRANSFER,
   SEND_NFT_TO_TREASURY,
   GET_TREASURY_IDENTIFIERS,
-  GET_NFT_REF,
+  GET_ACCOUNT_NFT_REF,
+  GET_TREASURY_NFT_REF,
   ADD_COLLECTION,
   REMOVE_COLLECTION,
 } from "../flow";
@@ -145,14 +146,28 @@ export default function useNFTs(treasuryAddr) {
     }
   };
 
-  const getNFTReference = async (
+  const getAccountNFTReference = async (
     contractName,
     contractAddress,
     accountAddr,
     nftId
   ) => {
     const nftRef = await query({
-      cadence: GET_NFT_REF(contractName, contractAddress),
+      cadence: GET_ACCOUNT_NFT_REF(contractName, contractAddress),
+      args: (arg, t) => [arg(accountAddr, t.Address), arg(nftId, t.UInt64)],
+    }).catch(console.error);
+    return nftRef;
+  };
+
+  const getTreasuryNFTReference = async (
+    contractName,
+    contractAddress,
+    collectionId,
+    accountAddr,
+    nftId
+  ) => {
+    const nftRef = await query({
+      cadence: GET_TREASURY_NFT_REF(contractName, contractAddress, collectionId),
       args: (arg, t) => [arg(accountAddr, t.Address), arg(nftId, t.UInt64)],
     }).catch(console.error);
     return nftRef;
@@ -206,7 +221,8 @@ export default function useNFTs(treasuryAddr) {
     getTreasuryCollections,
     proposeNFTTransfer,
     sendNFTToTreasury,
-    getNFTReference,
+    getAccountNFTReference,
+    getTreasuryNFTReference,
     addCollection,
     removeCollection,
   };

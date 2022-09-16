@@ -17,7 +17,7 @@ const TransactionSuccessModal = ({
   safeName,
   safeAddress,
 }) => {
-  const { getNFTReference } = useContext(Web3Context);
+  const { getAccountNFTReference } = useContext(Web3Context);
   const clipboard = useClipboard();
   const [image, setImage] = useState();
   const { contacts } = useContacts(safeAddress);
@@ -33,7 +33,7 @@ const TransactionSuccessModal = ({
   useEffect(() => {
     if (actionType === ACTION_TYPES.TRANSFER_NFT) {
       const getImageURL = async () => {
-        const result = await getNFTReference(
+        const result = await getAccountNFTReference(
           NFTName,
           formatAddress(NFTAddress),
           recipient,
@@ -43,7 +43,7 @@ const TransactionSuccessModal = ({
       };
       getImageURL().catch(console.error);
     }
-  }, [actionType, NFTName, NFTAddress, nftId, recipient, getNFTReference]);
+  }, [actionType, NFTName, NFTAddress, nftId, recipient, getAccountNFTReference]);
 
   function getSafeContactName(address) {
     const contact = contacts.find((contact) => contact.address === address);

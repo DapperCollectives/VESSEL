@@ -30,4 +30,7 @@ export const SIGNER_RESPONSES = {
 export const ACTION_TYPES = {
   TRANSFER_TOKEN: "TransferToken",
   TRANSFER_NFT: "TransferNFT",
+  ADD_OWNER: "AddSigner",
+  REMOVE_OWNER: "RemoveSigner",
+  UPDATE_THRESHOLD: "UpdateThreshold",
 };
