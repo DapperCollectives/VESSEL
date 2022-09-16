@@ -293,4 +293,82 @@ pub contract TreasuryActionsV4 {
       self.intent = "Update the threshold of signers to ".concat(threshold.toString()).concat(".")
     }
   }
+
+  pub struct AddSignerUpdateThreshold: MyMultiSigV4.Action {
+    pub let threshold: UInt
+    pub let signer: Address
+    pub let intent: String
+    pub let proposer: Address
+
+    access(account) fun execute(_ params: {String: AnyStruct}) {
+      let treasuryRef: &DAOTreasuryV4.Treasury = params["treasury"]! as! &DAOTreasuryV4.Treasury
+      let manager = treasuryRef.borrowManager()
+
+      // Add Signer
+      manager.addSigner(signer: self.signer)
+      // Update Threshold
+      manager.updateThreshold(newThreshold: self.threshold)
+    }
+
+    pub fun getView(): MyMultiSigV4.ActionView {
+      let view: MyMultiSigV4.ActionView = TreasuryActionsV4.InitializeActionView(
+        type: "AddSignerUpdateThreshold",
+        intent: self.intent,
+        proposer: self.proposer
+      )
+      view.newThreshold = self.threshold
+      view.signerAddr = self.signer
+      return view
+    }
+
+    init(signer: Address, threshold: UInt, proposer: Address) {
+      self.signer = signer
+      self.threshold = threshold
+      self.proposer = proposer
+      self.intent = "Add signer "
+        .concat(signer.toString())
+        .concat(". Update the threshold of signers to ")
+        .concat(threshold.toString()).concat(".")
+    }
+  }
+
+  pub struct RemoveSignerUpdateThreshold: MyMultiSigV4.Action {
+    pub let threshold: UInt
+    pub let signer: Address
+    pub let intent: String
+    pub let proposer: Address
+
+    access(account) fun execute(_ params: {String: AnyStruct}) {
+      let treasuryRef: &DAOTreasuryV4.Treasury = params["treasury"]! as! &DAOTreasuryV4.Treasury
+      let manager = treasuryRef.borrowManager()
+
+      // Update Threshold
+      manager.updateThreshold(newThreshold: self.threshold)
+      // Remove Signer
+      manager.removeSigner(signer: self.signer)
+    }
+
+    pub fun getView(): MyMultiSigV4.ActionView {
+      let view: MyMultiSigV4.ActionView = TreasuryActionsV4.InitializeActionView(
+        type: "RemoveSignerUpdateThreshold",
+        intent: self.intent,
+        proposer: self.proposer
+      )
+      view.newThreshold = self.threshold
+      view.signerAddr = self.signer
+      return view
+    }
+
+    init(signer: Address, threshold: UInt, proposer: Address) {
+      self.signer = signer
+      self.threshold = threshold
+      self.proposer = proposer
+      self.intent = "Remove signer "
+        .concat(signer.toString())
+        .concat(". Update the threshold of signers to ")
+        .concat(threshold.toString()).concat(".")
+    }
+  }
 }
+
+ 

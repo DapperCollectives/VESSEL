@@ -20,7 +20,7 @@ function SafeOverview({ allBalance }) {
   return (
     <>
       <div className="column p-0 mt-5 is-flex is-full">
-        <h4 className="is-size-5">Safe Overview</h4>
+        <h2>Safe Overview</h2>
       </div>
       <div className="column p-0 mt-4 mb-5 is-flex is-full">
         <div

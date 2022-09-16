@@ -20,6 +20,13 @@
         "testnet": "0x7e60df042a9c0868"
       }
     },
+    "FlowFees": {
+      "source": "./contracts/core/FlowFees.cdc",
+      "aliases": {
+        "emulator": "0xe5a8b7f23e8b548f",
+        "testnet": "0x912d5440f7e3769e"
+      }
+    },
     "FUSD": {
       "source": "./contracts/core/FUSD.cdc",
       "aliases": {

@@ -556,9 +556,9 @@ func (otu *OverflowTestUtils) GetTreasuryThreshold(account string) int {
 	return int(threshold.ToGoValue().(uint64))
 }
 
-func (otu *OverflowTestUtils) ProposeAddSignerAction(treasuryAddr, proposingAcct, address string) *OverflowTestUtils {
+func (otu *OverflowTestUtils) ProposeAddSignerUpdateThresholdAction(treasuryAddr, proposingAcct, address string, threshold uint) *OverflowTestUtils {
 	signerAccount, _ := otu.O.State.Accounts().ByName(fmt.Sprintf("emulator-%s", address))
-	src := []byte(fmt.Sprintf("Add account 0x%s as a signer.", signerAccount.Address()))
+	src := []byte(fmt.Sprintf("Add signer 0x%s. Update the threshold of signers to %d.", signerAccount.Address(), threshold))
 	signerHex := make([]byte, hex.EncodedLen(len(src)))
 	hex.Encode(signerHex, src)
 
@@ -569,11 +569,12 @@ func (otu *OverflowTestUtils) ProposeAddSignerAction(treasuryAddr, proposingAcct
 	// signature
 	signature := otu.SignMessage(proposingAcct, message)
 
-	otu.O.TransactionFromFile("add_signer").
+	otu.O.TransactionFromFile("add_signer_update_threshold").
 		SignProposeAndPayAs(proposingAcct).
 		Args(otu.O.Arguments().
 			Address(treasuryAddr).
 			Address(address).
+			UInt(threshold).
 			String(message).
 			UInt64Array(0).
 			StringArray(signature).
@@ -584,9 +585,9 @@ func (otu *OverflowTestUtils) ProposeAddSignerAction(treasuryAddr, proposingAcct
 	return otu
 }
 
-func (otu *OverflowTestUtils) ProposeRemoveSignerAction(treasuryAddr, proposingAcct, address string) *OverflowTestUtils {
+func (otu *OverflowTestUtils) ProposeRemoveSignerUpdateThresholdAction(treasuryAddr, proposingAcct, address string, threshold uint) *OverflowTestUtils {
 	signerAccount, _ := otu.O.State.Accounts().ByName(fmt.Sprintf("emulator-%s", address))
-	src := []byte(fmt.Sprintf("Remove 0x%s as a signer.", signerAccount.Address()))
+	src := []byte(fmt.Sprintf("Remove signer 0x%s. Update the threshold of signers to %d.", signerAccount.Address(), threshold))
 	hexCollectionID := make([]byte, hex.EncodedLen(len(src)))
 	hex.Encode(hexCollectionID, src)
 
@@ -597,11 +598,12 @@ func (otu *OverflowTestUtils) ProposeRemoveSignerAction(treasuryAddr, proposingA
 	// signature
 	signature := otu.SignMessage(proposingAcct, message)
 
-	otu.O.TransactionFromFile("remove_signer").
+	otu.O.TransactionFromFile("remove_signer_update_threshold").
 		SignProposeAndPayAs(proposingAcct).
 		Args(otu.O.Arguments().
 			Address(treasuryAddr).
 			Address(address).
+			UInt(threshold).
 			String(message).
 			UInt64Array(0).
 			StringArray(signature).

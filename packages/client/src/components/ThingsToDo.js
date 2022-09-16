@@ -5,7 +5,7 @@ function ThingsToDo(props) {
   return (
     <>
       <div className="column p-0 mt-5 is-flex is-full">
-        <h4 className="is-size-5">Things to do</h4>
+        <h2>Things to do</h2>
       </div>
       <ActionsList {...props} />
     </>
