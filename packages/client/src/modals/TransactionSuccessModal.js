@@ -7,6 +7,7 @@ import {
   formatAddress,
   getTokenMeta,
   parseIdentifier,
+  getSafeContactName,
 } from "utils";
 import { ACTION_TYPES } from "../constants/enums";
 
@@ -43,12 +44,14 @@ const TransactionSuccessModal = ({
       };
       getImageURL().catch(console.error);
     }
-  }, [actionType, NFTName, NFTAddress, nftId, recipient, getAccountNFTReference]);
-
-  function getSafeContactName(address) {
-    const contact = contacts.find((contact) => contact.address === address);
-    return contact?.name;
-  }
+  }, [
+    actionType,
+    NFTName,
+    NFTAddress,
+    nftId,
+    recipient,
+    getAccountNFTReference,
+  ]);
 
   return (
     <div className="p-5 has-text-black has-text-left">
@@ -106,7 +109,7 @@ const TransactionSuccessModal = ({
           <span className="has-text-grey flex-1">Sent To</span>
           <div className="flex-1">
             <span className="has-text-weight-bold">
-              {getSafeContactName(recipient)}
+              {getSafeContactName(contacts, recipient)}
             </span>
             <div>
               <span className="has-text-grey">{recipient}</span>

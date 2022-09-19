@@ -1,5 +1,5 @@
 import React from "react";
-import ActionsList from "./Actions/components/ActionsList";
+import ActionsList from "./Actions/ActionsList";
 
 function ThingsToDo(props) {
   return (

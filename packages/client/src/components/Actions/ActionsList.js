@@ -3,7 +3,7 @@ import { formatActionString } from "utils";
 import { SIGNER_RESPONSES } from "constants/enums";
 import { useModalContext } from "contexts";
 import { Web3Context } from "contexts/Web3";
-import ActionRequired from "./ActionRequired";
+import ActionRequired from "./components/ActionRequired";
 import { useErrorMessage } from "hooks";
 
 function ActionsList({ actions = [], onSign, onReject, onConfirm, safeData }) {

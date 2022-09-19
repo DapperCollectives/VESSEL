@@ -38,7 +38,7 @@ export const shortenName = (name) => {
   const firstChunk = name.slice(0, 5);
   const secondChunk = name.slice(name.length - 5, name.length);
   return `${firstChunk}...${secondChunk}`;
-}
+};
 
 // rudimentary address check before actually querying with bad inputs
 export const isAddr = (addr) => {
@@ -138,4 +138,9 @@ export const parseIdentifier = (identifier) => {
     contractName,
     contractAddress,
   };
+};
+
+export const getSafeContactName = (contacts, address) => {
+  const contact = contacts.find((contact) => contact.address === address);
+  return contact?.name;
 };
