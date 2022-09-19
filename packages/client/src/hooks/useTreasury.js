@@ -9,7 +9,7 @@ import {
 import { COIN_TYPE_TO_META } from "constants/maps";
 import { createSignature } from "contexts/Web3";
 import {
-  ADD_SIGNER,
+  ADD_SIGNER_UPDATE_THRESHOLD,
   EXECUTE_ACTION,
   GET_PROPOSED_ACTIONS,
   GET_ACTION_VIEW,
@@ -166,15 +166,17 @@ const doUpdateThreshold = async (treasuryAddr, newThreshold) => {
   });
 };
 
-const doProposeAddSigner = async (treasuryAddr, newSignerAddress) => {
-  const intent = `Add account ${newSignerAddress} as a signer.`;
+const doProposeAddSignerUpdateThreshold = async (treasuryAddr, newSignerAddress, newThreshold) => {
+  const intent = `Add signer ${newSignerAddress}. Update the threshold of signers to ${newThreshold}.`;
+  console.log("INTENT:", intent)
   const { message, keyIds, signatures, height } = await createSignature(intent);
 
   return await mutate({
-    cadence: ADD_SIGNER,
+    cadence: ADD_SIGNER_UPDATE_THRESHOLD,
     args: (arg, t) => [
       arg(treasuryAddr, t.Address),
       arg(newSignerAddress, t.Address),
+      arg(newThreshold, t.UInt),
       arg(message, t.String),
       arg(keyIds, t.Array(t.UInt64)),
       arg(signatures, t.Array(t.String)),
@@ -440,8 +442,8 @@ export default function useTreasury(treasuryAddr) {
     await refreshTreasury();
   };
 
-  const proposeAddSigner = async (newSignerAddress) => {
-    const res = await doProposeAddSigner(treasuryAddr, newSignerAddress);
+  const proposeAddSignerUpdateThreshold = async (newSignerAddress, newThreshold) => {
+    const res = await doProposeAddSignerUpdateThreshold(treasuryAddr, newSignerAddress, newThreshold);
     await tx(res).onceSealed();
     await refreshTreasury();
   };
@@ -466,7 +468,7 @@ export default function useTreasury(treasuryAddr) {
     signerReject,
     executeAction,
     updateThreshold,
-    proposeAddSigner,
+    proposeAddSignerUpdateThreshold,
     proposeRemoveSigner,
     getVaultBalance,
     getActionView,

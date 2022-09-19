@@ -11,7 +11,7 @@ const EditThreshold = ({ treasury, newOwner }) => {
   const { closeModal } = useModalContext();
   const [currStep, setCurrStep] = useState(0);
   const { safeOwners, threshold, address } = treasury;
-  const { proposeAddSigner, updateThreshold, setTreasury } =
+  const { proposeAddSignerUpdateThreshold, updateThreshold, setTreasury } =
     useContext(Web3Context);
   const [newThreshold, setNewThreshold] = useState(Number(threshold));
   const verifiedSafeOwners = safeOwners.filter((o) => o.verified);
@@ -27,13 +27,10 @@ const EditThreshold = ({ treasury, newOwner }) => {
 
   const onSubmitClick = async () => {
     if (newOwner) {
-      await proposeAddSigner(formatAddress(newOwner.address));
+      await proposeAddSignerUpdateThreshold(formatAddress(newOwner.address), newThreshold);
       setTreasury(address, {
         safeOwners: [...safeOwners, { ...newOwner, verified: false }],
       });
-    }
-    if (Number(newThreshold) !== Number(threshold)) {
-      await updateThreshold(newThreshold);
     }
     closeModal();
     history.push(`/safe/${address}`);
