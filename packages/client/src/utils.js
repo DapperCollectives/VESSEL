@@ -33,6 +33,13 @@ export const shortenAddr = (addr) => {
   return `${firstChunk}...${secondChunk}`;
 };
 
+export const shortenName = (name) => {
+  if (!name) return name;
+  const firstChunk = name.slice(0, 5);
+  const secondChunk = name.slice(name.length - 5, name.length);
+  return `${firstChunk}...${secondChunk}`;
+}
+
 // rudimentary address check before actually querying with bad inputs
 export const isAddr = (addr) => {
   // remove special chars

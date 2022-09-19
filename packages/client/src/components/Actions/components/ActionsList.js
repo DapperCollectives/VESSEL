@@ -37,6 +37,7 @@ function ActionsList({ actions = [], onSign, onReject, onConfirm, safeData }) {
       <ActionRequired
         safeData={safeData}
         actionView={view}
+        confirmations={action.signerResponses}
         onReject={() => onRejectAction(action)}
         onApprove={() => onSignAction(action)}
       />,

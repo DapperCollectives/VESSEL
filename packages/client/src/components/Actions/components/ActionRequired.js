@@ -1,4 +1,10 @@
-import { getTokenMeta, parseIdentifier, formatAddress } from "utils";
+import {
+  getTokenMeta,
+  parseIdentifier,
+  formatAddress,
+  shortenAddr,
+  shortenName,
+} from "utils";
 import { ACTION_TYPES } from "constants/enums";
 import Svg from "library/Svg";
 import { useClipboard, useContacts } from "hooks";
@@ -23,11 +29,9 @@ const ActionRequired = ({
     tokenAmount,
   } = actionView;
   const { getTreasuryNFTReference } = useContext(Web3Context);
-  const { safeName, address: safeAddress, safeOwners } = safeData;
-
+  const { name: safeName, address: safeAddress, safeOwners } = safeData;
   const { contacts } = useContacts(safeAddress);
-  const { contractName: NFTName, contractAddress: NFTAddress } =
-    parseIdentifier(collectionId) || {};
+  const { contractName: NFTName } = parseIdentifier(collectionId) || {};
 
   const [image, setImage] = useState();
   const clipboard = useClipboard();
@@ -49,8 +53,9 @@ const ActionRequired = ({
   }, [
     actionType,
     NFTName,
-    NFTAddress,
+    safeAddress,
     nftId,
+    collectionId,
     recipient,
     getTreasuryNFTReference,
   ]);
@@ -225,11 +230,40 @@ const ActionRequired = ({
     }
   };
 
+  const getNumberOfConfirmations = () => {
+    const numberApproved = Object.keys(confirmations).filter(
+      (key) => confirmations[key] === "approved"
+    )?.length;
+
+    return `${numberApproved} out of ${Object.keys(confirmations).length}`;
+  };
+
+  const getConfirmationList = () => {
+    return Object.keys(confirmations).map((key) => {
+      const name = getSafeContactName(key);
+      return (
+        <div className="confirmation flex-1 is-border">
+          <Svg name="Status" className={`${confirmations[key]}`} />
+          {name?.length > 20 ? shortenName(name) : name}·
+          {name ? shortenAddr(key) : key}
+        </div>
+      );
+    });
+  };
+
   return (
     <div className="p-5 has-text-grey">
-      <div className="pb-4">{getActionView()}</div>
-      <div className="column is-flex border-light-bottom pb-5">
-        <span className="has-text-grey flex-1">Confirmations</span>
+      <div>{getActionView()}</div>
+      <div className="border-light-bottom pb-5">
+        <div className="column is-flex">
+          <span className="flex-1">Confirmations</span>
+          <span className="is-justify-content-end">
+            {getNumberOfConfirmations()}
+          </span>
+        </div>
+        <div className="column is-flex confirmations has-text-black">
+          {getConfirmationList()}
+        </div>
       </div>
       <div className="is-flex is-align-items-center mt-5">
         <button className="button flex-1 is-border mr-2" onClick={onReject}>
