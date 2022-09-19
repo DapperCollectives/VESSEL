@@ -6,18 +6,18 @@ import { useModalContext } from "contexts";
 import { Web3Context } from "contexts/Web3";
 import ReviewSafeEdits from "./ReviewSafeEdits";
 import EditThresholdForm from "./EditThresholdForm";
-const EditThreshold = ({ treasury, newOwner }) => {
+const EditThreshold = ({ treasury, newOwner, ownerToBeRemoved }) => {
   const history = useHistory();
   const { closeModal } = useModalContext();
   const [currStep, setCurrStep] = useState(0);
   const { safeOwners, threshold, address } = treasury;
-  const { proposeAddSignerUpdateThreshold, updateThreshold, setTreasury } =
+  const { proposeAddSigner, proposeRemoveSigner, updateThreshold, setTreasury } =
     useContext(Web3Context);
   const [newThreshold, setNewThreshold] = useState(Number(threshold));
   const verifiedSafeOwners = safeOwners.filter((o) => o.verified);
   const allSafeOwners = newOwner
     ? [...verifiedSafeOwners, newOwner]
-    : verifiedSafeOwners;
+    : verifiedSafeOwners.filter(o => o.address !== ownerToBeRemoved.address);
   const canContinueToReview = !!newOwner || newThreshold !== threshold;
   const onChangeThreshold = (isIncrease) => {
     setNewThreshold((prevState) =>
@@ -27,11 +27,15 @@ const EditThreshold = ({ treasury, newOwner }) => {
 
   const onSubmitClick = async () => {
     if (newOwner) {
-      await proposeAddSignerUpdateThreshold(formatAddress(newOwner.address), newThreshold);
+      await proposeAddSigner(formatAddress(newOwner.address), newThreshold);
       setTreasury(address, {
         safeOwners: [...safeOwners, { ...newOwner, verified: false }],
       });
     }
+    else if (ownerToBeRemoved) {
+      await proposeRemoveSigner(formatAddress(ownerToBeRemoved.address), newThreshold);
+    }
+
     closeModal();
     history.push(`/safe/${address}`);
   };

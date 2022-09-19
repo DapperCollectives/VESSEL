@@ -4,7 +4,7 @@ import Svg from "library/Svg";
 import { isAddr } from "utils";
 import { Web3Context } from "contexts/Web3";
 
-const RemoveSafeOwner = ({ safeOwner, onCancel, onSubmit }) => {
+const RemoveSafeOwner = ({ safeOwner, onCancel, onNext}) => {
   const web3 = useContext(Web3Context);
   const { isAddressValid } = useAddressValidation(web3.injectedProvider);
   const [address, setAddress] = useState(safeOwner.address);
@@ -16,8 +16,8 @@ const RemoveSafeOwner = ({ safeOwner, onCancel, onSubmit }) => {
     setAddressValid(isAddr(newAddress) && (await isAddressValid(newAddress)));
   };
 
-  const onSubmitClick = () => {
-    onSubmit({ name: safeOwner.name, address });
+  const onNextClick = () => {
+    onNext(null, { name: safeOwner.name, address });
   };
 
   const submitButtonClasses = [
@@ -60,7 +60,7 @@ const RemoveSafeOwner = ({ safeOwner, onCancel, onSubmit }) => {
           <button
             disabled={!isFormValid}
             className={submitButtonClasses.join(" ")}
-            onClick={onSubmitClick}
+            onClick={onNextClick}
           >
             Remove
           </button>

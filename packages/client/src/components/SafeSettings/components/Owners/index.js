@@ -8,27 +8,19 @@ import AddSafeOwner from "./AddSafeOwner";
 import { formatAddress } from "utils";
 import Svg from "library/Svg";
 
-const Owners = ({ treasury, proposeRemoveSigner }) => {
+const Owners = ({ treasury }) => {
   const modalContext = useModalContext();
   const history = useHistory();
   const { safeOwners, address } = treasury;
   const verifiedSafeOwners = safeOwners.filter((o) => o.verified);
   const ownersAddressClipboard = useClipboard();
 
-  const onRemoveSafeOwnerSubmit = async (ownerToBeRemoved) => {
-    if (ownerToBeRemoved) {
-      await proposeRemoveSigner(formatAddress(ownerToBeRemoved.address));
-    }
-
-    modalContext.closeModal();
-    history.push(`/safe/${address}`);
-  };
   const openRemoveOwnerModal = (safeOwner) => {
     modalContext.openModal(
       <RemoveSafeOwner
         safeOwner={safeOwner}
         onCancel={() => modalContext.closeModal()}
-        onSubmit={onRemoveSafeOwnerSubmit}
+        onNext={openEditSignatureThresholdModal}
       />
     );
   };
@@ -42,9 +34,9 @@ const Owners = ({ treasury, proposeRemoveSigner }) => {
     );
   };
 
-  const openEditSignatureThresholdModal = (newOwner) => {
+  const openEditSignatureThresholdModal = (newOwner, ownerToBeRemoved) => {
     modalContext.openModal(
-      <EditThreshold treasury={treasury} newOwner={newOwner} />
+      <EditThreshold treasury={treasury} newOwner={newOwner} ownerToBeRemoved={ownerToBeRemoved} />
     );
   };
   return (

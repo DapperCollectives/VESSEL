@@ -12,7 +12,7 @@ export { GET_SIGNERS_FOR_ACTION } from "./getSignersForAction.tx";
 export { EXECUTE_ACTION } from "./executeAction.tx";
 export { UPDATE_THRESHOLD } from "./updateThreshold.tx";
 export { ADD_SIGNER_UPDATE_THRESHOLD } from "./addSignerUpdateThreshold.tx";
-export { REMOVE_SIGNER } from "./removeSigner.tx";
+export { REMOVE_SIGNER_UPDATE_THRESHOLD } from "./removeSignerUpdateThreshold.tx";
 export { CHECK_TREASURY_NFT_COLLECTION } from "./checkTreasuryNFTCollection.tx";
 export { SEND_NFT_TO_TREASURY } from "./sendNFTToTreasury.tx";
 export { PROPOSE_NFT_TRANSFER } from "./proposeNFTTransfer.tx";
