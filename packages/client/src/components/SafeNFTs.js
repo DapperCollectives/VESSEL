@@ -4,7 +4,7 @@ import { useModalContext } from "../contexts";
 import { ASSET_TYPES } from "constants/enums";
 import SendTokens from "./SendTokens";
 
-function SafeAssets({ web3, name, address }) {
+function SafeNFTs({ web3, address }) {
   const assetComponents = [];
   const { getTreasuryCollections } = web3;
   const userAddr = web3?.user?.addr;
@@ -129,4 +129,4 @@ function SafeAssets({ web3, name, address }) {
   return <div className="column mt-5 p-0">{assetComponents}</div>;
 }
 
-export default SafeAssets;
+export default SafeNFTs;
