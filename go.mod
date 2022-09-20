@@ -7,6 +7,7 @@ require (
 	github.com/onflow/cadence v0.24.2-0.20220627202951-5a06fec82b4a
 	github.com/onflow/flow-go-sdk v0.26.6-0.20220712195924-6920f8f55b88
 	github.com/stretchr/testify v1.8.0
+	gotest.tools v2.2.0+incompatible
 )
 
 require (
