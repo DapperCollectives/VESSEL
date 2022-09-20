@@ -49,6 +49,7 @@ const ModalProvider = ({ children }) => {
           closeOnBackgroundClick: true,
           showCloseButton: true,
           classNameModalContent: "",
+          headerTitle: "",
           ...customModalConfig,
         }));
       }
