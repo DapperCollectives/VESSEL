@@ -22,7 +22,6 @@ function SafeOverview({ allBalance, allNFTs }) {
         })
         .slice(0, 4)
     : [];
-
   const emptyNftBlocks = new Array(4 - collectionsForDisplay.length).fill(0);
   return (
     <>
@@ -118,8 +117,10 @@ function SafeOverview({ allBalance, allNFTs }) {
               {collectionsForDisplay.map(({ contractName, count }) => (
                 <div className="column is-half py-1" key={contractName}>
                   <p className="has-background-tertiary-purple rounded-sm p-3 is-flex is-flex-direction-row is-justify-content-space-between">
-                    <span>{contractName}</span>
-                    <span>
+                    <span className="flex-3 has-text-truncate">
+                      {contractName}
+                    </span>
+                    <span className="flex-1 has-text-right">
                       <strong>{count}</strong>
                     </span>
                   </p>
