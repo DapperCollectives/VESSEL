@@ -1,10 +1,10 @@
 import React from "react";
 import { isEmpty } from "lodash";
-import TransactionList from "./TransactionList";
+import TransactionTable from "./TransactionTable";
 import { useTreasuryTransactions } from "../hooks";
 
-function TransactionHistory({ safeData, address }) {
-  const { data: transactions } = useTreasuryTransactions(address);
+function TransactionHistory({ safeData }) {
+  const { data: transactions } = useTreasuryTransactions(safeData.uuid);
   let TransactionsComponent = null;
 
   if (isEmpty(transactions)) {
@@ -19,9 +19,7 @@ function TransactionHistory({ safeData, address }) {
       </div>
     );
   } else {
-    TransactionsComponent = (
-      <TransactionList safeData={safeData} transactions={transactions} />
-    );
+    TransactionsComponent = <TransactionTable safeData={safeData} transactions={transactions} />;
   }
 
   return (
