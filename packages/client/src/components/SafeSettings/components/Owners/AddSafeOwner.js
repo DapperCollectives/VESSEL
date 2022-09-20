@@ -10,14 +10,24 @@ const AddSafeOwner = ({ onCancel, onNext, safeOwners }) => {
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
   const [addressValid, setAddressValid] = useState(false);
+  const [addressBorderClass, setAddressBorderClass] = useState("border-light");
 
   const onAddressChange = async (newAddress) => {
     setAddress(newAddress);
-    setAddressValid(
-      isAddr(newAddress) &&
-        (await isAddressValid(newAddress)) &&
-        !isAddressExisting(safeOwners, newAddress)
-    );
+    const isValid = isAddr(newAddress) &&
+      (await isAddressValid(newAddress)) &&
+      !isAddressExisting(safeOwners, newAddress)
+    setAddressValid(isValid);
+
+    if (isValid) {
+      setAddressBorderClass("border-success")
+    }
+    else if (newAddress.length === 0) {
+      setAddressBorderClass("border-light")
+    }
+    else {
+      setAddressBorderClass("border-error");
+    }
   };
 
   const isAddressExisting = (safeOwners, newAddress) => {
@@ -36,50 +46,57 @@ const AddSafeOwner = ({ onCancel, onNext, safeOwners }) => {
   };
 
   const nextButtonClasses = [
-    "button flex-1 is-primary",
-    addressValid ? "" : "disabled",
+    "button flex-1 is-primary ",
+    addressValid ? "has-text-weight-bold" : "disabled",
   ];
+  const addrInputClasses = [
+    "p-4 rounded-sm column is-full is-size-6",
+    addressBorderClass
+  ]
 
   return (
     <>
       <div className="p-5">
-        <h2 className="is-size-4 has-text-black">Add a new safe owner</h2>
-        <p className="has-text-grey">
-          Heads up, they'll have full access to this safe
-        </p>
+        <h2 className="is-size-4 has-text-black">Add owner</h2>
       </div>
-      <div className="border-light-top p-5 has-text-grey">
-        <div className="flex-1 is-flex is-flex-direction-column">
-          <label className="has-text-grey mb-2">Owner Name</label>
-          <input
-            className="p-4 rounded-sm border-light"
-            type="text"
-            placeholder="Enter local owner name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
-        </div>
-        <div className="flex-1 is-flex is-flex-direction-column mt-4">
-          <label className="has-text-grey mb-2">
-            Address<span className="has-text-red">*</span>
+      <div className="border-light-top border-light-bottom p-5 has-text-grey">
+        <div className="flex-1 is-flex is-flex-direction-column mb-4">
+          <label className="has-text-grey mb-2 with-icon">
+            Address<span className="has-text-red">*</span> <Svg name="QuestionMark" style={{position: "relative", top: 4 }} />
           </label>
           <div style={{ position: "relative" }}>
             <input
-              className="p-4 rounded-sm column is-full border-light"
+              className={addrInputClasses.join(" ")}
               type="text"
-              placeholder="Enter user's FLOW address"
+              placeholder=""
               value={address}
               onChange={(e) => onAddressChange(e.target.value)}
             />
             {addressValid && (
-              <div style={{ position: "absolute", right: 17, top: 14 }}>
-                <Svg name="Check" />
+              <div
+                style={{ position: "absolute", right: 17, top: 19 }}
+              >
+                <Svg name="Check" height="15" width="15" />
               </div>
             )}
           </div>
         </div>
-        <div className="is-flex is-align-items-center mt-6">
-          <button className="button flex-1 is-border mr-2" onClick={onCancel}>
+        <div className="flex-1 is-flex is-flex-direction-column">
+          <label className="has-text-grey mb-2">
+            Name <Svg name="QuestionMark" style={{position: "relative", top: 4 }} />
+          </label>
+          <input
+            className="p-4 rounded-sm border-light is-size-6"
+            type="text"
+            placeholder=""
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+        </div>
+      </div>
+      <div className="">
+        <div className="is-flex is-align-items-center p-5">
+          <button className="button flex-1 is-border mr-2 has-text-weight-bold" onClick={onCancel}>
             Cancel
           </button>
           <button

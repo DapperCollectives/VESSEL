@@ -1,17 +1,14 @@
 import React from "react";
-import { useHistory } from "react-router-dom";
 import { useModalContext } from "contexts";
 import { useClipboard } from "hooks";
 import EditThreshold from "../EditThreshold";
 import RemoveSafeOwner from "./RemoveSafeOwner";
 import AddSafeOwner from "./AddSafeOwner";
-import { formatAddress } from "utils";
 import Svg from "library/Svg";
 
 const Owners = ({ treasury }) => {
   const modalContext = useModalContext();
-  const history = useHistory();
-  const { safeOwners, address } = treasury;
+  const { safeOwners } = treasury;
   const verifiedSafeOwners = safeOwners.filter((o) => o.verified);
   const ownersAddressClipboard = useClipboard();
 
@@ -30,7 +27,11 @@ const Owners = ({ treasury }) => {
         onCancel={() => modalContext.closeModal()}
         onNext={openEditSignatureThresholdModal}
         safeOwners={safeOwners}
-      />
+      />,
+      { 
+        closeOnBackgroundClick: true,
+        showCloseButton: true
+      }
     );
   };
 
@@ -51,11 +52,11 @@ const Owners = ({ treasury }) => {
           <Svg name="Plus" />
         </button>
       </div>
-      <div className="column p-0 mt-4 is-flex is-flex-direction-column is-full rounded-sm border-light has-shadow">
+      <div className="column p-0 mt-4 is-flex is-flex-direction-column is-full rounded-sm border-light has-shadow table-border">
         {Array.isArray(verifiedSafeOwners) &&
           verifiedSafeOwners.map((so, idx) => (
             <div
-              className="is-flex column is-full p-5 border-light-bottom"
+              className="is-flex column is-full p-5"
               key={idx}
             >
               <div className="px-2 mr-6" style={{ minWidth: 120 }}>

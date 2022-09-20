@@ -11,7 +11,7 @@ const EditThreshold = ({ treasury, newOwner, ownerToBeRemoved }) => {
   const { closeModal } = useModalContext();
   const [currStep, setCurrStep] = useState(0);
   const { safeOwners, threshold, address } = treasury;
-  const { proposeAddSigner, proposeRemoveSigner, updateThreshold, setTreasury } =
+  const { proposeAddSigner, proposeRemoveSigner, setTreasury } =
     useContext(Web3Context);
   const [newThreshold, setNewThreshold] = useState(Number(threshold));
   const verifiedSafeOwners = safeOwners.filter((o) => o.verified);
