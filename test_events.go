@@ -19,6 +19,7 @@ var TRANSFER_FUNGIBLE_TOKENS_EXECUTE_ACTION_EVENT, _ = json.Marshal(
 			"intent":      "Transfer 100.00000000 A.0ae53cb6e3f42a79.FlowToken.Vault tokens from the treasury to 0x01cf0e2f2f715450",
 			"proposer":    "0xec4809cd812aee0a",
 			"recipient":   "0x01cf0e2f2f715450",
+			"timestamp":   "",
 			"tokenAmount": 100.0,
 			"type":        "TransferToken",
 			"vaultId":     "A.0ae53cb6e3f42a79.FlowToken.Vault",
@@ -42,6 +43,7 @@ var TRANSFER_FUNGIBLE_TOKENS_TO_TREASURY_EXECUTE_ACTION_EVENT, _ = json.Marshal(
 		"actionView": map[string]interface{}{
 			"intent":      "Transfer 100.00000000 A.0ae53cb6e3f42a79.FlowToken.Vault tokens from the treasury to 0x01cf0e2f2f715450",
 			"proposer":    "0xec4809cd812aee0a",
+			"timestamp":   "",
 			"recipient":   "0x01cf0e2f2f715450",
 			"tokenAmount": 100.0,
 			"type":        "TransferTokenToTreasury",
@@ -68,6 +70,7 @@ var TRANSFER_NON_FUNGIBLE_TOKENS_EXECUTE_ACTION_EVENT, _ = json.Marshal(
 			"intent":       "Transfer A.f8d6e0586b0a20c7.ZeedzINO.Collection NFT from the treasury to 0xf8d6e0586b0a20c7",
 			"nftId":        0,
 			"proposer":     "0xec4809cd812aee0a",
+			"timestamp":    "",
 			"recipient":    "0xf8d6e0586b0a20c7",
 			"type":         "TransferNFT",
 		},
@@ -92,6 +95,7 @@ var TRANSFER_NON_FUNGIBLE_TOKENS_TO_TREASURY_EXECUTE_ACTION_EVENT, _ = json.Mars
 			"intent":       "Transfer an NFT from collection A.f8d6e0586b0a20c7.ZeedzINO.Collection with ID 0 from this Treasury to Treasury at address 0x01cf0e2f2f715450",
 			"nftId":        0,
 			"proposer":     "0xec4809cd812aee0a",
+			"timestamp":    "",
 			"recipient":    "0x01cf0e2f2f715450",
 			"type":         "TransferNFTToTreasury",
 		},
@@ -114,8 +118,9 @@ var UPDATE_THRESHOLD_EXECUTE_ACTION_EVENT, _ = json.Marshal(
 		"actionUUID": 129,
 		"actionView": map[string]interface{}{
 			"intent":       "Update the threshold of signers to 5.",
-			"newThreshold": DefaultThreshold,
+			"newThreshold": 5,
 			"proposer":     "0xec4809cd812aee0a",
+			"timestamp":    "",
 			"type":         "UpdateThreshold",
 		},
 		"executor": "0xec4809cd812aee0a",
@@ -138,6 +143,7 @@ var ADD_SIGNER_UPDATE_THRESHOLD_EXECUTE_ACTION_EVENT, _ = json.Marshal(
 			"intent":       "Add signer 0x1beecc6fef95b62e. Update the threshold of signers to 5.",
 			"newThreshold": 5,
 			"proposer":     "0xec4809cd812aee0a",
+			"timestamp":    "",
 			"signerAddr":   "0x1beecc6fef95b62e",
 			"type":         "AddSignerUpdateThreshold",
 		},
@@ -160,6 +166,7 @@ var REMOVE_SIGNER_UPDATE_THRESHOLD_EXECUTE_ACTION_EVENT, _ = json.Marshal(
 			"intent":       "Remove signer 0x1beecc6fef95b62e. Update the threshold of signers to 4.",
 			"newThreshold": 4,
 			"proposer":     "0xec4809cd812aee0a",
+			"timestamp":    "",
 			"signerAddr":   "0x1beecc6fef95b62e",
 			"type":         "RemoveSignerUpdateThreshold",
 		},
@@ -218,6 +225,11 @@ var ACTION_REJECTED_BY_SIGNER_EVENT, _ = json.Marshal(
 func (otu *OverflowTestUtils) AssertActionExecutedEventsMatch(txResult overflow.TransactionResult, expected []byte) {
 	txResult.AssertEmitEventName("A.f8d6e0586b0a20c7.DAOTreasuryV4.ActionExecuted")
 	event := txResult.Result.GetEventsWithName("A.f8d6e0586b0a20c7.DAOTreasuryV4.ActionExecuted")[0]
+
+	// timestamp is a dynamic field in an ActionView interface, it's very hard to test it
+	// Here we are resetting the value to an empty string to match an empty timestamp from expected payloads
+	event["actionView"].(map[string]interface{})["timestamp"] = ""
+
 	fieldsJson, _ := json.Marshal(event)
 	assert.Equal(otu.T, string(expected), string(fieldsJson))
 }
