@@ -19,7 +19,7 @@ const Confirmations = ({ confirmations, safeData }) => {
     return Object.keys(confirmations).map((key) => {
       const name = getSafeContactName(contacts, key);
       return (
-        <div className="confirmation flex-1 is-border">
+        <div className="confirmation">
           <Svg name="Status" className={`${confirmations[key]}`} />
           {name?.length > 20 ? shortenName(name) : name}
           {name ? `·${shortenAddr(key)}` : key}
