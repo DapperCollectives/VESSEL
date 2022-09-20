@@ -3,6 +3,7 @@ import ProposedDateView from "./ProposedDateView";
 const ThresholdView = ({ actionView, safeData }) => {
   const { newThreshold, timestamp } = actionView;
   const { safeOwners } = safeData;
+  console.log(timestamp);
 
   return (
     <div className="mb-4">

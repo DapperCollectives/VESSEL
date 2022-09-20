@@ -31,6 +31,7 @@ pub contract MyMultiSigV4 {
     pub struct interface Action {
         pub let intent: String
         pub let proposer: Address
+        pub let timestamp: UFix64
         pub fun getView(): ActionView
         access(account) fun execute(_ params: {String: AnyStruct})
     }
@@ -54,7 +55,7 @@ pub contract MyMultiSigV4 {
         pub(set) var newThreshold: UInt?
 
         init(
-            type: String, intent: String, proposer: Address, recipient: Address?,
+            type: String, intent: String, proposer: Address, timestamp: UFix64, recipient: Address?,
             vaultId: String?, collectionId: String?, nftId: UInt64?, tokenAmount: UFix64?,
             signerAddr: Address?, newThreshold: UInt?
         ) {
@@ -68,7 +69,7 @@ pub contract MyMultiSigV4 {
             self.tokenAmount = tokenAmount
             self.signerAddr = signerAddr
             self.newThreshold = newThreshold
-            self.timestamp = getCurrentBlock().timestamp
+            self.timestamp = timestamp
         }
     }
 

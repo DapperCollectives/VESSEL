@@ -146,5 +146,7 @@ export const getSafeContactName = (contacts, address) => {
 };
 
 export const parseTimestamp = (timestamp) => {
+  console.log("timesta", timestamp)
+  console.log("time", new Date(parseInt(timestamp) * 1000).toLocaleString())
   return new Date(parseInt(timestamp) * 1000).toLocaleString();
 };

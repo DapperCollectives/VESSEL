@@ -13,6 +13,7 @@ const ActionRequired = ({
   onApprove,
 }) => {
   const actionType = actionView.type;
+  console.log(actionView);
 
   const getActionView = () => {
     switch (actionType) {
