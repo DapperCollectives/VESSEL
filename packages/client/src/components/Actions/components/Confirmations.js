@@ -21,15 +21,15 @@ const Confirmations = ({ confirmations, safeData }) => {
       return (
         <div className="confirmation flex-1 is-border">
           <Svg name="Status" className={`${confirmations[key]}`} />
-          {name?.length > 20 ? shortenName(name) : name}·
-          {name ? shortenAddr(key) : key}
+          {name?.length > 20 ? shortenName(name) : name}
+          {name ? `·${shortenAddr(key)}` : key}
         </div>
       );
     });
   };
 
   return (
-    <div className="border-light-bottom pb-5">
+    <div>
       <div className="column is-flex">
         <span className="flex-1">Confirmations</span>
         <span className="is-justify-content-end">

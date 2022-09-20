@@ -44,6 +44,7 @@ pub contract MyMultiSigV4 {
         pub var type: String
         pub var intent: String
         pub var proposer: Address
+        pub var timestamp: UFix64
         pub(set) var recipient: Address?
         pub(set) var vaultId: String?
         pub(set) var collectionId: String?
@@ -67,6 +68,7 @@ pub contract MyMultiSigV4 {
             self.tokenAmount = tokenAmount
             self.signerAddr = signerAddr
             self.newThreshold = newThreshold
+            self.timestamp = getCurrentBlock().timestamp
         }
     }
 

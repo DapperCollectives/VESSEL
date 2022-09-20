@@ -1,9 +1,10 @@
 import { useClipboard, useContacts } from "hooks";
 import Svg from "library/Svg";
 import { getSafeContactName, getTokenMeta } from "utils";
+import ProposedDateView from "./ProposedDateView";
 
 const TokenView = ({ actionView, safeData }) => {
-  const { recipient, vaultId, tokenAmount } = actionView;
+  const { recipient, vaultId, tokenAmount, timestamp } = actionView;
   const { name: safeName, address: safeAddress } = safeData;
 
   const { displayName, tokenType } = getTokenMeta(vaultId) || {};
@@ -13,7 +14,7 @@ const TokenView = ({ actionView, safeData }) => {
 
   return (
     <>
-      <div className="pl-4 mb-4">
+      <div className="pl-4 mb-5">
         <span className="columns">Amount</span>
         <span className="columns is-size-2 is-family-monospace has-text-black">
           {Number(tokenAmount)}
@@ -22,7 +23,8 @@ const TokenView = ({ actionView, safeData }) => {
           <Svg name={tokenType} /> &nbsp; {displayName}
         </span>
       </div>
-      <div className="mt-4 border-light-top">
+      <div className="mt-4">
+        <ProposedDateView timestamp={timestamp} />
         <div className="column is-vcentered is-multiline is-mobile border-light-bottom is-flex is-full">
           <span className="flex-1 has-text-grey">Sent From</span>
           <div className="flex-1">

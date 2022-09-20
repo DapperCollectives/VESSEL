@@ -144,3 +144,7 @@ export const getSafeContactName = (contacts, address) => {
   const contact = contacts.find((contact) => contact.address === address);
   return contact?.name;
 };
+
+export const parseTimestamp = (timestamp) => {
+  return new Date(parseInt(timestamp) * 1000).toLocaleString();
+};

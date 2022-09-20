@@ -3,9 +3,10 @@ import { formatAddress, getSafeContactName, parseIdentifier } from "utils";
 import { useClipboard, useContacts } from "hooks";
 import { Web3Context } from "contexts/Web3";
 import Svg from "library/Svg";
+import ProposedDateView from "./ProposedDateView";
 
 const NFTView = ({ actionView, safeData }) => {
-  const { recipient, nftId, collectionId } = actionView;
+  const { recipient, nftId, collectionId, timestamp } = actionView;
   const { name: safeName, address: safeAddress } = safeData;
   const { contractName: NFTName } = parseIdentifier(collectionId) || {};
 
@@ -39,8 +40,7 @@ const NFTView = ({ actionView, safeData }) => {
 
   return (
     <>
-      <div className="pl-4 mb-4">
-        <span className="columns">NFT</span>
+      <div className="pl-4 mb-5">
         {imageURI && (
           <img
             className="columns success-modal-image"
@@ -55,7 +55,8 @@ const NFTView = ({ actionView, safeData }) => {
           {NFTName}
         </span>
       </div>
-      <div className="mt-4 border-light-top">
+      <div className="mt-4">
+        <ProposedDateView timestamp={timestamp} />
         <div className="column is-vcentered is-multiline is-mobile border-light-bottom is-flex is-full">
           <span className="flex-1 has-text-grey">Sent From</span>
           <div className="flex-1">
