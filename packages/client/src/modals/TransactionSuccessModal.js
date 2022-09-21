@@ -24,9 +24,9 @@ const TransactionSuccessModal = ({
   const { contacts } = useContacts(safeAddress);
 
   const { recipient, nftId, collectionId, vaultId, tokenAmount } = actionData;
-  const { displayName, tokenType } = getTokenMeta(vaultId) || {};
+  const { displayName, tokenType } = getTokenMeta(vaultId);
   const { contractName: NFTName, contractAddress: NFTAddress } =
-    parseIdentifier(collectionId) || {};
+    parseIdentifier(collectionId);
   const { name: imageName, imageURI } = image || {};
 
   const actionType = actionData.type;
@@ -80,7 +80,7 @@ const TransactionSuccessModal = ({
           {actionType === ACTION_TYPES.TRANSFER_TOKEN && (
             <>
               <span className="columns is-vcentered is-multiline is-mobile mr-2 mt-2 is-size-2 is-family-monospace">
-                {Number(tokenAmount)}
+                {Number(tokenAmount).toLocaleString()}
               </span>
               <span className="columns is-vcentered is-multiline is-mobile is-size-6 has-text-weight-bold">
                 <Svg name={tokenType} /> &nbsp; {displayName}

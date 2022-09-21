@@ -445,12 +445,11 @@ hr
   margin-right: 8px
   svg
     margin-right: 12px
+    &.approved
+      fill: $success
+    &.rejected
+      fill: $danger
+    &.pending
+      fill: $warning
 .confirmations
   overflow: auto
-svg
-  &.approved
-    fill: $success
-  &.rejected
-    fill: $danger
-  &.pending
-    fill: $warning

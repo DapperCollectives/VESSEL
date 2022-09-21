@@ -31,7 +31,7 @@ function ActionsList({ actions = [], onSign, onReject, onConfirm, safeData }) {
     }
   };
 
-  const openSignRejectModal = async (action) => {
+  const openApproveOrRejectModal = async (action) => {
     const view = await getActionView(safeData.address, action.uuid);
     openModal(
       <ActionRequired
@@ -67,7 +67,7 @@ function ActionsList({ actions = [], onSign, onReject, onConfirm, safeData }) {
         ? "Confirm Transaction"
         : "Signature Required";
       const actionCopy = confirmReady ? "Confirm" : "Sign";
-      const actionFn = confirmReady ? onConfirm : openSignRejectModal;
+      const actionFn = confirmReady ? onConfirm : openApproveOrRejectModal;
       ActionComponents.push(
         <div
           key={action.uuid}

@@ -10,7 +10,7 @@ const Confirmations = ({ confirmations, safeData }) => {
   const getNumberOfConfirmations = () => {
     const numberApproved = Object.keys(confirmations).filter(
       (key) => confirmations[key] === "approved"
-    )?.length;
+    ).length;
 
     return `${numberApproved} out of ${Object.keys(confirmations).length}`;
   };
@@ -18,11 +18,12 @@ const Confirmations = ({ confirmations, safeData }) => {
   const getConfirmationList = () => {
     return Object.keys(confirmations).map((key) => {
       const name = getSafeContactName(contacts, key);
+      const displayName = name?.length > 20 ? shortenName(name) : name;
+      const displayAddress = name ? shortenAddr(key) : key;
       return (
-        <div className="confirmation">
+        <div className="confirmation" key={key}>
           <Svg name="Status" className={`${confirmations[key]}`} />
-          {name?.length > 20 ? shortenName(name) : name}
-          {name ? `·${shortenAddr(key)}` : key}
+          {name ? `${displayName}·${displayAddress}` : displayAddress}
         </div>
       );
     });

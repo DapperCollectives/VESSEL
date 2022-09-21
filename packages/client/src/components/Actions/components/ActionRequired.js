@@ -12,8 +12,7 @@ const ActionRequired = ({
   onReject,
   onApprove,
 }) => {
-  const actionType = actionView.type;
-  console.log(actionView);
+  const { type: actionType } = actionView;
 
   const getActionView = () => {
     switch (actionType) {
@@ -48,11 +47,11 @@ const ActionRequired = ({
         To complete this action, you will have to confirm it with your connected
         wallet on the next step.
       </div>
-      <div className="is-flex is-align-items-center mt-5">
+      <div className="is-flex mt-5">
         <button className="button flex-1 is-border mr-2" onClick={onReject}>
           Reject
         </button>
-        <button className={"button flex-1 is-primary"} onClick={onApprove}>
+        <button className="button flex-1 is-primary" onClick={onApprove}>
           Approve
         </button>
       </div>

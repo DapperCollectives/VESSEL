@@ -17,7 +17,7 @@ const TokenView = ({ actionView, safeData }) => {
       <div className="pl-4 mb-5">
         <span className="columns">Amount</span>
         <span className="columns is-size-2 is-family-monospace has-text-black">
-          {Number(tokenAmount)}
+          {Number(tokenAmount).toLocaleString()}
         </span>
         <span className="columns is-size-6 has-text-weight-bold has-text-black">
           <Svg name={tokenType} /> &nbsp; {displayName}

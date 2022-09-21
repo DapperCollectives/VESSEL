@@ -8,14 +8,14 @@ import ProposedDateView from "./ProposedDateView";
 const NFTView = ({ actionView, safeData }) => {
   const { recipient, nftId, collectionId, timestamp } = actionView;
   const { name: safeName, address: safeAddress } = safeData;
-  const { contractName: NFTName } = parseIdentifier(collectionId) || {};
+  const { contractName: NFTName } = parseIdentifier(collectionId);
 
   const { getTreasuryNFTReference } = useContext(Web3Context);
   const { contacts } = useContacts(safeAddress);
-  const [image, setImage] = useState();
+  const [image, setImage] = useState({});
   const clipboard = useClipboard();
 
-  const { name: imageName, imageURI } = image || {};
+  const { name: imageName, imageURI } = image;
 
   useEffect(() => {
     const getImageURL = async () => {
