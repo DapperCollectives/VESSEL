@@ -1,4 +1,3 @@
-import SignatureBar from "../SignatureBar";
 const ReviewSafeEdits = ({
   newOwner,
   ownerToBeRemoved,
