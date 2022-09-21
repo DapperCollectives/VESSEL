@@ -1,3 +1,4 @@
+import daysjs from "dayjs";
 import { COIN_TYPE_TO_META, CONTRACT_NAME_TO_COIN_TYPE } from "constants/maps";
 
 export const checkResponse = async (response) => {
@@ -149,5 +150,10 @@ export const getNameByAddress = (nameAddressArray, address) => {
 };
 
 export const parseTimestamp = (timestamp) => {
-  return new Date(parseInt(timestamp) * 1000).toLocaleString();
+  // Timestamp returned from cadence is in ufix64 -> so we have to make it to an integer first
+  const parsedDate = daysjs(parseInt(timestamp) * 1000);
+
+  const date = parsedDate.format("M/DD/YYYY");
+  const time = parsedDate.format("HH:MM A");
+  return `${date} at ${time}`;
 };
