@@ -40,6 +40,9 @@ const EditThreshold = ({ treasury, newOwner, ownerToBeRemoved }) => {
     }
     else if (ownerToBeRemoved) {
       await proposeRemoveSigner(formatAddress(ownerToBeRemoved.address), newThreshold);
+      setTreasury(address, {
+        safeOwners: allSafeOwners,
+      });
     }
 
     closeModal();

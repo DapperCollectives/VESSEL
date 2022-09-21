@@ -62,11 +62,10 @@ const EditThresholdForm = ({
           </div>
         </div>
         <div className="flex-1 is-flex is-flex-direction-column mt-5">
-          <div className="is-flex mb-2">
+          <div className="is-flex is-align-items-center mb-2">
             <label className="has-text-grey">Security Strength:</label>
             <SecurityStrengthLabel 
               progress={progress}
-              style={{ position: "relative", top: -3 }}
             />
           </div>
         </div>

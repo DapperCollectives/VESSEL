@@ -1,4 +1,4 @@
-const QuestionMark = ({ width = "18", height = "18", className = "", style = "" }) => (
+const QuestionMark = ({ width = "18", height = "18", className = "", style = {} }) => (
 <svg
     width={width}
     height={height}
