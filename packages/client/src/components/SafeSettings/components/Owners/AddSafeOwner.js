@@ -82,7 +82,7 @@ const AddSafeOwner = ({ onCancel, onNext, safeOwners }) => {
           </div>
         </div>
         <div className="flex-1 is-flex is-flex-direction-column">
-          <label className="has-text-grey mb-2">
+          <label className="has-text-grey mb-2 is-flex is-align-items-center">
             Name <Svg name="QuestionMark"  className="ml-1" />
           </label>
           <input
