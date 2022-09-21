@@ -62,6 +62,18 @@ const ReceiveTokens = ({ name, address }) => {
   );
 };
 
+const EmptyTransactions = () => (
+  <div
+    style={{
+      height: "calc(100vh - 350px)",
+    }}
+    className="is-flex is-justify-content-center is-align-items-center is-flex-direction-column"
+  >
+    <h2>You don't have any transaction history</h2>
+    <p className="has-text-grey">Create a new transaction above</p>
+  </div>
+);
+
 function Safe({ web3 }) {
   const params = useParams();
   const { address, tab } = params;
@@ -183,7 +195,8 @@ function Safe({ web3 }) {
       <SafeTransactions
         key="safe-transactions"
         safeData={safeData}
-        address={address}
+        emptyComponent={<EmptyTransactions />}
+        className="mt-4"
       />
     ),
     tokens: <SafeTokens key="safe-tokens" />,
