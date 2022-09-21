@@ -5,7 +5,6 @@ import {
   EXECUTE_ACTION_LIMIT,
   SIGNED_LIMIT,
   SIGNER_APPROVE_LIMIT,
-  UPDATE_SIGNER_LIMIT,
 } from "constants/constants";
 import { COIN_TYPE_TO_META } from "constants/maps";
 import { createSignature } from "contexts/Web3";
@@ -24,7 +23,6 @@ import {
   REMOVE_SIGNER,
   SIGNER_APPROVE,
   SIGNER_REJECT,
-  UPDATE_SIGNER,
   UPDATE_THRESHOLD,
 } from "../flow";
 import treasuryReducer, {
@@ -183,17 +181,6 @@ const doProposeAddSigner = async (treasuryAddr, newSignerAddress) => {
       arg(height, t.UInt64),
     ],
     limit: SIGNED_LIMIT,
-  });
-};
-
-const doUpdateSigner = async (oldSignerAddress, newSignerAddress) => {
-  return await mutate({
-    cadence: UPDATE_SIGNER,
-    args: (arg, t) => [
-      arg(oldSignerAddress, t.Address),
-      arg(newSignerAddress, t.Address),
-    ],
-    limit: UPDATE_SIGNER_LIMIT,
   });
 };
 
@@ -459,12 +446,6 @@ export default function useTreasury(treasuryAddr) {
     await refreshTreasury();
   };
 
-  const updateSigner = async (oldSignerAddress, newSignerAddress) => {
-    const res = await doUpdateSigner(oldSignerAddress, newSignerAddress);
-    await tx(res).onceSealed();
-    await refreshTreasury();
-  };
-
   const proposeRemoveSigner = async (signerToBeRemovedAddress) => {
     const res = await doProposeRemoveSigner(
       treasuryAddr,
@@ -486,7 +467,6 @@ export default function useTreasury(treasuryAddr) {
     executeAction,
     updateThreshold,
     proposeAddSigner,
-    updateSigner,
     proposeRemoveSigner,
     getVaultBalance,
     getActionView,
