@@ -57,7 +57,7 @@ const AddSafeOwner = ({ onCancel, onNext, safeOwners }) => {
   return (
     <>
       <div className="p-5">
-        <h2 className="is-size-4 has-text-black">Add owner</h2>
+        <h2 className="is-size-4 has-text-black">Add Owner</h2>
       </div>
       <div className="border-light-top border-light-bottom p-5 has-text-grey">
         <div className="flex-1 is-flex is-flex-direction-column mb-4">

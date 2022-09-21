@@ -21,17 +21,14 @@ const Owners = ({ treasury }) => {
       />
     );
   };
+
   const openAddOwnerModal = () => {
     modalContext.openModal(
       <AddSafeOwner
         onCancel={() => modalContext.closeModal()}
         onNext={openEditSignatureThresholdModal}
         safeOwners={safeOwners}
-      />,
-      { 
-        closeOnBackgroundClick: true,
-        showCloseButton: true
-      }
+      />
     );
   };
 
@@ -40,6 +37,7 @@ const Owners = ({ treasury }) => {
       <EditThreshold treasury={treasury} newOwner={newOwner} ownerToBeRemoved={ownerToBeRemoved} />
     );
   };
+
   return (
     <div>
       <div className="column p-0 mt-5 is-flex is-full is-justify-content-space-between">

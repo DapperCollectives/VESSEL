@@ -15,9 +15,15 @@ const EditThreshold = ({ treasury, newOwner, ownerToBeRemoved }) => {
     useContext(Web3Context);
   const [newThreshold, setNewThreshold] = useState(Number(threshold));
   const verifiedSafeOwners = safeOwners.filter((o) => o.verified);
-  const allSafeOwners = newOwner
-    ? [...verifiedSafeOwners, newOwner]
-    : verifiedSafeOwners.filter(o => o.address !== ownerToBeRemoved.address);
+  let allSafeOwners;
+  if (newOwner) {
+    allSafeOwners = [...verifiedSafeOwners, newOwner];
+  } else if (ownerToBeRemoved) {
+    allSafeOwners = verifiedSafeOwners.filter(o => o.address !== ownerToBeRemoved.address);
+  } else {
+    allSafeOwners = verifiedSafeOwners
+  }
+  
   const canContinueToReview = !!newOwner || newThreshold !== threshold;
   const onChangeThreshold = (isIncrease) => {
     setNewThreshold((prevState) =>
@@ -44,6 +50,7 @@ const EditThreshold = ({ treasury, newOwner, ownerToBeRemoved }) => {
     return (
       <ReviewSafeEdits
         newOwner={newOwner}
+        ownerToBeRemoved={ownerToBeRemoved}
         newThreshold={newThreshold}
         allSafeOwners={allSafeOwners}
         onBack={() => setCurrStep(0)}

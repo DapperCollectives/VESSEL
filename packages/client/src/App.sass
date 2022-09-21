@@ -21,6 +21,7 @@ $white-20: rgba(255,255,255, 0.2)
 $grey-primary: #939393
 $grey-dark: #6D6D6D
 $grey-secondary: #DDDDDD
+$grey-light: #DDDDDD // Override bulma default to match designs
 $grey-tertiary: #EEEEEE
 
 //purple
@@ -448,6 +449,8 @@ hr
   border-radius: 4px
 .table-border > :not(:last-child)
   border-bottom: 1px solid $grey-light
+.table-border-bottom > :last-child
+  border-bottom: 1px solid $grey-light
 .confirmation
   white-space: nowrap
   padding: 15px 14px
@@ -466,3 +469,4 @@ hr
   scrollbar-width: none
 .confirmations::-webkit-scrollbar
     display: none
+
