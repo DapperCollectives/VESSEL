@@ -1,5 +1,5 @@
 import { useContext, useState, useEffect } from "react";
-import { formatAddress, getSafeContactName, parseIdentifier } from "utils";
+import { formatAddress, getNameByAddress, parseIdentifier } from "utils";
 import { useClipboard, useContacts } from "hooks";
 import { Web3Context } from "contexts/Web3";
 import Svg from "library/Svg";
@@ -78,7 +78,7 @@ const NFTView = ({ actionView, safeData }) => {
           <span className="has-text-grey flex-1">Sent To</span>
           <div className="flex-1">
             <span className="has-text-weight-bold has-text-black">
-              {getSafeContactName(contacts, recipient)}
+              {getNameByAddress(contacts, recipient)}
             </span>
             <div>
               <span className="has-text-grey">{recipient}</span>

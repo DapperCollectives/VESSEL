@@ -1,5 +1,5 @@
 import Svg from "library/Svg";
-import { getSafeContactName, shortenAddr, shortenName } from "utils";
+import { getNameByAddress, shortenAddr, shortenName } from "utils";
 
 const Confirmations = ({ confirmations, safeData }) => {
   const { safeOwners } = safeData;
@@ -14,7 +14,7 @@ const Confirmations = ({ confirmations, safeData }) => {
 
   const getConfirmationList = () => {
     return Object.keys(confirmations).map((key) => {
-      const name = getSafeContactName(safeOwners, key);
+      const name = getNameByAddress(safeOwners, key);
       const displayName = name?.length > 20 ? shortenName(name) : name;
       const displayAddress = name ? shortenAddr(key) : key;
       return (

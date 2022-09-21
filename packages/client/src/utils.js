@@ -141,9 +141,11 @@ export const parseIdentifier = (identifier) => {
   };
 };
 
-export const getSafeContactName = (contacts, address) => {
-  const contact = contacts.find((contact) => contact.address === address);
-  return contact?.name;
+export const getNameByAddress = (nameAddressArray, address) => {
+  const nameAddress = nameAddressArray.find(
+    (nameAddress) => nameAddress.address === address
+  );
+  return nameAddress?.name;
 };
 
 export const parseTimestamp = (timestamp) => {

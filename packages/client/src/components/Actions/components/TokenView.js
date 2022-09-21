@@ -1,6 +1,6 @@
 import { useClipboard, useContacts } from "hooks";
 import Svg from "library/Svg";
-import { getSafeContactName, getTokenMeta } from "utils";
+import { getNameByAddress, getTokenMeta } from "utils";
 import ProposedDateView from "./ProposedDateView";
 
 const TokenView = ({ actionView, safeData }) => {
@@ -46,7 +46,7 @@ const TokenView = ({ actionView, safeData }) => {
           <span className="has-text-grey flex-1">Sent To</span>
           <div className="flex-1">
             <span className="has-text-weight-bold has-text-black">
-              {getSafeContactName(contacts, recipient)}
+              {getNameByAddress(contacts, recipient)}
             </span>
             <div>
               <span className="has-text-grey">{recipient}</span>

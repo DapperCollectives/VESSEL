@@ -1,5 +1,5 @@
 import { useContacts } from "hooks";
-import { getSafeContactName } from "utils";
+import { getNameByAddress } from "utils";
 import ProposedDateView from "./ProposedDateView";
 
 const OwnerView = ({ actionView, safeData, isAdd }) => {
@@ -7,7 +7,7 @@ const OwnerView = ({ actionView, safeData, isAdd }) => {
   const { address: safeAddress } = safeData;
 
   const { contacts } = useContacts(safeAddress);
-  const signerName = getSafeContactName(contacts, signerAddr);
+  const signerName = getNameByAddress(contacts, signerAddr);
 
   return (
     <div className="mb-4">

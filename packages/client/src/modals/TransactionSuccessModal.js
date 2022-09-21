@@ -7,7 +7,7 @@ import {
   formatAddress,
   getTokenMeta,
   parseIdentifier,
-  getSafeContactName,
+  getNameByAddress,
 } from "utils";
 import { ACTION_TYPES } from "../constants/enums";
 
@@ -109,7 +109,7 @@ const TransactionSuccessModal = ({
           <span className="has-text-grey flex-1">Sent To</span>
           <div className="flex-1">
             <span className="has-text-weight-bold">
-              {getSafeContactName(contacts, recipient)}
+              {getNameByAddress(contacts, recipient)}
             </span>
             <div>
               <span className="has-text-grey">{recipient}</span>
