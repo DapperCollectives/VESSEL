@@ -6,16 +6,22 @@ import { Web3Context } from "contexts/Web3";
 import ActionRequired from "./components/ActionRequired";
 import { useErrorMessage } from "hooks";
 
-function ActionsList({ actions = [], onSign, onReject, onConfirm, safeData }) {
+function ActionsList({
+  actions = [],
+  onApprove,
+  onReject,
+  onConfirm,
+  safeData,
+}) {
   const ActionComponents = [];
 
   const { getActionView } = useContext(Web3Context);
   const { showErrorModal } = useErrorMessage();
   const { openModal, closeModal } = useModalContext();
 
-  const onSignAction = async (action) => {
+  const onApproveAction = async (action) => {
     try {
-      await onSign(action);
+      await onApprove(action);
       closeModal();
     } catch (error) {
       showErrorModal(error);
@@ -38,8 +44,8 @@ function ActionsList({ actions = [], onSign, onReject, onConfirm, safeData }) {
         safeData={safeData}
         actionView={view}
         confirmations={action.signerResponses}
+        onApprove={() => onApproveAction(action)}
         onReject={() => onRejectAction(action)}
-        onApprove={() => onSignAction(action)}
       />,
       { headerTitle: "Action Required" }
     );

@@ -14,6 +14,7 @@ import {
 } from "../components";
 import Svg from "library/Svg";
 import { Web3Consumer, useModalContext } from "../contexts";
+import { createSignature } from "contexts/Web3";
 import { useClipboard, useErrorMessage } from "../hooks";
 import { TransactionSuccessModal } from "modals";
 import { ACTION_TYPES } from "constants/enums";
@@ -128,28 +129,13 @@ function Safe({ web3 }) {
     );
   });
 
-  const { injectedProvider, signerApprove, signerReject, executeAction } = web3;
+  const { signerApprove, signerReject, executeAction } = web3;
 
-  const onSignAction = async ({ uuid, intent }) => {
-    const latestBlock = await injectedProvider
-      .send([injectedProvider.getBlock(true)])
-      .then(injectedProvider.decode);
-
-    const { height, id } = latestBlock;
-    const intentHex = Buffer.from(intent).toString("hex");
-
-    const message = `${uuid}${intentHex}${id}`;
-    const messageHex = Buffer.from(message).toString("hex");
-
-    let sigResponse = await injectedProvider
-      .currentUser()
-      .signUserMessage(messageHex);
-
-    let keyId = sigResponse[0].keyId;
-    let signature = sigResponse[0].signature;
-
-    const keyIds = [keyId];
-    const signatures = [signature];
+  const onApproveAction = async ({ uuid, intent }) => {
+    const { message, keyIds, signatures, height } = await createSignature(
+      intent,
+      uuid
+    );
 
     await signerApprove(
       parseInt(uuid, 10),
@@ -157,37 +143,18 @@ function Safe({ web3 }) {
       keyIds,
       signatures,
       height
-    ).catch((error) => showErrorModal(error));
+    );
   };
 
   const onRejectAction = async ({ uuid, intent }) => {
-    const latestBlock = await injectedProvider
-      .send([injectedProvider.getBlock(true)])
-      .then(injectedProvider.decode);
+    const { message, keyIds, signatures, height } = await createSignature(
+      intent,
+      uuid
+    );
 
-    const { height, id } = latestBlock;
-    const intentHex = Buffer.from(intent).toString("hex");
+    console.log(keyIds)
 
-    const message = `${uuid}${intentHex}${id}`;
-    const messageHex = Buffer.from(message).toString("hex");
-
-    let sigResponse = await injectedProvider
-      .currentUser()
-      .signUserMessage(messageHex);
-
-    let keyId = sigResponse[0].keyId;
-    let signature = sigResponse[0].signature;
-
-    const keyIds = [keyId];
-    const signatures = [signature];
-
-    await signerReject(
-      parseInt(uuid, 10),
-      message,
-      keyIds,
-      signatures,
-      height
-    ).catch((error) => showErrorModal(error));
+    await signerReject(parseInt(uuid, 10), message, keyIds, signatures, height);
   };
 
   const onConfirmAction = async ({ uuid }) => {
@@ -208,7 +175,7 @@ function Safe({ web3 }) {
         allBalance={allBalance}
         actions={actions}
         address={address}
-        onSign={onSignAction}
+        onApprove={onApproveAction}
         onReject={onRejectAction}
         onConfirm={onConfirmAction}
       />

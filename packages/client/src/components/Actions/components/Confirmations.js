@@ -1,11 +1,8 @@
 import Svg from "library/Svg";
-import { useContacts } from "hooks";
 import { getSafeContactName, shortenAddr, shortenName } from "utils";
 
 const Confirmations = ({ confirmations, safeData }) => {
-  const { address: safeAddress } = safeData;
-
-  const { contacts } = useContacts(safeAddress);
+  const { safeOwners } = safeData;
 
   const getNumberOfConfirmations = () => {
     const numberApproved = Object.keys(confirmations).filter(
@@ -17,7 +14,7 @@ const Confirmations = ({ confirmations, safeData }) => {
 
   const getConfirmationList = () => {
     return Object.keys(confirmations).map((key) => {
-      const name = getSafeContactName(contacts, key);
+      const name = getSafeContactName(safeOwners, key);
       const displayName = name?.length > 20 ? shortenName(name) : name;
       const displayAddress = name ? shortenAddr(key) : key;
       return (
