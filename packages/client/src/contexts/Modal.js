@@ -41,17 +41,17 @@ const ModalProvider = ({ children }) => {
 
   const openModal = useCallback(
     (content, customModalConfig) => {
-      if (customModalConfig) {
-        setModalConfig(() => ({
-          ...modalConfig,
-          // set default values if modal is re-opened without configuration
-          // this is when two components are using the modal with different configuration at the same time
-          closeOnBackgroundClick: true,
-          showCloseButton: true,
-          classNameModalContent: "",
-          ...customModalConfig,
-        }));
-      }
+      setModalConfig(() => ({
+        ...modalConfig,
+        // set default values if modal is re-opened without configuration
+        // this is when two components are using the modal with different configuration at the same time
+        closeOnBackgroundClick: true,
+        showCloseButton: true,
+        classNameModalContent: "",
+        headerTitle: "",
+        ...customModalConfig ?? {},
+      }));
+
       setContent(content);
       setModal(true);
     },
