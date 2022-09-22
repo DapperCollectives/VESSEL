@@ -1,8 +1,9 @@
 import { useContext, useEffect, useState } from "react";
-import { shortenAddr } from "utils";
+import { shortenString } from "utils";
+import { useFlowFees } from "hooks";
 import { SendTokensContext } from "../sendTokensContext";
 import { ASSET_TYPES } from "constants/enums";
-import { useFlowFees } from "hooks";
+
 const TransactionDetails = () => {
   const [transactionFee, setTransactionFee] = useState(0);
   const [sendModalState] = useContext(SendTokensContext);
@@ -42,7 +43,7 @@ const TransactionDetails = () => {
       <div className="mt-5">
         <div className="border-light-top is-flex is-justify-content-space-between py-5">
           <span className="has-text-grey">Sending to</span>
-          <span>{shortenAddr(recipient)}</span>
+          <span>{shortenString(recipient)}</span>
         </div>
         <div className="border-light-top is-flex is-justify-content-space-between py-5">
           <span className="has-text-grey">Network fee</span>

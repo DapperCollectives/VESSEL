@@ -1,7 +1,7 @@
 import React from "react";
 import { useParams, NavLink } from "react-router-dom";
 import QRCode from "react-qr-code";
-import { shortenAddr } from "../utils";
+import { shortenString } from "utils";
 import {
   SafeHome,
   SafeTransactions,
@@ -31,7 +31,7 @@ const ReceiveTokens = ({ name, address }) => {
           <span className="border-light-right mr-2 pr-2 has-text-grey">
             To: {name}
           </span>
-          <span className="is-underlined">{shortenAddr(address)}</span>
+          <span className="is-underlined">{shortenString(address)}</span>
         </div>
       </div>
       <div className="border-light-top mt-5 pt-6 is-flex is-flex-direction-column">
@@ -222,7 +222,7 @@ function Safe({ web3 }) {
         <h1 className=" mb-2">{safeData.name}</h1>
         <p>
           <span className="has-text-grey">
-            Safe address {shortenAddr(address)}
+            Safe address {shortenString(address)}
           </span>
           <span
             className="is-underlined ml-2 pointer"

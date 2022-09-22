@@ -27,17 +27,10 @@ export const notifyError = (err, history, url) => {
   }
 };
 
-export const shortenAddr = (addr) => {
-  if (!addr) return addr;
-  const firstChunk = addr.slice(0, 4);
-  const secondChunk = addr.slice(addr.length - 4, addr.length);
-  return `${firstChunk}...${secondChunk}`;
-};
-
-export const shortenName = (name) => {
-  if (!name) return name;
-  const firstChunk = name.slice(0, 5);
-  const secondChunk = name.slice(name.length - 5, name.length);
+export const shortenString = (string) => {
+  if (!string) return string;
+  const firstChunk = string.slice(0, 4);
+  const secondChunk = string.slice(string.length - 4, string.length);
   return `${firstChunk}...${secondChunk}`;
 };
 

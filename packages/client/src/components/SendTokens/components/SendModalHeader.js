@@ -1,7 +1,7 @@
 import React from "react";
 import { useContext } from "react";
 import { SendTokensContext } from "../sendTokensContext";
-import { shortenAddr } from "../../../utils";
+import { shortenString } from "utils";
 
 const SendModalHeader = () => {
   const [sendModalState] = useContext(SendTokensContext);
@@ -14,7 +14,7 @@ const SendModalHeader = () => {
         <span className="border-light-right mr-2 pr-2 has-text-grey">
           Step {currentStep + 1} of 2
         </span>
-        <span className="is-underlined">{shortenAddr(address)}</span>
+        <span className="is-underlined">{shortenString(address)}</span>
       </div>
     </React.Fragment>
   );

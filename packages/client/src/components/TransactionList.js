@@ -1,6 +1,6 @@
 import React from "react";
 import { useModalContext } from "../contexts";
-import { getFlowscanUrlForTransaction, shortenAddr } from "../utils";
+import { getFlowscanUrlForTransaction, shortenString } from "utils";
 import TransactionStatusIcon from "./TransactionStatusIcon";
 
 const FALLBACK_RECIPIENT_NAME = "No name";
@@ -26,7 +26,7 @@ function TransactionDetails({ safeOwners, transaction, onClose }) {
         key={address}
         className="has-background-black rounded-sm has-text-white is-flex is-align-items-center p-4 mr-2"
       >
-        {shortenAddr(address)}
+        {shortenString(address)}
       </div>
     );
   };
@@ -93,7 +93,7 @@ function TransactionDetails({ safeOwners, transaction, onClose }) {
               rel="noopen noreferrer"
               className="is-underlined has-text-black"
             >
-              {shortenAddr(transaction.flowTransactionId)}
+              {shortenString(transaction.flowTransactionId)}
             </a>
           )}
           {renderRow(
@@ -108,12 +108,12 @@ function TransactionDetails({ safeOwners, transaction, onClose }) {
           {renderRow(
             "Address",
             lastTokenTransfer
-              ? shortenAddr(lastTokenTransfer?.counterparty?.address)
+              ? shortenString(lastTokenTransfer?.counterparty?.address)
               : ""
           )}
           {renderRow(
             "Executed",
-            shortenAddr(transaction.blockEventData.proposer)
+            shortenString(transaction.blockEventData.proposer)
           )}
           {renderRow(
             "Created",
