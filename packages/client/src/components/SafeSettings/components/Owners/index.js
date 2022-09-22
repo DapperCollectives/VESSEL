@@ -12,29 +12,22 @@ const Owners = ({ treasury }) => {
   const verifiedSafeOwners = safeOwners.filter((o) => o.verified);
   const ownersAddressClipboard = useClipboard();
 
-  const openRemoveOwnerModal = (safeOwner) => {
-    modalContext.openModal(
-      <RemoveSafeOwner
-        safeOwner={safeOwner}
-        onCancel={() => modalContext.closeModal()}
-        onNext={openEditSignatureThresholdModal}
-      />
-    );
-  };
-
   const openAddOwnerModal = () => {
     modalContext.openModal(
       <AddSafeOwner
-        onCancel={() => modalContext.closeModal()}
-        onNext={openEditSignatureThresholdModal}
+        treasury={treasury}
         safeOwners={safeOwners}
       />
     );
   };
 
-  const openEditSignatureThresholdModal = (newOwner, ownerToBeRemoved) => {
+  const openRemoveOwnerModal = (safeOwner) => {
     modalContext.openModal(
-      <EditThreshold treasury={treasury} newOwner={newOwner} ownerToBeRemoved={ownerToBeRemoved} />
+      <RemoveSafeOwner
+        treasury={treasury}
+        owner={safeOwner}
+        safeOwners={safeOwners}
+      />
     );
   };
 

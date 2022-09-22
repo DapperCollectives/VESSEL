@@ -1,11 +1,14 @@
 import React, { useState, useContext } from "react";
+import { useModalContext } from "contexts";
 import { useAddressValidation } from "hooks";
 import { isAddr, formatAddress } from "utils";
 import Svg from "library/Svg";
+import EditThreshold from "../EditThreshold";
 import { Web3Context } from "contexts/Web3";
 
-const AddSafeOwner = ({ onCancel, onNext, safeOwners }) => {
+const AddSafeOwner = ({ treasury, safeOwners }) => {
   const web3 = useContext(Web3Context);
+  const { openModal, closeModal } = useModalContext()
   const { isAddressValid } = useAddressValidation(web3.injectedProvider);
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
@@ -22,17 +25,17 @@ const AddSafeOwner = ({ onCancel, onNext, safeOwners }) => {
   const isAddressExisting = (safeOwners, newAddress) => {
     const address = formatAddress(newAddress);
     return (
-      safeOwners.filter((obj) => obj.address === address && obj.verified)
-        .length !== 0
+      safeOwners.filter((obj) => obj.address === address && obj.verified).length !== 0
     );
   };
 
   const onNextClick = () => {
-    onNext({
-      name,
-      address,
-    });
+    openModal(
+      <EditThreshold treasury={treasury} newOwner={{ address, name }} />
+    )
   };
+
+  const onCancelClick = () => closeModal()
 
   const addrInputClasses = () => {
     let classes = [
@@ -97,7 +100,7 @@ const AddSafeOwner = ({ onCancel, onNext, safeOwners }) => {
       </div>
       <div className="">
         <div className="is-flex is-align-items-center p-5">
-          <button className="button flex-1 is-border mr-2 has-text-weight-bold" onClick={onCancel}>
+          <button className="button flex-1 is-border mr-2 has-text-weight-bold" onClick={onCancelClick}>
             Cancel
           </button>
           <button

@@ -1,15 +1,16 @@
+import { useModalContext } from "contexts";
 import { getProgressPercentageForSignersAmount } from "utils";
 import Svg from "library/Svg";
 import SecurityStrengthLabel from "library/components/SecurityStrengthLabel";
 
 const EditThresholdForm = ({
   newThreshold,
-  allSafeOwners,
+  safeOwners,
   canContinueToReview,
   onReviewClick,
   onChangeThreshold,
-  closeModal,
 }) => {
+  const { closeModal } = useModalContext()
   const signerClasses = [
     "is-flex",
     "is-justify-content-center",
@@ -22,7 +23,7 @@ const EditThresholdForm = ({
   ];
   const plusSignerClasses = [
     ...signerClasses,
-    newThreshold < allSafeOwners.length
+    newThreshold < safeOwners.length
       ? "pointer has-text-black"
       : "is-disabled",
   ];
@@ -44,7 +45,7 @@ const EditThresholdForm = ({
             <Svg name="Person" />
           </div>
           <div className="flex-1 is-flex is-align-items-center px-5 border-light-right has-text-black">
-            {newThreshold} of {Math.max(allSafeOwners.length, 1)} owner(s)
+            {newThreshold} of {Math.max(safeOwners.length, 1)} owner(s)
           </div>
           <div
             className={minusSignerClasses.join(" ")}
@@ -72,7 +73,7 @@ const EditThresholdForm = ({
       </div>
       <div>
         <div className="is-flex is-align-items-center p-5">
-          <button className="button flex-1 is-border mr-2 has-text-weight-bold" onClick={closeModal}>
+          <button className="button flex-1 is-border mr-2 has-text-weight-bold" onClick={() => closeModal()}>
             Cancel
           </button>
           <button
