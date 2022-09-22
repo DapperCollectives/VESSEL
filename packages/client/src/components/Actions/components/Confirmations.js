@@ -1,3 +1,4 @@
+import { SIGNER_RESPONSES } from "constants/enums";
 import Svg from "library/Svg";
 import { getNameByAddress, shortenString } from "utils";
 
@@ -12,6 +13,18 @@ const Confirmations = ({ confirmations, safeData }) => {
     return `${numberApproved} out of ${Object.keys(confirmations).length}`;
   };
 
+  const getTextColor = (confirmation) => {
+    switch (confirmation) {
+      case SIGNER_RESPONSES.APPROVED:
+        return "success";
+      case SIGNER_RESPONSES.REJECTED:
+        return "danger";
+      case SIGNER_RESPONSES.PENDING:
+      default:
+        return "warning";
+    }
+  };
+
   const getConfirmationList = () => {
     return Object.keys(confirmations).map((key) => {
       const name = getNameByAddress(safeOwners, key);
@@ -22,7 +35,10 @@ const Confirmations = ({ confirmations, safeData }) => {
           className="confirmation is-flex is-flex-direction-row is-justify-content-flex-start"
           key={key}
         >
-          <Svg name="Status" className={`mt-1 ${confirmations[key]}`} />
+          <Svg
+            name="Status"
+            className={`mt-1 has-text-${getTextColor(confirmations[key])}`}
+          />
           {name ? `${displayName}·${displayAddress}` : displayAddress}
         </div>
       );

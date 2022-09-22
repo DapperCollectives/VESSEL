@@ -7,7 +7,7 @@ const Status = ({ width = "12", height = "12", className = "" }) => (
     fill="none"
     viewBox="0 0 12 12"
   >
-    <rect width={width} height={height} rx="6" />
+    <rect width={width} height={height} rx="6" fill="currentColor" />
   </svg>
 );
 
