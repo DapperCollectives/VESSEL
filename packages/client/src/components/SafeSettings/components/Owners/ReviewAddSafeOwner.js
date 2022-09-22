@@ -42,7 +42,7 @@ const ReviewAddSafeOwner = ({
         <h2 className="is-size-4 has-text-black">Review Updates</h2>
       </div>
       <div className="border-light-top p-4 has-text-grey">
-        <p className="has-text-grey">Add Owner</p>
+        <p className="has-text-grey">New Owner</p>
         <OwnerCard owner={owner}></OwnerCard>
         {renderRow("Proposed On", new Date().toLocaleDateString("en-US"))}
         {renderRow("Signature Threshold", `${newThreshold} of ${safeOwners.length} owner(s)`)}
