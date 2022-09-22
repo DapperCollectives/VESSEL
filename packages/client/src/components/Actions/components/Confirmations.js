@@ -37,7 +37,7 @@ const Confirmations = ({ confirmations, safeData }) => {
           {getNumberOfConfirmations()}
         </span>
       </div>
-      <div className="columns confirmations has-text-black">
+      <div className="confirmations has-text-black">
         {getConfirmationList()}
       </div>
     </div>
