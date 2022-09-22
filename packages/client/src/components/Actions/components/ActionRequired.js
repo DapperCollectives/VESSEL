@@ -35,7 +35,7 @@ const ActionRequired = ({
       case ACTION_TYPES.UPDATE_THRESHOLD:
         return <ThresholdView actionView={actionView} safeData={safeData} />;
       default:
-        return <></>;
+        return null;
     }
   };
 

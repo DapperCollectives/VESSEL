@@ -11,8 +11,8 @@ const SentFromToView = ({ safeData, recipient }) => {
   return (
     <div className="is-size-6 has-text-grey">
       <div className="m-1 columns border-light-bottom">
-        <span className="column">Sent From</span>
-        <div className="column">
+        <span className="column pl-0">Sent From</span>
+        <div className="column pl-0">
           <span className="has-text-weight-bold has-text-black">
             {safeName}
           </span>
@@ -28,8 +28,8 @@ const SentFromToView = ({ safeData, recipient }) => {
         </div>
       </div>
       <div className="m-1 columns border-light-bottom">
-        <span className="column">Sent To</span>
-        <div className="column">
+        <span className="column pl-0">Sent To</span>
+        <div className="column pl-0">
           <span className="has-text-weight-bold has-text-black">
             {getNameByAddress(contacts, recipient)}
           </span>
