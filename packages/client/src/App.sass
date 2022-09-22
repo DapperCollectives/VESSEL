@@ -101,6 +101,7 @@ $modal-content-width: 430px
 .modal-content
   max-height: calc(100vh - 210px)
   overflow-y: auto !important
+  overflow-x: hidden !important
 .modal-safe-name
   color: $purple-primary
   font-weight: 500
@@ -248,6 +249,10 @@ h2
   margin-left: 12px
 .button.is-small.with-icon>svg
   transform: scale(0.7)
+
+/********************* Custom utility css - Columns ********************/
+.column
+  padding-left: 0
 
 //primary button
 @keyframes primary-button-animation 
@@ -452,4 +457,9 @@ hr
     &.pending
       fill: $warning
 .confirmations
+  margin-right: -2.75rem
   overflow: auto
+  -ms-overflow-style: none
+  scrollbar-width: none
+.confirmations::-webkit-scrollbar
+    display: none

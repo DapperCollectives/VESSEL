@@ -37,25 +37,19 @@ const NFTView = ({ actionView, safeData }) => {
 
   return (
     <>
-      <div className="pl-4 mb-5">
+      <div className="m-1">
         {imageURI && (
-          <img
-            className="columns success-modal-image"
-            src={imageURI}
-            alt={imageName}
-          />
+          <img className="success-modal-image" src={imageURI} alt={imageName} />
         )}
-        <span className="columns is-size-2 is-family-monospace has-text-black">
+        <div className="is-size-2 is-family-monospace has-text-black">
           #{nftId}
-        </span>
-        <span className="columns is-size-6 has-text-weight-bold has-text-black">
+        </div>
+        <span className="is-size-6 has-text-weight-bold has-text-black">
           {NFTName}
         </span>
       </div>
-      <div className="mt-4">
-        <ProposedDateView timestamp={timestamp} />
-        <SentFromToView safeData={safeData} recipient={recipient} />
-      </div>
+      <ProposedDateView timestamp={timestamp} />
+      <SentFromToView safeData={safeData} recipient={recipient} />
     </>
   );
 };

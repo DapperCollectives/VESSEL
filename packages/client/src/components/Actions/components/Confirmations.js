@@ -18,8 +18,11 @@ const Confirmations = ({ confirmations, safeData }) => {
       const displayName = name?.length > 20 ? shortenName(name) : name;
       const displayAddress = name ? shortenAddr(key) : key;
       return (
-        <div className="confirmation" key={key}>
-          <Svg name="Status" className={`${confirmations[key]}`} />
+        <div
+          className="confirmation is-flex is-flex-direction-row is-justify-content-flex-start"
+          key={key}
+        >
+          <Svg name="Status" className={`mt-1 ${confirmations[key]}`} />
           {name ? `${displayName}·${displayAddress}` : displayAddress}
         </div>
       );
@@ -27,14 +30,14 @@ const Confirmations = ({ confirmations, safeData }) => {
   };
 
   return (
-    <div>
-      <div className="column is-flex">
-        <span className="flex-1">Confirmations</span>
-        <span className="is-justify-content-end">
+    <div className="p-4">
+      <div className="columns">
+        <span className="column">Confirmations</span>
+        <span className="column has-text-right">
           {getNumberOfConfirmations()}
         </span>
       </div>
-      <div className="column is-flex confirmations has-text-black">
+      <div className="columns confirmations has-text-black">
         {getConfirmationList()}
       </div>
     </div>

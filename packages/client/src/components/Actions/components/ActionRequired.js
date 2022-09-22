@@ -40,14 +40,18 @@ const ActionRequired = ({
   };
 
   return (
-    <div className="p-5 has-text-grey">
-      {getActionView()}
-      <Confirmations confirmations={confirmations} safeData={safeData} />
-      <div className="column border-light-bottom pb-5">
-        To complete this action, you will have to confirm it with your connected
-        wallet on the next step.
+    <div className="has-text-grey">
+      <div className="p-5">
+        {getActionView()}
+        <Confirmations confirmations={confirmations} safeData={safeData} />
       </div>
-      <div className="is-flex mt-5">
+      <div className="border-light-bottom">
+        <div className="px-5 pb-5">
+          To complete this action, you will have to confirm it with your
+          connected wallet on the next step.
+        </div>
+      </div>
+      <div className="p-5 is-flex">
         <button className="button flex-1 is-border mr-2" onClick={onReject}>
           Reject
         </button>

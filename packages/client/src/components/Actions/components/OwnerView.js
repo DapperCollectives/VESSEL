@@ -10,25 +10,31 @@ const OwnerView = ({ actionView, safeData, isAdd }) => {
   const signerName = getNameByAddress(contacts, signerAddr);
 
   return (
-    <div className="mb-4">
-      <span className="column">{isAdd ? "New Owner" : "Remove Owner"}</span>
-      {signerName && (
-        <>
-          <span className="column is-size-2 is-family-monospace has-text-black has-text-weight-bold">
-            {signerName}
-          </span>
-          <span className="column is-size-6 has-text-weight-bold has-text-black">
+    <>
+      <span>{isAdd ? "New Owner" : "Remove Owner"}</span>
+      <div className="mb-4">
+        {signerName && (
+          <>
+            <div>
+              <span className="is-size-2 is-family-monospace has-text-black has-text-weight-bold">
+                {signerName}
+              </span>
+            </div>
+            <div>
+              <span className="is-size-6 has-text-weight-bold has-text-black">
+                {signerAddr}
+              </span>
+            </div>
+          </>
+        )}
+        {!signerName && (
+          <span className="is-size-3 is-family-monospace has-text-black has-text-weight-bold">
             {signerAddr}
           </span>
-        </>
-      )}
-      {!signerName && (
-        <span className="column is-size-3 is-family-monospace has-text-black has-text-weight-bold">
-          {signerAddr}
-        </span>
-      )}
+        )}
+      </div>
       <ProposedDateView timestamp={timestamp} />
-    </div>
+    </>
   );
 };
 export default OwnerView;

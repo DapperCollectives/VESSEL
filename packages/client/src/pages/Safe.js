@@ -152,8 +152,6 @@ function Safe({ web3 }) {
       uuid
     );
 
-    console.log(keyIds)
-
     await signerReject(parseInt(uuid, 10), message, keyIds, signatures, height);
   };
 
