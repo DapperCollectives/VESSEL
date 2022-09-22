@@ -10,7 +10,6 @@ const AddSafeOwner = ({ onCancel, onNext, safeOwners }) => {
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
   const [addressValid, setAddressValid] = useState(false);
-  const [addressBorderClass, setAddressBorderClass] = useState("border-light");
 
   const onAddressChange = async (newAddress) => {
     setAddress(newAddress);
