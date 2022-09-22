@@ -18,16 +18,6 @@ const AddSafeOwner = ({ onCancel, onNext, safeOwners }) => {
       (await isAddressValid(newAddress)) &&
       !isAddressExisting(safeOwners, newAddress)
     setAddressValid(isValid);
-
-    if (isValid) {
-      setAddressBorderClass("border-success")
-    }
-    else if (newAddress.length === 0) {
-      setAddressBorderClass("border-light")
-    }
-    else {
-      setAddressBorderClass("border-error");
-    }
   };
 
   const isAddressExisting = (safeOwners, newAddress) => {
@@ -45,14 +35,26 @@ const AddSafeOwner = ({ onCancel, onNext, safeOwners }) => {
     });
   };
 
-  const nextButtonClasses = [
-    "button flex-1 is-primary ",
-    addressValid ? "has-text-weight-bold" : "disabled",
-  ];
-  const addrInputClasses = [
-    "p-4 rounded-sm column is-full is-size-6",
-    addressBorderClass
-  ]
+  const addrInputClasses = () => {
+    let classes = [
+      "input p-4 rounded-sm column is-full is-size-6"
+    ]
+    if (addressValid) {
+      classes.push("is-success");
+    }
+    else if (address.length !== 0) {
+      classes.push("is-error")
+    }
+    return classes;
+  }
+
+  const nextButtonClasses = () => {
+    let classes = [
+      "button flex-1 is-primary ",
+      addressValid ? "has-text-weight-bold" : "disabled",
+    ]
+    return classes;
+  }
 
   return (
     <>
@@ -66,7 +68,7 @@ const AddSafeOwner = ({ onCancel, onNext, safeOwners }) => {
           </label>
           <div style={{ position: "relative" }}>
             <input
-              className={addrInputClasses.join(" ")}
+              className={addrInputClasses().join(" ")}
               type="text"
               placeholder=""
               value={address}
@@ -86,7 +88,7 @@ const AddSafeOwner = ({ onCancel, onNext, safeOwners }) => {
             Name <Svg name="QuestionMark"  className="ml-1" />
           </label>
           <input
-            className="p-4 rounded-sm border-light is-size-6"
+            className="input p-4 rounded-sm border-light is-size-6"
             type="text"
             placeholder=""
             value={name}
@@ -101,7 +103,7 @@ const AddSafeOwner = ({ onCancel, onNext, safeOwners }) => {
           </button>
           <button
             disabled={!isAddressValid}
-            className={nextButtonClasses.join(" ")}
+            className={nextButtonClasses().join(" ")}
             onClick={onNextClick}
           >
             Next
