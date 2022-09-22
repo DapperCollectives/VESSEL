@@ -25,10 +25,10 @@ function SafeOverview({ allBalance, allNFTs }) {
   const emptyNftBlocks = new Array(4 - collectionsForDisplay.length).fill(0);
   return (
     <>
-      <div className="column p-0 mt-5 is-flex is-full">
+      <div className="p-0 mt-5 is-flex is-full">
         <h2>Safe Overview</h2>
       </div>
-      <div className="column p-0 mt-4 mb-5 is-flex is-full">
+      <div className="p-0 mt-4 mb-5 is-flex is-full">
         <div
           className="is-flex is-flex-direction-column flex-1 rounded-sm has-background-primary-purple has-shadow has-text-white p-5 mr-6"
           style={{
@@ -48,7 +48,7 @@ function SafeOverview({ allBalance, allNFTs }) {
             }}
           />
           <div style={{ zIndex: 1 }}>
-            <div className="column is-full p-0 mb-5 is-flex is-flex-direction-row is-justify-content-space-between">
+            <div className="is-full p-0 mb-5 is-flex is-flex-direction-row is-justify-content-space-between">
               <label>Tokens</label>
               {!!tokensWithPositiveBalance.length && (
                 <Link to={(location) => `${location.pathname}/tokens`}>
@@ -60,7 +60,7 @@ function SafeOverview({ allBalance, allNFTs }) {
               <div className="p-3 mb-1">
                 <div className="is-flex is-flex-direction-column is-justify-content-center is-align-items-center">
                   <p className="has-text-white ">You don't have any tokens</p>
-                  <button className="button column is-half mt-2 has-purple-background-hover-animation has-text-purple">
+                  <button className="button is-half mt-2 has-purple-background-hover-animation has-text-purple">
                     Deposit Tokens
                   </button>
                 </div>
@@ -68,7 +68,7 @@ function SafeOverview({ allBalance, allNFTs }) {
             )}
 
             {!!tokensWithPositiveBalance.length && (
-              <div className="column is-full p-0 mb-2 is-flex is-flex-direction-row is-justify-content-flex-start">
+              <div className="is-full p-0 mb-2 is-flex is-flex-direction-row is-justify-content-flex-start">
                 {tokensWithPositiveBalance.map(({ type, balance }) => (
                   <div
                     key={type}
@@ -106,7 +106,7 @@ function SafeOverview({ allBalance, allNFTs }) {
             <div className="p-3 mb-1">
               <div className="is-flex is-flex-direction-column is-justify-content-center is-align-items-center">
                 <p>You don't have any NFTs</p>
-                <button className="button column is-half mt-2 is-primary">
+                <button className="button is-half mt-2 is-primary">
                   Deposit NFTs
                 </button>
               </div>
