@@ -6,11 +6,12 @@ import NonFungibleToken from "./core/NonFungibleToken.cdc"
 pub contract TreasuryActionsV4 {
 
   // Utility
-  pub fun InitializeActionView(type: String, intent: String, proposer: Address): MyMultiSigV4.ActionView {
+  pub fun InitializeActionView(type: String, intent: String, proposer: Address, timestamp: UFix64): MyMultiSigV4.ActionView {
     return MyMultiSigV4.ActionView(
       type: type,
       intent: intent,
       proposer: proposer,
+      timestamp: timestamp,
       recipient: nil,
       vaultId: nil,
       collectionId: nil,
@@ -25,6 +26,7 @@ pub contract TreasuryActionsV4 {
   pub struct TransferToken: MyMultiSigV4.Action {
     pub let intent: String
     pub let proposer: Address
+    pub let timestamp: UFix64
     pub let recipientVault: Capability<&{FungibleToken.Receiver}>
     pub let amount: UFix64
 
@@ -39,7 +41,8 @@ pub contract TreasuryActionsV4 {
       let view: MyMultiSigV4.ActionView = TreasuryActionsV4.InitializeActionView(
         type: "TransferToken",
         intent: self.intent,
-        proposer: self.proposer
+        proposer: self.proposer,
+        timestamp: self.timestamp
       )
       view.recipient = self.recipientVault.borrow()!.owner!.address
       view.vaultId = self.recipientVault.borrow()!.getType().identifier
@@ -61,6 +64,7 @@ pub contract TreasuryActionsV4 {
       self.recipientVault = recipientVault
       self.amount = amount
       self.proposer = proposer
+      self.timestamp = getCurrentBlock().timestamp
     }
   }
 
@@ -68,6 +72,7 @@ pub contract TreasuryActionsV4 {
   pub struct TransferTokenToTreasury: MyMultiSigV4.Action {
     pub let intent: String
     pub let proposer: Address
+    pub let timestamp: UFix64
     pub let identifier: String
     pub let recipientTreasury: Capability<&{DAOTreasuryV4.TreasuryPublic}>
     pub let amount: UFix64
@@ -84,7 +89,8 @@ pub contract TreasuryActionsV4 {
       let view: MyMultiSigV4.ActionView = TreasuryActionsV4.InitializeActionView(
         type: "TransferTokenToTreasury",
         intent: self.intent,
-        proposer: self.proposer
+        proposer: self.proposer,
+        timestamp: self.timestamp
       )
       view.recipient = self.recipientTreasury.borrow()!.owner!.address
       view.vaultId = self.identifier
@@ -105,6 +111,7 @@ pub contract TreasuryActionsV4 {
                         .concat(" tokens from the treasury to ")
                         .concat(recipientAddr.toString())
       self.proposer = proposer
+      self.timestamp = getCurrentBlock().timestamp
       self.identifier = identifier
       self.recipientTreasury = recipientTreasury
       self.amount = amount
@@ -115,6 +122,7 @@ pub contract TreasuryActionsV4 {
   pub struct TransferNFT: MyMultiSigV4.Action {
     pub let intent: String
     pub let proposer: Address
+    pub let timestamp: UFix64
     pub let recipientCollection: Capability<&{NonFungibleToken.CollectionPublic}>
     pub let withdrawID: UInt64
 
@@ -131,7 +139,8 @@ pub contract TreasuryActionsV4 {
       let view: MyMultiSigV4.ActionView = TreasuryActionsV4.InitializeActionView(
         type: "TransferNFT",
         intent: self.intent,
-        proposer: self.proposer
+        proposer: self.proposer,
+        timestamp: self.timestamp
       )
       view.recipient = self.recipientCollection.borrow()!.owner!.address
       view.collectionId = self.recipientCollection.borrow()!.getType().identifier
@@ -149,6 +158,7 @@ pub contract TreasuryActionsV4 {
                         .concat(recipientAddr.toString())
 
       self.proposer = proposer
+      self.timestamp = getCurrentBlock().timestamp
       self.recipientCollection = recipientCollection
       self.withdrawID = nftID
     }
@@ -158,6 +168,7 @@ pub contract TreasuryActionsV4 {
   pub struct TransferNFTToTreasury: MyMultiSigV4.Action {
     pub let intent: String
     pub let proposer: Address
+    pub let timestamp: UFix64
     pub let identifier: String
     pub let recipientTreasury: Capability<&{DAOTreasuryV4.TreasuryPublic}>
     pub let withdrawID: UInt64
@@ -174,7 +185,8 @@ pub contract TreasuryActionsV4 {
       let view: MyMultiSigV4.ActionView = TreasuryActionsV4.InitializeActionView(
         type: "TransferNFTToTreasury",
         intent: self.intent,
-        proposer: self.proposer
+        proposer: self.proposer,
+        timestamp: self.timestamp
       )
       view.recipient = self.recipientTreasury.borrow()!.owner!.address
       view.collectionId = self.identifier
@@ -196,6 +208,7 @@ pub contract TreasuryActionsV4 {
       self.recipientTreasury = recipientTreasury
       self.withdrawID = nftID
       self.proposer = proposer
+      self.timestamp = getCurrentBlock().timestamp
     }
   }
 
@@ -204,6 +217,7 @@ pub contract TreasuryActionsV4 {
     pub let signer: Address
     pub let intent: String
     pub let proposer: Address
+    pub let timestamp: UFix64
 
     access(account) fun execute(_ params: {String: AnyStruct}) {
       let treasuryRef: &DAOTreasuryV4.Treasury = params["treasury"]! as! &DAOTreasuryV4.Treasury
@@ -216,7 +230,8 @@ pub contract TreasuryActionsV4 {
       let view: MyMultiSigV4.ActionView = TreasuryActionsV4.InitializeActionView(
         type: "AddSigner",
         intent: self.intent,
-        proposer: self.proposer
+        proposer: self.proposer,
+        timestamp: self.timestamp
       ) 
       view.signerAddr = self.signer
       return view
@@ -224,6 +239,7 @@ pub contract TreasuryActionsV4 {
 
     init(signer: Address, proposer: Address) {
       self.proposer = proposer
+      self.timestamp = getCurrentBlock().timestamp
       self.signer = signer
       self.intent = "Add account "
                       .concat(signer.toString())
@@ -236,6 +252,7 @@ pub contract TreasuryActionsV4 {
     pub let signer: Address
     pub let intent: String
     pub let proposer: Address
+    pub let timestamp: UFix64
 
     access(account) fun execute(_ params: {String: AnyStruct}) {
       let treasuryRef: &DAOTreasuryV4.Treasury = params["treasury"]! as! &DAOTreasuryV4.Treasury
@@ -248,7 +265,8 @@ pub contract TreasuryActionsV4 {
       let view: MyMultiSigV4.ActionView = TreasuryActionsV4.InitializeActionView(
         type: "RemoveSigner",
         intent: self.intent,
-        proposer: self.proposer
+        proposer: self.proposer,
+        timestamp: self.timestamp
       )
       view.signerAddr = self.signer
       return view
@@ -256,6 +274,7 @@ pub contract TreasuryActionsV4 {
 
     init(signer: Address, proposer: Address) {
       self.proposer = proposer
+      self.timestamp = getCurrentBlock().timestamp
       self.signer = signer
       self.intent = "Remove "
                       .concat(signer.toString())
@@ -268,6 +287,7 @@ pub contract TreasuryActionsV4 {
     pub let threshold: UInt
     pub let intent: String
     pub let proposer: Address
+    pub let timestamp: UFix64
 
     access(account) fun execute(_ params: {String: AnyStruct}) {
       let treasuryRef: &DAOTreasuryV4.Treasury = params["treasury"]! as! &DAOTreasuryV4.Treasury
@@ -281,7 +301,8 @@ pub contract TreasuryActionsV4 {
       let view: MyMultiSigV4.ActionView = TreasuryActionsV4.InitializeActionView(
         type: "UpdateThreshold",
         intent: self.intent,
-        proposer: self.proposer
+        proposer: self.proposer,
+        timestamp: self.timestamp
       )
       view.newThreshold = self.threshold
       return view
@@ -290,6 +311,7 @@ pub contract TreasuryActionsV4 {
     init(threshold: UInt, proposer: Address) {
       self.threshold = threshold
       self.proposer = proposer
+      self.timestamp = getCurrentBlock().timestamp
       self.intent = "Update the threshold of signers to ".concat(threshold.toString()).concat(".")
     }
   }
@@ -299,6 +321,7 @@ pub contract TreasuryActionsV4 {
     pub let signer: Address
     pub let intent: String
     pub let proposer: Address
+    pub let timestamp: UFix64
 
     access(account) fun execute(_ params: {String: AnyStruct}) {
       let treasuryRef: &DAOTreasuryV4.Treasury = params["treasury"]! as! &DAOTreasuryV4.Treasury
@@ -314,7 +337,8 @@ pub contract TreasuryActionsV4 {
       let view: MyMultiSigV4.ActionView = TreasuryActionsV4.InitializeActionView(
         type: "AddSignerUpdateThreshold",
         intent: self.intent,
-        proposer: self.proposer
+        proposer: self.proposer,
+        timestamp: self.timestamp
       )
       view.newThreshold = self.threshold
       view.signerAddr = self.signer
@@ -325,6 +349,7 @@ pub contract TreasuryActionsV4 {
       self.signer = signer
       self.threshold = threshold
       self.proposer = proposer
+      self.timestamp = getCurrentBlock().timestamp
       self.intent = "Add signer "
         .concat(signer.toString())
         .concat(". Update the threshold of signers to ")
@@ -337,6 +362,7 @@ pub contract TreasuryActionsV4 {
     pub let signer: Address
     pub let intent: String
     pub let proposer: Address
+    pub let timestamp: UFix64
 
     access(account) fun execute(_ params: {String: AnyStruct}) {
       let treasuryRef: &DAOTreasuryV4.Treasury = params["treasury"]! as! &DAOTreasuryV4.Treasury
@@ -352,7 +378,8 @@ pub contract TreasuryActionsV4 {
       let view: MyMultiSigV4.ActionView = TreasuryActionsV4.InitializeActionView(
         type: "RemoveSignerUpdateThreshold",
         intent: self.intent,
-        proposer: self.proposer
+        proposer: self.proposer,
+        timestamp: self.timestamp
       )
       view.newThreshold = self.threshold
       view.signerAddr = self.signer
@@ -363,6 +390,7 @@ pub contract TreasuryActionsV4 {
       self.signer = signer
       self.threshold = threshold
       self.proposer = proposer
+      self.timestamp = getCurrentBlock().timestamp
       self.intent = "Remove signer "
         .concat(signer.toString())
         .concat(". Update the threshold of signers to ")

@@ -7,6 +7,7 @@ import {
   formatAddress,
   getTokenMeta,
   parseIdentifier,
+  getNameByAddress,
 } from "utils";
 import { ACTION_TYPES } from "../constants/enums";
 
@@ -17,15 +18,15 @@ const TransactionSuccessModal = ({
   safeName,
   safeAddress,
 }) => {
-  const { getNFTReference } = useContext(Web3Context);
+  const { getAccountNFTReference } = useContext(Web3Context);
   const clipboard = useClipboard();
   const [image, setImage] = useState();
   const { contacts } = useContacts(safeAddress);
 
   const { recipient, nftId, collectionId, vaultId, tokenAmount } = actionData;
-  const { displayName, tokenType } = getTokenMeta(vaultId) || {};
+  const { displayName, tokenType } = getTokenMeta(vaultId);
   const { contractName: NFTName, contractAddress: NFTAddress } =
-    parseIdentifier(collectionId) || {};
+    parseIdentifier(collectionId);
   const { name: imageName, imageURI } = image || {};
 
   const actionType = actionData.type;
@@ -33,7 +34,7 @@ const TransactionSuccessModal = ({
   useEffect(() => {
     if (actionType === ACTION_TYPES.TRANSFER_NFT) {
       const getImageURL = async () => {
-        const result = await getNFTReference(
+        const result = await getAccountNFTReference(
           NFTName,
           formatAddress(NFTAddress),
           recipient,
@@ -43,12 +44,14 @@ const TransactionSuccessModal = ({
       };
       getImageURL().catch(console.error);
     }
-  }, [actionType, NFTName, NFTAddress, nftId, recipient, getNFTReference]);
-
-  function getSafeContactName(address) {
-    const contact = contacts.find((contact) => contact.address === address);
-    return contact?.name;
-  }
+  }, [
+    actionType,
+    NFTName,
+    NFTAddress,
+    nftId,
+    recipient,
+    getAccountNFTReference,
+  ]);
 
   return (
     <div className="p-5 has-text-black has-text-left">
@@ -77,7 +80,7 @@ const TransactionSuccessModal = ({
           {actionType === ACTION_TYPES.TRANSFER_TOKEN && (
             <>
               <span className="columns is-vcentered is-multiline is-mobile mr-2 mt-2 is-size-2 is-family-monospace">
-                {Number(tokenAmount)}
+                {Number(tokenAmount).toLocaleString()}
               </span>
               <span className="columns is-vcentered is-multiline is-mobile is-size-6 has-text-weight-bold">
                 <Svg name={tokenType} /> &nbsp; {displayName}
@@ -106,7 +109,7 @@ const TransactionSuccessModal = ({
           <span className="has-text-grey flex-1">Sent To</span>
           <div className="flex-1">
             <span className="has-text-weight-bold">
-              {getSafeContactName(recipient)}
+              {getNameByAddress(contacts, recipient)}
             </span>
             <div>
               <span className="has-text-grey">{recipient}</span>

@@ -1,7 +1,7 @@
 import React from "react";
 import { useParams, NavLink } from "react-router-dom";
 import QRCode from "react-qr-code";
-import { shortenAddr } from "../utils";
+import { shortenString } from "utils";
 import {
   SafeHome,
   SafeTransactions,
@@ -14,6 +14,7 @@ import {
 } from "../components";
 import Svg from "library/Svg";
 import { Web3Consumer, useModalContext } from "../contexts";
+import { createSignature } from "contexts/Web3";
 import { useClipboard, useErrorMessage } from "../hooks";
 import { TransactionSuccessModal } from "modals";
 import { ACTION_TYPES } from "constants/enums";
@@ -30,7 +31,7 @@ const ReceiveTokens = ({ name, address }) => {
           <span className="border-light-right mr-2 pr-2 has-text-grey">
             To: {name}
           </span>
-          <span className="is-underlined">{shortenAddr(address)}</span>
+          <span className="is-underlined">{shortenString(address)}</span>
         </div>
       </div>
       <div className="border-light-top mt-5 pt-6 is-flex is-flex-direction-column">
@@ -128,28 +129,13 @@ function Safe({ web3 }) {
     );
   });
 
-  const { injectedProvider, signerApprove, executeAction } = web3;
+  const { signerApprove, signerReject, executeAction } = web3;
 
-  const onSignAction = async ({ uuid, intent }) => {
-    const latestBlock = await injectedProvider
-      .send([injectedProvider.getBlock(true)])
-      .then(injectedProvider.decode);
-
-    const { height, id } = latestBlock;
-    const intentHex = Buffer.from(intent).toString("hex");
-
-    const message = `${uuid}${intentHex}${id}`;
-    const messageHex = Buffer.from(message).toString("hex");
-
-    let sigResponse = await injectedProvider
-      .currentUser()
-      .signUserMessage(messageHex);
-
-    let keyId = sigResponse[0].keyId;
-    let signature = sigResponse[0].signature;
-
-    const keyIds = [keyId];
-    const signatures = [signature];
+  const onApproveAction = async ({ uuid, intent }) => {
+    const { message, keyIds, signatures, height } = await createSignature(
+      intent,
+      uuid
+    );
 
     await signerApprove(
       parseInt(uuid, 10),
@@ -157,7 +143,16 @@ function Safe({ web3 }) {
       keyIds,
       signatures,
       height
-    ).catch((error) => showErrorModal(error));
+    );
+  };
+
+  const onRejectAction = async ({ uuid, intent }) => {
+    const { message, keyIds, signatures, height } = await createSignature(
+      intent,
+      uuid
+    );
+
+    await signerReject(parseInt(uuid, 10), message, keyIds, signatures, height);
   };
 
   const onConfirmAction = async ({ uuid }) => {
@@ -178,7 +173,8 @@ function Safe({ web3 }) {
         allBalance={allBalance}
         actions={actions}
         address={address}
-        onSign={onSignAction}
+        onApprove={onApproveAction}
+        onReject={onRejectAction}
         onConfirm={onConfirmAction}
       />
     ),
@@ -226,7 +222,7 @@ function Safe({ web3 }) {
         <h1 className=" mb-2">{safeData.name}</h1>
         <p>
           <span className="has-text-grey">
-            Safe address {shortenAddr(address)}
+            Safe address {shortenString(address)}
           </span>
           <span
             className="is-underlined ml-2 pointer"

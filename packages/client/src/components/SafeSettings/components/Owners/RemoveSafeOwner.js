@@ -28,7 +28,7 @@ const RemoveSafeOwner = ({ safeOwner, onCancel, onSubmit }) => {
   return (
     <>
       <div className="p-5">
-        <h2 className="is-size-4 has-text-black">Remove safe owner</h2>
+        <h2 className="is-size-4 has-text-black">Remove Owner</h2>
         <p className="has-text-grey">
           This user will no longer be able to sign transactions
         </p>

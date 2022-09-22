@@ -1,3 +1,4 @@
+import daysjs from "dayjs";
 import { COIN_TYPE_TO_META, CONTRACT_NAME_TO_COIN_TYPE } from "constants/maps";
 
 export const checkResponse = async (response) => {
@@ -26,10 +27,10 @@ export const notifyError = (err, history, url) => {
   }
 };
 
-export const shortenAddr = (addr) => {
-  if (!addr) return addr;
-  const firstChunk = addr.slice(0, 4);
-  const secondChunk = addr.slice(addr.length - 4, addr.length);
+export const shortenString = (string) => {
+  if (!string) return string;
+  const firstChunk = string.slice(0, 4);
+  const secondChunk = string.slice(string.length - 4, string.length);
   return `${firstChunk}...${secondChunk}`;
 };
 
@@ -118,6 +119,7 @@ export const getTokenMeta = (vaultId) => {
       tokenType,
     };
   }
+  return {};
 };
 
 // This can be used to fetch the contract name and address for vault and collection identifiers
@@ -131,4 +133,20 @@ export const parseIdentifier = (identifier) => {
     contractName,
     contractAddress,
   };
+};
+
+export const getNameByAddress = (nameAddressArray, address) => {
+  const nameAddress = nameAddressArray.find(
+    (nameAddress) => nameAddress.address === address
+  );
+  return nameAddress?.name;
+};
+
+export const parseTimestamp = (timestamp) => {
+  // Timestamp returned from cadence is in ufix64 -> so we have to make it to an integer first
+  const parsedDate = daysjs(parseInt(timestamp) * 1000);
+
+  const date = parsedDate.format("M/DD/YYYY");
+  const time = parsedDate.format("HH:MM A");
+  return `${date} at ${time}`;
 };

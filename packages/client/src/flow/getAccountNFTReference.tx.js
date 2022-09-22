@@ -1,4 +1,4 @@
-export const GET_NFT_REF = (contractName, contractAddress) => `
+export const GET_ACCOUNT_NFT_REF = (contractName, contractAddress) => `
     import NonFungibleToken from 0xNonFungibleToken
     import ${contractName} from ${contractAddress}
 

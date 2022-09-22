@@ -119,12 +119,12 @@ export function Web3Consumer(Component) {
   };
 }
 
-export const createSignature = async (intent) => {
+export const createSignature = async (intent, uuid = undefined) => {
   try {
     const latestBlock = await fcl.send([fcl.getBlock(true)]).then(fcl.decode);
     const { height, id } = latestBlock;
     const intentHex = Buffer.from(intent).toString("hex");
-    const message = `${intentHex}${id}`;
+    const message = `${uuid ? uuid : ""}${intentHex}${id}`;
     const messageHex = Buffer.from(message).toString("hex");
     let sigResponse = await fcl.currentUser().signUserMessage(messageHex);
     let keyId = sigResponse[0].keyId;
