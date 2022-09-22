@@ -6,18 +6,18 @@ import { parseIdentifier } from "utils";
 function SafeOverview({ allBalance, allNFTs }) {
   const tokensWithPositiveBalance = allBalance
     ? Object.entries(allBalance)
-        .map((entry) => ({ type: entry[0], balance: Number(entry[1]) }))
+        .map(([key, value]) => ({ type: key, balance: Number(value) }))
         .filter((token) => token.balance > 0)
         .slice(0, 3)
     : [];
 
   const collectionsForDisplay = allNFTs
     ? Object.entries(allNFTs)
-        .map((entry) => {
-          const { contractName } = parseIdentifier(entry[0]);
+        .map(([key, value]) => {
+          const { contractName } = parseIdentifier(key);
           return {
             contractName,
-            count: entry[1].length,
+            count: value.length,
           };
         })
         .slice(0, 4)
@@ -120,7 +120,7 @@ function SafeOverview({ allBalance, allNFTs }) {
                     <span className="flex-3 has-text-truncate">
                       {contractName}
                     </span>
-                    <span className="flex-1 has-text-right">
+                    <span className="flex-1 has-text-right has-text-highlight">
                       <strong>{count}</strong>
                     </span>
                   </p>
