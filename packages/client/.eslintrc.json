@@ -1,18 +1,41 @@
 {
   "env": {
     "browser": true,
-    "es2021": true
+    "es2021": true,
+    "node": true
   },
   "extends": ["plugin:react/recommended", "airbnb"],
   "overrides": [],
+  "settings": {
+    "import/resolver": {
+      "node": {
+        "moduleDirectory": ["node_modules", "src"]
+      }
+    }
+  },
   "parserOptions": {
-    "ecmaVersion": "latest",
+    "ecmaVersion": 11,
     "sourceType": "module"
   },
   "plugins": ["react"],
   "rules": {
+    "indent": "off",
     "prefer-const": ["error"],
-    "quotes": ["error", "double"]
+    "quotes": ["off", "single"],
+    "object-shorthand": ["error", "properties"],
+    "object-curly-newline": [
+      "error",
+      {
+        "ObjectExpression": "always",
+        "ObjectPattern": { "multiline": true },
+        "ImportDeclaration": "never",
+        "ExportDeclaration": { "multiline": true, "minProperties": 3 }
+      }
+    ],
+    "react/jsx-filename-extension": ["off"],
+    "react/react-in-jsx-scope": ["off"],
+    "react/prop-types": ["error", { "skipUndeclared": true }],
+    "jsx-a11y/click-events-have-key-events": ["off"]
   },
   "ignorePatterns": ["build/**/*", "public/**/*", "src/flow/**/*"]
 }
