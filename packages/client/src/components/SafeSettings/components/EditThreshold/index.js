@@ -42,7 +42,6 @@ const EditThreshold = ({ treasury, newOwner, ownerToBeRemoved }) => {
 
   const onConfirmRemoveOwner = async () => {
     await proposeRemoveSigner(formatAddress(ownerToBeRemoved.address), newThreshold);
-    console.log("treasury address: ", address)
     setTreasury(address, treasury);
     history.push(`/safe/${address}`);
     closeModal();

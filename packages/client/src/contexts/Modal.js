@@ -38,12 +38,6 @@ const ModalProvider = ({ children }) => {
     classNameModalContent: "",
     onClose: () => {},
   });
-  // const [modalHeader, setModalHeader] = useState(modalConfig.headerTitle)
-
-  const setModalHeaderTitle = useCallback((title) => {
-    console.log("SET MODAL HEADER TITLE")
-    setModalConfig({...modalConfig, headerTitle: title})
-  }, [modalConfig]);
 
   const openModal = useCallback(
     (content, customModalConfig) => {
@@ -80,7 +74,6 @@ const ModalProvider = ({ children }) => {
   const providerProps = {
     openModal,
     closeModal,
-    setModalHeaderTitle,
     isOpen: modal,
   };
 

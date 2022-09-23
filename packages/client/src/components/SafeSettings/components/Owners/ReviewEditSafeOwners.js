@@ -32,7 +32,7 @@ const ReviewEditSafeOwners = ({
 
   return (
     <>
-      <div className="p-4 has-text-grey">
+      <div className="p-5 has-text-grey">
         <p className="has-text-grey">{actionType === "Add" ? "New Owner" : "Remove Owner"}</p>
         { owner.name ?
           // If name is set
@@ -50,7 +50,7 @@ const ReviewEditSafeOwners = ({
         </p>
         
       </div>
-      <div className="is-flex is-align-items-center p-4 border-light-top">
+      <div className="is-flex is-align-items-center p-5 border-light-top">
         <button className="button flex-1 is-border mr-2" onClick={onBack}>
           Back
         </button>
