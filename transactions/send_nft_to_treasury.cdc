@@ -1,7 +1,7 @@
 import NonFungibleToken from "../contracts/core/NonFungibleToken.cdc"
 import ZeedzINO from "../contracts/core/ZeedzINO.cdc"
-import DAOTreasuryV4 from "../contracts/DAOTreasury.cdc"
-import MyMultiSigV4 from "../contracts/MyMultiSig.cdc"
+import DAOTreasuryV5 from "../contracts/DAOTreasury.cdc"
+import MyMultiSigV5 from "../contracts/MyMultiSig.cdc"
 
 // This transaction is for transferring and NFT from
 // one account to another
@@ -13,9 +13,9 @@ transaction(treasuryAddr: Address, withdrawID: UInt64) {
             .borrow<&ZeedzINO.Collection>(from: ZeedzINO.CollectionStoragePath)
             ?? panic("Could not borrow a reference to the owner's collection")
 
-        let treasury = getAccount(treasuryAddr).getCapability(DAOTreasuryV4.TreasuryPublicPath)
-                    .borrow<&DAOTreasuryV4.Treasury{DAOTreasuryV4.TreasuryPublic}>()
-                    ?? panic("A DAOTreasuryV4 doesn't exist here.")
+        let treasury = getAccount(treasuryAddr).getCapability(DAOTreasuryV5.TreasuryPublicPath)
+                    .borrow<&DAOTreasuryV5.Treasury{DAOTreasuryV5.TreasuryPublic}>()
+                    ?? panic("A DAOTreasuryV5 doesn't exist here.")
 
         // withdraw the NFT from the owner's collection
         let nft <- collectionRef.withdraw(withdrawID: withdrawID)

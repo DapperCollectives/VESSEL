@@ -1,10 +1,10 @@
-import DAOTreasuryV4 from "../contracts/DAOTreasury.cdc"
+import DAOTreasuryV5 from "../contracts/DAOTreasury.cdc"
 
 transaction() {
-  var treasury: @DAOTreasuryV4.Treasury
+  var treasury: @DAOTreasuryV5.Treasury
 
   prepare(signer: AuthAccount) {
-    self.treasury <- signer.load<@DAOTreasuryV4.Treasury>(from: DAOTreasuryV4.TreasuryStoragePath)!
+    self.treasury <- signer.load<@DAOTreasuryV5.Treasury>(from: DAOTreasuryV5.TreasuryStoragePath)!
   }
   
   execute {

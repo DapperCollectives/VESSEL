@@ -223,8 +223,8 @@ var ACTION_REJECTED_BY_SIGNER_EVENT, _ = json.Marshal(
 //////////////////////////
 
 func (otu *OverflowTestUtils) AssertActionExecutedEventsMatch(txResult overflow.TransactionResult, expected []byte) {
-	txResult.AssertEmitEventName("A.f8d6e0586b0a20c7.DAOTreasuryV4.ActionExecuted")
-	event := txResult.Result.GetEventsWithName("A.f8d6e0586b0a20c7.DAOTreasuryV4.ActionExecuted")[0]
+	txResult.AssertEmitEventName("A.f8d6e0586b0a20c7.DAOTreasuryV5.ActionExecuted")
+	event := txResult.Result.GetEventsWithName("A.f8d6e0586b0a20c7.DAOTreasuryV5.ActionExecuted")[0]
 
 	// timestamp is a dynamic field in an ActionView interface, it's very hard to test it
 	// Here we are resetting the value to an empty string to match an empty timestamp from expected payloads
@@ -235,15 +235,15 @@ func (otu *OverflowTestUtils) AssertActionExecutedEventsMatch(txResult overflow.
 }
 
 func (otu *OverflowTestUtils) AssertActionApprovedBySignerEvent(txResult overflow.TransactionResult, expected []byte) {
-	txResult.AssertEmitEventName("A.f8d6e0586b0a20c7.DAOTreasuryV4.ActionApprovedBySigner")
-	event := txResult.Result.GetEventsWithName("A.f8d6e0586b0a20c7.DAOTreasuryV4.ActionApprovedBySigner")[0]
+	txResult.AssertEmitEventName("A.f8d6e0586b0a20c7.DAOTreasuryV5.ActionApprovedBySigner")
+	event := txResult.Result.GetEventsWithName("A.f8d6e0586b0a20c7.DAOTreasuryV5.ActionApprovedBySigner")[0]
 	fieldsJson, _ := json.Marshal(event)
 	assert.Equal(otu.T, string(expected), string(fieldsJson))
 }
 
 func (otu *OverflowTestUtils) AssertActionRejectedBySignerEvent(txResult overflow.TransactionResult, expected []byte) {
-	txResult.AssertEmitEventName("A.f8d6e0586b0a20c7.DAOTreasuryV4.ActionRejectedBySigner")
-	event := txResult.Result.GetEventsWithName("A.f8d6e0586b0a20c7.DAOTreasuryV4.ActionRejectedBySigner")[0]
+	txResult.AssertEmitEventName("A.f8d6e0586b0a20c7.DAOTreasuryV5.ActionRejectedBySigner")
+	event := txResult.Result.GetEventsWithName("A.f8d6e0586b0a20c7.DAOTreasuryV5.ActionRejectedBySigner")[0]
 	fieldsJson, _ := json.Marshal(event)
 	assert.Equal(otu.T, string(expected), string(fieldsJson))
 }

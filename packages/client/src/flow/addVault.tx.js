@@ -1,24 +1,24 @@
 export const ADD_VAULT = (contractName) => `
-    import DAOTreasuryV4 from 0xDAOTreasuryV4
+    import DAOTreasuryV5 from 0xDAOTreasuryV5
     import ${contractName} from 0x${contractName}
-    import MyMultiSigV4 from 0xMyMultiSigV4
+    import MyMultiSigV5 from 0xMyMultiSigV5
 
     transaction(treasuryAddr: Address, message: String, keyIds: [UInt64], signatures: [String], signatureBlock: UInt64) {
 
-        let treasury: &DAOTreasuryV4.Treasury{DAOTreasuryV4.TreasuryPublic}
-        let messageSignaturePayload: MyMultiSigV4.MessageSignaturePayload
+        let treasury: &DAOTreasuryV5.Treasury{DAOTreasuryV5.TreasuryPublic}
+        let messageSignaturePayload: MyMultiSigV5.MessageSignaturePayload
         
         prepare(signer: AuthAccount) {
-            self.treasury = getAccount(treasuryAddr).getCapability(DAOTreasuryV4.TreasuryPublicPath)
-                            .borrow<&DAOTreasuryV4.Treasury{DAOTreasuryV4.TreasuryPublic}>()
-                                ?? panic("A DAOTreasuryV4 doesn't exist here.")
+            self.treasury = getAccount(treasuryAddr).getCapability(DAOTreasuryV5.TreasuryPublicPath)
+                            .borrow<&DAOTreasuryV5.Treasury{DAOTreasuryV5.TreasuryPublic}>()
+                                ?? panic("A DAOTreasuryV5 doesn't exist here.")
             var _keyIds: [Int] = []
         
             for keyId in keyIds {
                 _keyIds.append(Int(keyId))
             }
 
-            self.messageSignaturePayload = MyMultiSigV4.MessageSignaturePayload(
+            self.messageSignaturePayload = MyMultiSigV5.MessageSignaturePayload(
                 signingAddr: signer.address, message: message, keyIds: _keyIds, signatures: signatures, signatureBlock: signatureBlock
             )
         }

@@ -1,19 +1,19 @@
 export const SIGNER_APPROVE = `
-	import DAOTreasuryV4 from 0xDAOTreasuryV4
-	import MyMultiSigV4 from 0xMyMultiSigV4
+	import DAOTreasuryV5 from 0xDAOTreasuryV5
+	import MyMultiSigV5 from 0xMyMultiSigV5
 
 	transaction(treasuryAddr: Address, actionUUID: UInt64, message: String, keyIds: [UInt64], signatures: [String], signatureBlock: UInt64) {
 
 		var isValid: Bool
-		let action: &MyMultiSigV4.MultiSignAction 
-		let treasury: &DAOTreasuryV4.Treasury{DAOTreasuryV4.TreasuryPublic}
-		let messageSignaturePayload: MyMultiSigV4.MessageSignaturePayload
+		let action: &MyMultiSigV5.MultiSignAction 
+		let treasury: &DAOTreasuryV5.Treasury{DAOTreasuryV5.TreasuryPublic}
+		let messageSignaturePayload: MyMultiSigV5.MessageSignaturePayload
 	  
 		prepare(signer: AuthAccount) {
 		  self.isValid = false
-		  self.treasury = getAccount(treasuryAddr).getCapability(DAOTreasuryV4.TreasuryPublicPath)
-						  .borrow<&DAOTreasuryV4.Treasury{DAOTreasuryV4.TreasuryPublic}>()
-						  ?? panic("A DAOTreasuryV4 doesn't exist here.")
+		  self.treasury = getAccount(treasuryAddr).getCapability(DAOTreasuryV5.TreasuryPublicPath)
+						  .borrow<&DAOTreasuryV5.Treasury{DAOTreasuryV5.TreasuryPublic}>()
+						  ?? panic("A DAOTreasuryV5 doesn't exist here.")
 	  
 		  let manager = self.treasury.borrowManagerPublic()
 		  self.action = manager.borrowAction(actionUUID: actionUUID)
@@ -24,7 +24,7 @@ export const SIGNER_APPROVE = `
 			_keyIds.append(Int(keyId))
 		  }
 	  
-		  self.messageSignaturePayload = MyMultiSigV4.MessageSignaturePayload(
+		  self.messageSignaturePayload = MyMultiSigV5.MessageSignaturePayload(
 			  signingAddr: signer.address, message: message, keyIds: _keyIds, signatures: signatures, signatureBlock: signatureBlock
 		  )
 		}
@@ -34,7 +34,7 @@ export const SIGNER_APPROVE = `
 		}
 	  
 		post {
-		  self.action.signerResponses[self.messageSignaturePayload.signingAddr] == MyMultiSigV4.SignerResponse.approved: "Error: tx completed but signer approval not registered"
+		  self.action.signerResponses[self.messageSignaturePayload.signingAddr] == MyMultiSigV5.SignerResponse.approved: "Error: tx completed but signer approval not registered"
 		}
 	  }
 `;
