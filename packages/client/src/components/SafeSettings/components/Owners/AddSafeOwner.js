@@ -31,7 +31,8 @@ const AddSafeOwner = ({ treasury, safeOwners }) => {
 
   const onNextClick = () => {
     openModal(
-      <EditThreshold treasury={treasury} newOwner={{ address, name }} />
+      <EditThreshold treasury={treasury} newOwner={{ address, name }} />,
+      { headerTitle: "Set A New Threshold" }
     )
   };
 
@@ -60,10 +61,7 @@ const AddSafeOwner = ({ treasury, safeOwners }) => {
 
   return (
     <>
-      <div className="p-5">
-        <h2 className="is-size-4 has-text-black">Add Owner</h2>
-      </div>
-      <div className="border-light-top border-light-bottom p-5 has-text-grey">
+      <div className="border-light-bottom p-5 has-text-grey">
         <div className="flex-1 is-flex is-flex-direction-column mb-4">
           <label className="has-text-grey mb-2 with-icon is-flex is-align-items-center">
             Address<span className="has-text-red">*</span> <Svg name="QuestionMark" className="ml-1" />

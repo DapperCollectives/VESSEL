@@ -16,7 +16,8 @@ const Owners = ({ treasury }) => {
       <AddSafeOwner
         treasury={treasury}
         safeOwners={safeOwners}
-      />
+      />,
+      { headerTitle: "Add Owner" }
     );
   };
 
@@ -26,7 +27,8 @@ const Owners = ({ treasury }) => {
         treasury={treasury}
         owner={safeOwner}
         safeOwners={safeOwners}
-      />
+      />,
+      { headerTitle: "Remove Owner" }
     );
   };
 

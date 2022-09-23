@@ -11,16 +11,14 @@ const RemoveSafeOwner = ({
 
   const onNextClick = () => {
     openModal(
-      <EditThreshold treasury={treasury} ownerToBeRemoved={owner} />
+      <EditThreshold treasury={treasury} ownerToBeRemoved={owner} />,
+      { headerTitle: "Set A New Threshold" }
     )
   };
 
   return (
     <>
-      <div className="p-5">
-        <h2 className="is-size-4 has-text-black">Remove Owner</h2>
-      </div>
-      <div className="border-light-top border-light-bottom p-5">
+      <div className="border-light-bottom p-5">
         <div className="flex-1 is-flex is-flex-direction-column">
           <p>
             This action will <b>remove {owner.address} { owner.name ? ["(",owner.name,")"] : "" }</b> from the treasury. 

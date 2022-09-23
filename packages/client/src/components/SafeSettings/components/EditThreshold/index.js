@@ -9,11 +9,10 @@ import { formatAddress } from "utils.js";
 
 const EditThreshold = ({ treasury, newOwner, ownerToBeRemoved }) => {
   const { proposeAddSigner, proposeRemoveSigner, setTreasury } = useTreasury(treasury.address);
-  const { closeModal } = useModalContext()
+  const { openModal, closeModal } = useModalContext()
   const history = useHistory()
-  const [currStep, setCurrStep] = useState(0);
+  // const [currStep, setCurrStep] = useState(0);
   const { address, safeOwners, threshold } = treasury;
-  const [newThreshold, setNewThreshold] = useState(Number(threshold));
   const verifiedSafeOwners = safeOwners.filter((o) => o.verified);
   let allSafeOwners;
   if (newOwner) {
@@ -23,6 +22,10 @@ const EditThreshold = ({ treasury, newOwner, ownerToBeRemoved }) => {
   } else {
     allSafeOwners = verifiedSafeOwners
   }
+  const [newThreshold, setNewThreshold] = useState(Math.min(Number(threshold), allSafeOwners.length));
+  console.log("New", newOwner)
+  console.log("Remove", ownerToBeRemoved)
+  console.log("All Safe Owners", allSafeOwners)
   
   const canContinueToReview = !!newOwner || newThreshold !== threshold;
   const onChangeThreshold = (isIncrease) => {
@@ -32,6 +35,7 @@ const EditThreshold = ({ treasury, newOwner, ownerToBeRemoved }) => {
   };
 
   const onConfirmAddOwner = async () => {
+    console.log("confirm add owner:", newOwner)
     await proposeAddSigner(formatAddress(newOwner.address), newThreshold);
     setTreasury(address, {
       safeOwners: [...safeOwners, { ...newOwner, verified: false }],
@@ -42,51 +46,63 @@ const EditThreshold = ({ treasury, newOwner, ownerToBeRemoved }) => {
 
   const onConfirmRemoveOwner = async () => {
     await proposeRemoveSigner(formatAddress(ownerToBeRemoved.address), newThreshold);
-    closeModal();
+    console.log("treasury address: ", address)
+    setTreasury(address, treasury);
     history.push(`/safe/${address}`);
+    closeModal();
   }
 
-  if (currStep === 0) {
-    return (
-      <EditThresholdForm
-        newThreshold={newThreshold}
-        safeOwners={allSafeOwners}
-        canContinueToReview={canContinueToReview}
-        onReviewClick={() => setCurrStep(1)}
-        onChangeThreshold={onChangeThreshold}
-      />
-    );
+  const onReviewClick = async () => {
+    if (newOwner) {
+      openModal(
+        <ReviewEditSafeOwners 
+          actionType="Add"
+          owner={newOwner}
+          newThreshold={newThreshold}
+          safeOwners={allSafeOwners}
+          onSubmit={onConfirmAddOwner}
+          treasury={treasury}
+        />,
+        { headerTitle: "Review Updates" }
+      )
+    }
+    else if (ownerToBeRemoved) {
+      openModal(
+        <ReviewEditSafeOwners 
+          actionType="Remove"
+          owner={ownerToBeRemoved}
+          newThreshold={newThreshold}
+          safeOwners={allSafeOwners}
+          onSubmit={onConfirmRemoveOwner}
+          treasury={treasury}
+        />,
+        { headerTitle: "Review Updates" }
+      )
+    }
+    else {
+      openModal(
+        <ReviewUpdateThreshold
+          newOwner={newOwner}
+          ownerToBeRemoved={ownerToBeRemoved}
+          newThreshold={newThreshold}
+          allSafeOwners={allSafeOwners}
+          // onBack={() => setCurrStep(0)}
+          treasury={treasury}
+        />,
+        { headerTitle: "Review Updates"}
+      )
+    }
   }
-  if (newOwner) {
-    return <ReviewEditSafeOwners 
-      actionText="New Owner"
-      owner={newOwner}
+
+  return (
+    <EditThresholdForm
       newThreshold={newThreshold}
       safeOwners={allSafeOwners}
-      onBack={() => setCurrStep(0)}
-      onSubmit={onConfirmAddOwner}
+      canContinueToReview={canContinueToReview}
+      onReviewClick={onReviewClick}
+      onChangeThreshold={onChangeThreshold}
     />
-  }
-  else if (ownerToBeRemoved) {
-    return <ReviewEditSafeOwners 
-      actionText="Remove Owner"
-      owner={ownerToBeRemoved}
-      newThreshold={newThreshold}
-      safeOwners={allSafeOwners}
-      onBack={() => setCurrStep(0)}
-      onSubmit={onConfirmRemoveOwner}
-    />
-  }
-  else {
-    return <ReviewUpdateThreshold
-      newOwner={newOwner}
-      ownerToBeRemoved={ownerToBeRemoved}
-      newThreshold={newThreshold}
-      allSafeOwners={allSafeOwners}
-      onBack={() => setCurrStep(0)}
-      treasury={treasury}
-    />
-  }
+  );
 };
 
 export default EditThreshold;

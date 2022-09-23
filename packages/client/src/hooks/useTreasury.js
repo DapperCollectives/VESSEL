@@ -363,6 +363,7 @@ export default function useTreasury(treasuryAddr) {
     return res;
   };
   const setTreasury = (treasuryAddr, treasuryData) => {
+    console.log("SET TREASURY:", treasuryData)
     dispatch({
       type: "SET_TREASURY",
       payload: {

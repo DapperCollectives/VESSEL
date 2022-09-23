@@ -35,10 +35,7 @@ const EditThresholdForm = ({
 
   return (
     <>
-      <div className="p-5">
-        <h2 className="is-size-4 has-text-black">Set A New Threshold</h2>
-      </div>
-      <div className="border-light-top border-light-bottom p-5 has-text-grey">
+      <div className="border-light-bottom p-5 has-text-grey">
         <p className="mb-2">Number of signatures required to confirm a transaction.</p>
         <div className="is-flex border-light rounded-sm">
           <div className="px-5 border-light-right has-text-black">

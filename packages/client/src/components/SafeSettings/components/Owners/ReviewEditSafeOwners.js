@@ -1,12 +1,17 @@
+import EditThreshold from "../EditThreshold";
+import { useModalContext } from "contexts/Modal.js";
 import { formatAddress } from "utils";
 
 const ReviewEditSafeOwners = ({
+  actionType, // "Add" or "Remove"
   owner,
   newThreshold,
   safeOwners,
-  onBack,
-  onSubmit
+  onSubmit,
+  treasury
 }) => {
+  const { openModal } = useModalContext()
+
   const renderRow = (label, value) => {
     return (
       <div className="columns m-0 py-1  border-light-top">
@@ -16,13 +21,19 @@ const ReviewEditSafeOwners = ({
     );
   };
 
+  const onBack = async () => {
+    const newOwner = actionType === "Add" ? owner : null
+    const ownerToBeRemoved = actionType === "Remove" ? owner : null
+    openModal(
+      <EditThreshold treasury={treasury} newOwner={newOwner} ownerToBeRemoved={ownerToBeRemoved} />,
+      { headerTitle: "Set A New Threshold" }
+    )
+  }
+
   return (
     <>
-      <div className="p-4">
-        <h2 className="is-size-4 has-text-black">Review Updates</h2>
-      </div>
-      <div className="border-light-top p-4 has-text-grey">
-        <p className="has-text-grey">New Owner</p>
+      <div className="p-4 has-text-grey">
+        <p className="has-text-grey">{actionType === "Add" ? "New Owner" : "Remove Owner"}</p>
         { owner.name ?
           // If name is set
           <div className="pb-4">
