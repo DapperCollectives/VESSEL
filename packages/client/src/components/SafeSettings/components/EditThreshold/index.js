@@ -1,17 +1,17 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import ReviewUpdateThreshold from "./ReviewUpdateThreshold.js";
 import EditThresholdForm from "./EditThresholdForm";
 import ReviewEditSafeOwners from "../Owners/ReviewEditSafeOwners";
-import useTreasury from "hooks/useTreasury"
+import { Web3Context } from "contexts/Web3";
 import { useHistory } from "react-router-dom";
 import { useModalContext } from "contexts/Modal.js";
 import { formatAddress } from "utils.js";
 
 const EditThreshold = ({ treasury, newOwner, ownerToBeRemoved }) => {
-  const { proposeAddSigner, proposeRemoveSigner, setTreasury } = useTreasury(treasury.address);
   const { openModal, closeModal } = useModalContext()
-  const history = useHistory()
-  // const [currStep, setCurrStep] = useState(0);
+  const history = useHistory();
+  const web3 = useContext(Web3Context);
+  const { setTreasury, proposeAddSigner, proposeRemoveSigner } = web3;
   const { address, safeOwners, threshold } = treasury;
   const verifiedSafeOwners = safeOwners.filter((o) => o.verified);
   let allSafeOwners;
@@ -23,9 +23,6 @@ const EditThreshold = ({ treasury, newOwner, ownerToBeRemoved }) => {
     allSafeOwners = verifiedSafeOwners
   }
   const [newThreshold, setNewThreshold] = useState(Math.min(Number(threshold), allSafeOwners.length));
-  console.log("New", newOwner)
-  console.log("Remove", ownerToBeRemoved)
-  console.log("All Safe Owners", allSafeOwners)
   
   const canContinueToReview = !!newOwner || newThreshold !== threshold;
   const onChangeThreshold = (isIncrease) => {
@@ -35,7 +32,6 @@ const EditThreshold = ({ treasury, newOwner, ownerToBeRemoved }) => {
   };
 
   const onConfirmAddOwner = async () => {
-    console.log("confirm add owner:", newOwner)
     await proposeAddSigner(formatAddress(newOwner.address), newThreshold);
     setTreasury(address, {
       safeOwners: [...safeOwners, { ...newOwner, verified: false }],
