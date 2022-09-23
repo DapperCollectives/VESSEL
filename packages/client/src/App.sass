@@ -398,9 +398,14 @@ input,.input
   border-width: 1px
   &.is-error
     border-color: $error-red
-input,.input,
 input:focus,input.input:focus
-  border-width: 1px
+  box-shadow: none
+  border-color: $grey-light
+  &.is-success
+    box-shadow: none
+    border-color: $success-green
+  &.is-error
+    border-color: $error-red
 input[type=number]::-webkit-outer-spin-button,
 input[type=number]::-webkit-inner-spin-button,
 .input[type=number]::-webkit-outer-spin-button,

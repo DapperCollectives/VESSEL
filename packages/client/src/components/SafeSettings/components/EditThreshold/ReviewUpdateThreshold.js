@@ -40,9 +40,8 @@ const ReviewUpdateThreshold = ({
           <h1 className="is-family-monospace has-text-black has-text-weight-bold">{`${newThreshold} of ${allSafeOwners.length} owners`}</h1>
         </div>
         {renderRow("Proposed On", new Date().toLocaleDateString("en-US"))}
-        <p className="mt-4">
-          You're about to create a transaction and will have to confirm it with
-          your currently connected wallet.
+        <p className="pt-4 border-light-top">
+        To complete this action, you will have to confirm it with your connected wallet on the next step.
         </p>
       </div>
       <div className="is-flex is-align-items-center p-5 border-light-top">
