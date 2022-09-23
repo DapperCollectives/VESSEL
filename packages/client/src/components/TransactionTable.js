@@ -61,17 +61,13 @@ const Column = ({ className = "", children, style = {} }) => (
   </div>
 );
 
-const Row = ({ transaction, displayIndex, isLastInList, onView }) => {
-  const classes = [
-    "py-4 is-flex is-align-items-center is-justify-content-space-between",
-    isLastInList ? "" : "border-light-bottom",
-  ].join(" ");
+const Row = ({ transaction, displayIndex, onView }) => {
   const date = new Date(transaction.eventDate);
   const { intent } = transaction.blockEventData.actionView;
   const status = transaction.flowEventId.includes("ActionDestroyed") ? "rejected" : "confirmed";
 
   return (
-    <div className={classes}>
+    <div className="py-4 is-flex is-align-items-center is-justify-content-space-between">
       <Column style={{ maxWidth: maxWidths.index }}>
         {String(displayIndex).padStart(2, "0")}{" "}
       </Column>
@@ -110,7 +106,7 @@ const TransactionTable = ({ safeData, transactions = [], className = "" }) => {
   const transactionsToShow = transactions.filter((tx) => tx?.blockEventData?.actionView?.intent);
 
   return (
-    <div className={`border-light rounded-sm ${className}`}>
+    <div className={`border-light table-border rounded-sm ${className}`}>
       <div className="is-flex has-text-grey border-light-bottom is-hidden-mobile">
         <Column style={{ maxWidth: maxWidths.index }}>#</Column>
         <Column>Info</Column>
@@ -123,7 +119,6 @@ const TransactionTable = ({ safeData, transactions = [], className = "" }) => {
           key={transaction.flowTransactionId}
           transaction={transaction}
           displayIndex={index + 1}
-          isLastInList={index === arr.length - 1}
           onView={onViewTransaction}
         />
       ))}
