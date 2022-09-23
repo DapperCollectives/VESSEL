@@ -1,7 +1,7 @@
-import MyMultiSigV5 from "./MyMultiSig.cdc"
-import FungibleToken from "./core/FungibleToken.cdc"
-import NonFungibleToken from "./core/NonFungibleToken.cdc"
-import FCLCrypto from "./core/FCLCrypto.cdc"
+import MyMultiSigV5 from 0x68a4fe55ec686656
+import FungibleToken from 0x9a0766d93b6608b7
+import NonFungibleToken from 0x631e88ae7f1d7c20
+import FCLCrypto from 0x74daa6f9c7ef24b1
 
 pub contract DAOTreasuryV5 {
 
@@ -16,7 +16,7 @@ pub contract DAOTreasuryV5 {
   // Actions
   pub event ActionProposed(treasuryUUID: UInt64, actionUUID: UInt64, proposer: Address, actionView: MyMultiSigV5.ActionView)
   pub event ActionExecuted(treasuryUUID: UInt64, actionUUID: UInt64, executor: Address, actionView: MyMultiSigV5.ActionView, signerResponses: {Address: UInt})
-  pub event ActionDestroyed(treasuryUUID: UInt64, actionUUID: UInt64, signerResponses: {Address: UInt})
+  pub event ActionDestroyed(treasuryUUID: UInt64, actionUUID: UInt64, actionView: MyMultiSigV5.ActionView, signerResponses: {Address: UInt})
   pub event ActionApprovedBySigner(treasuryUUID: UInt64, address: Address, actionUUID: UInt64, signerResponses: {Address: UInt})
   pub event ActionRejectedBySigner(treasuryUUID: UInt64, address: Address, actionUUID: UInt64, signerResponses: {Address: UInt})
 
@@ -68,13 +68,15 @@ pub contract DAOTreasuryV5 {
 
     pub fun signerRejectAction(actionUUID: UInt64, messageSignaturePayload: MyMultiSigV5.MessageSignaturePayload) {
       self.multiSignManager.signerRejectAction(actionUUID: actionUUID, messageSignaturePayload: messageSignaturePayload) 
+      let action = self.multiSignManager.borrowAction(actionUUID: actionUUID)
       let signerResponses = self.multiSignManager.getSignerResponsesForAction(actionUUID: actionUUID)
       emit ActionRejectedBySigner(treasuryUUID: self.uuid, address: messageSignaturePayload.signingAddr, actionUUID: actionUUID, signerResponses: signerResponses)
+
 
       // Destroy action if there are sufficient rejections
       if self.multiSignManager.canDestroyAction(actionUUID: actionUUID) {
          self.multiSignManager.attemptDestroyAction(actionUUID: actionUUID)
-         emit ActionDestroyed(treasuryUUID: self.uuid, actionUUID: actionUUID, signerResponses: signerResponses)
+         emit ActionDestroyed(treasuryUUID: self.uuid, actionUUID: actionUUID, actionView: action.getView(), signerResponses: signerResponses)
       }
     }
 
