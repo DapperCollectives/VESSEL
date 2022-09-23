@@ -1,7 +1,7 @@
-import MyMultiSigV5 from 0x68a4fe55ec686656
-import FungibleToken from 0x9a0766d93b6608b7
-import NonFungibleToken from 0x631e88ae7f1d7c20
-import FCLCrypto from 0x74daa6f9c7ef24b1
+import MyMultiSigV5 from "./MyMultiSig.cdc"
+import FungibleToken from "./core/FungibleToken.cdc"
+import NonFungibleToken from "./core/NonFungibleToken.cdc"
+import FCLCrypto from "./core/FCLCrypto.cdc"
 
 pub contract DAOTreasuryV5 {
 
