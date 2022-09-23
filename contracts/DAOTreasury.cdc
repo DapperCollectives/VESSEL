@@ -75,8 +75,9 @@ pub contract DAOTreasuryV5 {
 
       // Destroy action if there are sufficient rejections
       if self.multiSignManager.canDestroyAction(actionUUID: actionUUID) {
+         let actionView = action.getView()
          self.multiSignManager.attemptDestroyAction(actionUUID: actionUUID)
-         emit ActionDestroyed(treasuryUUID: self.uuid, actionUUID: actionUUID, actionView: action.getView(), signerResponses: signerResponses)
+         emit ActionDestroyed(treasuryUUID: self.uuid, actionUUID: actionUUID, actionView: actionView, signerResponses: signerResponses)
       }
     }
 
