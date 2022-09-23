@@ -34,17 +34,18 @@ const ReviewEditSafeOwners = ({
         }
         {renderRow("Proposed On", new Date().toLocaleDateString("en-US"))}
         {renderRow("Signature Threshold", `${newThreshold} of ${safeOwners.length} owner(s)`)}
-        <p className="py-4 border-light-top">
+        <p className="pt-4 border-light-top">
           To complete this action, you will have to confirm it with your connected wallet on the next step.
         </p>
-        <div className="is-flex is-align-items-center pt-5 border-light-top">
-          <button className="button flex-1 is-border mr-2" onClick={onBack}>
-            Back
-          </button>
-          <button className="button flex-1 is-primary" onClick={onSubmit}>
-            Submit
-          </button>
-        </div>
+        
+      </div>
+      <div className="is-flex is-align-items-center p-4 border-light-top">
+        <button className="button flex-1 is-border mr-2" onClick={onBack}>
+          Back
+        </button>
+        <button className="button flex-1 is-primary" onClick={onSubmit}>
+          Submit
+        </button>
       </div>
     </>
   );
