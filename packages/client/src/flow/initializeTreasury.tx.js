@@ -3,7 +3,6 @@ export const INITIALIZE_TREASURY = `
 	import FlowToken from 0xFlowToken
 	import FiatToken from 0xFiatToken
 	import FUSD from 0xFUSD
-	import ZeedzINO from 0xZeedzINO
 	
 	transaction(initialSigners: [Address], initialThreshold: UInt) {
 	  
@@ -18,10 +17,6 @@ export const INITIALIZE_TREASURY = `
 		treasury.depositVault(vault: <- flowVault)
 		treasury.depositVault(vault: <- usdcVault)
 		treasury.depositVault(vault: <- fusdVault)
-
-		// Seed Treasury with an NFT collection
-		let collection <- ZeedzINO.createEmptyCollection()
-		treasury.depositCollection(collection: <- collection)
 
 		// Save Treasury to the account
 		signer.save(<- treasury, to: DAOTreasuryV5.TreasuryStoragePath)
