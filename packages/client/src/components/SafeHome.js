@@ -3,11 +3,24 @@ import SafeOverview from "./SafeOverview";
 import ThingsToDo from "./ThingsToDo";
 import TransactionHistory from "./TransactionHistory";
 
-const SafeHome = (props) => (
+const SafeHome = ({
+  safeData,
+  allBalance,
+  allNFTs,
+  actions,
+  address,
+  onSign,
+  onConfirm,
+}) => (
   <>
-    <SafeOverview {...props} />
-    <ThingsToDo {...props} />
-    <TransactionHistory {...props} />
+    <SafeOverview allBalance={allBalance} allNFTs={allNFTs} />
+    <ThingsToDo
+      actions={actions}
+      onSign={onSign}
+      onConfirm={onConfirm}
+      safeData={safeData}
+    />
+    <TransactionHistory safeData={safeData} address={address} />
   </>
 );
 

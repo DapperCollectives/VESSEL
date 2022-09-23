@@ -5,7 +5,7 @@ import { shortenString } from "utils";
 import {
   SafeHome,
   SafeTransactions,
-  SafeAssets,
+  SafeNFTs,
   SafeContacts,
   SafeSettings,
   SafeTokens,
@@ -73,7 +73,7 @@ function Safe({ web3 }) {
   const safeData = web3?.treasuries?.[address];
   const actions = web3?.actions?.[address];
   const allBalance = web3?.balances?.[address];
-
+  const allNFTs = web3?.NFTs?.[address];
   if (!safeData) {
     return (
       <section className="section screen-height is-flex is-align-items-center">
@@ -110,7 +110,7 @@ function Safe({ web3 }) {
     "home",
     "transactions",
     "tokens",
-    "assets",
+    "NFTs",
     "contacts",
     "settings",
   ];
@@ -171,6 +171,7 @@ function Safe({ web3 }) {
         key="safe-home"
         safeData={safeData}
         allBalance={allBalance}
+        allNFTs={allNFTs}
         actions={actions}
         address={address}
         onApprove={onApproveAction}
@@ -186,8 +187,8 @@ function Safe({ web3 }) {
       />
     ),
     tokens: <SafeTokens key="safe-tokens" />,
-    assets: (
-      <SafeAssets
+    NFTs: (
+      <SafeNFTs
         web3={web3}
         name={safeData.name}
         address={address}
