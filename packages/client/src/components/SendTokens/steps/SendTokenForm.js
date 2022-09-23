@@ -11,11 +11,11 @@ const SendTokenForm = () => {
   const [sendModalState] = useContext(SendTokensContext);
   const { assetType } = sendModalState;
   return (
-    <div className="p-5 has-text-black">
+    <div>
       <SendModalHeader />
+      <AssetSelector />
       {assetType === ASSET_TYPES.TOKEN && <AmountInput />}
       <AddressInput />
-      <AssetSelector />
       <ButtonGroup />
     </div>
   );

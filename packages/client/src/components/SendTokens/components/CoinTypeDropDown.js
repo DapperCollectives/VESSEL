@@ -11,22 +11,27 @@ const CoinTypeDropDown = ({ coinType, setCoinType, address }) => {
     displayText: type[1].displayName,
   }));
   return (
-    <Dropdown
-      value={coinType}
-      values={coinTypes}
-      setValue={setCoinType}
-      style={{ height: "45px" }}
-      renderItemAddOn={(itemValue) => {
-        return (
-          <span>
-            <span className="has-text-black mr-1">
-              {Number(balanceMap[itemValue]).toFixed(2)}
+    <div className="mb-5">
+      <label className="has-text-grey">
+        Token Vault<span className="has-text-red"> *</span>
+      </label>
+      <Dropdown
+        value={coinType}
+        values={coinTypes}
+        setValue={setCoinType}
+        style={{ height: "45px" }}
+        renderItemAddOn={(itemValue) => {
+          return (
+            <span>
+              <span className="has-text-black mr-1">
+                {Number(balanceMap[itemValue]).toFixed(2)}
+              </span>
+              Qty
             </span>
-            Qty
-          </span>
-        );
-      }}
-    />
+          );
+        }}
+      />
+    </div>
   );
 };
 export default CoinTypeDropDown;

@@ -22,12 +22,12 @@ const AssetSelector = () => {
     )
   );
   return (
-    <div className="mt-4">
-      <div className="flex-1 is-flex is-flex-direction-column mb-4">
-        <label className="has-text-grey mb-2">Asset</label>
-        <div className="border-light rounded-sm p-1 is-flex column is-full">
+    <div className="mt-5 px-5">
+      <div className="mb-5">
+        <div className="border-light rounded-sm p-0 is-flex">
           <button
-            className={`button border-none flex-1 ${
+            style={{}}
+            className={`button flex-1 ${
               assetType === ASSET_TYPES.TOKEN && "has-background-info"
             }`}
             onClick={() =>
@@ -40,7 +40,7 @@ const AssetSelector = () => {
             {ASSET_TYPE_TO_META[ASSET_TYPES.TOKEN].displayName}
           </button>
           <button
-            className={`button border-none flex-1 ${
+            className={`button flex-1 ${
               assetType === ASSET_TYPES.NFT && "has-background-info"
             }`}
             onClick={() =>

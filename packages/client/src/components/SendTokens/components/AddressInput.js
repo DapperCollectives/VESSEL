@@ -24,7 +24,7 @@ const AddressInput = () => {
   };
 
   return (
-    <div>
+    <div className="px-5">
       <label className="has-text-grey mb-2">
         Address <span className="has-text-red"> *</span>
       </label>

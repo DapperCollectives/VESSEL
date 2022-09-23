@@ -58,14 +58,18 @@ const ButtonGroup = () => {
     }
   };
   return (
-    <div className="is-flex is-align-items-center mt-6">
+    <div className="is-flex is-align-items-center mt-6 px-5 pb-5">
       <button
         className="button is-border flex-1 mr-2"
         onClick={() => modalContext.closeModal()}
       >
         Cancel
       </button>
-      <button className={btnClasses.join(" ")} onClick={onSubmit}>
+      <button
+        className={btnClasses.join(" ")}
+        onClick={onSubmit}
+        disabled={!continueReady}
+      >
         {btnText}
       </button>
     </div>
