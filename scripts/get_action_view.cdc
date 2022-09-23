@@ -1,10 +1,10 @@
-import DAOTreasuryV4 from "../contracts/DAOTreasury.cdc"
-import MyMultiSigV4 from "../contracts/MyMultiSig.cdc"
+import DAOTreasuryV5 from "../contracts/DAOTreasury.cdc"
+import MyMultiSigV5 from "../contracts/MyMultiSig.cdc"
 
-pub fun main(treasuryAddr: Address, actionUUID: UInt64): MyMultiSigV4.ActionView {
-  let treasury = getAccount(treasuryAddr).getCapability(DAOTreasuryV4.TreasuryPublicPath)
-                    .borrow<&DAOTreasuryV4.Treasury{DAOTreasuryV4.TreasuryPublic}>()
-                    ?? panic("A DAOTreasuryV4 doesn't exist here.")
+pub fun main(treasuryAddr: Address, actionUUID: UInt64): MyMultiSigV5.ActionView {
+  let treasury = getAccount(treasuryAddr).getCapability(DAOTreasuryV5.TreasuryPublicPath)
+                    .borrow<&DAOTreasuryV5.Treasury{DAOTreasuryV5.TreasuryPublic}>()
+                    ?? panic("A DAOTreasuryV5 doesn't exist here.")
 
   let manager = treasury.borrowManagerPublic()
   let action = manager.borrowAction(actionUUID: actionUUID)

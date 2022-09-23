@@ -1,8 +1,8 @@
 export const SEND_NFT_TO_TREASURY = `
 	import NonFungibleToken from 0xNonFungibleToken
 	import ZeedzINO from 0xZeedzINO
-	import DAOTreasuryV4 from 0xDAOTreasuryV4
-	import MyMultiSigV4 from 0xMyMultiSigV4
+	import DAOTreasuryV5 from 0xDAOTreasuryV5
+	import MyMultiSigV5 from 0xMyMultiSigV5
 
 	transaction(treasuryAddr: Address, withdrawID: UInt64) {
 
@@ -12,9 +12,9 @@ export const SEND_NFT_TO_TREASURY = `
 							.borrow<&ZeedzINO.Collection>(from: ZeedzINO.CollectionStoragePath)
 							?? panic("Could not borrow a reference to the owner's collection")
 
-					let treasury = getAccount(treasuryAddr).getCapability(DAOTreasuryV4.TreasuryPublicPath)
-											.borrow<&DAOTreasuryV4.Treasury{DAOTreasuryV4.TreasuryPublic}>()
-											?? panic("A DAOTreasuryV4 doesn't exist here.")
+					let treasury = getAccount(treasuryAddr).getCapability(DAOTreasuryV5.TreasuryPublicPath)
+											.borrow<&DAOTreasuryV5.Treasury{DAOTreasuryV5.TreasuryPublic}>()
+											?? panic("A DAOTreasuryV5 doesn't exist here.")
 
 					// withdraw the NFT from the owner's collection
 					let nft <- collectionRef.withdraw(withdrawID: withdrawID)

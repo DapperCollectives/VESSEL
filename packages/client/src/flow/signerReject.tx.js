@@ -1,19 +1,19 @@
 export const SIGNER_REJECT = `
-    import DAOTreasuryV4 from 0xDAOTreasuryV4
-    import MyMultiSigV4 from 0xMyMultiSigV4
+    import DAOTreasuryV5 from 0xDAOTreasuryV5
+    import MyMultiSigV5 from 0xMyMultiSigV5
 
     transaction(treasuryAddr: Address, actionUUID: UInt64, message: String, keyIds: [UInt64], signatures: [String], signatureBlock: UInt64) {
 
     var isValid: Bool
-    var action: &MyMultiSigV4.MultiSignAction
-    var treasury: &DAOTreasuryV4.Treasury{DAOTreasuryV4.TreasuryPublic}
-    var messageSignaturePayload: MyMultiSigV4.MessageSignaturePayload
+    var action: &MyMultiSigV5.MultiSignAction
+    var treasury: &DAOTreasuryV5.Treasury{DAOTreasuryV5.TreasuryPublic}
+    var messageSignaturePayload: MyMultiSigV5.MessageSignaturePayload
     
     prepare(signer: AuthAccount) {
         self.isValid = false
-        self.treasury = getAccount(treasuryAddr).getCapability(DAOTreasuryV4.TreasuryPublicPath)
-                        .borrow<&DAOTreasuryV4.Treasury{DAOTreasuryV4.TreasuryPublic}>()
-                        ?? panic("A DAOTreasuryV4 doesn't exist here.")
+        self.treasury = getAccount(treasuryAddr).getCapability(DAOTreasuryV5.TreasuryPublicPath)
+                        .borrow<&DAOTreasuryV5.Treasury{DAOTreasuryV5.TreasuryPublic}>()
+                        ?? panic("A DAOTreasuryV5 doesn't exist here.")
 
         let manager = self.treasury.borrowManagerPublic()
         self.action = manager.borrowAction(actionUUID: actionUUID)
@@ -24,7 +24,7 @@ export const SIGNER_REJECT = `
         _keyIds.append(Int(keyId))
         }
 
-        self.messageSignaturePayload = MyMultiSigV4.MessageSignaturePayload(
+        self.messageSignaturePayload = MyMultiSigV5.MessageSignaturePayload(
             signingAddr: signer.address, message: message, keyIds: _keyIds, signatures: signatures, signatureBlock: signatureBlock
         )
 
