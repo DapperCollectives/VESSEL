@@ -1,7 +1,6 @@
 import React from "react";
 import { useModalContext } from "contexts";
 import { useClipboard } from "hooks";
-import EditThreshold from "../EditThreshold";
 import RemoveSafeOwner from "./RemoveSafeOwner";
 import AddSafeOwner from "./AddSafeOwner";
 import Svg from "library/Svg";

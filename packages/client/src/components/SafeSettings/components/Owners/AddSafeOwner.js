@@ -104,7 +104,7 @@ const AddSafeOwner = ({ treasury, safeOwners }) => {
             Cancel
           </button>
           <button
-            disabled={!isAddressValid}
+            disabled={!addressValid}
             className={nextButtonClasses().join(" ")}
             onClick={onNextClick}
           >

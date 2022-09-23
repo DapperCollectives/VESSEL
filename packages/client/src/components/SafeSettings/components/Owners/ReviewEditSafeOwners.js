@@ -1,23 +1,12 @@
-import { useContext } from "react";
-import { useModalContext } from "contexts";
-import { useHistory } from "react-router-dom";
-import { Web3Context } from "contexts/Web3";
 import { formatAddress } from "utils";
-import OwnerCard from "./OwnerCard";
 
-const ReviewAddSafeOwner = ({
+const ReviewEditSafeOwners = ({
   owner,
   newThreshold,
   safeOwners,
   onBack,
-  treasury
+  onSubmit
 }) => {
-  const history = useHistory();
-  const { closeModal } = useModalContext();
-  const { address } = treasury
-  const { proposeAddSigner, setTreasury } =
-  useContext(Web3Context);
-
   const renderRow = (label, value) => {
     return (
       <div className="columns m-0 py-1  border-light-top">
@@ -27,15 +16,6 @@ const ReviewAddSafeOwner = ({
     );
   };
 
-  const onSubmitClick = async () => {
-    await proposeAddSigner(formatAddress(owner.address), newThreshold);
-    setTreasury(address, {
-      safeOwners: [...safeOwners, { ...owner, verified: false }],
-    });
-    closeModal();
-    history.push(`/safe/${address}`);
-  }
-
   return (
     <>
       <div className="p-4">
@@ -43,24 +23,31 @@ const ReviewAddSafeOwner = ({
       </div>
       <div className="border-light-top p-4 has-text-grey">
         <p className="has-text-grey">New Owner</p>
-        <OwnerCard owner={owner}></OwnerCard>
+        { owner.name ?
+          // If name is set
+          <div className="pb-4">
+            <h1 className="is-family-monospace has-text-black has-text-weight-bold">{owner.name}</h1>
+            <div className="has-text-black has-text-weight-bold">{formatAddress(owner.address)}</div>
+          </div> :
+          // If address Only
+          <h1 className="has-text-black has-text-weight-bold">{formatAddress(owner.address)}</h1>
+        }
         {renderRow("Proposed On", new Date().toLocaleDateString("en-US"))}
         {renderRow("Signature Threshold", `${newThreshold} of ${safeOwners.length} owner(s)`)}
+        <p className="py-4 border-light-top">
+          To complete this action, you will have to confirm it with your connected wallet on the next step.
+        </p>
         <div className="is-flex is-align-items-center pt-5 border-light-top">
           <button className="button flex-1 is-border mr-2" onClick={onBack}>
             Back
           </button>
-          <button className="button flex-1 is-primary" onClick={onSubmitClick}>
+          <button className="button flex-1 is-primary" onClick={onSubmit}>
             Submit
           </button>
         </div>
-        <p className="mt-4">
-          You're about to create a transaction and will have to confirm it with
-          your currently connected wallet.
-        </p>
       </div>
     </>
   );
 };
 
-export default ReviewAddSafeOwner;
+export default ReviewEditSafeOwners;

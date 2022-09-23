@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React from "react";
 import { useModalContext } from "contexts";
 import EditThreshold from "../EditThreshold";
 

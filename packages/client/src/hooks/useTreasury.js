@@ -168,7 +168,6 @@ const doUpdateThreshold = async (treasuryAddr, newThreshold) => {
 
 const doProposeAddSigner = async (treasuryAddr, newSignerAddress, newThreshold) => {
   const intent = `Add signer ${newSignerAddress}. Update the threshold of signers to ${newThreshold}.`;
-  console.log("INTENT:", intent)
   const { message, keyIds, signatures, height } = await createSignature(intent);
 
   return await mutate({
