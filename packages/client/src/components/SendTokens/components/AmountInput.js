@@ -31,7 +31,7 @@ const AmountInput = () => {
           }
         />
 
-        <div style={{ position: "absolute", top: "12px", right: "16px" }}>
+        <div style={{ position: "absolute", top: "6px", right: "16px" }}>
           <button
             className="button is-small is-primary flex-1 mt-2"
             onClick={handleMaxButtonClick}
