@@ -5,12 +5,13 @@ import { useModalContext } from "contexts";
 import { Web3Context } from "contexts/Web3";
 import ActionRequired from "./components/ActionRequired";
 import { useErrorMessage } from "hooks";
+import Svg from "library/Svg";
 
 function ActionsList({
   actions = [],
   onApprove,
   onReject,
-  onConfirm,
+  onExecute,
   safeData,
 }) {
   const ActionComponents = [];
@@ -54,7 +55,7 @@ function ActionsList({
   if (!actions.length) {
     ActionComponents.push(
       <div
-        className="column is-full p-0 is-flex is-justify-content-center is-align-items-center has-text-grey"
+        className="p-0 is-justify-content-center is-align-items-center has-text-grey"
         style={{ minHeight: 175 }}
         key="no-transactions"
       >
@@ -63,45 +64,40 @@ function ActionsList({
     );
   } else {
     actions.forEach((action, idx) => {
-      const borderClass = idx < actions.length - 1 ? "border-light-top" : ``;
       const totalSigned = Object.values(action.signerResponses).filter(
         (x) => x === SIGNER_RESPONSES.APPROVED
       ).length;
-      const confirmReady = totalSigned >= safeData.threshold;
-      const background = confirmReady ? "#FF8A00" : "#FF0000";
-      const actionPrompt = confirmReady
-        ? "Confirm Transaction"
-        : "Signature Required";
-      const actionCopy = confirmReady ? "Confirm" : "Sign";
-      const actionFn = confirmReady ? onConfirm : openApproveOrRejectModal;
+      const executionReady = totalSigned >= safeData.threshold;
+      const background = executionReady
+        ? "has-text-danger"
+        : "has-text-warning";
+      const actionPrompt = executionReady
+        ? "Pending Execution"
+        : "Pending Confirmation";
+      const actionCopy = executionReady ? "Execute" : "Confirm";
+      const actionFn = executionReady ? onExecute : openApproveOrRejectModal;
       ActionComponents.push(
         <div
           key={action.uuid}
-          className={`p-5 ${borderClass} is-flex column is-full`}
+          className="p-5 m-0 columns is-flex is-align-items-center"
         >
-          <div className="pr-5">{action.uuid}</div>
-          <div className="flex-1">{formatActionString(action.intent)}</div>
-          <div className="pl-6" style={{ position: "relative" }}>
-            <span
-              style={{
-                position: "absolute",
-                width: 12,
-                height: 12,
-                left: 25,
-                top: 4,
-                background,
-              }}
-            />
-            {actionPrompt}
+          <div className="column px-0 is-1">{String(idx + 1).padStart(2, "0")} </div>
+          <div className="column px-0 is-4">
+            {formatActionString(action.intent)}
           </div>
-          <div className="pl-6" style={{ position: "relative" }}>
+          <div className="column pr-0 is-3">
+            <Svg name="Status" className={background} />
+            <label className="ml-1">{actionPrompt}</label>
+          </div>
+          <div className="column px-0 is-2">
             {totalSigned} of {safeData.threshold} signatures
           </div>
           <button
-            className="button is-tertiary ml-3"
+            className="column button is-tertiary with-icon is-flex"
             onClick={() => actionFn(action)}
           >
-            {actionCopy}
+            <label className="flex-1">{actionCopy}</label>
+            <Svg name={actionCopy} />
           </button>
         </div>
       );
@@ -109,7 +105,14 @@ function ActionsList({
   }
 
   return (
-    <div className="column p-0 mt-4 mb-5 is-flex is-full border-light has-shadow rounded-sm is-flex-wrap-wrap">
+    <div className="mt-4 border-light has-shadow rounded-sm table-border">
+      <div className="px-5 m-0 columns has-text-left has-text-grey is-flex is-align-items-center">
+        <div className="column px-0 is-1">#</div>
+        <div className="column px-0 is-4">Info</div>
+        <div className="column pr-0 is-3">Status</div>
+        <div className="column px-0 is-2">Signatures</div>
+        <div className="column px-0">Action</div>
+      </div>
       {ActionComponents}
     </div>
   );

@@ -155,7 +155,7 @@ function Safe({ web3 }) {
     await signerReject(parseInt(uuid, 10), message, keyIds, signatures, height);
   };
 
-  const onConfirmAction = async ({ uuid }) => {
+  const onExecuteAction = async ({ uuid }) => {
     const events = await executeAction(uuid).catch((error) =>
       showErrorModal(error)
     );
@@ -176,7 +176,7 @@ function Safe({ web3 }) {
         address={address}
         onApprove={onApproveAction}
         onReject={onRejectAction}
-        onConfirm={onConfirmAction}
+        onExecute={onExecuteAction}
       />
     ),
     transactions: (
