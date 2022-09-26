@@ -54,15 +54,20 @@ function ActionsList({
 
   if (!actions.length) {
     ActionComponents.push(
-      <div
-        className="p-0 is-justify-content-center is-align-items-center has-text-grey"
-        style={{ minHeight: 175 }}
-        key="no-transactions"
-      >
-        No pending transactions
+      <div className="flex-1 mx-0 p-3 has-text-centered">
+        You do not have any pending actions.
       </div>
     );
   } else {
+    ActionComponents.push(
+      <div className="px-5 m-0 columns has-text-left has-text-grey is-flex is-align-items-center">
+        <div className="column px-0 is-1">#</div>
+        <div className="column px-0 is-4">Info</div>
+        <div className="column pr-0 is-3">Status</div>
+        <div className="column px-0 is-2">Signatures</div>
+        <div className="column px-0">Action</div>
+      </div>
+    );
     actions.forEach((action, idx) => {
       const totalSigned = Object.values(action.signerResponses).filter(
         (x) => x === SIGNER_RESPONSES.APPROVED
@@ -81,7 +86,9 @@ function ActionsList({
           key={action.uuid}
           className="p-5 m-0 columns is-flex is-align-items-center"
         >
-          <div className="column px-0 is-1">{String(idx + 1).padStart(2, "0")} </div>
+          <div className="column px-0 is-1">
+            {String(idx + 1).padStart(2, "0")}{" "}
+          </div>
           <div className="column px-0 is-4">
             {formatActionString(action.intent)}
           </div>
@@ -105,14 +112,7 @@ function ActionsList({
   }
 
   return (
-    <div className="mt-4 border-light has-shadow rounded-sm table-border">
-      <div className="px-5 m-0 columns has-text-left has-text-grey is-flex is-align-items-center">
-        <div className="column px-0 is-1">#</div>
-        <div className="column px-0 is-4">Info</div>
-        <div className="column pr-0 is-3">Status</div>
-        <div className="column px-0 is-2">Signatures</div>
-        <div className="column px-0">Action</div>
-      </div>
+    <div className="mt-4 py-3 border-light rounded-sm table-border">
       {ActionComponents}
     </div>
   );
