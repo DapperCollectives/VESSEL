@@ -34,7 +34,13 @@ const TransactionDetails = ({ transaction, onClose }) => {
 };
 
 const Column = ({ className = "", children, style = {} }) => (
-  <div className={`p-3 is-flex-grow-1 is-flex is-align-items-center ${className}`} style={style}>
+  <div
+    className={`p-3 is-flex-grow-1 is-flex is-align-items-center ${className}`}
+    style={{
+      flexBasis: 0,
+      ...style,
+    }}
+  >
     {children}
   </div>
 );
