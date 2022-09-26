@@ -1,6 +1,7 @@
 import React from "react";
 import { useModalContext } from "contexts";
-import TransactionStatusIcon from "./TransactionStatusIcon";
+import Svg from "library/Svg";
+import { formatActionString } from "utils";
 
 const maxWidths = {
   index: 50,
@@ -8,29 +9,6 @@ const maxWidths = {
   date: 160,
   action: 70,
 };
-
-function getUserFriendlyIntent(intent) {
-  const friendlyNameMap = {
-    FlowToken: "FLOW",
-  };
-  const newWords = intent.split(" ").map((word) => {
-    const isNumber = !Number.isNaN(parseFloat(word));
-    // handle numbers but avoid addresses
-    if (isNumber && !word.startsWith("0x")) {
-      return parseFloat(word);
-    }
-    // handle class names
-    if (word.startsWith("A.")) {
-      const chunks = word.split(".");
-      const cadenceClassName = chunks[chunks.length - 2];
-      return friendlyNameMap[cadenceClassName] ?? cadenceClassName;
-    }
-
-    return word;
-  });
-
-  return newWords.join(" ");
-}
 
 const TransactionDetails = ({ transaction, onClose }) => {
   const date = new Date(transaction.eventDate);
@@ -56,7 +34,7 @@ const TransactionDetails = ({ transaction, onClose }) => {
 };
 
 const Column = ({ className = "", children, style = {} }) => (
-  <div className={`column is-flex is-align-items-center ${className}`} style={style}>
+  <div className={`p-3 is-flex-grow-1 is-flex is-align-items-center ${className}`} style={style}>
     {children}
   </div>
 );
@@ -65,15 +43,16 @@ const Row = ({ transaction, displayIndex, onView }) => {
   const date = new Date(transaction.eventDate);
   const { intent } = transaction.blockEventData.actionView;
   const status = transaction.flowEventId.includes("ActionDestroyed") ? "rejected" : "confirmed";
+  const statusBackground = status === "rejected" ? "has-text-danger" : "has-text-success";
 
   return (
     <div className="py-4 is-flex is-align-items-center is-justify-content-space-between">
       <Column style={{ maxWidth: maxWidths.index }}>
         {String(displayIndex).padStart(2, "0")}{" "}
       </Column>
-      <Column>{getUserFriendlyIntent(intent)}</Column>
+      <Column>{formatActionString(intent)}</Column>
       <Column className="is-hidden-mobile" style={{ maxWidth: maxWidths.status }}>
-        <TransactionStatusIcon status={status} />
+        <Svg name="Status" className={statusBackground} />
         <span className="ml-2 is-capitalized">{status}</span>
       </Column>
       <Column className="is-hidden-mobile has-text-grey" style={{ maxWidth: maxWidths.date }}>
