@@ -4,7 +4,7 @@ import EditThresholdForm from "./EditThresholdForm";
 import ReviewEditSafeOwners from "../Owners/ReviewEditSafeOwners";
 import { Web3Context } from "contexts/Web3";
 import { useHistory } from "react-router-dom";
-import { useModalContext } from "contexts/Modal.js";
+import { useModalContext } from "contexts/Modal";
 import { formatAddress } from "utils.js";
 
 const EditThreshold = ({ treasury, newOwner, ownerToBeRemoved }) => {
