@@ -26,12 +26,6 @@ const TransactionDetails = ({ transaction, onClose }) => {
   );
 };
 
-const Column = ({ className = "", children, flex = 1 }) => (
-  <div className={`p-3 is-flex is-align-items-center ${className}`} style={{ flexBasis: 0, flex }}>
-    {children}
-  </div>
-);
-
 const Row = ({ transaction, displayIndex, onView }) => {
   const date = new Date(transaction.eventDate);
   const { intent } = transaction.blockEventData.actionView;
@@ -39,23 +33,23 @@ const Row = ({ transaction, displayIndex, onView }) => {
   const statusBackground = status === "rejected" ? "has-text-danger" : "has-text-success";
 
   return (
-    <div className="py-4 is-flex is-align-items-center is-justify-content-space-between">
-      <Column>{String(displayIndex).padStart(2, "0")} </Column>
-      <Column flex={9}>{formatActionString(intent)}</Column>
-      <Column flex={2} className="is-hidden-mobile">
+    <tr className="py-4 is-flex is-align-items-center is-justify-content-space-between">
+      <td className="p-3 flex-1">{String(displayIndex).padStart(2, "0")}</td>
+      <td className="p-3 flex-9">{formatActionString(intent)}</td>
+      <td className="p-3 flex-2 is-flex is-align-items-center is-hidden-mobile">
         <Svg name="Status" className={statusBackground} />
         <span className="ml-2 is-capitalized">{status}</span>
-      </Column>
-      <Column flex={3} className="is-hidden-mobile has-text-grey">
+      </td>
+      <td className="p-3 flex-3 is-hidden-mobile has-text-grey">
         {date.toLocaleDateString("en-us")}{" "}
         {date.toLocaleTimeString("en-us", { timeStyle: "short" })}
-      </Column>
-      <Column flex={2} className="has-text-purple">
+      </td>
+      <td className="p-3 flex-2 has-text-purple">
         <span className="pointer" onClick={() => onView(transaction)}>
           Details
         </span>
-      </Column>
-    </div>
+      </td>
+    </tr>
   );
 };
 
@@ -76,14 +70,14 @@ const TransactionTable = ({ safeData, transactions = [], className = "" }) => {
   const transactionsToShow = transactions.filter((tx) => tx?.blockEventData?.actionView?.intent);
 
   return (
-    <div className={`border-light table-border rounded-sm ${className}`}>
-      <div className="is-flex has-text-grey border-light-bottom is-hidden-mobile">
-        <Column>#</Column>
-        <Column flex={9}>Info</Column>
-        <Column flex={2}>Status</Column>
-        <Column flex={3}>Date</Column>
-        <Column flex={2}>Action</Column>
-      </div>
+    <table className={`border-light table-border rounded-sm ${className}`}>
+      <th className="is-flex has-text-grey border-light-bottom is-hidden-mobile">
+        <td className="p-3 flex-1">#</td>
+        <td className="p-3 flex-9">Info</td>
+        <td className="p-3 flex-2">Status</td>
+        <td className="p-3 flex-3">Date</td>
+        <td className="p-3 flex-2">Action</td>
+      </th>
       {transactionsToShow.map((transaction, index, arr) => (
         <Row
           key={transaction.flowTransactionId}
@@ -92,7 +86,7 @@ const TransactionTable = ({ safeData, transactions = [], className = "" }) => {
           onView={onViewTransaction}
         />
       ))}
-    </div>
+    </table>
   );
 };
 
