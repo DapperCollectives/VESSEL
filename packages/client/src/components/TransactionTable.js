@@ -71,13 +71,15 @@ const TransactionTable = ({ safeData, transactions = [], className = "" }) => {
 
   return (
     <table className={`border-light table-border rounded-sm ${className}`}>
-      <tr className="is-flex has-text-grey border-light-bottom is-hidden-mobile">
-        <th className="p-3 flex-1">#</th>
-        <th className="p-3 flex-9">Info</th>
-        <th className="p-3 flex-2">Status</th>
-        <th className="p-3 flex-3">Date</th>
-        <th className="p-3 flex-2">Action</th>
-      </tr>
+      <thead>
+        <tr className="is-flex has-text-grey border-light-bottom is-hidden-mobile">
+          <th className="p-3 flex-1">#</th>
+          <th className="p-3 flex-9">Info</th>
+          <th className="p-3 flex-2">Status</th>
+          <th className="p-3 flex-3">Date</th>
+          <th className="p-3 flex-2">Action</th>
+        </tr>
+      </thead>
       <tbody>
         {transactionsToShow.map((transaction, index, arr) => (
           <Row
