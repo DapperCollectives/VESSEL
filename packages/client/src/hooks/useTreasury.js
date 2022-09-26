@@ -449,12 +449,6 @@ export default function useTreasury(treasuryAddr) {
     await refreshTreasury();
   };
 
-  const updateSigner = async (oldSignerAddress, newSignerAddress) => {
-    const res = await doUpdateSigner(oldSignerAddress, newSignerAddress);
-    await tx(res).onceSealed();
-    await refreshTreasury();
-  };
-
   const proposeRemoveSigner = async (signerToBeRemovedAddress, newThreshold) => {
     const res = await doProposeRemoveSigner(
       treasuryAddr,

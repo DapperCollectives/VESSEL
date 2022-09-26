@@ -1,4 +1,4 @@
-export const REMOVE_SIGNER = `
+export const REMOVE_SIGNER_UPDATE_THRESHOLD = `
 import DAOTreasuryV5 from 0xDAOTreasuryV5
 import TreasuryActionsV5 from 0xTreasuryActionsV5
 import MyMultiSigV5 from 0xMyMultiSigV5

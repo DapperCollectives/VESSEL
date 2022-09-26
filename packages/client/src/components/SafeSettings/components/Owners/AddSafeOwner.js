@@ -14,6 +14,10 @@ const AddSafeOwner = ({ treasury, safeOwners }) => {
   const [address, setAddress] = useState("");
   const [addressValid, setAddressValid] = useState(false);
 
+  const addressValidClass = addressValid ? "is-success":"is-error";
+  const addrInputClasses = `input p-4 rounded-sm column is-full is-size-6 ${address.length>0? addressValidClass:""}`
+  const nextButtonClasses = `button flex-1 is-primary ${addressValid ? "has-text-weight-bold" : "disabled"}`
+
   const onAddressChange = async (newAddress) => {
     setAddress(newAddress);
     const isValid = isAddr(newAddress) &&
@@ -38,27 +42,6 @@ const AddSafeOwner = ({ treasury, safeOwners }) => {
 
   const onCancelClick = () => closeModal()
 
-  const addrInputClasses = () => {
-    let classes = [
-      "input p-4 rounded-sm column is-full is-size-6"
-    ]
-    if (addressValid) {
-      classes.push("is-success");
-    }
-    else if (address.length !== 0) {
-      classes.push("is-error")
-    }
-    return classes;
-  }
-
-  const nextButtonClasses = () => {
-    let classes = [
-      "button flex-1 is-primary ",
-      addressValid ? "has-text-weight-bold" : "disabled",
-    ]
-    return classes;
-  }
-
   return (
     <>
       <div className="border-light-bottom p-5 has-text-grey">
@@ -68,7 +51,7 @@ const AddSafeOwner = ({ treasury, safeOwners }) => {
           </label>
           <div style={{ position: "relative" }}>
             <input
-              className={addrInputClasses().join(" ")}
+              className={addrInputClasses}
               type="text"
               placeholder=""
               value={address}
@@ -103,7 +86,7 @@ const AddSafeOwner = ({ treasury, safeOwners }) => {
           </button>
           <button
             disabled={!addressValid}
-            className={nextButtonClasses().join(" ")}
+            className={nextButtonClasses}
             onClick={onNextClick}
           >
             Next

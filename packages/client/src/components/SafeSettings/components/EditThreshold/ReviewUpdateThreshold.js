@@ -1,3 +1,4 @@
+import EditThreshold from ".";
 import { useContext } from "react";
 import { useHistory } from "react-router-dom";
 import { useModalContext } from "contexts";
@@ -6,13 +7,12 @@ import { Web3Context } from "contexts/Web3";
 const ReviewUpdateThreshold = ({
   newThreshold,
   allSafeOwners,
-  onBack,
   treasury
 }) => {
   const history = useHistory();
   const { updateThreshold, setTreasury } =
   useContext(Web3Context);
-  const { closeModal } = useModalContext();
+  const { openModal, closeModal } = useModalContext();
   const { address } = treasury;
   const renderRow = (label, value) => {
     return (
@@ -23,21 +23,28 @@ const ReviewUpdateThreshold = ({
     );
   };
 
-   const onSubmitClick = async () => {
+  const onSubmitClick = async () => {
     await updateThreshold(newThreshold);
     setTreasury(address, {
       threshold: newThreshold
     })
     closeModal();
     history.push(`/safe/${address}`);
-   }
+  }
+
+  const onBack = async () => {
+    openModal(
+      <EditThreshold treasury={treasury} />,
+      { headerTitle: "Set A New Threshold" }
+    )
+  }
 
   return (
     <>
       <div className="p-5 has-text-grey">
         <p className="has-text-grey">Update Threshold</p>
         <div className="pb-4">
-          <h1 className="is-family-monospace has-text-black has-text-weight-bold">{`${newThreshold} of ${allSafeOwners.length} owners`}</h1>
+          <h1 className="has-text-highlight has-text-black has-text-weight-bold">{`${newThreshold} of ${allSafeOwners.length} owners`}</h1>
         </div>
         {renderRow("Proposed On", new Date().toLocaleDateString("en-US"))}
         <p className="pt-4 border-light-top">

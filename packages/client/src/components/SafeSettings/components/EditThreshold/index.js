@@ -1,11 +1,12 @@
 import { useState, useContext } from "react";
-import ReviewUpdateThreshold from "./ReviewUpdateThreshold.js";
+import ReviewUpdateThreshold from "./ReviewUpdateThreshold";
 import EditThresholdForm from "./EditThresholdForm";
 import ReviewEditSafeOwners from "../Owners/ReviewEditSafeOwners";
 import { Web3Context } from "contexts/Web3";
 import { useHistory } from "react-router-dom";
 import { useModalContext } from "contexts/Modal";
 import { formatAddress } from "utils";
+import { REVIEW_ACTION_TYPES } from "constants/constants";
 
 const EditThreshold = ({ treasury, newOwner, ownerToBeRemoved }) => {
   const { openModal, closeModal } = useModalContext()
@@ -24,7 +25,8 @@ const EditThreshold = ({ treasury, newOwner, ownerToBeRemoved }) => {
   }
   const [newThreshold, setNewThreshold] = useState(Math.min(Number(threshold), allSafeOwners.length));
   
-  const canContinueToReview = !!newOwner || newThreshold !== threshold;
+  const canContinueToReview = !!newOwner || !!ownerToBeRemoved || Number(newThreshold) !== Number(threshold);
+
   const onChangeThreshold = (isIncrease) => {
     setNewThreshold((prevState) =>
       isIncrease ? prevState + 1 : prevState - 1
@@ -42,7 +44,6 @@ const EditThreshold = ({ treasury, newOwner, ownerToBeRemoved }) => {
 
   const onConfirmRemoveOwner = async () => {
     await proposeRemoveSigner(formatAddress(ownerToBeRemoved.address), newThreshold);
-    setTreasury(address, treasury);
     history.push(`/safe/${address}`);
     closeModal();
   }
@@ -51,7 +52,7 @@ const EditThreshold = ({ treasury, newOwner, ownerToBeRemoved }) => {
     if (newOwner) {
       openModal(
         <ReviewEditSafeOwners 
-          actionType="Add"
+          actionType={REVIEW_ACTION_TYPES.ADD_OWNER }
           owner={newOwner}
           newThreshold={newThreshold}
           safeOwners={allSafeOwners}
@@ -64,7 +65,7 @@ const EditThreshold = ({ treasury, newOwner, ownerToBeRemoved }) => {
     else if (ownerToBeRemoved) {
       openModal(
         <ReviewEditSafeOwners 
-          actionType="Remove"
+          actionType={REVIEW_ACTION_TYPES.REMOVE_OWNER}
           owner={ownerToBeRemoved}
           newThreshold={newThreshold}
           safeOwners={allSafeOwners}

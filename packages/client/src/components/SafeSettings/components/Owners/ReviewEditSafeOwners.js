@@ -1,9 +1,11 @@
 import EditThreshold from "../EditThreshold";
 import { useModalContext } from "contexts/Modal";
 import { formatAddress } from "utils";
+import { REVIEW_ACTION_TYPES } from "constants/constants";
+
 
 const ReviewEditSafeOwners = ({
-  actionType, // "Add" or "Remove"
+  actionType, // defined in REVIEW_ACTION_TYPES enum
   owner,
   newThreshold,
   safeOwners,
@@ -22,8 +24,8 @@ const ReviewEditSafeOwners = ({
   };
 
   const onBack = async () => {
-    const newOwner = actionType === "Add" ? owner : null
-    const ownerToBeRemoved = actionType === "Remove" ? owner : null
+    const newOwner = actionType === REVIEW_ACTION_TYPES.ADD_OWNER  ? owner : null
+    const ownerToBeRemoved = actionType === REVIEW_ACTION_TYPES.REMOVE_OWNER ? owner : null
     openModal(
       <EditThreshold treasury={treasury} newOwner={newOwner} ownerToBeRemoved={ownerToBeRemoved} />,
       { headerTitle: "Set A New Threshold" }
@@ -33,7 +35,7 @@ const ReviewEditSafeOwners = ({
   return (
     <>
       <div className="p-5 has-text-grey">
-        <p className="has-text-grey">{actionType === "Add" ? "New Owner" : "Remove Owner"}</p>
+        <p className="has-text-grey">{actionType === REVIEW_ACTION_TYPES.ADD_OWNER ? "New Owner" : "Remove Owner"}</p>
         { owner.name ?
           // If name is set
           <div className="pb-4">
