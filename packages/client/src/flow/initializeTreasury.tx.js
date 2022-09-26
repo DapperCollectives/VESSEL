@@ -17,7 +17,7 @@ export const INITIALIZE_TREASURY = `
 		treasury.depositVault(vault: <- flowVault)
 		treasury.depositVault(vault: <- usdcVault)
 		treasury.depositVault(vault: <- fusdVault)
-	
+
 		// Save Treasury to the account
 		signer.save(<- treasury, to: DAOTreasuryV5.TreasuryStoragePath)
 		signer.link<&DAOTreasuryV5.Treasury{DAOTreasuryV5.TreasuryPublic}>(DAOTreasuryV5.TreasuryPublicPath, target: DAOTreasuryV5.TreasuryStoragePath)

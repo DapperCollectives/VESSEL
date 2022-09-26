@@ -9,14 +9,16 @@ const SafeHome = ({
   allNFTs,
   actions,
   address,
-  onSign,
+  onApprove,
+  onReject,
   onConfirm,
 }) => (
   <>
     <SafeOverview allBalance={allBalance} allNFTs={allNFTs} />
     <ThingsToDo
       actions={actions}
-      onSign={onSign}
+      onApprove={onApprove}
+      onReject={onReject}
       onConfirm={onConfirm}
       safeData={safeData}
     />
