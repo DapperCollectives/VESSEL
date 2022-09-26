@@ -1,5 +1,5 @@
 import EditThreshold from "../EditThreshold";
-import { useModalContext } from "contexts/Modal.js";
+import { useModalContext } from "contexts/Modal";
 import { formatAddress } from "utils";
 
 const ReviewEditSafeOwners = ({
