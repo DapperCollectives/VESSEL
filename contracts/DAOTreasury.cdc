@@ -16,7 +16,7 @@ pub contract DAOTreasuryV5 {
   // Actions
   pub event ActionProposed(treasuryUUID: UInt64, actionUUID: UInt64, proposer: Address, actionView: MyMultiSigV5.ActionView)
   pub event ActionExecuted(treasuryUUID: UInt64, actionUUID: UInt64, executor: Address, actionView: MyMultiSigV5.ActionView, signerResponses: {Address: UInt})
-  pub event ActionDestroyed(treasuryUUID: UInt64, actionUUID: UInt64, signerResponses: {Address: UInt})
+  pub event ActionDestroyed(treasuryUUID: UInt64, actionUUID: UInt64, actionView: MyMultiSigV5.ActionView, signerResponses: {Address: UInt})
   pub event ActionApprovedBySigner(treasuryUUID: UInt64, address: Address, actionUUID: UInt64, signerResponses: {Address: UInt})
   pub event ActionRejectedBySigner(treasuryUUID: UInt64, address: Address, actionUUID: UInt64, signerResponses: {Address: UInt})
 
@@ -68,13 +68,16 @@ pub contract DAOTreasuryV5 {
 
     pub fun signerRejectAction(actionUUID: UInt64, messageSignaturePayload: MyMultiSigV5.MessageSignaturePayload) {
       self.multiSignManager.signerRejectAction(actionUUID: actionUUID, messageSignaturePayload: messageSignaturePayload) 
+      let action = self.multiSignManager.borrowAction(actionUUID: actionUUID)
       let signerResponses = self.multiSignManager.getSignerResponsesForAction(actionUUID: actionUUID)
       emit ActionRejectedBySigner(treasuryUUID: self.uuid, address: messageSignaturePayload.signingAddr, actionUUID: actionUUID, signerResponses: signerResponses)
 
+
       // Destroy action if there are sufficient rejections
       if self.multiSignManager.canDestroyAction(actionUUID: actionUUID) {
+         let actionView = action.getView()
          self.multiSignManager.attemptDestroyAction(actionUUID: actionUUID)
-         emit ActionDestroyed(treasuryUUID: self.uuid, actionUUID: actionUUID, signerResponses: signerResponses)
+         emit ActionDestroyed(treasuryUUID: self.uuid, actionUUID: actionUUID, actionView: actionView, signerResponses: signerResponses)
       }
     }
 
