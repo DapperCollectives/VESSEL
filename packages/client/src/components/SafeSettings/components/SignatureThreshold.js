@@ -9,7 +9,10 @@ const SignatureThreshold = ({ treasury }) => {
 
   const openEditSignatureThresholdModal = () => {
     if (isOpen) closeModal();
-    openModal(<EditThreshold treasury={treasury} />);
+    openModal(
+      <EditThreshold treasury={treasury} />,
+      { headerTitle: "Set A New Threshold" }
+    );
   };
   return (
     <div>

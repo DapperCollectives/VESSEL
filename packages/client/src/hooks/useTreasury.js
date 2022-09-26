@@ -9,7 +9,7 @@ import {
 import { COIN_TYPE_TO_META } from "constants/maps";
 import { createSignature } from "contexts/Web3";
 import {
-  ADD_SIGNER,
+  ADD_SIGNER_UPDATE_THRESHOLD,
   EXECUTE_ACTION,
   GET_PROPOSED_ACTIONS,
   GET_ACTION_VIEW,
@@ -20,7 +20,7 @@ import {
   GET_VAULT_BALANCE,
   INITIALIZE_TREASURY,
   PROPOSE_TRANSFER,
-  REMOVE_SIGNER,
+  REMOVE_SIGNER_UPDATE_THRESHOLD,
   SIGNER_APPROVE,
   SIGNER_REJECT,
   UPDATE_THRESHOLD,
@@ -166,15 +166,16 @@ const doUpdateThreshold = async (treasuryAddr, newThreshold) => {
   });
 };
 
-const doProposeAddSigner = async (treasuryAddr, newSignerAddress) => {
-  const intent = `Add account ${newSignerAddress} as a signer.`;
+const doProposeAddSigner = async (treasuryAddr, newSignerAddress, newThreshold) => {
+  const intent = `Add signer ${newSignerAddress}. Update the threshold of signers to ${newThreshold}.`;
   const { message, keyIds, signatures, height } = await createSignature(intent);
 
   return await mutate({
-    cadence: ADD_SIGNER,
+    cadence: ADD_SIGNER_UPDATE_THRESHOLD,
     args: (arg, t) => [
       arg(treasuryAddr, t.Address),
       arg(newSignerAddress, t.Address),
+      arg(newThreshold, t.UInt),
       arg(message, t.String),
       arg(keyIds, t.Array(t.UInt64)),
       arg(signatures, t.Array(t.String)),
@@ -186,16 +187,18 @@ const doProposeAddSigner = async (treasuryAddr, newSignerAddress) => {
 
 const doProposeRemoveSigner = async (
   treasuryAddr,
-  signerToBeRemovedAddress
+  signerToBeRemovedAddress,
+  newThreshold
 ) => {
-  const intent = `Remove ${signerToBeRemovedAddress} as a signer.`;
+  const intent = `Remove signer ${signerToBeRemovedAddress}. Update the threshold of signers to ${newThreshold}.`;
   const { message, keyIds, signatures, height } = await createSignature(intent);
 
   return await mutate({
-    cadence: REMOVE_SIGNER,
+    cadence: REMOVE_SIGNER_UPDATE_THRESHOLD,
     args: (arg, t) => [
       arg(treasuryAddr, t.Address),
       arg(signerToBeRemovedAddress, t.Address),
+      arg(newThreshold, t.UInt),
       arg(message, t.String),
       arg(keyIds, t.Array(t.UInt64)),
       arg(signatures, t.Array(t.String)),
@@ -440,16 +443,17 @@ export default function useTreasury(treasuryAddr) {
     await refreshTreasury();
   };
 
-  const proposeAddSigner = async (newSignerAddress) => {
-    const res = await doProposeAddSigner(treasuryAddr, newSignerAddress);
+  const proposeAddSigner = async (newSignerAddress, newThreshold) => {
+    const res = await doProposeAddSigner(treasuryAddr, newSignerAddress, newThreshold);
     await tx(res).onceSealed();
     await refreshTreasury();
   };
 
-  const proposeRemoveSigner = async (signerToBeRemovedAddress) => {
+  const proposeRemoveSigner = async (signerToBeRemovedAddress, newThreshold) => {
     const res = await doProposeRemoveSigner(
       treasuryAddr,
-      signerToBeRemovedAddress
+      signerToBeRemovedAddress,
+      newThreshold
     );
     await tx(res).onceSealed();
     await refreshTreasury();
