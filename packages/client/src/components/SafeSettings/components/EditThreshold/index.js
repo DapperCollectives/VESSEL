@@ -5,7 +5,7 @@ import ReviewEditSafeOwners from "../Owners/ReviewEditSafeOwners";
 import { Web3Context } from "contexts/Web3";
 import { useHistory } from "react-router-dom";
 import { useModalContext } from "contexts/Modal";
-import { formatAddress } from "utils.js";
+import { formatAddress } from "utils";
 
 const EditThreshold = ({ treasury, newOwner, ownerToBeRemoved }) => {
   const { openModal, closeModal } = useModalContext()
