@@ -13,15 +13,23 @@
       }
     }
   },
+  "parser": "@babel/eslint-parser",
   "parserOptions": {
     "ecmaVersion": 11,
-    "sourceType": "module"
+    "sourceType": "module",
+    "requireConfigFile": false,
+    "babelOptions": {
+      "parserOpts": {
+        "plugins": ["jsx"]
+      }
+    }
   },
-  "plugins": ["react"],
+  "plugins": ["react", "@babel"],
   "rules": {
-    "indent": "off",
+    "indent": ["off"],
     "prefer-const": ["error"],
     "quotes": ["off", "single"],
+    "comma-dangle": ["off"],
     "object-shorthand": ["error", "properties"],
     "object-curly-newline": [
       "error",
@@ -33,6 +41,7 @@
       }
     ],
     "react/jsx-filename-extension": ["off"],
+    "react/jsx-indent": ["off"],
     "react/react-in-jsx-scope": ["off"],
     "react/prop-types": ["error", { "skipUndeclared": true }],
     "react/no-multi-comp": [
