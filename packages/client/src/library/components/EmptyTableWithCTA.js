@@ -1,4 +1,5 @@
 const EmptyTableWithCTA = ({
+  header,
   message,
   onButtonClick = () => {},
   buttonText = "",
@@ -9,16 +10,17 @@ const EmptyTableWithCTA = ({
     style={{ height: "calc(100vh - 340px)" }}
   >
     <div className="container is-flex is-flex-direction-column is-justify-content-center is-align-items-center has-text-black">
-      {message && <h2>{message}</h2>}
-      <button
-        className={`button is-primary is-small mt-4 ${
-          buttonIcon ? "with-icon" : ""
-        }`}
-        onClick={onButtonClick}
-      >
-        {buttonText}
-        {buttonIcon}
-      </button>
+      {header && <h2>{header}</h2>}
+      {message && <p className="has-text-grey">{message}</p>}
+      {buttonText && (
+        <button
+          className={`button is-primary is-small mt-4 ${buttonIcon ? "with-icon" : ""}`}
+          onClick={onButtonClick}
+        >
+          {buttonText}
+          {buttonIcon}
+        </button>
+      )}
     </div>
   </section>
 );

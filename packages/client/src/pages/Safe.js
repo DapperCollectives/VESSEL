@@ -11,11 +11,12 @@ import {
   SafeTokens,
   SendTokens,
   TestToolBox,
-} from "../components";
+} from "components";
 import Svg from "library/Svg";
-import { Web3Consumer, useModalContext } from "../contexts";
+import { EmptyTableWithCTA } from "library/components";
+import { Web3Consumer, useModalContext } from "contexts";
 import { createSignature } from "contexts/Web3";
-import { useClipboard, useErrorMessage } from "../hooks";
+import { useClipboard, useErrorMessage } from "hooks";
 import { TransactionSuccessModal } from "modals";
 import { ACTION_TYPES } from "constants/enums";
 
@@ -28,33 +29,20 @@ const ReceiveTokens = ({ name, address }) => {
       <div>
         <h2 className="is-size-4">Receive</h2>
         <div>
-          <span className="border-light-right mr-2 pr-2 has-text-grey">
-            To: {name}
-          </span>
+          <span className="border-light-right mr-2 pr-2 has-text-grey">To: {name}</span>
           <span className="is-underlined">{shortenString(address)}</span>
         </div>
       </div>
       <div className="border-light-top mt-5 pt-6 is-flex is-flex-direction-column">
         <div>
-          <QRCode
-            className="ml-5"
-            value={`https://flowscan.org/account/${address}`}
-          />
+          <QRCode className="ml-5" value={`https://flowscan.org/account/${address}`} />
         </div>
-        <button
-          className="button is-transparent mt-5"
-          onClick={() => clipboard.copy(address)}
-        >
-          {clipboard.textJustCopied === address
-            ? "Copied"
-            : "Copy Safe Address"}
+        <button className="button is-transparent mt-5" onClick={() => clipboard.copy(address)}>
+          {clipboard.textJustCopied === address ? "Copied" : "Copy Safe Address"}
         </button>
       </div>
       <div className="is-flex is-align-items-center mt-6">
-        <button
-          className="button flex-1 is-border mr-2"
-          onClick={() => modalContext.closeModal()}
-        >
+        <button className="button flex-1 is-border mr-2" onClick={() => modalContext.closeModal()}>
           Cancel
         </button>
       </div>
@@ -106,14 +94,7 @@ function Safe({ web3 }) {
   };
 
   const currentTab = tab ?? "home";
-  const buttons = [
-    "home",
-    "transactions",
-    "tokens",
-    "NFTs",
-    "contacts",
-    "settings",
-  ];
+  const buttons = ["home", "transactions", "tokens", "NFTs", "contacts", "settings"];
   const buttonClasses = ["button is-nav", "is-capitalized", "mr-2"];
 
   const ButtonCpts = buttons.map((btn, i) => {
@@ -132,33 +113,19 @@ function Safe({ web3 }) {
   const { signerApprove, signerReject, executeAction } = web3;
 
   const onApproveAction = async ({ uuid, intent }) => {
-    const { message, keyIds, signatures, height } = await createSignature(
-      intent,
-      uuid
-    );
+    const { message, keyIds, signatures, height } = await createSignature(intent, uuid);
 
-    await signerApprove(
-      parseInt(uuid, 10),
-      message,
-      keyIds,
-      signatures,
-      height
-    );
+    await signerApprove(parseInt(uuid, 10), message, keyIds, signatures, height);
   };
 
   const onRejectAction = async ({ uuid, intent }) => {
-    const { message, keyIds, signatures, height } = await createSignature(
-      intent,
-      uuid
-    );
+    const { message, keyIds, signatures, height } = await createSignature(intent, uuid);
 
     await signerReject(parseInt(uuid, 10), message, keyIds, signatures, height);
   };
 
   const onConfirmAction = async ({ uuid }) => {
-    const events = await executeAction(uuid).catch((error) =>
-      showErrorModal(error)
-    );
+    const events = await executeAction(uuid).catch((error) => showErrorModal(error));
     if (events) {
       const action = events.find((e) => e.type.endsWith("ActionExecuted"));
       showTransactionSuccessModal(action, safeData.name, safeData.address);
@@ -183,18 +150,17 @@ function Safe({ web3 }) {
       <SafeTransactions
         key="safe-transactions"
         safeData={safeData}
-        address={address}
+        emptyComponent={
+          <EmptyTableWithCTA
+            header="You don't have any transactions history."
+            message="Create a new transaction above."
+          />
+        }
+        className="mt-4"
       />
     ),
     tokens: <SafeTokens key="safe-tokens" />,
-    NFTs: (
-      <SafeNFTs
-        web3={web3}
-        name={safeData.name}
-        address={address}
-        key="safe-assets"
-      />
-    ),
+    NFTs: <SafeNFTs web3={web3} name={safeData.name} address={address} key="safe-assets" />,
     contacts: <SafeContacts key="safe-contacts" address={address} />,
     settings: <SafeSettings key="safe-settings" />,
   };
@@ -217,18 +183,11 @@ function Safe({ web3 }) {
       }}
     >
       <div className="column is-full p-0 is-flex is-flex-direction-column mb-5">
-        {process.env.REACT_APP_FLOW_ENV !== "mainnet" && (
-          <TestToolBox address={address} />
-        )}
+        {process.env.REACT_APP_FLOW_ENV !== "mainnet" && <TestToolBox address={address} />}
         <h1 className=" mb-2">{safeData.name}</h1>
         <p>
-          <span className="has-text-grey">
-            Safe address {shortenString(address)}
-          </span>
-          <span
-            className="is-underlined ml-2 pointer"
-            onClick={() => clipboard.copy(address)}
-          >
+          <span className="has-text-grey">Safe address {shortenString(address)}</span>
+          <span className="is-underlined ml-2 pointer" onClick={() => clipboard.copy(address)}>
             {clipboard.textJustCopied === address ? "Copied" : "Copy address"}
           </span>
         </p>
@@ -237,10 +196,7 @@ function Safe({ web3 }) {
         <div className="is-flex">{ButtonCpts}</div>
         <div className="is-flex flex-1 is-justify-content-end">
           <div className="w-auto">
-            <button
-              className="button is-border mr-2 with-icon"
-              onClick={onReceive}
-            >
+            <button className="button is-border mr-2 with-icon" onClick={onReceive}>
               Receive <Svg name="ArrowDown" />
             </button>
             <button className="is-primary button with-icon" onClick={onSend}>
