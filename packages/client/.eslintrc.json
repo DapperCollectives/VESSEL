@@ -29,6 +29,7 @@
     "indent": ["off"],
     "prefer-const": ["error"],
     "quotes": ["off", "single"],
+    "comma-dangle": ["off"],
     "object-shorthand": ["error", "properties"],
     "object-curly-newline": [
       "error",
