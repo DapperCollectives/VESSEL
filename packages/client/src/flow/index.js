@@ -1,4 +1,4 @@
-export { GET_SIGNERS, GET_THRESHOLD } from "./checkTreasuries.tx";
+export { GET_TREASURY } from "./checkTreasuries.tx";
 export { GET_PROPOSED_ACTIONS } from "./getProposedActions.tx";
 export { INITIALIZE_TREASURY } from "./initializeTreasury.tx";
 export { PROPOSE_TRANSFER } from "./proposeTransfer.tx";

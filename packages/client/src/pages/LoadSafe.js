@@ -60,7 +60,7 @@ function LoadSafe({ web3 }) {
   const [threshold, setThreshold] = useState(0);
   const [safeOwners, setSafeOwners] = useState([]);
   const [safeOwnersValidByAddress, setSafeOwnersValidByAddress] = useState({});
-  const { injectedProvider, fetchTreasury, setTreasury, address } = web3;
+  const { injectedProvider, getTreasury, setTreasury, address } = web3;
   const { isAddressValid } = useAddressValidation(injectedProvider);
   if (!address) {
     return <WalletPrompt />;
@@ -82,7 +82,7 @@ function LoadSafe({ web3 }) {
     setSafeAddress(e.target.value);
     const maybeValid = isAddr(e.target.value);
     if (maybeValid) {
-      const treasury = await fetchTreasury(e.target.value);
+      const treasury = await getTreasury(e.target.value);
       const newSafeOwners = Object.keys(treasury?.signers ?? {}).map(
         (signerAddr) => ({
           name: "",

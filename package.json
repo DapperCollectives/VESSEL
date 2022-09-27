@@ -1,5 +1,5 @@
 {
-  "name": "@scaffold-flow/monorepo",
+  "name": "@vessel/monorepo",
   "version": "1.0.0",
   "private": true,
   "scripts": {
@@ -8,13 +8,16 @@
     "chain": "node chain.js",
     "nft": "node nft.js",
     "fusd": "node fusd.js",
-    "build": "yarn workspace @scaffold-flow/client build --max-old-space-size=12288",
-    "start": "yarn workspace @scaffold-flow/client start",
+    "build": "yarn workspace @vessel/client build --max-old-space-size=12288",
+    "start": "yarn workspace @vessel/client start",
     "test": "go main_test.go"
   },
   "workspaces": {
     "packages": [
       "packages/*"
+    ],
+    "nohoist": [
+      "**/client/**"
     ]
   },
   "devDependencies": {

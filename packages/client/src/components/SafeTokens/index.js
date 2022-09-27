@@ -50,14 +50,12 @@ const SafeTokens = () => {
       </div>
       {vaults.length === 0 && (
         <EmptyTableWithCTA
-          message="This safe doesn't have any tokens"
+          header="This safe doesn't have any tokens"
           buttonText="Manage Token Vaults"
           onButtonClick={handleManageTokenVaults}
         />
       )}
-      {vaults.length > 0 && (
-        <VaultTable vaults={vaults} handleSendToken={handleSendToken} />
-      )}
+      {vaults.length > 0 && <VaultTable vaults={vaults} handleSendToken={handleSendToken} />}
     </div>
   );
 };
