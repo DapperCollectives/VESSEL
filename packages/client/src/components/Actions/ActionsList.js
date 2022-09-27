@@ -60,12 +60,12 @@ function ActionsList({
     );
   } else {
     ActionComponents.push(
-      <div className="px-5 m-0 columns has-text-left has-text-grey is-flex is-align-items-center">
+      <div className="px-5 m-0 columns has-text-left has-text-grey is-align-items-center is-hidden-touch">
         <div className="column px-0 is-1">#</div>
         <div className="column px-0 is-4">Info</div>
-        <div className="column pr-0 is-3">Status</div>
+        <div className="column is-3">Status</div>
         <div className="column px-0 is-2">Signatures</div>
-        <div className="column px-0">Action</div>
+        <div className="column px-0 is-2">Action</div>
       </div>
     );
     actions.forEach((action, idx) => {
@@ -84,26 +84,26 @@ function ActionsList({
       ActionComponents.push(
         <div
           key={action.uuid}
-          className="p-5 m-0 columns is-flex is-align-items-center"
+          className="p-5 m-0 columns is-align-items-center is-multiline is-mobile"
         >
-          <div className="column px-0 is-1">
+          <div className="column px-0 is-1 is-one-fifth-mobile">
             {String(idx + 1).padStart(2, "0")}{" "}
           </div>
-          <div className="column px-0 is-4">
+          <div className="column px-0 is-4-desktop is-four-fifths-mobile">
             {formatActionString(action.intent)}
           </div>
-          <div className="column pr-0 is-3">
+          <div className="column is-3 is-hidden-touch">
             <Svg name="Status" className={background} />
             <label className="ml-1">{actionPrompt}</label>
           </div>
-          <div className="column px-0 is-2">
+          <div className="column px-0 is-2 is-hidden-touch">
             {totalSigned} of {safeData.threshold} signatures
           </div>
           <button
-            className="column button is-tertiary with-icon is-flex"
+            className="button is-tertiary column is-flex is-2-desktop is-full-mobile"
             onClick={() => actionFn(action)}
           >
-            <label className="flex-1">{actionCopy}</label>
+            <label className="mr-1">{actionCopy}</label>
             <Svg name={actionCopy} />
           </button>
         </div>
