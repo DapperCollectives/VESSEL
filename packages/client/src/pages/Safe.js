@@ -202,7 +202,7 @@ function Safe({ web3 }) {
   const BodyComponent = tabMap[currentTab];
 
   const onSend = () => {
-    openModal(<SendTokens name={safeData.name} address={address} />);
+    openModal(<SendTokens address={address} />);
   };
 
   const onReceive = () => {

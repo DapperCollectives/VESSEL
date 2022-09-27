@@ -1,9 +1,9 @@
 import { useContext } from "react";
 import { flatten } from "lodash";
 import { Web3Context } from "contexts/Web3";
-import { SendTokensContext } from "../sendTokensContext";
 import { ASSET_TYPES } from "constants/enums";
 import { ASSET_TYPE_TO_META } from "constants/maps";
+import { SendTokensContext } from "../sendTokensContext";
 import CoinTypeDropDown from "./CoinTypeDropDown";
 import NFTSelector from "./NFTSelector";
 
