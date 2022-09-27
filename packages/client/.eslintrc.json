@@ -26,17 +26,7 @@
   },
   "plugins": ["react", "@babel"],
   "rules": {
-<<<<<<< HEAD
-    "indent": [
-      "off",
-      "tab",
-      {
-        "ignoredNodes": ["TemplateLiteral"]
-      }
-    ],
-=======
     "indent": ["off"],
->>>>>>> b5aef43693359dec2ceeff0dbfe4d852d2f8c886
     "prefer-const": ["error"],
     "quotes": ["off", "single"],
     "comma-dangle": ["off"],
