@@ -4,7 +4,10 @@
   "private": true,
   "dependencies": {
     "@babel/eslint-parser": "^7.19.1",
+<<<<<<< HEAD
     "@babel/eslint-plugin": "^7.19.1",
+=======
+>>>>>>> b5aef43693359dec2ceeff0dbfe4d852d2f8c886
     "@fontsource/dm-mono": "^4.5.9",
     "@fontsource/dm-sans": "^4.5.8",
     "@onflow/fcl": "^1.1.0",
@@ -50,6 +53,10 @@
   },
   "devDependencies": {
     "@babel/preset-react": "^7.18.6",
+<<<<<<< HEAD
+=======
+    "@babel/eslint-plugin": "^7.19.1",
+>>>>>>> b5aef43693359dec2ceeff0dbfe4d852d2f8c886
     "eslint": "^8.23.1",
     "eslint-config-airbnb": "^18.2.1",
     "eslint-plugin-import": "^2.26.0",
