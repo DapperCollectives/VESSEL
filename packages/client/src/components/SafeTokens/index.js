@@ -55,7 +55,9 @@ const SafeTokens = () => {
           onButtonClick={handleManageTokenVaults}
         />
       )}
-      {vaults.length > 0 && <VaultTable vaults={vaults} handleSendToken={handleSendToken} />}
+      {vaults.length > 0 && (
+        <VaultTable vaults={vaults} handleSendToken={handleSendToken} />
+      )}
     </div>
   );
 };
