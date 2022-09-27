@@ -17,8 +17,8 @@
       "packages/*"
     ]
   },
-  "dependencies": {},
   "devDependencies": {
+    "@babel/eslint-plugin": "^7.19.1",
     "husky": "^8.0.1",
     "pretty-quick": "^3.1.3"
   },
