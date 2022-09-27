@@ -81,7 +81,7 @@ function SafeOverview({ allBalance, allNFTs }) {
                         {type}
                       </label>
                     </div>
-                    <h2 className="title is-5 has-text-white has-text-weight-normal has-text-heighlight">
+                    <h2 className="title is-5 has-text-white has-text-weight-normal has-text-highlight">
                       {balance.toLocaleString()}
                     </h2>
                   </div>

@@ -1,15 +1,16 @@
+import { useModalContext } from "contexts";
 import { getProgressPercentageForSignersAmount } from "utils";
 import Svg from "library/Svg";
-import { ProgressBar } from "library/components";
+import SecurityStrengthLabel from "library/components/SecurityStrengthLabel";
 
 const EditThresholdForm = ({
   newThreshold,
-  allSafeOwners,
+  safeOwners,
   canContinueToReview,
   onReviewClick,
   onChangeThreshold,
-  closeModal,
 }) => {
+  const { closeModal } = useModalContext()
   const signerClasses = [
     "is-flex",
     "is-justify-content-center",
@@ -22,32 +23,26 @@ const EditThresholdForm = ({
   ];
   const plusSignerClasses = [
     ...signerClasses,
-    newThreshold < allSafeOwners.length
+    newThreshold < safeOwners.length
       ? "pointer has-text-black"
       : "is-disabled",
   ];
   const reviewButtonClasses = [
-    "button is-primary flex-1",
+    "button is-primary flex-1 has-text-weight-bold",
     canContinueToReview ? "" : "disabled",
   ];
   const progress = getProgressPercentageForSignersAmount(newThreshold);
 
   return (
     <>
-      <div className="p-5">
-        <h2 className="is-size-4 has-text-black">Set a new threshold</h2>
-        <p className="has-text-grey">
-          Signatures needed to approve a new transaction
-        </p>
-      </div>
-      <div className="border-light-top py-6 px-5 has-text-grey">
-        <p className="mb-2">Signatures required to confirm a transaction</p>
+      <div className="border-light-bottom p-5 has-text-grey">
+        <p className="mb-2">Number of signatures required to confirm a transaction.</p>
         <div className="is-flex border-light rounded-sm">
           <div className="px-5 border-light-right has-text-black">
             <Svg name="Person" />
           </div>
           <div className="flex-1 is-flex is-align-items-center px-5 border-light-right has-text-black">
-            {newThreshold} of {Math.max(allSafeOwners.length, 1)} owner(s)
+            {newThreshold} of {Math.max(safeOwners.length, 1)} owner(s)
           </div>
           <div
             className={minusSignerClasses.join(" ")}
@@ -65,21 +60,17 @@ const EditThresholdForm = ({
           </div>
         </div>
         <div className="flex-1 is-flex is-flex-direction-column mt-5">
-          <div className="is-flex is-justify-content-space-between mb-2">
-            <label className="has-text-black">Security Strength</label>
-            <label className="has-text-black">{progress}%</label>
-          </div>
-          <div className="is-flex flex-1">
-            <div
-              className="is-flex column is-full border-light rounded-sm"
-              style={{ minHeight: 48 }}
-            >
-              <ProgressBar progress={progress} />
-            </div>
+          <div className="is-flex is-align-items-center mb-2">
+            <label className="has-text-grey">Security Strength:</label>
+            <SecurityStrengthLabel 
+              progress={progress}
+            />
           </div>
         </div>
-        <div className="is-flex is-align-items-center mt-6">
-          <button className="button flex-1 is-border mr-2" onClick={closeModal}>
+      </div>
+      <div>
+        <div className="is-flex is-align-items-center p-5">
+          <button className="button flex-1 is-border mr-2 has-text-weight-bold" onClick={() => closeModal()}>
             Cancel
           </button>
           <button

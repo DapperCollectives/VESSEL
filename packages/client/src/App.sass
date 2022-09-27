@@ -84,7 +84,7 @@ $body-font-size: 14px
 /*********************Component variables -  Input********************/
 $input-border-width: 1px
 $input-focus-border-color: transparent
-$input-border-color: black
+$input-border-color: $grey-secondary
 $input-shadow: none
 $input-color: black
 
@@ -192,7 +192,7 @@ h2
   font-size: 1.8rem !important
 .is-size-6
   font-size: .9rem !important
-.has-text-heighlight
+.has-text-highlight
   font-family: $family-monospace
 .has-text-truncate
   white-space: nowrap
@@ -215,6 +215,10 @@ h2
       border-right: 1px solid $grey-secondary
     &-left
       border-left: 1px solid $grey-secondary
+  &-success
+    border: 1px solid $success-green
+  &-error
+    border: 1px solid $error-red
 
 /********************* Custom utility css - Border radius********************/
 .rounded-sm
@@ -391,16 +395,29 @@ label
   user-select: none
 
 /********************* Custom utility css - Input ********************/
-input
+
+input,.input
   font-size: 1rem
-input,
-input:focus
+  height: auto
   border-width: 1px
+  &.is-error
+    border-color: $error-red
+input:focus,input.input:focus
+  box-shadow: none
+  border-color: $grey-light
+  &.is-success
+    box-shadow: none
+    border-color: $success-green
+  &.is-error
+    border-color: $error-red
 input[type=number]::-webkit-outer-spin-button,
-input[type=number]::-webkit-inner-spin-button 
+input[type=number]::-webkit-inner-spin-button,
+.input[type=number]::-webkit-outer-spin-button,
+.input[type=number]::-webkit-inner-spin-button 
   -webkit-appearance: none
   margin: 0
-input:focus-visible
+input:focus-visible,
+.input:focus-visible
   outline: none
 
 /********************* Custom utility css - Dropdown ********************/
@@ -448,6 +465,8 @@ hr
   border-radius: 4px
 .table-border > :not(:last-child)
   border-bottom: 1px solid $grey-secondary
+.table-border-bottom > :last-child
+  border-bottom: 1px solid $grey-light
 .confirmation
   white-space: nowrap
   padding: 15px 14px
@@ -466,3 +485,4 @@ hr
   scrollbar-width: none
 .confirmations::-webkit-scrollbar
     display: none
+
