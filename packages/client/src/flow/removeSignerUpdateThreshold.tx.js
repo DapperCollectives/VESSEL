@@ -1,9 +1,9 @@
-export const REMOVE_SIGNER = `
+export const REMOVE_SIGNER_UPDATE_THRESHOLD = `
 import DAOTreasuryV5 from 0xDAOTreasuryV5
 import TreasuryActionsV5 from 0xTreasuryActionsV5
 import MyMultiSigV5 from 0xMyMultiSigV5
 
-transaction(treasuryAddr: Address, signerToBeRemoved: Address, message: String, keyIds: [UInt64], signatures: [String], signatureBlock: UInt64) {
+transaction(treasuryAddr: Address, signerToBeRemoved: Address, newThreshold: UInt, message: String, keyIds: [UInt64], signatures: [String], signatureBlock: UInt64) {
   
   let treasury: &DAOTreasuryV5.Treasury{DAOTreasuryV5.TreasuryPublic}
   let action: AnyStruct{MyMultiSigV5.Action}
@@ -13,7 +13,7 @@ transaction(treasuryAddr: Address, signerToBeRemoved: Address, message: String, 
     self.treasury = getAccount(treasuryAddr).getCapability(DAOTreasuryV5.TreasuryPublicPath)
                     .borrow<&DAOTreasuryV5.Treasury{DAOTreasuryV5.TreasuryPublic}>()
                     ?? panic("A DAOTreasuryV5 doesn't exist here.")
-    self.action = TreasuryActionsV5.RemoveSigner(signer: signerToBeRemoved, proposer: signer.address)
+    self.action = TreasuryActionsV5.RemoveSignerUpdateThreshold(signer: signerToBeRemoved, threshold: newThreshold, proposer: signer.address)
     var _keyIds: [Int] = []
 
     for keyId in keyIds {

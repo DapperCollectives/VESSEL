@@ -11,11 +11,12 @@ import {
   SafeTokens,
   SendTokens,
   TestToolBox,
-} from "../components";
+} from "components";
 import Svg from "library/Svg";
-import { Web3Consumer, useModalContext } from "../contexts";
+import { EmptyTableWithCTA } from "library/components";
+import { Web3Consumer, useModalContext } from "contexts";
 import { createSignature } from "contexts/Web3";
-import { useClipboard, useErrorMessage } from "../hooks";
+import { useClipboard, useErrorMessage } from "hooks";
 import { TransactionSuccessModal } from "modals";
 import { ACTION_TYPES } from "constants/enums";
 
@@ -183,7 +184,13 @@ function Safe({ web3 }) {
       <SafeTransactions
         key="safe-transactions"
         safeData={safeData}
-        address={address}
+        emptyComponent={
+          <EmptyTableWithCTA
+            header="You don't have any transactions history."
+            message="Create a new transaction above."
+          />
+        }
+        className="mt-4"
       />
     ),
     tokens: <SafeTokens key="safe-tokens" />,

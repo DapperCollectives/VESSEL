@@ -37,10 +37,7 @@ const SafeTokens = () => {
         <h2 className="flex-1">Tokens</h2>
         <div>
           {vaults.length > 0 && (
-            <button
-              className="button is-secondary is-small"
-              onClick={handleManageTokenVaults}
-            >
+            <button className="button is-secondary is-small" onClick={handleManageTokenVaults}>
               Manage Token Vaults
             </button>
           )}
@@ -48,14 +45,12 @@ const SafeTokens = () => {
       </div>
       {vaults.length === 0 && (
         <EmptyTableWithCTA
-          message="This safe doesn't have any tokens"
+          header="This safe doesn't have any tokens"
           buttonText="Manage Token Vaults"
           onButtonClick={handleManageTokenVaults}
         />
       )}
-      {vaults.length > 0 && (
-        <VaultTable vaults={vaults} handleSendToken={handleSendToken} />
-      )}
+      {vaults.length > 0 && <VaultTable vaults={vaults} handleSendToken={handleSendToken} />}
     </div>
   );
 };
