@@ -18,10 +18,10 @@ const AmountInput = () => {
       <label className="has-text-grey">
         Amount<span className="has-text-red"> *</span>
       </label>
-      <div style={{ position: "relative" }}>
+      <div className="is-flex" style={{ position: "relative" }}>
         <input
           type="number"
-          className="is-size-4 border-light rounded-sm p-3 mb-4 has-text-heighlight"
+          className="flex-1 is-size-4 border-light rounded-sm p-3 mb-4 has-text-heighlight"
           value={tokenAmount}
           onChange={(e) =>
             setSendModalState((prevState) => ({

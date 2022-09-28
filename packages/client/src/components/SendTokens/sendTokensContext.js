@@ -1,5 +1,6 @@
 import { useState, createContext } from "react";
 import { ASSET_TYPES, COIN_TYPES } from "constants/enums";
+
 export const SendTokensContext = createContext();
 export const SendTokensContextProvider = (props) => {
   const { children, address, initialState } = props;

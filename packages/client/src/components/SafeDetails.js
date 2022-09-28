@@ -14,9 +14,10 @@ const SafeDetails = ({ safeType, setSafeType, safeName, setSafeName }) => (
     </div>
     <div className="column is-flex is-full">
       <div className="flex-1 is-flex is-flex-direction-column pr-5">
-        <label className="has-text-grey mb-2">
-          Safe name<span className="has-text-red">*</span>
-        </label>
+        <p className="has-text-grey mb-2">
+          Safe name
+          <span className="has-text-red">*</span>
+        </p>
         <input
           className="p-4 rounded-sm border-light"
           type="text"
@@ -26,10 +27,18 @@ const SafeDetails = ({ safeType, setSafeType, safeName, setSafeName }) => (
         />
       </div>
       <div className="flex-1 is-flex is-flex-direction-column">
-        <label className="has-text-grey mb-2">
-          Safe type<span className="has-text-red">*</span>
-        </label>
-        <Dropdown value={safeType} values={safeTypes} setValue={setSafeType} />
+        <p className="has-text-grey mb-2">
+          Safe type
+          <span className="has-text-red">*</span>
+        </p>
+        <Dropdown
+          selectedValue={safeType}
+          options={safeTypes}
+          setOption={setSafeType}
+          renderOption={({ displayText }) => (
+            <span className="has-text-black">{displayText}</span>
+          )}
+        />
       </div>
     </div>
   </>

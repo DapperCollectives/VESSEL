@@ -1,23 +1,19 @@
-const CaretDown = ({ width = "30", height = "15", className = "" }) => {
-  return (
-    <svg
-      width={width}
-      height={height}
-      aria-hidden="true"
-      focusable="false"
-      data-prefix="fas"
-      data-icon="caret-down"
-      className={`svg-inline--fa fa-caret-down ${className}`}
-      role="img"
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 320 512"
-    >
-      <path
-        fill="currentColor"
-        d="M310.6 246.6l-127.1 128C176.4 380.9 168.2 384 160 384s-16.38-3.125-22.63-9.375l-127.1-128C.2244 237.5-2.516 223.7 2.438 211.8S19.07 192 32 192h255.1c12.94 0 24.62 7.781 29.58 19.75S319.8 237.5 310.6 246.6z"
-      ></path>
-    </svg>
-  );
-};
+const CaretDown = ({ width = "14", height = "8", className = "" }) => (
+  <svg
+    width={width}
+    height={height}
+    className={className}
+    viewBox="0 0 14 8"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      fillRule="evenodd"
+      clipRule="evenodd"
+      d="M6.64645 7.35355C6.84171 7.54882 7.15829 7.54882 7.35355 7.35355L13.3536 1.35355C13.5488 1.15829 13.5488 0.841709 13.3536 0.646447C13.1583 0.451184 12.8417 0.451184 12.6464 0.646447L7 6.29289L1.35355 0.646447C1.15829 0.451184 0.841709 0.451184 0.646447 0.646447C0.451184 0.841709 0.451184 1.15829 0.646447 1.35355L6.64645 7.35355Z"
+      fill="black"
+    />
+  </svg>
+);
 
 export default CaretDown;

@@ -26,8 +26,8 @@ const AssetSelector = () => {
       <div className="mb-5">
         <div className="border-light rounded-sm p-0 is-flex">
           <button
-            style={{}}
-            className={`button flex-1 ${
+            type="button"
+            className={`button flex-1 has-text-weight-bold  ${
               assetType === ASSET_TYPES.TOKEN && "has-background-info"
             }`}
             onClick={() =>
@@ -40,7 +40,8 @@ const AssetSelector = () => {
             {ASSET_TYPE_TO_META[ASSET_TYPES.TOKEN].displayName}
           </button>
           <button
-            className={`button flex-1 ${
+            type="button"
+            className={`button flex-1 has-text-weight-bold ${
               assetType === ASSET_TYPES.NFT && "has-background-info"
             }`}
             onClick={() =>

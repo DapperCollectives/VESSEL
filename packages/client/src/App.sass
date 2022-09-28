@@ -100,8 +100,8 @@ $modal-background-background-color: rgba(1, 1, 1, 0.5)
 $modal-content-width: 430px
 .modal-content
   max-height: calc(100vh - 210px)
-  overflow-y: auto !important
-  overflow-x: hidden !important
+  overflow-y: visibile !important
+  overflow-x: visible !important
 .modal-safe-name
   color: $purple-primary
   font-weight: 500
@@ -121,6 +121,12 @@ $modal-content-width: 430px
   background-size: 16em
   background-position: 100% 0px
   background-repeat: no-repeat
+/*********************Component variables -  Dropdown********************/
+$dropdown-content-shadow: none
+$dropdown-item-active-background-color: $green-primary
+$dropdown-item-hover-background-color: $green-primary
+$dropdown-content-shadow: none
+
 
 /********************* Bulma imports ********************/
 @import '~bulma/sass/utilities/_all.sass'
@@ -421,10 +427,19 @@ input:focus-visible,
   outline: none
 
 /********************* Custom utility css - Dropdown ********************/
+.dropdown-menu
+  z-index: 99
+  transform: translateY(-5px)
+  border-left: 1px solid $grey-secondary
+  border-right: 1px solid $grey-secondary
+  border-bottom: 1px solid $grey-secondary
+
 .dropdown-item
   padding: 1rem
   line-height: 1em
-  height: auto
+  height: 55px
+  border-top: 1px solid $grey-secondary
+  background: white
 
 /********************* Custom utility css - Flex ********************/
 .flex-1
