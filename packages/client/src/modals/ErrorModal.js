@@ -1,18 +1,39 @@
-import React from "react";
+import React, { useState } from "react";
 import Svg from "library/Svg";
 
 const ErrorModal = ({ error, onClose }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+
   return (
-    <div className="p-5 has-text-black has-text-left">
-      <div className="pl-5 columns is-vcentered is-multiline is-mobile border-light-bottom">
-        <Svg name="Warning" />
-        <h3 className="is-size-4 column is-half">Error</h3>
+    <div className="has-text-black has-text-left">
+      <div className="p-5 border-light-bottom">
+        <div className="has-text-black m-1">
+          Your transaction could not be completed. <br />
+          Please try again later.
+        </div>
+        {typeof error === "string" && (
+          <div className="pt-2 has-text-yellow-dark">
+            <span
+              className="pointer is-flex"
+              onClick={() => setIsExpanded(!isExpanded)}
+              style={{ whiteSpace: "nowrap" }}
+            >
+              <Svg name={`${isExpanded ? "AccordionOpened" : "AccordionClosed"}`} />
+              <span className="ml-2">Error Details</span>
+            </span>
+            <div
+              className={`
+                ${isExpanded ? "" : "is-hidden"}
+                p-4 mt-3 has-background-yellow-tertiary border-yellow rounded-sm 
+                `}
+            >
+              <span>{error}</span>
+            </div>
+          </div>
+        )}
       </div>
-      <div className="p-4 mt-5">
-        <span className="mr-2 mt-2  has-text-grey">{error}</span>
-      </div>
-      <div className="is-flex is-align-items-center mt-5">
-        <button className="button is-border mr-2 flex-1" onClick={onClose}>
+      <div className="p-5 is-flex">
+        <button className="mr-2 button flex-1 is-border" onClick={onClose}>
           Close
         </button>
       </div>
