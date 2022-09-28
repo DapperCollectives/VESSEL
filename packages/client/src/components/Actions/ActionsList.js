@@ -79,7 +79,8 @@ function ActionsList({
       const actionPrompt = executionReady
         ? "Pending Execution"
         : "Pending Confirmation";
-      const actionCopy = executionReady ? "Execute" : "Confirm";
+      const actionText = executionReady ? "Execute" : "Confirm";
+      const actionSvg = executionReady ? "Quill" : "EmptyCheck";
       const actionFn = executionReady ? onExecute : openApproveOrRejectModal;
       ActionComponents.push(
         <div
@@ -93,7 +94,7 @@ function ActionsList({
             {formatActionString(action.intent)}
           </div>
           <div className="column is-3 is-hidden-touch">
-            <Svg name="Status" className={background} />
+            <Svg key={background} name="Status" className={background} />
             <label className="ml-1">{actionPrompt}</label>
           </div>
           <div className="column px-0 is-2 is-hidden-touch">
@@ -103,8 +104,8 @@ function ActionsList({
             className="button is-tertiary column is-flex is-2-desktop is-full-mobile"
             onClick={() => actionFn(action)}
           >
-            <label className="mr-1">{actionCopy}</label>
-            <Svg name={actionCopy} />
+            <label className="mr-1">{actionText}</label>
+            <Svg name={actionSvg} />
           </button>
         </div>
       );
