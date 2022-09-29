@@ -18,7 +18,7 @@ const ErrorModal = ({ error, onClose }) => {
               onClick={() => setIsExpanded(!isExpanded)}
               style={{ whiteSpace: "nowrap" }}
             >
-              <Svg name={`${isExpanded ? "AccordionOpened" : "AccordionClosed"}`} />
+              <Svg name={`${isExpanded ? "CaretDown" : "CaretRight"}`} />
               <span className="ml-2">Error Details</span>
             </span>
             <div
@@ -33,7 +33,7 @@ const ErrorModal = ({ error, onClose }) => {
         )}
       </div>
       <div className="p-5 is-flex">
-        <button className="mr-2 button flex-1 is-border" onClick={onClose}>
+        <button type="button" className="mr-2 button flex-1 is-border" onClick={onClose}>
           Close
         </button>
       </div>
