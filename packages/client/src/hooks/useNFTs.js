@@ -13,6 +13,8 @@ import {
   GET_TREASURY_NFT_REF,
   ADD_COLLECTION,
   REMOVE_COLLECTION,
+  CREATE_COLLECTION,
+  MINT_NFT,
 } from "../flow";
 
 const storageKey = "vessel-collections";
@@ -48,6 +50,26 @@ const doProposeNFTTransfer = async (treasuryAddr, recipient, nft) => {
       arg(height, t.UInt64),
     ],
     limit: SIGNED_LIMIT,
+  });
+};
+
+const doCreateCollection = async () => {
+  return await mutate({
+    cadence: CREATE_COLLECTION,
+    limit: REGULAR_LIMIT,
+  });
+};
+
+const doMintNFT = async (accountAddr, name, description, thumbnail) => {
+  return await mutate({
+    cadence: MINT_NFT,
+    args: (arg, t) => [
+      arg(accountAddr, t.Address),
+      arg(name, t.String),
+      arg(description, t.String),
+      arg(thumbnail, t.String),
+    ],
+    limit: REGULAR_LIMIT,
   });
 };
 
@@ -167,10 +189,28 @@ export default function useNFTs(treasuryAddr) {
     nftId
   ) => {
     const nftRef = await query({
-      cadence: GET_TREASURY_NFT_REF(contractName, contractAddress, collectionId),
+      cadence: GET_TREASURY_NFT_REF(
+        contractName,
+        contractAddress,
+        collectionId
+      ),
       args: (arg, t) => [arg(accountAddr, t.Address), arg(nftId, t.UInt64)],
     }).catch(console.error);
     return nftRef;
+  };
+
+  const createCollection = async () => {
+    const res = await doCreateCollection();
+    await tx(res).onceSealed();
+  };
+
+  const mintNFT = async () => {
+    const res = await doMintNFT(
+      "test",
+      "test description",
+      "https://mannys-game.s3.us-east-1.amazonaws.com/avatars/1.png"
+    );
+    await tx(res).onceSealed();
   };
 
   const sendNFTToTreasury = async (treasuryAddr, tokenId) => {
@@ -225,5 +265,7 @@ export default function useNFTs(treasuryAddr) {
     getTreasuryNFTReference,
     addCollection,
     removeCollection,
+    createCollection,
+    mintNFT,
   };
 }

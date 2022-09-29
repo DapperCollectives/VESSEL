@@ -9,7 +9,14 @@ const TestToolBox = ({ address }) => {
   const [userBalances, setUserBalances] = useState([]);
   const web3 = useContext(Web3Context);
   const { getUserBalances, initDepositTokensToTreasury } = useAccount();
-  const { sendNFTToTreasury, getTreasuryCollections, balances, user } = web3;
+  const {
+    createCollection,
+    mintNFT,
+    sendNFTToTreasury,
+    getTreasuryCollections,
+    balances,
+    user,
+  } = web3;
 
   const treasuryBalances = balances?.[address];
   const onDeposit = async () => {
@@ -19,6 +26,14 @@ const TestToolBox = ({ address }) => {
   const onDepositNFT = async () => {
     await sendNFTToTreasury(address, 0);
     await getTreasuryCollections(address);
+  };
+
+  const onCreateCollection = async () => {
+    await createCollection();
+  };
+
+  const onMintNFT = async () => {
+    await mintNFT();
   };
 
   const updateUserBalance = async () => {
@@ -101,6 +116,19 @@ const TestToolBox = ({ address }) => {
                 <li>
                   <span className="is-underlined pointer" onClick={onDeposit}>
                     Deposit Tokens
+                  </span>
+                </li>
+                <li>
+                  <span
+                    className="is-underlined pointer"
+                    onClick={onCreateCollection}
+                  >
+                    Create Collection
+                  </span>
+                </li>
+                <li>
+                  <span className="is-underlined pointer" onClick={onMintNFT}>
+                    Mint NFT
                   </span>
                 </li>
                 <li>

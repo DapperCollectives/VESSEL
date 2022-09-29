@@ -19,6 +19,8 @@ export { PROPOSE_NFT_TRANSFER } from "./proposeNFTTransfer.tx";
 export { GET_FLOW_FEES_ESTIMATION } from "./getFlowFeesEstimation.tx";
 export { ADD_VAULT } from "./addVault.tx";
 export { ADD_COLLECTION } from "./addCollection.tx";
+export { CREATE_COLLECTION } from "./createCollection.tx";
+export { MINT_NFT } from "./mintNFT.tx";
 export { GET_ACCOUNT_NFT_REF } from "./getAccountNFTReference.tx";
 export { GET_TREASURY_NFT_REF } from "./getTreasuryNFTReference.tx";
 export { REMOVE_VAULT } from "./removeVault.tx";
