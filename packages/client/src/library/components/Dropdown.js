@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Svg from "library/Svg";
+import { filter } from "lodash";
 
 // function Tooltip({ position, text, children, classNames = "" }) {
 //   const positionConfig = {
@@ -40,9 +41,12 @@ const Dropdown = ({
   setOption = () => {},
   renderOption = () => {},
   defaultText = "Select one",
+  withSearch = false,
+  withEnter = false,
+  searchInputPlaceholder = "",
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-
+  const [filteredOptions, setFilteredOptions] = useState(options);
   const openCloseDrowdown = () => {
     setIsOpen((status) => !status);
   };
@@ -52,7 +56,13 @@ const Dropdown = ({
   };
   const getOptionByValue = (v) =>
     options.find((option) => option.itemValue === v);
-
+  const handleSearchEnter = (e) => {
+    const entry = e.target.value;
+    const newFilteredOptions = options.filter(
+      (option) => option.displayText.indexOf(entry) >= 0
+    );
+    setFilteredOptions(newFilteredOptions);
+  };
   const dropdownClasses = [
     "dropdown is-right",
     "is-flex is-flex-grow-1",
@@ -67,7 +77,6 @@ const Dropdown = ({
   return (
     <div
       className={dropdownClasses.join(" ")}
-      onBlur={closeOnBlur}
       aria-haspopup="true"
       aria-controls="dropdown-menu"
       style={{ height: "58px" }}
@@ -91,12 +100,24 @@ const Dropdown = ({
         </button>
       </div>
       <div
+        onBlur={closeOnBlur}
         className="dropdown-menu column p-0 is-full"
         id="dropdown-menu"
         role="menu"
       >
         <div className="dropdown-content py-0">
-          {options.map((option) => {
+          {(withSearch || withEnter) && (
+            <div className="is-flex is-justify-content-space-around">
+              <input
+                className="input mb-4 dropdown-input"
+                style={{ width: "80%", height: "58px" }}
+                type="text"
+                placeholder={searchInputPlaceholder}
+                onChange={handleSearchEnter}
+              />
+            </div>
+          )}
+          {filteredOptions.map((option) => {
             const { itemValue } = option;
             return (
               <button
@@ -104,7 +125,10 @@ const Dropdown = ({
                 className={`border-none dropdown-item has-text-grey${
                   itemValue === selectedValue ? " is-active" : ""
                 }`}
-                onMouseDown={() => setOption(itemValue)}
+                onMouseDown={() => {
+                  setOption(itemValue);
+                  openCloseDrowdown();
+                }}
                 key={`drop-down-${itemValue}`}
               >
                 {renderOption(option)}
