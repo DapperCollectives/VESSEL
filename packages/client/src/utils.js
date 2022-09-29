@@ -2,11 +2,14 @@ import daysjs from "dayjs";
 import { COIN_TYPE_TO_META, CONTRACT_NAME_TO_COIN_TYPE } from "constants/maps";
 import { SIGNER_RESPONSES } from "constants/enums";
 
+
 export const checkResponse = async (response) => {
   if (!response.ok) {
     const { status, statusText, url } = response;
     const { error } = response.json ? await response.json() : {};
-    throw new Error(JSON.stringify({ status, statusText: error || statusText, url }));
+    throw new Error(
+      JSON.stringify({ status, statusText: error || statusText, url })
+    );
   }
   return response.json();
 };
@@ -100,7 +103,9 @@ export const syncSafeOwnersWithSigners = (signers, safeOwners) => {
 };
 export const getVaultId = (identifiers, coinType) => {
   const vaultIdentifiers = identifiers[0] ?? [];
-  return vaultIdentifiers.find((id) => id.indexOf(COIN_TYPE_TO_META[coinType].vaultName) >= 0);
+  return vaultIdentifiers.find(
+    (id) => id.indexOf(COIN_TYPE_TO_META[coinType].vaultName) >= 0
+  );
 };
 
 export const removeAddressPrefix = (address) => address.replace("0x", "");
@@ -133,7 +138,9 @@ export const parseIdentifier = (identifier) => {
 };
 
 export const getNameByAddress = (nameAddressArray, address) => {
-  const nameAddress = nameAddressArray.find((nameAddress) => nameAddress.address === address);
+  const nameAddress = nameAddressArray.find(
+    (nameAddress) => nameAddress.address === address
+  );
   return nameAddress?.name ?? address;
 };
 
