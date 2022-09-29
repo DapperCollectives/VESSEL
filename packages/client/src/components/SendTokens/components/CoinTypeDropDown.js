@@ -12,7 +12,7 @@ const CoinTypeDropDown = ({ coinType, setCoinType, address }) => {
     itemValue: type[0],
     displayText: type[1].displayName,
   }));
-  const renderOption = ({ itemValue, displayText }) => (
+  const renderOption = (itemValue, displayText) => (
     <div className="is-flex is-flex-grow-1 is-align-items-center is-justify-content-space-between">
       <span className="is-flex is-align-items-center">
         <Svg name={itemValue} className="mr-2" />

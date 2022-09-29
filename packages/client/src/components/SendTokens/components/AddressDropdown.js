@@ -1,36 +1,34 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useRef } from "react";
 import { Web3Context } from "contexts/Web3";
 import { useAddressValidation } from "hooks";
 import { Dropdown } from "library/components";
 import { isAddr, formatAddress } from "utils";
+import Svg from "library/Svg";
 import { SendTokensContext } from "../sendTokensContext";
 
-const MOCK_SAFEOWNERS = [
-  {
-    name: "test",
-    address: "01cf0e2f2f715450",
-  },
-  {
-    name: "test2",
-    address: "f3fcd2c1a78f5eee",
-  },
-  {
-    name: "test3",
-    address: "f8d6e0586b0a20c7",
-  },
-];
 const AddressDropdown = () => {
   const [sendModalState, setSendModalState] = useContext(SendTokensContext);
   const web3 = useContext(Web3Context);
-  const { recipient, address } = sendModalState;
-  // const { safeOwners } = web3?.treasuries?.[address];
+  const {
+    recipient,
+    recipientValid,
+    address: treasuryAddress,
+  } = sendModalState;
+  const { safeOwners } = web3?.treasuries?.[treasuryAddress];
   const { isAddressValid } = useAddressValidation(web3.injectedProvider);
-  const safeOwners = MOCK_SAFEOWNERS;
   const dropdownOptions = safeOwners.map(({ address }) => ({
     displayText: address,
     itemValue: address,
   }));
   const [filteredOptions, setFilteredOptions] = useState(dropdownOptions);
+  const searchInputRef = useRef();
+
+  const getSafeOwnerNameByAddress = (ownerAddress) => {
+    const safeOwner = safeOwners.find(
+      (owner) => owner.address === ownerAddress
+    );
+    return safeOwner?.name ?? "";
+  };
 
   const onrecipientChange = async (itemValue) => {
     let isValid = isAddr(itemValue);
@@ -43,8 +41,11 @@ const AddressDropdown = () => {
       recipientValid: isValid,
     }));
   };
-  const getSafeOwnerNameByAddress = (ownerAddress) =>
-    safeOwners.find((owner) => owner.address === ownerAddress).name;
+
+  const handleOptionSelect = (itemValue) => {
+    onrecipientChange(itemValue);
+    searchInputRef.current.value = "";
+  };
 
   const handleAddressSearchEnter = (e) => {
     const entry = e.target.value;
@@ -52,17 +53,30 @@ const AddressDropdown = () => {
       ({ itemValue, displayText }) =>
         displayText.indexOf(entry) >= 0 || itemValue.indexOf(entry) >= 0
     );
-    setFilteredOptions(newFilteredOptions);
+
+    // we found some addresses matching the search
+    // render the filtered options
+    if (newFilteredOptions.length > 0) {
+      setFilteredOptions(newFilteredOptions);
+
+      // address not found
+      // we treat this search box as an input
+    } else {
+      onrecipientChange(entry);
+    }
   };
 
-  const renderOption = ({ itemValue, displayText }) => (
+  const renderOption = (itemValue, displayText) => (
     <div className="is-flex is-flex-grow-1 is-align-items-center is-justify-content-space-between">
-      <span className="has-text-weight-bold has-text-black">{displayText}</span>
+      <span className="has-text-weight-bold has-text-black">
+        {displayText ?? itemValue}
+      </span>
       <span className="has-text-black">
         {getSafeOwnerNameByAddress(itemValue)}
       </span>
     </div>
   );
+
   const renderAddressSearchInput = () => (
     <div className="is-flex is-justify-content-space-around">
       <input
@@ -71,9 +85,16 @@ const AddressDropdown = () => {
         type="text"
         placeholder="Search or enter address"
         onChange={handleAddressSearchEnter}
+        ref={searchInputRef}
       />
+      {searchInputRef?.current?.value && recipientValid && (
+        <div style={{ position: "absolute", right: 55, top: 20 }}>
+          <Svg name="Check" />
+        </div>
+      )}
     </div>
   );
+
   return (
     <div className="px-5">
       <p className="has-text-grey mb-2">
@@ -85,7 +106,7 @@ const AddressDropdown = () => {
         defaultText="Select Address"
         selectedValue={recipient}
         options={filteredOptions}
-        setOption={onrecipientChange}
+        setOption={handleOptionSelect}
         renderOption={renderOption}
         renderCustomSearchOrInput={renderAddressSearchInput}
       />

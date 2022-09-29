@@ -51,8 +51,8 @@ const Dropdown = ({
   const closeOnBlur = () => {
     setIsOpen(false);
   };
-  const getOptionByValue = (v) =>
-    options.find(({ itemValue }) => itemValue === v);
+  const getOptionByValue = (value) =>
+    options.find(({ itemValue }) => itemValue === value);
 
   const dropdownClasses = [
     "dropdown is-right",
@@ -64,7 +64,6 @@ const Dropdown = ({
   //   "is-flex is-flex-grow-1",
   //   "is-active",
   // ];
-
   return (
     <div
       className={dropdownClasses.join(" ")}
@@ -83,7 +82,10 @@ const Dropdown = ({
           <div className="is-flex is-align-items-center is-justify-content-space-between has-text-grey small-text">
             <div className="is-flex-grow-1 mr-2 has-text-left has-text-black">
               {selectedValue
-                ? renderOption(getOptionByValue(selectedValue))
+                ? renderOption(
+                    selectedValue,
+                    getOptionByValue(selectedValue)?.displayText
+                  )
                 : defaultText}
             </div>
             <Svg name="CaretDown" />
@@ -99,7 +101,7 @@ const Dropdown = ({
         <div className="dropdown-content py-0">
           {renderCustomSearchOrInput && renderCustomSearchOrInput()}
           {options.map((option) => {
-            const { itemValue } = option;
+            const { itemValue, displayText } = option;
             return (
               <button
                 type="button"
@@ -112,7 +114,7 @@ const Dropdown = ({
                 }}
                 key={`drop-down-${itemValue}`}
               >
-                {renderOption(option)}
+                {renderOption(itemValue, displayText)}
               </button>
             );
           })}
