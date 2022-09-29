@@ -3,7 +3,7 @@ import NFTView from "./NFTView";
 import TokenView from "./TokenView";
 import SignerThresholdView from "./SignerThresholdView";
 import ThresholdView from "./ThresholdView";
-import Confirmations from "./Confirmations";
+import Confirmations from "components/Confirmations";
 
 const ApprovalRequired = ({
   safeData,

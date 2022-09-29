@@ -1,48 +1,23 @@
 import React from "react";
 import { useModalContext } from "contexts";
 import Svg from "library/Svg";
-import { formatActionString } from "utils";
+import { formatActionString, getStatusColor } from "utils";
+import { TransactionDetailsModal } from "modals";
 
-const TransactionDetails = ({ transaction, onClose }) => {
-  const date = new Date(transaction.eventDate);
-  return (
-    <>
-      <div className="p-5 has-text-black">
-        <h2 className="is-size-4">Transaction details</h2>
-        <p className="has-text-grey">
-          Executed on {date.toLocaleDateString("en-us")} at{" "}
-          {date.toLocaleTimeString("en-us")}
-        </p>
-      </div>
-      <div className="border-light-top p-5">
-        <div className="flex-1 is-flex is-flex-direction-column">
-          <div className="is-flex is-align-items-center mt-4">
-            <button className="button flex-1 p-4" onClick={onClose}>
-              Close
-            </button>
-          </div>
-        </div>
-      </div>
-    </>
-  );
-};
-
-const Row = ({ transaction, displayIndex, onView }) => {
+const Row = ({ transaction, displayIndex, onView, className }) => {
   const date = new Date(transaction.eventDate);
   const { intent } = transaction.blockEventData.actionView;
-  const status = transaction.flowEventId.includes("ActionDestroyed")
-    ? "rejected"
-    : "confirmed";
-  const statusBackground =
-    status === "rejected" ? "has-text-danger" : "has-text-success";
+  const statusColor = getStatusColor(transaction.status);
 
   return (
-    <tr className="py-4 is-flex is-align-items-center is-justify-content-space-between">
+    <tr
+      className={`py-4 is-flex is-align-items-center is-justify-content-space-between ${className}`}
+    >
       <td className="p-3 flex-1">{String(displayIndex).padStart(2, "0")}</td>
       <td className="p-3 flex-9">{formatActionString(intent)}</td>
       <td className="p-3 flex-2 is-flex is-align-items-center is-hidden-mobile">
-        <Svg name="Status" className={statusBackground} />
-        <span className="ml-2 is-capitalized">{status}</span>
+        <Svg name="Status" className={`has-text-${statusColor}`} />
+        <span className="ml-2 is-capitalized">{transaction.status}</span>
       </td>
       <td className="p-3 flex-3 is-hidden-mobile has-text-grey">
         {date.toLocaleDateString("en-us")}{" "}
@@ -58,25 +33,50 @@ const Row = ({ transaction, displayIndex, onView }) => {
 };
 
 const TransactionTable = ({ safeData, transactions = [], className = "" }) => {
-  const modalContext = useModalContext();
+  const { openModal, closeModal } = useModalContext();
 
   const onViewTransaction = (transaction) => {
-    modalContext.openModal(
-      <TransactionDetails
-        safeOwners={safeData.safeOwners}
-        transaction={transaction}
-        onClose={() => modalContext.closeModal()}
-      />
+    const { actionView, signerResponses } = transaction.blockEventData;
+    const signers = {};
+    safeData.safeOwners.forEach((owner) => {
+      let signerStatus = "pending";
+      if (signerResponses?.[owner.address] === 0) {
+        signerStatus = "approved";
+      } else if (signerResponses?.[owner.address] === 1) {
+        signerStatus = "rejected";
+      }
+      signers[owner.address] = signerStatus;
+    });
+    openModal(
+      <TransactionDetailsModal
+        onClose={closeModal}
+        safeData={safeData}
+        // massage data from graffle to work with TransactionDetails
+        transaction={{
+          status: transaction.status,
+          txID: transaction.flowTransactionId,
+          date: transaction.eventDate,
+          signers,
+          ...actionView,
+        }}
+      />,
+      {
+        headerTitle: "Transaction Details",
+      }
     );
   };
 
   // only show txs with intent
-  const transactionsToShow = transactions.filter(
-    (tx) => tx?.blockEventData?.actionView?.intent
-  );
+  const transactionsToShow = transactions
+    .filter((tx) => tx?.blockEventData?.actionView?.intent)
+    // add statuses based on eventId
+    .map((tx) => ({
+      ...tx,
+      status: tx.flowEventId.includes("ActionDestroyed") ? "rejected" : "approved",
+    }));
 
   return (
-    <table className={`border-light table-border rounded-sm ${className}`}>
+    <table className={`border-light rounded-sm ${className}`}>
       <thead>
         <tr className="is-flex has-text-grey border-light-bottom is-hidden-mobile">
           <th className="p-3 flex-1">#</th>
@@ -93,6 +93,7 @@ const TransactionTable = ({ safeData, transactions = [], className = "" }) => {
             transaction={transaction}
             displayIndex={index + 1}
             onView={onViewTransaction}
+            className={index < arr.length - 1 ? "border-light-bottom" : ""}
           />
         ))}
       </tbody>
