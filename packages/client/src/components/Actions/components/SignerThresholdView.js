@@ -2,9 +2,9 @@ import { useContacts } from "hooks";
 import { getNameByAddress } from "utils";
 import ProposedDateView from "./ProposedDateView";
 
-const OwnerView = ({ actionView, safeData, isAdd }) => {
-  const { signerAddr, timestamp } = actionView;
-  const { address: safeAddress } = safeData;
+const SignerThresholdView = ({ actionView, safeData, isAdd }) => {
+  const { signerAddr, newThreshold, timestamp } = actionView;
+  const { address: safeAddress, safeOwners } = safeData;
 
   const { contacts } = useContacts(safeAddress);
   const signerName = getNameByAddress(contacts, signerAddr);
@@ -34,7 +34,15 @@ const OwnerView = ({ actionView, safeData, isAdd }) => {
         )}
       </div>
       <ProposedDateView timestamp={timestamp} />
+      <div className="m-1 columns is-size-6 border-light-bottom">
+        <span className="column pl-0 has-text-grey">Signature Threshold</span>
+        <div className="column pl-0">
+          <span className="has-text-weight-bold has-text-black">
+            {newThreshold} of {safeOwners.length} owner(s)
+          </span>
+        </div>
+      </div>
     </>
   );
 };
-export default OwnerView;
+export default SignerThresholdView;

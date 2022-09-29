@@ -1,7 +1,7 @@
 import { ACTION_TYPES } from "constants/enums";
 import NFTView from "./NFTView";
 import TokenView from "./TokenView";
-import OwnerView from "./OwnerView";
+import SignerThresholdView from "./SignerThresholdView";
 import ThresholdView from "./ThresholdView";
 import Confirmations from "./Confirmations";
 
@@ -20,13 +20,17 @@ const ActionRequired = ({
         return <TokenView actionView={actionView} safeData={safeData} />;
       case ACTION_TYPES.TRANSFER_NFT:
         return <NFTView actionView={actionView} safeData={safeData} />;
-      case ACTION_TYPES.ADD_OWNER:
+      case ACTION_TYPES.ADD_SIGNER_UPDATE_THRESHOLD:
         return (
-          <OwnerView actionView={actionView} safeData={safeData} isAdd={true} />
+          <SignerThresholdView
+            actionView={actionView}
+            safeData={safeData}
+            isAdd={true}
+          />
         );
-      case ACTION_TYPES.REMOVE_OWNER:
+      case ACTION_TYPES.REMOVE_SIGNER_UPDATE_THRESHOLD:
         return (
-          <OwnerView
+          <SignerThresholdView
             actionView={actionView}
             safeData={safeData}
             isAdd={false}
