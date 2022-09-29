@@ -35,6 +35,7 @@ const Row = ({ threshold, action, displayIndex, onApprove, onSign }) => {
         </td>
         <td className="p-3 is-flex flex-4 is-hidden-touch">
           <button
+            type="button"
             className="button flex-4 is-flex is-tertiary with-icon"
             onClick={() => actionFn(action)}
           >
@@ -46,6 +47,7 @@ const Row = ({ threshold, action, displayIndex, onApprove, onSign }) => {
       <tr className="is-hidden-desktop">
         <td className="p-3 is-flex">
           <button
+            type="button"
             className="button flex-1 is-tertiary with-icon"
             onClick={() => actionFn(action)}
           >

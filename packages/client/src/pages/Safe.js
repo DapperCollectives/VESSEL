@@ -43,6 +43,7 @@ const ReceiveTokens = ({ name, address }) => {
           />
         </div>
         <button
+          type="button"
           className="button is-transparent mt-5"
           onClick={() => clipboard.copy(address)}
         >
@@ -53,6 +54,7 @@ const ReceiveTokens = ({ name, address }) => {
       </div>
       <div className="is-flex is-align-items-center mt-6">
         <button
+          type="button"
           className="button flex-1 is-border mr-2"
           onClick={() => modalContext.closeModal()}
         >
@@ -123,7 +125,7 @@ function Safe({ web3 }) {
     const to = btn === "home" ? baseUrl : `${baseUrl}/${btn}`;
     return (
       <NavLink to={to} key={`btn-${i}`}>
-        <button className={classes.join(" ")} key={i}>
+        <button type="button" className={classes.join(" ")} key={i}>
           {btn}
         </button>
       </NavLink>
@@ -245,12 +247,17 @@ function Safe({ web3 }) {
         <div className="is-flex flex-1 is-justify-content-end">
           <div className="w-auto">
             <button
+              type="button"
               className="button is-border mr-2 with-icon"
               onClick={onReceive}
             >
               Receive <Svg name="ArrowDown" />
             </button>
-            <button className="is-primary button with-icon" onClick={onSend}>
+            <button
+              type="button"
+              className="is-primary button with-icon"
+              onClick={onSend}
+            >
               Send <Svg name="ArrowUp" />
             </button>
           </div>
