@@ -16,19 +16,15 @@ const AddressDropdown = () => {
   } = sendModalState;
   const { safeOwners } = web3?.treasuries?.[treasuryAddress];
   const { isAddressValid } = useAddressValidation(web3.injectedProvider);
-  const dropdownOptions = safeOwners.map(({ address }) => ({
-    displayText: address,
-    itemValue: address,
-  }));
+  const dropdownOptions = safeOwners
+    .filter(({ verified }) => verified)
+    .map(({ name, address }) => ({
+      displayText: address,
+      itemValue: address,
+      attr: { name },
+    }));
   const [filteredOptions, setFilteredOptions] = useState(dropdownOptions);
   const searchInputRef = useRef();
-
-  const getSafeOwnerNameByAddress = (ownerAddress) => {
-    const safeOwner = safeOwners.find(
-      (owner) => owner.address === ownerAddress
-    );
-    return safeOwner?.name ?? "";
-  };
 
   const onrecipientChange = async (itemValue) => {
     let isValid = isAddr(itemValue);
@@ -50,8 +46,10 @@ const AddressDropdown = () => {
   const handleAddressSearchEnter = (e) => {
     const entry = e.target.value;
     const newFilteredOptions = dropdownOptions.filter(
-      ({ itemValue, displayText }) =>
-        displayText.indexOf(entry) >= 0 || itemValue.indexOf(entry) >= 0
+      ({ itemValue, displayText, attr }) =>
+        displayText.indexOf(entry) >= 0 ||
+        itemValue.indexOf(entry) >= 0 ||
+        attr.name.indexOf(entry) >= 0
     );
 
     // we found some addresses matching the search
@@ -66,14 +64,12 @@ const AddressDropdown = () => {
     }
   };
 
-  const renderOption = (itemValue, displayText) => (
+  const renderOption = (itemValue, displayText, attr) => (
     <div className="is-flex is-flex-grow-1 is-align-items-center is-justify-content-space-between">
       <span className="has-text-weight-bold has-text-black">
         {displayText ?? itemValue}
       </span>
-      <span className="has-text-black">
-        {getSafeOwnerNameByAddress(itemValue)}
-      </span>
+      <span className="has-text-black">{attr?.name}</span>
     </div>
   );
 

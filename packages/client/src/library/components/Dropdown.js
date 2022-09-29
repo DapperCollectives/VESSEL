@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Svg from "library/Svg";
 
 // function Tooltip({ position, text, children, classNames = "" }) {
@@ -43,7 +43,7 @@ const Dropdown = ({
   renderCustomSearchOrInput,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-
+  const [selectedValueDisplay, setSelectedValueDisplay] = useState(defaultText);
   const openCloseDrowdown = () => {
     setIsOpen((status) => !status);
   };
@@ -64,6 +64,24 @@ const Dropdown = ({
   //   "is-flex is-flex-grow-1",
   //   "is-active",
   // ];
+  useEffect(() => {
+    (() => {
+      if (selectedValue) {
+        const selectedOption = options.find(
+          ({ itemValue }) => itemValue === selectedValue
+        );
+        setSelectedValueDisplay(
+          renderOption(
+            selectedValue,
+            selectedOption?.displayText,
+            selectedOption?.attr
+          )
+        );
+      } else {
+        setSelectedValueDisplay(defaultText);
+      }
+    })();
+  }, [selectedValue, renderOption]);
   return (
     <div
       className={dropdownClasses.join(" ")}
@@ -81,12 +99,13 @@ const Dropdown = ({
         >
           <div className="is-flex is-align-items-center is-justify-content-space-between has-text-grey small-text">
             <div className="is-flex-grow-1 mr-2 has-text-left has-text-black">
-              {selectedValue
+              {/* {selectedValue
                 ? renderOption(
                     selectedValue,
                     getOptionByValue(selectedValue)?.displayText
                   )
-                : defaultText}
+                : defaultText} */}
+              {selectedValueDisplay}
             </div>
             <Svg name="CaretDown" />
           </div>
@@ -101,7 +120,7 @@ const Dropdown = ({
         <div className="dropdown-content py-0">
           {renderCustomSearchOrInput && renderCustomSearchOrInput()}
           {options.map((option) => {
-            const { itemValue, displayText } = option;
+            const { itemValue, displayText, attr } = option;
             return (
               <button
                 type="button"
@@ -114,7 +133,7 @@ const Dropdown = ({
                 }}
                 key={`drop-down-${itemValue}`}
               >
-                {renderOption(itemValue, displayText)}
+                {renderOption(itemValue, displayText, attr)}
               </button>
             );
           })}

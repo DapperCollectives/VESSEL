@@ -8,11 +8,14 @@ const CoinTypeDropDown = ({ coinType, setCoinType, address }) => {
   const web3 = useContext(Web3Context);
   const { balances } = web3;
   const balanceMap = balances[address];
-  const coinTypes = Object.entries(COIN_TYPE_TO_META).map((type) => ({
-    itemValue: type[0],
-    displayText: type[1].displayName,
+  const coinTypes = Object.entries(COIN_TYPE_TO_META).map(([key, value]) => ({
+    itemValue: key,
+    displayText: value.displayName,
+    attr: {
+      balance: balanceMap[key] ? Number(balanceMap[key]).toFixed(2) : 0,
+    },
   }));
-  const renderOption = (itemValue, displayText) => (
+  const renderOption = (itemValue, displayText, attr) => (
     <div className="is-flex is-flex-grow-1 is-align-items-center is-justify-content-space-between">
       <span className="is-flex is-align-items-center">
         <Svg name={itemValue} className="mr-2" />
@@ -21,9 +24,7 @@ const CoinTypeDropDown = ({ coinType, setCoinType, address }) => {
         </span>
       </span>
       <span>
-        <span className="has-text-black mr-1">
-          {balanceMap[itemValue] ? Number(balanceMap[itemValue]).toFixed(2) : 0}
-        </span>
+        <span className="has-text-black mr-1">{attr.balance}</span>
         Qty
       </span>
     </div>

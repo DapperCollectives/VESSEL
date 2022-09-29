@@ -58,7 +58,7 @@ const ButtonGroup = () => {
     }
   };
   return (
-    <div className="is-flex is-align-items-center mt-6 px-5 pb-5">
+    <div className="is-flex is-align-items-center mt-5 p-5 border-light-top">
       <button
         className="button is-border flex-1 mr-2"
         onClick={() => modalContext.closeModal()}
