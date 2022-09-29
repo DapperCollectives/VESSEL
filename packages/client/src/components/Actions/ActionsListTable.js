@@ -7,72 +7,31 @@ import { SIGNER_RESPONSES } from "constants/enums";
 import Svg from "library/Svg";
 import ApprovalRequired from "./components/ApprovalRequired";
 
-const Row = ({
-  safeData,
-  action,
-  displayIndex,
-  onApprove,
-  onReject,
-  onExecute,
-}) => {
-  const onApproveAction = async (action) => {
-    try {
-      await onApprove(action);
-      closeModal();
-    } catch (error) {
-      showErrorModal(error);
-    }
-  };
-
-  const onRejectAction = async (action) => {
-    try {
-      await onReject(action);
-      closeModal();
-    } catch (error) {
-      showErrorModal(error);
-    }
-  };
-
-  const openApproveOrRejectModal = async (action) => {
-    const view = await getActionView(safeData.address, action.uuid);
-    openModal(
-      <ApprovalRequired
-        safeData={safeData}
-        actionView={view}
-        confirmations={action.signerResponses}
-        onApprove={() => onApproveAction(action)}
-        onReject={() => onRejectAction(action)}
-      />,
-      { headerTitle: "Approval Required" }
-    );
-  };
+const Row = ({ threshold, action, displayIndex, onApprove, onSign }) => {
+  const { intent } = action;
   const totalSigned = Object.values(action.signerResponses).filter(
     (x) => x === SIGNER_RESPONSES.APPROVED
   ).length;
-  const executionReady = totalSigned >= safeData.threshold;
+  const executionReady = totalSigned >= threshold;
   const background = executionReady ? "has-text-danger" : "has-text-warning";
   const actionPrompt = executionReady
     ? "Pending Signature"
     : "Pending Approval";
-  const actionText = executionReady ? "Sign" : "Approve";
   const actionSvg = executionReady ? "Quill" : "EmptyCheck";
-  const actionFn = executionReady ? onExecute : openApproveOrRejectModal;
-
-  const { getActionView } = useContext(Web3Context);
-  const { showErrorModal } = useErrorMessage();
-  const { openModal, closeModal } = useModalContext();
+  const actionText = executionReady ? "Sign" : "Approve";
+  const actionFn = executionReady ? onSign : onApprove;
 
   return (
     <>
       <tr className="py-4 is-flex is-align-items-center">
         <td className="p-3 flex-1">{String(displayIndex).padStart(2, "0")}</td>
-        <td className="p-3 flex-7">{formatActionString(action.intent)}</td>
+        <td className="p-3 flex-7">{formatActionString(intent)}</td>
         <td className="p-3 flex-4 is-hidden-touch">
           <Svg key={background} name="Status" className={background} />
           <span className="ml-2">{actionPrompt}</span>
         </td>
         <td className="p-3 flex-3 is-hidden-touch">
-          {totalSigned} of {safeData.threshold} signatures
+          {totalSigned} of {threshold} signatures
         </td>
         <td className="p-3 is-flex flex-4 is-hidden-touch">
           <button
@@ -106,6 +65,44 @@ const ActionsListTable = ({
   onReject,
   onExecute,
 }) => {
+  const { address, threshold } = safeData;
+  const { getActionView } = useContext(Web3Context);
+  const { showErrorModal } = useErrorMessage();
+  const { openModal, closeModal } = useModalContext();
+
+  const onApproveAction = async (action) => {
+    try {
+      await onApprove(action);
+      closeModal();
+    } catch (error) {
+      showErrorModal(error);
+    }
+  };
+
+  const onRejectAction = async (action) => {
+    try {
+      await onReject(action);
+      closeModal();
+    } catch (error) {
+      showErrorModal(error);
+    }
+  };
+
+  const openApprovalRequiredModal = async (action) => {
+    const { uuid, signerResponses } = action;
+    const view = await getActionView(address, uuid);
+    openModal(
+      <ApprovalRequired
+        safeData={safeData}
+        actionView={view}
+        confirmations={signerResponses}
+        onApprove={() => onApproveAction(action)}
+        onReject={() => onRejectAction(action)}
+      />,
+      { headerTitle: "Approval Required" }
+    );
+  };
+
   return (
     <table className={`border-light rounded-sm`}>
       <thead>
@@ -122,11 +119,10 @@ const ActionsListTable = ({
           <Row
             key={action.uuid}
             action={action}
-            safeData={safeData}
+            threshold={threshold}
             displayIndex={index + 1}
-            onApprove={onApprove}
-            onReject={onReject}
-            onExecute={onExecute}
+            onApprove={openApprovalRequiredModal}
+            onSign={onExecute}
           />
         ))}
       </tbody>
