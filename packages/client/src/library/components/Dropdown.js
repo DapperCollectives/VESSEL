@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import Svg from "library/Svg";
-import { filter } from "lodash";
 
 // function Tooltip({ position, text, children, classNames = "" }) {
 //   const positionConfig = {
@@ -41,12 +40,10 @@ const Dropdown = ({
   setOption = () => {},
   renderOption = () => {},
   defaultText = "Select one",
-  withSearch = false,
-  withEnter = false,
-  searchInputPlaceholder = "",
+  renderCustomSearchOrInput,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [filteredOptions, setFilteredOptions] = useState(options);
+
   const openCloseDrowdown = () => {
     setIsOpen((status) => !status);
   };
@@ -55,14 +52,8 @@ const Dropdown = ({
     setIsOpen(false);
   };
   const getOptionByValue = (v) =>
-    options.find((option) => option.itemValue === v);
-  const handleSearchEnter = (e) => {
-    const entry = e.target.value;
-    const newFilteredOptions = options.filter(
-      (option) => option.displayText.indexOf(entry) >= 0
-    );
-    setFilteredOptions(newFilteredOptions);
-  };
+    options.find(({ itemValue }) => itemValue === v);
+
   const dropdownClasses = [
     "dropdown is-right",
     "is-flex is-flex-grow-1",
@@ -106,18 +97,8 @@ const Dropdown = ({
         role="menu"
       >
         <div className="dropdown-content py-0">
-          {(withSearch || withEnter) && (
-            <div className="is-flex is-justify-content-space-around">
-              <input
-                className="input mb-4 dropdown-input"
-                style={{ width: "80%", height: "58px" }}
-                type="text"
-                placeholder={searchInputPlaceholder}
-                onChange={handleSearchEnter}
-              />
-            </div>
-          )}
-          {filteredOptions.map((option) => {
+          {renderCustomSearchOrInput && renderCustomSearchOrInput()}
+          {options.map((option) => {
             const { itemValue } = option;
             return (
               <button
