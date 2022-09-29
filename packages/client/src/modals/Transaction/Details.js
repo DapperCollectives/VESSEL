@@ -1,6 +1,6 @@
 import { useContacts, useClipboard } from "hooks";
 import { getStatusColor } from "utils";
-import Confirmations from "components/Confirmations";
+import Signatures from "components/Signatures";
 import BannerInfo from "./BannerInfo";
 import { getFlowscanUrlForTransaction } from "utils";
 import Svg from "library/Svg";
@@ -30,7 +30,7 @@ const TransactionDetails = ({ onClose, safeData = {}, transaction = {} }) => {
         />
         <div style={{ position: "relative", zIndex: 10 }}>
           <label
-            className={`has-background-${statusColor} has-text-white px-3 py-2 rounded-lg mb-1`}
+            className={`has-background-${statusColor} has-text-white px-3 py-2 rounded-lg mb-1 is-capitalized`}
           >
             {status}
           </label>
@@ -87,7 +87,7 @@ const TransactionDetails = ({ onClose, safeData = {}, transaction = {} }) => {
           </div>
         )}
         <div className="border-light-top pb-4 has-text-grey">
-          <Confirmations safeData={safeData} confirmations={signers} />
+          <Signatures safeData={safeData} confirmations={signers} />
         </div>
       </div>
       <div className="is-flex border-light-top mt-5 p-5">

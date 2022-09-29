@@ -1,7 +1,7 @@
 import Svg from "library/Svg";
 import { getNameByAddress, shortenString, getStatusColor } from "utils";
 
-const Confirmations = ({ confirmations, safeData }) => {
+const Signatures = ({ confirmations, safeData }) => {
   const { safeOwners } = safeData;
 
   const getNumberOfConfirmations = () => {
@@ -32,7 +32,7 @@ const Confirmations = ({ confirmations, safeData }) => {
   return (
     <div className="p-4">
       <div className="columns">
-        <span className="column pl-0">Confirmations</span>
+        <span className="column pl-0">Signatures</span>
         <span className="column has-text-right">{getNumberOfConfirmations()}</span>
       </div>
       <div className="confirmations has-text-black">{getConfirmationList()}</div>
@@ -40,4 +40,4 @@ const Confirmations = ({ confirmations, safeData }) => {
   );
 };
 
-export default Confirmations;
+export default Signatures;

@@ -3,7 +3,7 @@ import NFTView from "./NFTView";
 import TokenView from "./TokenView";
 import SignerThresholdView from "./SignerThresholdView";
 import ThresholdView from "./ThresholdView";
-import Confirmations from "components/Confirmations";
+import Signatures from "components/Signatures";
 
 const ApprovalRequired = ({
   safeData,
@@ -47,7 +47,7 @@ const ApprovalRequired = ({
     <div className="has-text-grey">
       <div className="p-5">
         {getActionView()}
-        <Confirmations confirmations={confirmations} safeData={safeData} />
+        <Signatures confirmations={confirmations} safeData={safeData} />
       </div>
       <div className="border-light-bottom">
         <div className="px-5 pb-5">
