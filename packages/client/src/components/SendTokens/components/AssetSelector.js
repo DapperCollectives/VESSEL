@@ -71,11 +71,10 @@ const AssetSelector = () => {
         <NFTSelector
           nftsToDisplay={nftsToDisplay}
           selectedNFT={selectedNFT}
-          setSelectedNFT={(selected, url) => {
+          setSelectedNFT={(selected) => {
             setSendModalState((prevState) => ({
               ...prevState,
               selectedNFT: selected,
-              selectedNFTUrl: url,
             }));
           }}
         />

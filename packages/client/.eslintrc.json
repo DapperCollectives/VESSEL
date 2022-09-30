@@ -30,6 +30,7 @@
     "prefer-const": ["error"],
     "quotes": ["off", "single"],
     "comma-dangle": ["off"],
+    "operator-linebreak": ["off"],
     "implicit-arrow-linebreak": ["off"],
     "function-paren-newline": ["off"],
     "object-shorthand": ["error", "properties"],

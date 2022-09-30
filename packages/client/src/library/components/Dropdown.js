@@ -17,7 +17,6 @@ const Dropdown = ({
     setIsOpen((status) => !status);
   };
 
-  const dropdownClasses = [,];
   useEffect(() => {
     (() => {
       if (selectedValue) {

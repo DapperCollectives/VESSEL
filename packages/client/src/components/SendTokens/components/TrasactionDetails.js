@@ -4,20 +4,16 @@ import { Web3Context } from "contexts/Web3";
 import { ASSET_TYPES } from "constants/enums";
 import { COIN_TYPE_TO_META } from "constants/maps";
 import Svg from "library/Svg";
+import { isEmpty } from "lodash";
 import { SendTokensContext } from "../sendTokensContext";
 
 const TransactionDetails = () => {
   const [transactionFee, setTransactionFee] = useState(0);
   const [sendModalState] = useContext(SendTokensContext);
-  const {
-    assetType,
-    coinType,
-    tokenAmount,
-    selectedNFTUrl,
-    recipient,
-    address,
-  } = sendModalState;
+  const { assetType, coinType, tokenAmount, selectedNFT, recipient, address } =
+    sendModalState;
   const web3 = useContext(Web3Context);
+
   const { safeOwners } = web3?.treasuries?.[address];
   const recipientName =
     safeOwners.find((owner) => owner.address === recipient)?.name ?? "";
@@ -46,17 +42,24 @@ const TransactionDetails = () => {
           </div>
         </div>
       )}
-      {assetType === ASSET_TYPES.NFT && (
-        <div
-          style={{
-            cursor: "pointer",
-            height: 150,
-            backgroundImage: `url(${selectedNFTUrl})`,
-            backgroundSize: "contain",
-            backgroundPosition: "center",
-            backgroundRepeat: "no-repeat",
-          }}
-        />
+      {assetType === ASSET_TYPES.NFT && !isEmpty(selectedNFT) && (
+        <div className="is-flex is-flex-direction-column is-align-items-start">
+          <div className="flex-1">
+            <div
+              style={{
+                cursor: "pointer",
+                height: "150px",
+                width: "150px",
+                backgroundImage: `url(${selectedNFT.thumbnail.url})`,
+                backgroundSize: "contain",
+                backgroundPosition: "center",
+                backgroundRepeat: "no-repeat",
+              }}
+            />
+          </div>
+          <span className="is-size-4">{`#${selectedNFT.tokenId}`}</span>
+          <strong>{selectedNFT.name}</strong>
+        </div>
       )}
       <div className="mt-5">
         <div className="border-light-top is-flex py-5">

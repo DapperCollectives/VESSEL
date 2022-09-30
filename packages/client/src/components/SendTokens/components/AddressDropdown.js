@@ -24,7 +24,6 @@ const AddressDropdown = () => {
       attr: { name },
     }));
   const [filteredOptions, setFilteredOptions] = useState(dropdownOptions);
-  const [isTooltipOpen, setIsTooltipOpen] = useState(false);
   const searchInputRef = useRef();
 
   const onrecipientChange = async (itemValue) => {
@@ -100,7 +99,6 @@ const AddressDropdown = () => {
         <Tooltip
           position="top"
           text="A unique identifier for a user’s wallet."
-          isOpen={isTooltipOpen}
           className="mt-2"
         >
           <Svg name="QuestionMark" />

@@ -225,6 +225,8 @@ h2
     border: 1px solid $success-green
   &-error
     border: 1px solid $error-red
+  &-heavy
+    border: 4px solid black
 
 /********************* Custom utility css - Border radius********************/
 .rounded-sm
@@ -447,7 +449,8 @@ input:focus-visible,
   &>span
     z-index: 9999
     position: absolute
-    width: 150px
+    min-width: 150px
+    max-width: 200px
     background:$purple-background
     color: $purple-primary
     border: 1px solid $purple-primary

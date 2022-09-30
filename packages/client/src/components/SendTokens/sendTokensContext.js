@@ -12,8 +12,7 @@ export const SendTokensContextProvider = (props) => {
     recipientValid: false,
     assetType: initialState?.assetType ?? ASSET_TYPES.TOKEN,
     coinType: initialState?.coinType ?? COIN_TYPES.FLOW,
-    selectedNFT: initialState?.selectedNFT ?? "",
-    selectedNFTUrl: "",
+    selectedNFT: {},
   };
   const [sendModalState, setSendModalState] = useState(INIT_STATE);
   return (
