@@ -30,7 +30,8 @@ const ReceiveTokens = ({ name, address }) => {
         <h2 className="is-size-4">Receive</h2>
         <div>
           <span className="border-light-right mr-2 pr-2 has-text-grey">
-            To: {name}
+            To:
+            {name}
           </span>
           <span className="is-underlined">{shortenString(address)}</span>
         </div>
@@ -43,6 +44,7 @@ const ReceiveTokens = ({ name, address }) => {
           />
         </div>
         <button
+          type="button"
           className="button is-transparent mt-5"
           onClick={() => clipboard.copy(address)}
         >
@@ -53,6 +55,7 @@ const ReceiveTokens = ({ name, address }) => {
       </div>
       <div className="is-flex is-align-items-center mt-6">
         <button
+          type="button"
           className="button flex-1 is-border mr-2"
           onClick={() => modalContext.closeModal()}
         >
@@ -122,8 +125,8 @@ function Safe({ web3 }) {
     const baseUrl = `/safe/${address}`;
     const to = btn === "home" ? baseUrl : `${baseUrl}/${btn}`;
     return (
-      <NavLink to={to} key={`btn-${i}`}>
-        <button className={classes.join(" ")} key={i}>
+      <NavLink to={to} key={`btn-${btn}`}>
+        <button type="button" className={classes.join(" ")} key={i}>
           {btn}
         </button>
       </NavLink>
@@ -230,13 +233,17 @@ function Safe({ web3 }) {
         <h1 className=" mb-2">{safeData.name}</h1>
         <p>
           <span className="has-text-grey">
-            Safe address {shortenString(address)}
+            Safe address
+            {shortenString(address)}
           </span>
-          <span
-            className="is-underlined ml-2 pointer"
-            onClick={() => clipboard.copy(address)}
-          >
-            {clipboard.textJustCopied === address ? "Copied" : "Copy address"}
+          <span className="is-underlined ml-2 pointer">
+            <button
+              type="button"
+              onClick={() => clipboard.copy(address)}
+              className="border-none has-background-white"
+            >
+              {clipboard.textJustCopied === address ? "Copied" : "Copy address"}
+            </button>
           </span>
         </p>
       </div>
@@ -245,13 +252,20 @@ function Safe({ web3 }) {
         <div className="is-flex flex-1 is-justify-content-end">
           <div className="w-auto">
             <button
+              type="button"
               className="button is-border mr-2 with-icon"
               onClick={onReceive}
             >
-              Receive <Svg name="ArrowDown" />
+              Receive
+              <Svg name="ArrowDown" />
             </button>
-            <button className="is-primary button with-icon" onClick={onSend}>
-              Send <Svg name="ArrowUp" />
+            <button
+              type="button"
+              className="is-primary button with-icon"
+              onClick={onSend}
+            >
+              Send
+              <Svg name="ArrowUp" />
             </button>
           </div>
         </div>
