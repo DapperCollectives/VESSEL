@@ -441,6 +441,68 @@ input:focus-visible,
   border-top: 1px solid $grey-secondary
   background: white
 
+/********************* Custom utility css - Tooltip ********************/
+.tooltip-container
+  position: relative
+  &>span
+    z-index: 9999
+    position: absolute
+    width: 150px
+    background:$purple-background
+    color: $purple-primary
+    border: 1px solid $purple-primary
+    padding: 8px
+    border-radius: 8px
+    &::after
+      position: absolute
+      top: 100%
+      left: 40%
+      content: ""
+      width: 0
+      height: 0
+
+    &.has-tooltip-top
+      left: -60px
+      top: -60px
+      &::after
+        top: 100%
+        left: 40%
+        border-left: 5px solid transparent
+        border-right: 5px solid transparent
+        border-top: 7px solid rgba(0,0,0, .7)
+    &.has-tooltip-left
+      left: -160px
+      top: -20px
+      &::after
+        top: 40%
+        left: 100%
+        border-top: 5px solid transparent
+        border-bottom: 5px solid transparent
+        border-left: 7px solid rgba(0,0,0, .7)
+    &.has-tooltip-right
+      left: 30px
+      top: -20px
+      &::after
+        top: 40%
+        left: -5%
+        border-top: 5px solid transparent
+        border-bottom: 5px solid transparent
+        border-right: 7px solid rgba(0,0,0, .7)
+    &.has-tooltip-bottom
+      left: -60px
+      top: 30px
+      &::after
+        top: -13%
+        left: 47%
+        border-left: 5px solid transparent
+        border-right: 5px solid transparent
+        border-bottom: 7px solid rgba(0,0,0, .7)
+    
+
+
+
+
+
 /********************* Custom utility css - Flex ********************/
 .flex-1
   flex: 1 0 0

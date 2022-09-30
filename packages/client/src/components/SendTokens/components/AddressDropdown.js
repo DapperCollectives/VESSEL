@@ -1,7 +1,7 @@
 import { useContext, useState, useRef } from "react";
 import { Web3Context } from "contexts/Web3";
 import { useAddressValidation } from "hooks";
-import { Dropdown } from "library/components";
+import { Dropdown, Tooltip } from "library/components";
 import { isAddr, formatAddress } from "utils";
 import Svg from "library/Svg";
 import { SendTokensContext } from "../sendTokensContext";
@@ -24,6 +24,7 @@ const AddressDropdown = () => {
       attr: { name },
     }));
   const [filteredOptions, setFilteredOptions] = useState(dropdownOptions);
+  const [isTooltipOpen, setIsTooltipOpen] = useState(false);
   const searchInputRef = useRef();
 
   const onrecipientChange = async (itemValue) => {
@@ -93,9 +94,17 @@ const AddressDropdown = () => {
 
   return (
     <div className="px-5">
-      <p className="has-text-grey mb-2">
+      <p className="has-text-grey mb-2 is-flex is-align-items-center">
         Address
-        <span className="has-text-red"> *</span>
+        <span className="has-text-red mr-1"> *</span>
+        <Tooltip
+          position="top"
+          text="A unique identifier for a user’s wallet."
+          isOpen={isTooltipOpen}
+          className="mt-2"
+        >
+          <Svg name="QuestionMark" />
+        </Tooltip>
       </p>
 
       <Dropdown

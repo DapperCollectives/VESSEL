@@ -1,39 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import Svg from "library/Svg";
 
-// function Tooltip({ position, text, children, classNames = "" }) {
-//   const positionConfig = {
-//     left: "has-tooltip-left",
-//     right: "has-tooltip-right",
-//     top: "has-tooltip-top",
-//     bottom: "has-tooltip-bottom",
-//   };
-//   const className = positionConfig[position] ?? "";
-//   return (
-//     <span
-//       className={`has-tooltip-arrow ${className} ${classNames}`}
-//       data-tooltip={text}
-//     >
-//       {children}
-//     </span>
-//   );
-// }
-
-// const TooltipWrapper = ({ isOpen, children }) => {
-//   if (isOpen) {
-//     return <>{children}</>;
-//   }
-//   return (
-//     <Tooltip
-//       classNames="is-flex is-flex-grow-1"
-//       position="top"
-//       text="Filter proposals based on status"
-//     >
-//       {children}
-//     </Tooltip>
-//   );
-// };
-
 const Dropdown = ({
   selectedValue,
   options = [],
@@ -50,11 +17,7 @@ const Dropdown = ({
     setIsOpen((status) => !status);
   };
 
-  const dropdownClasses = [
-    "dropdown is-right",
-    "is-flex is-flex-grow-1",
-    isOpen ? "is-active" : "",
-  ];
+  const dropdownClasses = [,];
   useEffect(() => {
     (() => {
       if (selectedValue) {
@@ -88,16 +51,18 @@ const Dropdown = ({
 
   return (
     <div
-      className={dropdownClasses.join(" ")}
+      className={`dropdown is-right is-flex is-flex-direction-column ${
+        isOpen ? "is-active" : ""
+      }`}
       aria-haspopup="true"
       aria-controls="dropdown-menu"
       style={{ height: "58px" }}
       ref={ref}
     >
-      <div className="dropdown-trigger columns m-0 is-flex-grow-1">
+      <div className="dropdown-trigger m-0 flex-1 is-flex">
         <button
           type="button"
-          className="rounded-sm border-light column m-0 py-0 px-3 is-full full-height has-background-white"
+          className="rounded-sm border-light flex-1 m-0 py-0 px-3 full-height has-background-white"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
           onClick={openCloseDrowdown}
@@ -111,7 +76,8 @@ const Dropdown = ({
         </button>
       </div>
       <div
-        className="dropdown-menu column p-0 is-full"
+        className="dropdown-menu flex-1 p-0"
+        style={{ width: "100%" }}
         id="dropdown-menu"
         role="menu"
       >

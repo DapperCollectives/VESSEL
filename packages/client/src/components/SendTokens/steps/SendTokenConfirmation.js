@@ -3,17 +3,16 @@ import SendModalHeader from "../components/SendModalHeader";
 import TransactionDetails from "../components/TrasactionDetails";
 import ButtonGroup from "../components/ButtonGroup";
 
-const SendTokenConfirmation = () => {
-  return (
-    <div className="p-5 has-text-black">
-      <SendModalHeader />
-      <TransactionDetails />
-      <ButtonGroup />
-      <p className="mt-3">
-        You're about to create a transaction and will have to confirm it with
-        your currently connected wallet.
-      </p>
-    </div>
-  );
-};
+const SendTokenConfirmation = () => (
+  <div className="has-text-black">
+    <SendModalHeader />
+    <TransactionDetails />
+    <p className="mt-2 px-5 has-text-grey">
+      To complete this action, you will have to confirm it with your connected
+      wallet on the next step.
+    </p>
+    <ButtonGroup />
+  </div>
+);
+
 export default SendTokenConfirmation;
