@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Svg from "library/Svg";
 
 // function Tooltip({ position, text, children, classNames = "" }) {
@@ -44,26 +44,17 @@ const Dropdown = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedValueDisplay, setSelectedValueDisplay] = useState(defaultText);
+  const ref = useRef(null);
+
   const openCloseDrowdown = () => {
     setIsOpen((status) => !status);
   };
-
-  const closeOnBlur = () => {
-    setIsOpen(false);
-  };
-  const getOptionByValue = (value) =>
-    options.find(({ itemValue }) => itemValue === value);
 
   const dropdownClasses = [
     "dropdown is-right",
     "is-flex is-flex-grow-1",
     isOpen ? "is-active" : "",
   ];
-  // const dropdownClasses = [
-  //   "dropdown is-right",
-  //   "is-flex is-flex-grow-1",
-  //   "is-active",
-  // ];
   useEffect(() => {
     (() => {
       if (selectedValue) {
@@ -82,12 +73,26 @@ const Dropdown = ({
       }
     })();
   }, [selectedValue, renderOption]);
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (ref.current && !ref.current.contains(e.target)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener("click", handleClickOutside, true);
+    return () => {
+      document.removeEventListener("click", handleClickOutside, true);
+    };
+  }, []);
+
   return (
     <div
       className={dropdownClasses.join(" ")}
       aria-haspopup="true"
       aria-controls="dropdown-menu"
       style={{ height: "58px" }}
+      ref={ref}
     >
       <div className="dropdown-trigger columns m-0 is-flex-grow-1">
         <button
@@ -99,12 +104,6 @@ const Dropdown = ({
         >
           <div className="is-flex is-align-items-center is-justify-content-space-between has-text-grey small-text">
             <div className="is-flex-grow-1 mr-2 has-text-left has-text-black">
-              {/* {selectedValue
-                ? renderOption(
-                    selectedValue,
-                    getOptionByValue(selectedValue)?.displayText
-                  )
-                : defaultText} */}
               {selectedValueDisplay}
             </div>
             <Svg name="CaretDown" />
@@ -112,7 +111,6 @@ const Dropdown = ({
         </button>
       </div>
       <div
-        onBlur={closeOnBlur}
         className="dropdown-menu column p-0 is-full"
         id="dropdown-menu"
         role="menu"
