@@ -51,17 +51,8 @@ const AddressDropdown = () => {
         itemValue.indexOf(entry) >= 0 ||
         attr.name.indexOf(entry) >= 0
     );
-
-    // we found some addresses matching the search
-    // render the filtered options
-    if (newFilteredOptions.length > 0) {
-      setFilteredOptions(newFilteredOptions);
-
-      // address not found
-      // we treat this search box as an input
-    } else {
-      onrecipientChange(entry);
-    }
+    setFilteredOptions(newFilteredOptions);
+    onrecipientChange(entry);
   };
 
   const renderOption = (itemValue, displayText, attr) => (
