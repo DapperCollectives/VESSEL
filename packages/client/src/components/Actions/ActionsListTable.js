@@ -106,7 +106,7 @@ const ActionsListTable = ({
   };
 
   return (
-    <table className={`border-light rounded-sm`}>
+    <table className="border-light rounded-sm">
       <thead>
         <tr className="is-flex has-text-grey border-light-bottom is-hidden-touch">
           <th className="p-3 flex-1">#</th>
