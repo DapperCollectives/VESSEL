@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Svg from "library/Svg";
+import { isString } from "lodash";
 
 const ErrorModal = ({ error, onClose }) => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -8,10 +9,11 @@ const ErrorModal = ({ error, onClose }) => {
     <div className="has-text-black has-text-left">
       <div className="p-5 border-light-bottom">
         <div className="has-text-black m-1">
-          Your transaction could not be completed. <br />
+          Your transaction could not be completed.
+          <br />
           Please try again later.
         </div>
-        {typeof error === "string" && (
+        {isString(error) && (
           <div className="pt-2 has-text-yellow-dark">
             <span
               className="pointer is-flex"
@@ -33,7 +35,11 @@ const ErrorModal = ({ error, onClose }) => {
         )}
       </div>
       <div className="p-5 is-flex">
-        <button type="button" className="mr-2 button flex-1 is-border" onClick={onClose}>
+        <button
+          type="button"
+          className="mr-2 button flex-1 is-border"
+          onClick={onClose}
+        >
           Close
         </button>
       </div>
