@@ -87,7 +87,7 @@ const TransactionTable = ({ safeData, transactions = [], className = "" }) => {
         </tr>
       </thead>
       <tbody>
-        {transactionsToShow.map((transaction, index) => (
+        {transactionsToShow.map((transaction, index, arr) => (
           <Row
             key={transaction.flowTransactionId}
             transaction={transaction}
