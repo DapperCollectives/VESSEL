@@ -11,7 +11,6 @@ const AddSafeOwner = ({ treasury, safeOwners }) => {
   const [address, setAddress] = useState('');
   const [addressValid, setAddressValid] = useState(false);
 
-  const addressValidClass = addressValid ? 'is-success' : 'is-error';
   const nextButtonClasses = `button flex-1 is-primary ${
     addressValid ? 'has-text-weight-bold' : 'disabled'
   }`;
@@ -48,7 +47,6 @@ const AddSafeOwner = ({ treasury, safeOwners }) => {
             <Svg name="QuestionMark" className="ml-1" />
           </label>
           <InputAddress
-            className={addressValidClass}
             value={address}
             onChange={onAddressChange}
             isValid={addressValid}

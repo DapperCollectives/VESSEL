@@ -24,11 +24,14 @@ const InputAddress = ({
     onChange({ value: isValid ? formatAddress(value) : value, isValid });
   };
 
+  const addressValidClass = isValid ? "is-success" : "is-error";
+  const inputClassName = value.length ? addressValidClass : "";
+
   return (
     <div className={`is-flex ${className}`}>
       <div className="flex-1" style={{ position: 'relative' }}>
         <input
-          className="border-light rounded-sm column is-full p-4"
+          className={`border-light rounded-sm column is-full p-4 ${inputClassName}`}
           type="text"
           value={value}
           onChange={onValueChange}
