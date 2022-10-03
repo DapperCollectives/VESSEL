@@ -214,6 +214,14 @@
         "hashAlgorithm": "SHA2_256",
         "resourceID": "projects/dl-dapper-collectives-staging/locations/global/keyRings/flow-testnet-cosigners/cryptoKeys/signer/cryptoKeyVersions/1"
       }
+    },
+    "testnet-account1": {
+      "address": "3a36b945d9a1d30a",
+      "key": "a0dbe1e041f2b4945f17eb8108f1c0532c17d92ee8ab3becba6efa5f7ad80f5b"
+    },
+    "testnet-lilico": {
+      "address": "54f586ef6fe3524d",
+      "key": "60efb3b13900b4bca3593c5da58f738e90b2183618c517ce7d271cea275edad5"
     }
   },
   "deployments": {
