@@ -44,6 +44,7 @@ function EditContactModal({
             value={currentAddr}
             isValid={addressValid}
             onChange={onAddressChange}
+            className="mt-2"
           />
           {!addressNew && (
             <p className="has-text-red mt-2">

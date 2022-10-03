@@ -1,21 +1,18 @@
 import React from 'react';
+import { InputAddress } from 'library/components';
 import Svg from 'library/Svg';
 
-function SafeOwners({
-  address,
-  safeOwners,
-  safeOwnersValidByAddress,
-  setSafeOwners,
-}) {
+function SafeOwners({ address, safeOwners, setSafeOwners }) {
   const onOwnerNameChange = (value, idx) => {
     const newOwners = safeOwners.slice(0);
     newOwners[idx].name = value;
     setSafeOwners([...newOwners]);
   };
 
-  const onOwnerAddressChange = (value, idx) => {
+  const onOwnerAddressChange = (value, isValid, idx) => {
     const newOwners = safeOwners.slice(0);
     newOwners[idx].address = value;
+    newOwners[idx].isValid = isValid;
     setSafeOwners([...newOwners]);
   };
 
@@ -33,18 +30,7 @@ function SafeOwners({
       </div>
       <div className="flex-1 is-flex is-flex-direction-column">
         <label className="has-text-grey mb-2">Owner Address</label>
-        <div style={{ position: 'relative' }}>
-          <input
-            className="p-4 rounded-sm column is-full"
-            type="text"
-            placeholder="Enter user's FLOW address"
-            value={address}
-            disabled
-          />
-          <div style={{ position: 'absolute', right: 17, top: 14 }}>
-            <Svg name="Check" />
-          </div>
-        </div>
+        <InputAddress value={address} isValid readOnly />
       </div>
     </div>,
   ];
@@ -70,22 +56,14 @@ function SafeOwners({
               <span className="has-text-red">*</span>
             </label>
             <div className="is-flex">
-              <div className="flex-1" style={{ position: 'relative' }}>
-                <input
-                  className="p-4 rounded-sm column is-full"
-                  type="text"
-                  placeholder="Enter user's FLOW address"
-                  value={so?.address}
-                  onChange={(e) =>
-                    onOwnerAddressChange(e.target.value, idx + 1)
-                  }
-                />
-                {safeOwnersValidByAddress[so.address] && (
-                  <div style={{ position: 'absolute', right: 17, top: 14 }}>
-                    <Svg name="Check" />
-                  </div>
-                )}
-              </div>
+              <InputAddress
+                className="flex-1"
+                value={so?.address}
+                onChange={({ value, isValid }) =>
+                  onOwnerAddressChange(value, isValid, idx + 1)
+                }
+                isValid={so?.isValid}
+              />
               <button
                 className="button is-border ml-2 p-4"
                 onClick={() => {
