@@ -13,6 +13,8 @@ const TransactionDetails = ({ onClose, safeData = {}, transaction = {} }) => {
   const { contacts } = useContacts(safeData.address);
   const actionType = transaction.type;
 
+  console.log(actionType)
+
   return (
     <>
       <div
@@ -77,8 +79,9 @@ const TransactionDetails = ({ onClose, safeData = {}, transaction = {} }) => {
             </div>
           </>
         )}
-        {(actionType === ACTION_TYPES.ADD_OWNER_UPDATE_THRESHOLD ||
-          actionType === ACTION_TYPES.REMOVE_OWNER_UPDATE_THRESHOLD) && (
+        {(actionType === ACTION_TYPES.ADD_SIGNER_UPDATE_THRESHOLD ||
+          actionType === ACTION_TYPES.REMOVE_SIGNER_UPDATE_THRESHOLD ||
+          actionType === ACTION_TYPES.UPDATE_THRESHOLD) && (
           <div className="border-light-top is-flex py-4">
             <div className="flex-1 has-text-grey">Signature Threshold</div>
             <div className="flex-1 has-text-weight-bold">

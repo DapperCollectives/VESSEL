@@ -59,10 +59,8 @@ const BannerInfo = ({ className = "", actionData = {}, contacts = {}, signers = 
           </span>
         </>
       )}
-      {(actionType === ACTION_TYPES.ADD_OWNER ||
-        actionType === ACTION_TYPES.ADD_OWNER_UPDATE_THRESHOLD ||
-        actionType === ACTION_TYPES.REMOVE_OWNER ||
-        actionType === ACTION_TYPES.REMOVE_OWNER_UPDATE_THRESHOLD) && (
+      {(actionType === ACTION_TYPES.ADD_SIGNER_UPDATE_THRESHOLD ||
+        actionType === ACTION_TYPES.REMOVE_SIGNER_UPDATE_THRESHOLD) && (
         <>
           <span className="columns is-vcentered is-multiline is-mobile mr-2 mt-2 is-size-4 is-family-monospace">
             <b>{contactName}</b>
