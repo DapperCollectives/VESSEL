@@ -10,7 +10,8 @@ const TransactionDetails = ({ transaction, onClose }) => {
       <div className="p-5 has-text-black">
         <h2 className="is-size-4">Transaction details</h2>
         <p className="has-text-grey">
-          Executed on {date.toLocaleDateString("en-us")} at {date.toLocaleTimeString("en-us")}
+          Executed on {date.toLocaleDateString("en-us")} at{" "}
+          {date.toLocaleTimeString("en-us")}
         </p>
       </div>
       <div className="border-light-top p-5">
@@ -29,8 +30,11 @@ const TransactionDetails = ({ transaction, onClose }) => {
 const Row = ({ transaction, displayIndex, onView }) => {
   const date = new Date(transaction.eventDate);
   const { intent } = transaction.blockEventData.actionView;
-  const status = transaction.flowEventId.includes("ActionDestroyed") ? "rejected" : "confirmed";
-  const statusBackground = status === "rejected" ? "has-text-danger" : "has-text-success";
+  const status = transaction.flowEventId.includes("ActionDestroyed")
+    ? "rejected"
+    : "confirmed";
+  const statusBackground =
+    status === "rejected" ? "has-text-danger" : "has-text-success";
 
   return (
     <tr className="py-4 is-flex is-align-items-center is-justify-content-space-between">
@@ -67,7 +71,9 @@ const TransactionTable = ({ safeData, transactions = [], className = "" }) => {
   };
 
   // only show txs with intent
-  const transactionsToShow = transactions.filter((tx) => tx?.blockEventData?.actionView?.intent);
+  const transactionsToShow = transactions.filter(
+    (tx) => tx?.blockEventData?.actionView?.intent
+  );
 
   return (
     <table className={`border-light table-border rounded-sm ${className}`}>
@@ -81,7 +87,7 @@ const TransactionTable = ({ safeData, transactions = [], className = "" }) => {
         </tr>
       </thead>
       <tbody>
-        {transactionsToShow.map((transaction, index, arr) => (
+        {transactionsToShow.map((transaction, index) => (
           <Row
             key={transaction.flowTransactionId}
             transaction={transaction}

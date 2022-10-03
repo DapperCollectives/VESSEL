@@ -5,7 +5,7 @@ import SignerThresholdView from "./SignerThresholdView";
 import ThresholdView from "./ThresholdView";
 import Confirmations from "./Confirmations";
 
-const ActionRequired = ({
+const ApprovalRequired = ({
   safeData,
   actionView,
   confirmations,
@@ -66,4 +66,4 @@ const ActionRequired = ({
     </div>
   );
 };
-export default ActionRequired;
+export default ApprovalRequired;
