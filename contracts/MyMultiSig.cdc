@@ -147,6 +147,8 @@ pub contract MyMultiSigV5 {
             post {
                 self.signers.length >= Int(self.threshold):
                     "Cannot remove signer, number of signers must be equal or higher than the threshold."
+                self.signers.length > 1:
+                    "Cannot remove signer when there is only 1 signer remaining."
             }
             self.signers.remove(key: signer)
         }
