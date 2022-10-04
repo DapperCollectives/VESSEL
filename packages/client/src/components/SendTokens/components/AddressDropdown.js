@@ -39,6 +39,7 @@ const AddressDropdown = () => {
   const handleOptionSelect = (itemValue) => {
     onRecipientChange(itemValue);
     searchInputRef.current.value = "";
+    setFilteredOptions(dropdownOptions);
   };
 
   const handleAddressSearchEnter = (e) => {

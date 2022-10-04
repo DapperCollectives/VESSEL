@@ -16,7 +16,7 @@ const useFlowFees = () => {
         arg(executionEffort, t.UFix64),
       ],
     }).catch(console.error);
-    return estimate.toFixed(6);
+    return Number(estimate).toFixed(6);
   };
   return { getProposeSendTokenEstimation };
 };

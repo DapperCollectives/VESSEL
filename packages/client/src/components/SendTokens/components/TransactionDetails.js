@@ -98,7 +98,7 @@ const TransactionDetails = () => {
           <span className="has-text-grey flex-1">Estimated Network Fee</span>
           <span className="flex-1">
             <strong>
-              {`${transactionFee} `}
+              {`~${transactionFee} `}
               FLOW
             </strong>
           </span>
