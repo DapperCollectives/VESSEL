@@ -1,5 +1,5 @@
 import { useState, createContext } from "react";
-import { ASSET_TYPES, COIN_TYPES } from "constants/enums";
+import { ASSET_TYPES } from "constants/enums";
 
 export const SendTokensContext = createContext();
 export const SendTokensContextProvider = (props) => {
@@ -11,7 +11,7 @@ export const SendTokensContextProvider = (props) => {
     recipient: "",
     recipientValid: false,
     assetType: initialState?.assetType ?? ASSET_TYPES.TOKEN,
-    coinType: initialState?.coinType ?? COIN_TYPES.FLOW,
+    coinType: initialState?.coinType,
     selectedNFT: {},
   };
   const [sendModalState, setSendModalState] = useState(INIT_STATE);

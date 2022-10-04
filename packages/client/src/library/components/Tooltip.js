@@ -10,7 +10,7 @@ const Tooltip = ({ position = "top", text, children, className = "" }) => {
   };
   const positionClass = positionConfig[position];
   return (
-    <div
+    <span
       className={`tooltip-container ${className}`}
       onMouseEnter={() => {
         setIsOpen(true);
@@ -21,7 +21,7 @@ const Tooltip = ({ position = "top", text, children, className = "" }) => {
     >
       {children}
       {isOpen && <span className={`is-size-7 ${positionClass}`}>{text}</span>}
-    </div>
+    </span>
   );
 };
 export default Tooltip;

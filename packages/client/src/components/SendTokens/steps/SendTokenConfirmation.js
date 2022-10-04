@@ -1,6 +1,6 @@
 import React from "react";
 import SendModalHeader from "../components/SendModalHeader";
-import TransactionDetails from "../components/TrasactionDetails";
+import TransactionDetails from "../components/TransactionDetails";
 import ButtonGroup from "../components/ButtonGroup";
 
 const SendTokenConfirmation = () => (

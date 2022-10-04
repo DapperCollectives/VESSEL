@@ -1,6 +1,6 @@
 import { useContext, useState, useRef } from "react";
+import { useAddressValidation, useContacts } from "hooks";
 import { Web3Context } from "contexts/Web3";
-import { useAddressValidation } from "hooks";
 import { Dropdown, Tooltip } from "library/components";
 import { isAddr, formatAddress } from "utils";
 import Svg from "library/Svg";
@@ -8,25 +8,23 @@ import { SendTokensContext } from "../sendTokensContext";
 
 const AddressDropdown = () => {
   const [sendModalState, setSendModalState] = useContext(SendTokensContext);
-  const web3 = useContext(Web3Context);
   const {
     recipient,
     recipientValid,
     address: treasuryAddress,
   } = sendModalState;
-  const { safeOwners } = web3?.treasuries?.[treasuryAddress];
+  const web3 = useContext(Web3Context);
+  const { contacts } = useContacts(treasuryAddress);
   const { isAddressValid } = useAddressValidation(web3.injectedProvider);
-  const dropdownOptions = safeOwners
-    .filter(({ verified }) => verified)
-    .map(({ name, address }) => ({
-      displayText: address,
-      itemValue: address,
-      attr: { name },
-    }));
+  const dropdownOptions = contacts.map(({ name, address }) => ({
+    displayText: address,
+    itemValue: address,
+    attr: { name },
+  }));
   const [filteredOptions, setFilteredOptions] = useState(dropdownOptions);
   const searchInputRef = useRef();
 
-  const onrecipientChange = async (itemValue) => {
+  const onRecipientChange = async (itemValue) => {
     let isValid = isAddr(itemValue);
     if (isValid) {
       isValid = await isAddressValid(formatAddress(itemValue));
@@ -39,7 +37,7 @@ const AddressDropdown = () => {
   };
 
   const handleOptionSelect = (itemValue) => {
-    onrecipientChange(itemValue);
+    onRecipientChange(itemValue);
     searchInputRef.current.value = "";
   };
 
@@ -52,7 +50,7 @@ const AddressDropdown = () => {
         attr.name.indexOf(entry) >= 0
     );
     setFilteredOptions(newFilteredOptions);
-    onrecipientChange(entry);
+    onRecipientChange(entry);
   };
 
   const renderOption = (itemValue, displayText, attr) => (
