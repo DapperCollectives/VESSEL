@@ -42,7 +42,7 @@ $yellow-tertiary: #FEFFDD
 
 //other
 $success-green: #18AA01
-$warning-orange: #F26300
+$warning-orange: #FF8833
 $error-red: #E30C0C
 
 /*********************Initial variables -  Font Sizes********************/
@@ -193,6 +193,8 @@ h2
   color: $grey-primary
 .has-text-purple
   color: $purple-primary
+.has-text-yellow-dark
+  color: $yellow-dark
 .is-size-4
   font-size: 1.8rem !important
 .is-size-6
@@ -220,6 +222,8 @@ h2
       border-right: 1px solid $grey-secondary
     &-left
       border-left: 1px solid $grey-secondary
+  &-alert
+    border: 1px solid $yellow-dark
   &-success
     border: 1px solid $success-green
   &-error
@@ -249,6 +253,8 @@ h2
   background: $purple-secondary
 .has-background-tertiary-purple
   background: $purple-tertiary
+.has-background-tertiary-yellow
+  background: $yellow-tertiary
 
 /********************* Custom utility css - Button ********************/
 .button
@@ -512,6 +518,10 @@ input:focus-visible,
   flex: 2 0 0
 .flex-3
   flex: 3 0 0
+.flex-4
+  flex: 4
+.flex-7
+  flex: 7
 .flex-9
   flex: 9
 
@@ -551,8 +561,6 @@ table th
   font-weight: normal
 .table-border > :not(:last-child)
   border-bottom: 1px solid $grey-secondary
-.table-border-bottom > :last-child
-  border-bottom: 1px solid $grey-light
 .confirmation
   white-space: nowrap
   padding: 15px 14px
@@ -571,4 +579,3 @@ table th
   scrollbar-width: none
 .confirmations::-webkit-scrollbar
     display: none
-

@@ -11,7 +11,7 @@ const SafeHome = ({
   address,
   onApprove,
   onReject,
-  onConfirm,
+  onExecute,
 }) => (
   <>
     <SafeOverview allBalance={allBalance} allNFTs={allNFTs} />
@@ -19,7 +19,7 @@ const SafeHome = ({
       actions={actions}
       onApprove={onApprove}
       onReject={onReject}
-      onConfirm={onConfirm}
+      onExecute={onExecute}
       safeData={safeData}
     />
     <TransactionHistory safeData={safeData} address={address} />
