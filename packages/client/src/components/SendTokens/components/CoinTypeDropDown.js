@@ -20,7 +20,7 @@ const CoinTypeDropDown = ({ coinType, setCoinType, address }) => {
         return (
           <span>
             <span className="has-text-black mr-1">
-              {Number(balanceMap[itemValue]).toFixed(2)}
+              {/* {Number(balanceMap[itemValue]).toFixed(2)} */}
             </span>
             Qty
           </span>

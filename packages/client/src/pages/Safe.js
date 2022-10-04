@@ -1,6 +1,5 @@
 import React from "react";
 import { useParams, NavLink } from "react-router-dom";
-import QRCode from "react-qr-code";
 import { shortenString } from "utils";
 import {
   SafeHome,
@@ -17,53 +16,8 @@ import { EmptyTableWithCTA } from "library/components";
 import { Web3Consumer, useModalContext } from "contexts";
 import { createSignature } from "contexts/Web3";
 import { useClipboard, useErrorMessage } from "hooks";
-import { TransactionSuccessModal } from "modals";
+import { TransactionSuccessModal, DepositTokens } from "modals";
 import { ACTION_TYPES } from "constants/enums";
-
-const ReceiveTokens = ({ name, address }) => {
-  const modalContext = useModalContext();
-  const clipboard = useClipboard();
-
-  return (
-    <div className="p-5 has-text-black has-text-centered">
-      <div>
-        <h2 className="is-size-4">Receive</h2>
-        <div>
-          <span className="border-light-right mr-2 pr-2 has-text-grey">
-            To: {name}
-          </span>
-          <span className="is-underlined">{shortenString(address)}</span>
-        </div>
-      </div>
-      <div className="border-light-top mt-5 pt-6 is-flex is-flex-direction-column">
-        <div>
-          <QRCode
-            className="ml-5"
-            value={`https://flowscan.org/account/${address}`}
-          />
-        </div>
-        <button
-          type="button"
-          className="button is-transparent mt-5"
-          onClick={() => clipboard.copy(address)}
-        >
-          {clipboard.textJustCopied === address
-            ? "Copied"
-            : "Copy Safe Address"}
-        </button>
-      </div>
-      <div className="is-flex is-align-items-center mt-6">
-        <button
-          type="button"
-          className="button flex-1 is-border mr-2"
-          onClick={() => modalContext.closeModal()}
-        >
-          Cancel
-        </button>
-      </div>
-    </div>
-  );
-};
 
 function Safe({ web3 }) {
   const params = useParams();
@@ -77,6 +31,8 @@ function Safe({ web3 }) {
   const actions = web3?.actions?.[address];
   const allBalance = web3?.balances?.[address];
   const allNFTs = web3?.NFTs?.[address];
+  const userAddress = web3?.user?.addr;
+
   if (!safeData) {
     return (
       <section className="section screen-height is-flex is-align-items-center">
@@ -215,7 +171,9 @@ function Safe({ web3 }) {
   };
 
   const onReceive = () => {
-    openModal(<ReceiveTokens name={safeData.name} address={address} />);
+    openModal(<DepositTokens address={userAddress} />, {
+      headerTitle: "Deposit",
+    });
   };
 
   return (
@@ -251,7 +209,7 @@ function Safe({ web3 }) {
               className="button is-border mr-2 with-icon"
               onClick={onReceive}
             >
-              Receive <Svg name="ArrowDown" />
+              Deposit <Svg name="ArrowDown" />
             </button>
             <button
               type="button"
