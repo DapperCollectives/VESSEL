@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import Svg from "library/Svg";
 import { isString } from "lodash";
+import Svg from "library/Svg";
 
 const ErrorModal = ({ error, onClose }) => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -26,7 +26,7 @@ const ErrorModal = ({ error, onClose }) => {
             <div
               className={`
                 ${isExpanded ? "" : "is-hidden"}
-                p-4 mt-3 has-background-yellow-tertiary border-yellow rounded-sm 
+                p-4 mt-3 has-background-tertiary-yellow border-yellow rounded-sm 
                 `}
             >
               <span>{error}</span>
