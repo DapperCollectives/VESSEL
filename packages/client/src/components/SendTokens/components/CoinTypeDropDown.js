@@ -1,4 +1,4 @@
-import { useContext, ReactDOM } from "react";
+import { useContext } from "react";
 
 import { Dropdown } from "library/components";
 import { COIN_TYPE_TO_META } from "constants/maps";
@@ -30,26 +30,20 @@ const CoinTypeDropDown = ({ coinType, setCoinType, address }) => {
       </span>
     </div>
   );
-  const renderDropDown = () => {
-    const modalNode = document.getElementById("root");
-    return ReactDOM.createPortal(
-      <Dropdown
-        selectedValue={coinType}
-        options={coinTypes}
-        setOption={setCoinType}
-        renderOption={renderOption}
-        defaultText="Select Token"
-      />,
-      modalNode
-    );
-  };
+
   return (
     <div className="mb-5">
       <p className="has-text-grey">
         Token Vault
         <span className="has-text-red"> *</span>
       </p>
-      {renderDropDown()}
+      <Dropdown
+        selectedValue={coinType}
+        options={coinTypes}
+        setOption={setCoinType}
+        renderOption={renderOption}
+        defaultText="Select Token"
+      />
     </div>
   );
 };

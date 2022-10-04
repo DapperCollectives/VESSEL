@@ -49,7 +49,7 @@ const ModalProvider = ({ children }) => {
         showCloseButton: true,
         classNameModalContent: "",
         headerTitle: "",
-        ...customModalConfig ?? {},
+        ...(customModalConfig ?? {}),
       }));
 
       setContent(content);
@@ -88,7 +88,6 @@ const ModalProvider = ({ children }) => {
             onClick={handleClickOnBackground}
           ></div>
           <div
-            style={{ overflow: "visible" }}
             className={`modal-content rounded-sm ${
               modalConfig.backgroundColor
                 ? modalConfig.backgroundColor

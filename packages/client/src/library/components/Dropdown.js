@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, ReactDOM } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Svg from "library/Svg";
 
 const Dropdown = ({
@@ -8,6 +8,7 @@ const Dropdown = ({
   renderOption = () => {},
   defaultText = "Select one",
   renderCustomSearchOrInput,
+  style = {},
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedValueDisplay, setSelectedValueDisplay] = useState(defaultText);
@@ -48,6 +49,15 @@ const Dropdown = ({
     };
   }, []);
 
+  useEffect(() => {
+    const modalNode = document.getElementsByClassName("modal-content")[0];
+    if (isOpen) {
+      modalNode.setAttribute("style", "overflow: visible !important");
+    } else {
+      modalNode.setAttribute("style", "overflow: auto");
+    }
+  }, [isOpen]);
+
   return (
     <div
       className={`dropdown is-right is-flex is-flex-direction-column ${
@@ -55,7 +65,7 @@ const Dropdown = ({
       }`}
       aria-haspopup="true"
       aria-controls="dropdown-menu"
-      style={{ height: "58px" }}
+      style={{ height: "58px", ...style }}
       ref={ref}
     >
       <div className="dropdown-trigger m-0 flex-1 is-flex">
