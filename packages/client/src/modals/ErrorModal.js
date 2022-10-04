@@ -26,7 +26,7 @@ const ErrorModal = ({ error, onClose }) => {
             <div
               className={`
                 ${isExpanded ? "" : "is-hidden"}
-                p-4 mt-3 has-background-tertiary-yellow border-yellow rounded-sm 
+                p-4 mt-3 has-background-tertiary-yellow border-alert rounded-sm 
                 `}
             >
               <span>{error}</span>
