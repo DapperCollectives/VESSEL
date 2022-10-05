@@ -49,15 +49,6 @@ const Dropdown = ({
     };
   }, []);
 
-  useEffect(() => {
-    const modalNode = document.getElementsByClassName("modal-content")[0];
-    if (isOpen) {
-      modalNode.setAttribute("style", "overflow: visible !important");
-    } else {
-      modalNode.setAttribute("style", "overflow: auto");
-    }
-  }, [isOpen]);
-
   return (
     <div
       className={`dropdown is-right is-flex is-flex-direction-column ${

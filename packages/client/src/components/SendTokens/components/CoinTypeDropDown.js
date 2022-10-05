@@ -1,7 +1,6 @@
 import { useContext } from "react";
 
 import { Dropdown } from "library/components";
-import { COIN_TYPE_TO_META } from "constants/maps";
 import { Web3Context } from "contexts/Web3";
 import Svg from "library/Svg";
 
@@ -9,9 +8,9 @@ const CoinTypeDropDown = ({ coinType, setCoinType, address }) => {
   const web3 = useContext(Web3Context);
   const { balances } = web3;
   const balanceMap = balances[address];
-  const coinTypes = Object.entries(COIN_TYPE_TO_META).map(([key, value]) => ({
+  const coinTypes = Object.entries(balanceMap).map(([key, value]) => ({
     itemValue: key,
-    displayText: value.displayName,
+    displayText: key,
     attr: {
       balance: balanceMap[key] ? Number(balanceMap[key]).toFixed(2) : 0,
     },
