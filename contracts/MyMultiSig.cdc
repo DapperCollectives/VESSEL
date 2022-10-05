@@ -144,6 +144,10 @@ pub contract MyMultiSigV5 {
         }
 
         access(account) fun removeSigner(signer: Address) {
+            pre {
+                self.signers.length > 1:
+                    "Cannot remove signer when there is only 1 signer remaining."
+            }
             post {
                 self.signers.length >= Int(self.threshold):
                     "Cannot remove signer, number of signers must be equal or higher than the threshold."
@@ -152,10 +156,14 @@ pub contract MyMultiSigV5 {
         }
 
         access(account) fun updateThreshold(newThreshold: UInt) {
-            post {
-                self.signers.length >= Int(self.threshold):
-                    "Cannot update threshold, number of signers must be equal or higher than the threshold."
-            }
+        pre {
+            newThreshold > 0:
+            "Threshold must be greater than 0."
+        }
+        post {
+            self.signers.length >= Int(self.threshold):
+                "Cannot update threshold, number of signers must be equal or higher than the threshold."
+        }
 
             let oldThreshold = self.threshold
             self.threshold = newThreshold
