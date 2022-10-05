@@ -1,9 +1,9 @@
 import React from "react";
 import { useModalContext } from "contexts";
 import { useClipboard } from "hooks";
+import Svg from "library/Svg";
 import RemoveSafeOwner from "./RemoveSafeOwner";
 import AddSafeOwner from "./AddSafeOwner";
-import Svg from "library/Svg";
 
 const Owners = ({ treasury }) => {
   const modalContext = useModalContext();
@@ -17,7 +17,9 @@ const Owners = ({ treasury }) => {
         treasury={treasury}
         safeOwners={safeOwners}
       />,
-      { headerTitle: "Add Owner" }
+      {
+        headerTitle: "Add Owner"
+      }
     );
   };
 
@@ -28,7 +30,9 @@ const Owners = ({ treasury }) => {
         owner={safeOwner}
         safeOwners={safeOwners}
       />,
-      { headerTitle: "Remove Owner" }
+      {
+        headerTitle: "Remove Owner"
+      }
     );
   };
 
@@ -37,6 +41,7 @@ const Owners = ({ treasury }) => {
       <div className="column p-0 mt-5 is-flex is-full is-justify-content-space-between">
         <h2>Owners</h2>
         <button
+          type="button"
           className="button is-secondary is-small with-icon"
           onClick={openAddOwnerModal}
         >
@@ -45,8 +50,8 @@ const Owners = ({ treasury }) => {
         </button>
       </div>
       <div className="column p-0 mt-4 is-flex is-flex-direction-column is-full rounded-sm border-light has-shadow table-border">
-        {Array.isArray(verifiedSafeOwners) &&
-          verifiedSafeOwners.map((so, idx) => (
+        {Array.isArray(verifiedSafeOwners)
+          && verifiedSafeOwners.map((so, idx) => (
             <div
               className="is-flex column is-full p-5"
               key={idx}
@@ -57,6 +62,7 @@ const Owners = ({ treasury }) => {
               <div className="flex-1">{so.address}</div>
               <div>
                 <button
+                  type="button"
                   className="button is-transparent"
                   onClick={() => ownersAddressClipboard.copy(so.address)}
                 >
@@ -64,12 +70,17 @@ const Owners = ({ treasury }) => {
                     ? "Copied"
                     : "Copy Address"}
                 </button>
-                <span
-                  className="button is-transparent"
-                  onClick={() => openRemoveOwnerModal(so)}
-                >
-                  Remove
-                </span>
+                {
+                  verifiedSafeOwners.length > 1
+                  && (
+                  <span
+                    className="button is-transparent"
+                    onClick={() => openRemoveOwnerModal(so)}
+                  >
+                    Remove
+                  </span>
+                  )
+                }
               </div>
             </div>
           ))}

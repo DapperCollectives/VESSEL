@@ -791,6 +791,49 @@ func TestRemoveSignerActionErrors(t *testing.T) {
 	})
 }
 
+func TestRemoveLastSignerError(t *testing.T) {
+	var removeSignerActionUUID uint64
+
+	var signers = []string{"treasuryOwner"}
+
+	otu := NewOverflowTest(t)
+	originalThreshold := len(signers)
+	otu.SetupTreasury("treasuryOwner", signers, originalThreshold)
+
+	t.Run("User should be able to propose a signer to be removed", func(t *testing.T) {
+		otu.ProposeRemoveSignerUpdateThresholdAction("treasuryOwner", "treasuryOwner", "treasuryOwner", uint(originalThreshold-1))
+	})
+
+	t.Run("Signer should be able to sign to approve a proposed action to remove themselves as signer", func(t *testing.T) {
+		// Get first ID of proposed action
+		actions := otu.GetProposedActions("treasuryOwner")
+		keys := make([]uint64, 0, len(actions))
+		for k := range actions {
+			keys = append(keys, k)
+		}
+		removeSignerActionUUID = keys[0]
+
+		// Each signer submits an approval signature
+		otu.SignerApproveAction("treasuryOwner", removeSignerActionUUID, "treasuryOwner")
+
+		// Assert that the signatures were registered
+		signersMap := otu.GetSignerResponsesForAction("treasuryOwner", removeSignerActionUUID)
+
+		for _, signer := range signers {
+			assert.Equal(otu.T, "approved", signersMap[otu.GetAccountAddress(signer)])
+		}
+	})
+
+	t.Run("A treasuryOwner shouldn't be able to execute a proposed action to remove themselves when they are the last remaining signer", func(t *testing.T) {
+		otu.ExecuteActionFailed("treasuryOwner", removeSignerActionUUID, "Threshold must be greater than 0.")
+
+		signers := otu.GetTreasurySigners("treasuryOwner").String()
+
+		assert.Contains(otu.T, signers, otu.GetAccountAddress("treasuryOwner"))
+	})
+
+}
+
 func TestUpdateThreshold(t *testing.T) {
 	var proposeUpdateThreshold uint64
 
