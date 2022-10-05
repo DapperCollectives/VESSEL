@@ -1,12 +1,10 @@
-import Svg from "library/Svg";
-import { getNameByAddress, shortenString, getStatusColor } from "utils";
+import { getNameByAddress, getStatusColor, shortenString } from 'utils';
+import Svg from 'library/Svg';
 
-const Signatures = ({ confirmations, safeData }) => {
-  const { safeOwners } = safeData;
-
+const Signatures = ({ confirmations, safeOwners }) => {
   const getNumberOfConfirmations = () => {
     const numberApproved = Object.keys(confirmations).filter(
-      (key) => confirmations[key] === "approved"
+      (key) => confirmations[key] === 'approved'
     ).length;
 
     return `${numberApproved} out of ${Object.keys(confirmations).length}`;
@@ -22,7 +20,10 @@ const Signatures = ({ confirmations, safeData }) => {
           className="confirmation is-flex is-flex-direction-row is-justify-content-flex-start"
           key={key}
         >
-          <Svg name="Status" className={`mt-1 has-text-${getStatusColor(confirmations[key])}`} />
+          <Svg
+            name="Status"
+            className={`mt-1 has-text-${getStatusColor(confirmations[key])}`}
+          />
           {name ? `${displayName}·${displayAddress}` : displayAddress}
         </div>
       );
@@ -33,9 +34,13 @@ const Signatures = ({ confirmations, safeData }) => {
     <div className="p-4">
       <div className="columns">
         <span className="column pl-0">Signatures</span>
-        <span className="column has-text-right">{getNumberOfConfirmations()}</span>
+        <span className="column has-text-right">
+          {getNumberOfConfirmations()}
+        </span>
       </div>
-      <div className="confirmations has-text-black">{getConfirmationList()}</div>
+      <div className="confirmations has-text-black">
+        {getConfirmationList()}
+      </div>
     </div>
   );
 };
