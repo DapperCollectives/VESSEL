@@ -1,23 +1,23 @@
-import React from "react";
-import { useParams, NavLink } from "react-router-dom";
-import { shortenString } from "utils";
+import React from 'react';
+import { NavLink, useParams } from 'react-router-dom';
+import { Web3Consumer, useModalContext } from 'contexts';
+import { createSignature } from 'contexts/Web3';
 import {
-  SafeHome,
-  SafeTransactions,
-  SafeNFTs,
   SafeContacts,
+  SafeHome,
+  SafeNFTs,
   SafeSettings,
   SafeTokens,
+  SafeTransactions,
   SendTokens,
   TestToolBox,
-} from "components";
-import Svg from "library/Svg";
-import { EmptyTableWithCTA } from "library/components";
-import { Web3Consumer, useModalContext } from "contexts";
-import { createSignature } from "contexts/Web3";
-import { useClipboard, useErrorMessage } from "hooks";
-import { TransactionSuccessModal, DepositTokens } from "modals";
-import { ACTION_TYPES } from "constants/enums";
+} from 'components';
+import { EmptyTableWithCTA } from 'library/components';
+import { useClipboard, useErrorMessage } from 'hooks';
+import { ACTION_TYPES } from 'constants/enums';
+import { shortenString } from 'utils';
+import Svg from 'library/Svg';
+import { DepositTokens, TransactionSuccessModal } from 'modals';
 
 function Safe({ web3 }) {
   const params = useParams();
@@ -58,30 +58,30 @@ function Safe({ web3 }) {
           onClose={closeModal}
         />,
         {
-          headerTitle: "Success",
+          headerTitle: 'Success',
         }
       );
     }
   };
 
-  const currentTab = tab ?? "home";
+  const currentTab = tab ?? 'home';
   const buttons = [
-    "home",
-    "transactions",
-    "tokens",
-    "NFTs",
-    "contacts",
-    "settings",
+    'home',
+    'transactions',
+    'tokens',
+    'NFTs',
+    'contacts',
+    'settings',
   ];
-  const buttonClasses = ["button is-nav", "is-capitalized", "mr-2"];
+  const buttonClasses = ['button is-nav', 'is-capitalized', 'mr-2'];
 
   const ButtonCpts = buttons.map((btn, i) => {
-    const classes = [...buttonClasses, currentTab === btn ? "is-focused" : ""];
+    const classes = [...buttonClasses, currentTab === btn ? 'is-focused' : ''];
     const baseUrl = `/safe/${address}`;
-    const to = btn === "home" ? baseUrl : `${baseUrl}/${btn}`;
+    const to = btn === 'home' ? baseUrl : `${baseUrl}/${btn}`;
     return (
-      <NavLink to={to} key={`btn-${i}`}>
-        <button type="button" className={classes.join(" ")} key={i}>
+      <NavLink to={to} key={`btn-${btn}`}>
+        <button type="button" className={classes.join(' ')} key={i}>
           {btn}
         </button>
       </NavLink>
@@ -119,7 +119,7 @@ function Safe({ web3 }) {
       showErrorModal(error)
     );
     if (events) {
-      const action = events.find((e) => e.type.endsWith("ActionExecuted"));
+      const action = events.find((e) => e.type.endsWith('ActionExecuted'));
       showTransactionSuccessModal(action, safeData.name, safeData.address);
     }
   };
@@ -167,12 +167,12 @@ function Safe({ web3 }) {
   const BodyComponent = tabMap[currentTab];
 
   const onSend = () => {
-    openModal(<SendTokens name={safeData.name} address={address} />);
+    openModal(<SendTokens address={address} />);
   };
 
   const onReceive = () => {
     openModal(<DepositTokens address={userAddress} />, {
-      headerTitle: "Deposit",
+      headerTitle: 'Deposit',
     });
   };
 
@@ -184,19 +184,23 @@ function Safe({ web3 }) {
       }}
     >
       <div className="column is-full p-0 is-flex is-flex-direction-column mb-5">
-        {process.env.REACT_APP_FLOW_ENV !== "mainnet" && (
+        {process.env.REACT_APP_FLOW_ENV !== 'mainnet' && (
           <TestToolBox address={address} />
         )}
         <h1 className=" mb-2">{safeData.name}</h1>
         <p>
           <span className="has-text-grey">
-            Safe address {shortenString(address)}
+            Safe address
+            {shortenString(address)}
           </span>
-          <span
-            className="is-underlined ml-2 pointer"
-            onClick={() => clipboard.copy(address)}
-          >
-            {clipboard.textJustCopied === address ? "Copied" : "Copy address"}
+          <span className="is-underlined ml-2 pointer">
+            <button
+              type="button"
+              onClick={() => clipboard.copy(address)}
+              className="border-none has-background-white"
+            >
+              {clipboard.textJustCopied === address ? 'Copied' : 'Copy address'}
+            </button>
           </span>
         </p>
       </div>
@@ -209,14 +213,16 @@ function Safe({ web3 }) {
               className="button is-border mr-2 with-icon"
               onClick={onReceive}
             >
-              Deposit <Svg name="ArrowDown" />
+              Deposit
+              <Svg name="ArrowDown" />
             </button>
             <button
               type="button"
               className="is-primary button with-icon"
               onClick={onSend}
             >
-              Send <Svg name="ArrowUp" />
+              Send
+              <Svg name="ArrowUp" />
             </button>
           </div>
         </div>

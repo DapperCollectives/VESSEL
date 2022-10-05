@@ -4,8 +4,9 @@ import { Web3Context } from "contexts/Web3";
 import { useModalContext } from "contexts";
 import { SendTokens } from "components";
 import { EmptyTableWithCTA } from "library/components";
-import VaultTable from "./VaultTable";
 import { ASSET_TYPES } from "constants/enums";
+import VaultTable from "./VaultTable";
+
 const SafeTokens = () => {
   const location = useLocation();
   const history = useHistory();
@@ -37,7 +38,11 @@ const SafeTokens = () => {
         <h2 className="flex-1">Tokens</h2>
         <div>
           {vaults.length > 0 && (
-            <button className="button is-secondary is-small" onClick={handleManageTokenVaults}>
+            <button
+              type="button"
+              className="button is-secondary is-small"
+              onClick={handleManageTokenVaults}
+            >
               Manage Token Vaults
             </button>
           )}
@@ -50,7 +55,9 @@ const SafeTokens = () => {
           onButtonClick={handleManageTokenVaults}
         />
       )}
-      {vaults.length > 0 && <VaultTable vaults={vaults} handleSendToken={handleSendToken} />}
+      {vaults.length > 0 && (
+        <VaultTable vaults={vaults} handleSendToken={handleSendToken} />
+      )}
     </div>
   );
 };

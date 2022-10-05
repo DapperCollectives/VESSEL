@@ -1,11 +1,9 @@
 import { SendTokensContextProvider } from "./sendTokensContext";
 import Steps from "./steps";
 
-const SendTokens = (props) => {
-  return (
-    <SendTokensContextProvider {...props}>
-      <Steps />
-    </SendTokensContextProvider>
-  );
-};
+const SendTokens = ({ address, initialState }) => (
+  <SendTokensContextProvider address={address} initialState={initialState}>
+    <Steps />
+  </SendTokensContextProvider>
+);
 export default SendTokens;
