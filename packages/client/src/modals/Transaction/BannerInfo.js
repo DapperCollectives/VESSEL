@@ -6,25 +6,25 @@ import { formatAddress, getTokenMeta, parseIdentifier, getNameByAddress } from "
 
 const BannerInfo = ({ className = "", actionData = {}, contacts = {}, signers = [] }) => {
   const { getAccountNFTReference } = useContext(Web3Context);
-  const [image, setImage] = useState();
+  const [nftMeta, setNFTMeta] = useState();
   const { recipient, nftId, collectionId, vaultId, tokenAmount, signerAddr } = actionData;
   const { displayName, tokenType } = getTokenMeta(vaultId);
   const { contractName: NFTName, contractAddress: NFTAddress } = parseIdentifier(collectionId);
-  const { name: imageName, imageURI } = image || {};
+  const { name: imageName, thumbnail: imageURI } = nftMeta || {};
   const actionType = actionData.type;
 
   useEffect(() => {
     if (actionType === ACTION_TYPES.TRANSFER_NFT) {
-      const getImageURL = async () => {
+      const getNFTMeta = async () => {
         const result = await getAccountNFTReference(
           NFTName,
           formatAddress(NFTAddress),
           recipient,
           nftId
         );
-        setImage(result);
+        setNFTMeta(result ?? {});
       };
-      getImageURL().catch(console.error);
+      getNFTMeta().catch(console.error);
     }
   }, [actionType, NFTName, NFTAddress, nftId, recipient, getAccountNFTReference]);
 

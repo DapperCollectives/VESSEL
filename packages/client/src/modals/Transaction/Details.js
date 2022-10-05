@@ -13,8 +13,6 @@ const TransactionDetails = ({ onClose, safeData = {}, transaction = {} }) => {
   const { contacts } = useContacts(safeData.address);
   const actionType = transaction.type;
 
-  console.log(actionType)
-
   return (
     <>
       <div
