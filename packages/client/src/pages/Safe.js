@@ -30,7 +30,8 @@ const ReceiveTokens = ({ name, address }) => {
         <h2 className="is-size-4">Receive</h2>
         <div>
           <span className="border-light-right mr-2 pr-2 has-text-grey">
-            To: {name}
+            To:
+            {name}
           </span>
           <span className="is-underlined">{shortenString(address)}</span>
         </div>
@@ -124,7 +125,7 @@ function Safe({ web3 }) {
     const baseUrl = `/safe/${address}`;
     const to = btn === "home" ? baseUrl : `${baseUrl}/${btn}`;
     return (
-      <NavLink to={to} key={`btn-${i}`}>
+      <NavLink to={to} key={`btn-${btn}`}>
         <button type="button" className={classes.join(" ")} key={i}>
           {btn}
         </button>
@@ -211,7 +212,7 @@ function Safe({ web3 }) {
   const BodyComponent = tabMap[currentTab];
 
   const onSend = () => {
-    openModal(<SendTokens name={safeData.name} address={address} />);
+    openModal(<SendTokens address={address} />);
   };
 
   const onReceive = () => {
@@ -232,13 +233,17 @@ function Safe({ web3 }) {
         <h1 className=" mb-2">{safeData.name}</h1>
         <p>
           <span className="has-text-grey">
-            Safe address {shortenString(address)}
+            Safe address
+            {shortenString(address)}
           </span>
-          <span
-            className="is-underlined ml-2 pointer"
-            onClick={() => clipboard.copy(address)}
-          >
-            {clipboard.textJustCopied === address ? "Copied" : "Copy address"}
+          <span className="is-underlined ml-2 pointer">
+            <button
+              type="button"
+              onClick={() => clipboard.copy(address)}
+              className="border-none has-background-white"
+            >
+              {clipboard.textJustCopied === address ? "Copied" : "Copy address"}
+            </button>
           </span>
         </p>
       </div>
@@ -251,14 +256,16 @@ function Safe({ web3 }) {
               className="button is-border mr-2 with-icon"
               onClick={onReceive}
             >
-              Receive <Svg name="ArrowDown" />
+              Receive
+              <Svg name="ArrowDown" />
             </button>
             <button
               type="button"
               className="is-primary button with-icon"
               onClick={onSend}
             >
-              Send <Svg name="ArrowUp" />
+              Send
+              <Svg name="ArrowUp" />
             </button>
           </div>
         </div>

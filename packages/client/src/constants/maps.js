@@ -2,7 +2,7 @@ import { ASSET_TYPES, COIN_TYPES, SAFE_TYPES } from "./enums";
 
 export const ASSET_TYPE_TO_META = {
   [ASSET_TYPES.TOKEN]: {
-    displayName: "Coins",
+    displayName: "Tokens",
   },
   [ASSET_TYPES.NFT]: {
     displayName: "NFTs",

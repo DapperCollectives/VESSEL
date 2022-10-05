@@ -4,6 +4,8 @@ import networks from "../networks";
 import { useRouteMatch } from "react-router-dom";
 import { useFclUserBalance, useTreasury, useNFTs, useVaults } from "../hooks";
 import { CURRENT_USER_SESSION_KEY } from "constants/constants";
+import { Buffer } from "buffer";
+
 // create our app context
 export const Web3Context = React.createContext({});
 

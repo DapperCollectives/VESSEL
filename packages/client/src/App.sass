@@ -100,8 +100,6 @@ $modal-background-background-color: rgba(1, 1, 1, 0.5)
 $modal-content-width: 430px
 .modal-content
   max-height: calc(100vh - 210px)
-  overflow-y: auto !important
-  overflow-x: hidden !important
 .modal-safe-name
   color: $purple-primary
   font-weight: 500
@@ -121,6 +119,12 @@ $modal-content-width: 430px
   background-size: 16em
   background-position: 100% 0px
   background-repeat: no-repeat
+/*********************Component variables -  Dropdown********************/
+$dropdown-content-shadow: none
+$dropdown-item-active-background-color: $green-primary
+$dropdown-item-hover-background-color: $green-primary
+$dropdown-content-shadow: none
+
 
 /********************* Bulma imports ********************/
 @import '~bulma/sass/utilities/_all.sass'
@@ -215,12 +219,16 @@ h2
       border-bottom: 1px solid $grey-secondary
     &-right
       border-right: 1px solid $grey-secondary
+    &-left
+      border-left: 1px solid $grey-secondary
   &-alert
     border: 1px solid $yellow-dark
   &-success
     border: 1px solid $success-green
   &-error
     border: 1px solid $error-red
+  &-heavy
+    border: 4px solid black
 
 /********************* Custom utility css - Border radius********************/
 .rounded-sm
@@ -255,6 +263,8 @@ h2
   border: none
   box-shadow: none
   border-radius: 8px !important
+.button:hover
+  color:$black
 .button.disabled
   animation: none !important
 .button.is-small
@@ -423,10 +433,84 @@ input:focus-visible,
   outline: none
 
 /********************* Custom utility css - Dropdown ********************/
+.dropdown-menu
+  z-index: 99
+  transform: translateY(-5px)
+  border-left: 1px solid $grey-secondary
+  border-right: 1px solid $grey-secondary
+  border-bottom: 1px solid $grey-secondary
+  border-bottom-left-radius: 8px
+  border-bottom-right-radius: 8px
+
 .dropdown-item
   padding: 1rem
   line-height: 1em
-  height: auto
+  height: 55px
+  border-top: 1px solid $grey-secondary
+  background: white
+
+/********************* Custom utility css - Tooltip ********************/
+.tooltip-container
+  position: relative
+  &>span
+    z-index: 9999
+    position: absolute
+    min-width: 150px
+    max-width: 200px
+    background:$purple-background
+    color: $purple-primary
+    border: 1px solid $purple-primary
+    padding: 8px
+    border-radius: 8px
+    &::after
+      position: absolute
+      top: 100%
+      left: 40%
+      content: ""
+      width: 0
+      height: 0
+
+    &.has-tooltip-top
+      left: -60px
+      top: -60px
+      &::after
+        top: 100%
+        left: 40%
+        border-left: 5px solid transparent
+        border-right: 5px solid transparent
+        border-top: 7px solid rgba(0,0,0, .7)
+    &.has-tooltip-left
+      left: -160px
+      top: -20px
+      &::after
+        top: 40%
+        left: 100%
+        border-top: 5px solid transparent
+        border-bottom: 5px solid transparent
+        border-left: 7px solid rgba(0,0,0, .7)
+    &.has-tooltip-right
+      left: 30px
+      top: -20px
+      &::after
+        top: 40%
+        left: -5%
+        border-top: 5px solid transparent
+        border-bottom: 5px solid transparent
+        border-right: 7px solid rgba(0,0,0, .7)
+    &.has-tooltip-bottom
+      left: -60px
+      top: 30px
+      &::after
+        top: -13%
+        left: 47%
+        border-left: 5px solid transparent
+        border-right: 5px solid transparent
+        border-bottom: 7px solid rgba(0,0,0, .7)
+    
+
+
+
+
 
 /********************* Custom utility css - Flex ********************/
 .flex-1

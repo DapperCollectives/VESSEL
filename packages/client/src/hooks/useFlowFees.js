@@ -1,9 +1,9 @@
 import { query } from "@onflow/fcl";
-import { GET_FLOW_FEES_ESTIMATION } from "../flow";
 import {
   EXECUTION_EFFORTS,
   DEFAULT_INCLUSION_EFFORT,
 } from "constants/constantValues";
+import { GET_FLOW_FEES_ESTIMATION } from "../flow";
 
 const useFlowFees = () => {
   const getProposeSendTokenEstimation = async () => {
@@ -16,7 +16,7 @@ const useFlowFees = () => {
         arg(executionEffort, t.UFix64),
       ],
     }).catch(console.error);
-    return `${estimate * 0.9} - ${estimate * 1.1}`;
+    return Number(estimate).toFixed(6);
   };
   return { getProposeSendTokenEstimation };
 };

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useHistory, NavLink } from "react-router-dom";
+import { SAFE_TYPES } from "constants/enums";
 import {
   WalletPrompt,
   Loading,
@@ -100,7 +101,7 @@ const AuthorizeTreasury = ({
 };
 
 function CreateSafe({ web3 }) {
-  const [safeType, setSafeType] = useState("Social");
+  const [safeType, setSafeType] = useState(SAFE_TYPES.SOCIAL);
   const [safeName, setSafeName] = useState("");
   const [signersAmount, setSignersAmount] = useState(1);
   const [creatingTreasury, setCreatingTreasury] = useState(false);

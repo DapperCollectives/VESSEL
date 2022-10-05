@@ -1,109 +1,103 @@
-import React, { useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Svg from "library/Svg";
 
-function Tooltip({ position, text, children, classNames = "" }) {
-  const positionConfig = {
-    left: "has-tooltip-left",
-    right: "has-tooltip-right",
-    top: "has-tooltip-top",
-    bottom: "has-tooltip-bottom",
-  };
-  const className = positionConfig[position] ?? "";
-  return (
-    <span
-      className={`has-tooltip-arrow ${className} ${classNames}`}
-      data-tooltip={text}
-    >
-      {children}
-    </span>
-  );
-}
-
-const TooltipWrapper = ({ isOpen, children }) => {
-  if (isOpen) {
-    return <>{children}</>;
-  }
-  return (
-    <Tooltip
-      classNames="is-flex is-flex-grow-1"
-      position="top"
-      text="Filter proposals based on status"
-    >
-      {children}
-    </Tooltip>
-  );
-};
-
 const Dropdown = ({
-  value,
-  values,
-  setValue,
-  style,
-  renderItemAddOn,
-  defaultText,
+  selectedValue,
+  options = [],
+  setOption = () => {},
+  renderOption = () => {},
+  defaultText = "Select one",
+  renderCustomSearchOrInput,
+  style = {},
 }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [selectedValueDisplay, setSelectedValueDisplay] = useState(defaultText);
+  const ref = useRef(null);
 
   const openCloseDrowdown = () => {
     setIsOpen((status) => !status);
   };
 
-  const closeOnBlur = () => {
-    setIsOpen(false);
-  };
+  useEffect(() => {
+    (() => {
+      if (selectedValue) {
+        const selectedOption = options.find(
+          ({ itemValue }) => itemValue === selectedValue
+        );
+        setSelectedValueDisplay(
+          renderOption(
+            selectedValue,
+            selectedOption?.displayText,
+            selectedOption?.attr
+          )
+        );
+      } else {
+        setSelectedValueDisplay(defaultText);
+      }
+    })();
+  }, [selectedValue, renderOption]);
 
-  const dropdownClasses = [
-    "dropdown is-right",
-    "is-flex is-flex-grow-1",
-    isOpen ? "is-active" : "",
-  ];
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (ref.current && !ref.current.contains(e.target)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener("click", handleClickOutside, true);
+    return () => {
+      document.removeEventListener("click", handleClickOutside, true);
+    };
+  }, []);
 
   return (
     <div
-      className={dropdownClasses.join(" ")}
-      onBlur={closeOnBlur}
+      className={`dropdown is-right is-flex is-flex-direction-column ${
+        isOpen ? "is-active" : ""
+      }`}
       aria-haspopup="true"
       aria-controls="dropdown-menu"
-      style={style}
+      style={{ height: "58px", ...style }}
+      ref={ref}
     >
-      <div className="dropdown-trigger columns m-0 is-flex-grow-1">
+      <div className="dropdown-trigger m-0 flex-1 is-flex">
         <button
-          className="rounded-sm is-outlined border-light column m-0 py-0 px-3 is-full full-height has-background-white"
+          type="button"
+          className="rounded-sm border-light flex-1 m-0 py-0 px-3 full-height has-background-white"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
           onClick={openCloseDrowdown}
         >
-          <TooltipWrapper isOpen={isOpen}>
-            <div className="is-flex is-flex-grow-1 is-align-items-center is-justify-content-space-between has-text-grey small-text">
-              {value ?? defaultText}
-              <span>
-                {renderItemAddOn && renderItemAddOn(value)}
-                <Svg name="CaretDown" className="has-text-black" />
-              </span>
+          <div className="is-flex is-align-items-center is-justify-content-space-between has-text-grey small-text">
+            <div className="is-flex-grow-1 mr-2 has-text-left has-text-black">
+              {selectedValueDisplay}
             </div>
-          </TooltipWrapper>
+            <Svg name="CaretDown" />
+          </div>
         </button>
       </div>
       <div
-        className="dropdown-menu column p-0 is-full"
+        className="dropdown-menu flex-1 p-0"
+        style={{ width: "100%" }}
         id="dropdown-menu"
         role="menu"
       >
         <div className="dropdown-content py-0">
-          {values.map((item, index) => {
-            const { itemValue, displayText } = item;
+          {renderCustomSearchOrInput && renderCustomSearchOrInput()}
+          {options.map((option) => {
+            const { itemValue, displayText, attr } = option;
             return (
               <button
-                className={`button is-white dropdown-item has-text-grey${
-                  itemValue === value ? " is-active" : ""
+                type="button"
+                className={`border-none dropdown-item has-text-grey${
+                  itemValue === selectedValue ? " is-active" : ""
                 }`}
-                onMouseDown={() => setValue(itemValue)}
-                key={`drop-down-${index}`}
+                onMouseDown={() => {
+                  setOption(itemValue);
+                  openCloseDrowdown();
+                }}
+                key={`drop-down-${itemValue}`}
               >
-                <span className="is-flex is-flex-grow-1 is-align-items-center is-justify-content-space-between">
-                  {displayText}
-                  {renderItemAddOn && renderItemAddOn(itemValue)}
-                </span>
+                {renderOption(itemValue, displayText, attr)}
               </button>
             );
           })}
