@@ -4,7 +4,11 @@
     "es2021": true,
     "node": true
   },
-  "extends": ["plugin:react/recommended", "airbnb"],
+  "extends": [
+    "plugin:react/recommended",
+    "plugin:prettier/recommended",
+    "airbnb"
+  ],
   "overrides": [],
   "settings": {
     "import/resolver": {
@@ -24,7 +28,7 @@
       }
     }
   },
-  "plugins": ["react", "@babel"],
+  "plugins": ["react", "@babel", "prettier"],
   "rules": {
     "indent": ["off"],
     "prefer-const": ["error"],
@@ -50,7 +54,18 @@
         "ignoreStateless": true
       }
     ],
-    "jsx-a11y/click-events-have-key-events": ["off"]
+    "jsx-a11y/click-events-have-key-events": ["off"],
+    "prettier/prettier": [
+      "error",
+      {
+        "singleQuote": true,
+        "comma-dangle": ["error", "always-multiline"]
+      },
+      {
+        "usePrettierrc": true
+      }
+    ],
+    "import/order": [0]
   },
   "ignorePatterns": ["build/**/*", "public/**/*", "src/flow/**/*"]
 }
