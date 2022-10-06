@@ -1,8 +1,8 @@
-import React, { useEffect } from "react";
-import { isEmpty } from "lodash";
-import { useModalContext } from "../contexts";
-import { ASSET_TYPES } from "constants/enums";
-import SendTokens from "./SendTokens";
+import React, { useEffect } from 'react';
+import { useModalContext } from '../contexts';
+import { ASSET_TYPES } from 'constants/enums';
+import { isEmpty } from 'lodash';
+import SendTokens from './SendTokens';
 
 function SafeNFTs({ web3, address }) {
   const assetComponents = [];
@@ -30,7 +30,7 @@ function SafeNFTs({ web3, address }) {
       }
       return {
         key,
-        collectionName: key.split(".")[2],
+        collectionName: key.split('.')[2],
         tokens,
       };
     })
@@ -71,7 +71,8 @@ function SafeNFTs({ web3, address }) {
                   address={address}
                   initialState={{
                     assetType: ASSET_TYPES.NFT,
-                    selectedNFT: collection.key + "-" + token.tokenId,
+                    selectedNFT: collection.key + '-' + token.tokenId,
+                    transactionType: TRANSACTION_TYPE.SEND,
                   }}
                 />
               )
@@ -92,7 +93,7 @@ function SafeNFTs({ web3, address }) {
       >
         <div
           style={{
-            height: "calc(100vh - 350px)",
+            height: 'calc(100vh - 350px)',
           }}
           className="is-flex is-justify-content-center is-align-items-center is-flex-direction-column"
         >

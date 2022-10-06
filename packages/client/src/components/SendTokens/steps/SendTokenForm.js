@@ -1,23 +1,28 @@
-import { useContext } from "react";
-import { ASSET_TYPES } from "constants/enums";
-import { SendTokensContext } from "../sendTokensContext";
-import SendModalHeader from "../components/SendModalHeader";
-import AmountInput from "../components/AmountInput";
-import AddressDropdown from "../components/AddressDropdown";
-import AssetSelector from "../components/AssetSelector";
-import ButtonGroup from "../components/ButtonGroup";
+import { useContext } from 'react';
+import { Web3Context } from 'contexts/Web3';
+import AddressDropdown from '../components/AddressDropdown';
+import AmountInput from '../components/AmountInput';
+import AssetSelector from '../components/AssetSelector';
+import { ASSET_TYPES } from 'constants/enums';
+import { SendTokensContext } from '../sendTokensContext';
 
 const SendTokenForm = () => {
   const [sendModalState] = useContext(SendTokensContext);
-  const { assetType } = sendModalState;
+  const { assetType, address } = sendModalState;
+
+  const web3 = useContext(Web3Context);
+
+  const { balances } = web3;
+  const coinBalances = balances?.[address];
+
   return (
-    <div>
-      <SendModalHeader />
-      <AssetSelector />
-      {assetType === ASSET_TYPES.TOKEN && <AmountInput />}
+    <>
+      <AssetSelector coinBalances={coinBalances} />
+      {assetType === ASSET_TYPES.TOKEN && (
+        <AmountInput coinBalances={coinBalances} />
+      )}
       <AddressDropdown />
-      <ButtonGroup />
-    </div>
+    </>
   );
 };
 export default SendTokenForm;

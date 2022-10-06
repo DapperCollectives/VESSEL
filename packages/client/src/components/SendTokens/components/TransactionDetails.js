@@ -1,11 +1,11 @@
-import { useContext, useEffect, useState } from "react";
-import { useFlowFees, useClipboard } from "hooks";
-import { Web3Context } from "contexts/Web3";
-import { ASSET_TYPES } from "constants/enums";
-import { COIN_TYPE_TO_META } from "constants/maps";
-import Svg from "library/Svg";
-import { isEmpty } from "lodash";
-import { SendTokensContext } from "../sendTokensContext";
+import { useContext, useEffect, useState } from 'react';
+import { Web3Context } from 'contexts/Web3';
+import { useClipboard, useFlowFees } from 'hooks';
+import { ASSET_TYPES } from 'constants/enums';
+import { COIN_TYPE_TO_META } from 'constants/maps';
+import Svg from 'library/Svg';
+import { isEmpty } from 'lodash';
+import { SendTokensContext } from '../sendTokensContext';
 
 const TransactionDetails = () => {
   const [transactionFee, setTransactionFee] = useState(0);
@@ -16,7 +16,7 @@ const TransactionDetails = () => {
 
   const { safeOwners } = web3?.treasuries?.[address];
   const recipientName =
-    safeOwners.find((owner) => owner.address === recipient)?.name ?? "";
+    safeOwners.find((owner) => owner.address === recipient)?.name ?? '';
   const clipboard = useClipboard();
   const { getProposeSendTokenEstimation } = useFlowFees();
   useEffect(() => {
@@ -47,13 +47,13 @@ const TransactionDetails = () => {
           <div className="flex-1">
             <div
               style={{
-                cursor: "pointer",
-                height: "150px",
-                width: "150px",
+                cursor: 'pointer',
+                height: '150px',
+                width: '150px',
                 backgroundImage: `url(${selectedNFT.thumbnail.url})`,
-                backgroundSize: "contain",
-                backgroundPosition: "center",
-                backgroundRepeat: "no-repeat",
+                backgroundSize: 'contain',
+                backgroundPosition: 'center',
+                backgroundRepeat: 'no-repeat',
               }}
             />
           </div>

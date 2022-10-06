@@ -1,9 +1,10 @@
-import { useState, useContext, useEffect } from "react";
-import { Web3Context } from "contexts/Web3";
-import { COIN_TYPES } from "constants/enums";
-import { COIN_TYPE_TO_META } from "constants/maps";
-import { useAccount } from "hooks";
-import { formatAddress } from "utils";
+import { useContext, useEffect, useState } from 'react';
+import { Web3Context } from 'contexts/Web3';
+import { useAccount } from 'hooks';
+import { COIN_TYPES } from 'constants/enums';
+import { COIN_TYPE_TO_META } from 'constants/maps';
+import { formatAddress } from 'utils';
+
 const TestToolBox = ({ address }) => {
   const [showToolBox, setShowToolBox] = useState(false);
   const [userBalances, setUserBalances] = useState([]);
@@ -36,10 +37,10 @@ const TestToolBox = ({ address }) => {
   }, []);
 
   return (
-    <div style={{ position: "absolute", left: "20%", zIndex: 10000 }}>
+    <div style={{ position: 'absolute', left: '20%', zIndex: 10000 }}>
       <div className="is-flex is-flex-direction-column">
         <button
-          style={{ border: "none" }}
+          style={{ border: 'none' }}
           className="has-background-info has-text-black p-1"
           onClick={() => {
             setShowToolBox((prevState) => !prevState);
@@ -70,7 +71,7 @@ const TestToolBox = ({ address }) => {
                       {userBalances.map((coin) => (
                         <li key={COIN_TYPE_TO_META[coin.coinType].displayName}>
                           {COIN_TYPE_TO_META[coin.coinType].displayName +
-                            ": " +
+                            ': ' +
                             coin.balance}
                         </li>
                       ))}

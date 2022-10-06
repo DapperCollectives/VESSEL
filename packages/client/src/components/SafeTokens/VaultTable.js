@@ -1,5 +1,6 @@
-import Svg from "library/Svg";
-const VaultTable = ({ vaults, handleSendToken }) => {
+import Svg from 'library/Svg';
+
+const VaultTable = ({ vaults, handleSendToken, handleDepositToken }) => {
   return (
     <div className="p-0 mt-4 is-flex is-flex-direction-column rounded-sm border-light has-shadow">
       <div className="is-flex is-justify-content-space-between p-5 border-light-bottom">
@@ -26,7 +27,10 @@ const VaultTable = ({ vaults, handleSendToken }) => {
             <span>{Number(balance).toLocaleString()}</span>
           </div>
           <div className="flex-1">
-            <button className="button is-transparent pl-0" onClick={() => {}}>
+            <button
+              className="button is-transparent pl-0"
+              onClick={() => handleDepositToken(coinType)}
+            >
               Deposit
             </button>
             <button

@@ -1,7 +1,7 @@
-import React from "react";
-import SafeOverview from "./SafeOverview";
-import ThingsToDo from "./ThingsToDo";
-import TransactionHistory from "./TransactionHistory";
+import React from 'react';
+import SafeOverview from './SafeOverview';
+import ThingsToDo from './ThingsToDo';
+import TransactionHistory from './TransactionHistory';
 
 const SafeHome = ({
   safeData,
@@ -9,12 +9,18 @@ const SafeHome = ({
   allNFTs,
   actions,
   address,
+  userAddress,
   onApprove,
   onReject,
   onExecute,
 }) => (
   <>
-    <SafeOverview allBalance={allBalance} allNFTs={allNFTs} />
+    <SafeOverview
+      allBalance={allBalance}
+      allNFTs={allNFTs}
+      safeData={safeData}
+      userAddress={userAddress}
+    />
     <ThingsToDo
       actions={actions}
       onApprove={onApprove}

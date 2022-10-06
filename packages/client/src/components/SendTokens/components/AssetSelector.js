@@ -1,15 +1,15 @@
-import { useContext } from "react";
-import { flatten } from "lodash";
-import { Web3Context } from "contexts/Web3";
-import { ASSET_TYPES } from "constants/enums";
-import { ASSET_TYPE_TO_META } from "constants/maps";
-import { SendTokensContext } from "../sendTokensContext";
-import CoinTypeDropDown from "./CoinTypeDropDown";
-import NFTSelector from "./NFTSelector";
+import { useContext } from 'react';
+import { Web3Context } from 'contexts/Web3';
+import { ASSET_TYPES } from 'constants/enums';
+import { ASSET_TYPE_TO_META } from 'constants/maps';
+import { flatten } from 'lodash';
+import { SendTokensContext } from '../sendTokensContext';
+import CoinTypeDropDown from './CoinTypeDropDown';
+import NFTSelector from './NFTSelector';
 
-const AssetSelector = () => {
-  const [sendModalState, setSendModalState] = useContext(SendTokensContext);
+const AssetSelector = ({ coinBalances }) => {
   const web3 = useContext(Web3Context);
+  const [sendModalState, setSendModalState] = useContext(SendTokensContext);
   const { assetType, coinType, selectedNFT, address } = sendModalState;
   const userAddr = web3?.user?.addr;
   const userNFTs = web3?.NFTs?.[userAddr] ?? [];
@@ -28,7 +28,7 @@ const AssetSelector = () => {
           <button
             type="button"
             className={`button flex-1 has-text-weight-bold  ${
-              assetType === ASSET_TYPES.TOKEN && "has-background-info"
+              assetType === ASSET_TYPES.TOKEN && 'has-background-info'
             }`}
             onClick={() =>
               setSendModalState((prevState) => ({
@@ -42,7 +42,7 @@ const AssetSelector = () => {
           <button
             type="button"
             className={`button flex-1 has-text-weight-bold ${
-              assetType === ASSET_TYPES.NFT && "has-background-info"
+              assetType === ASSET_TYPES.NFT && 'has-background-info'
             }`}
             onClick={() =>
               setSendModalState((prevState) => ({
@@ -55,7 +55,7 @@ const AssetSelector = () => {
           </button>
         </div>
       </div>
-      {assetType === ASSET_TYPES.TOKEN && (
+      {assetType === ASSET_TYPES.TOKEN && coinBalances && (
         <CoinTypeDropDown
           address={address}
           coinType={coinType}
@@ -65,6 +65,7 @@ const AssetSelector = () => {
               coinType: itemValue,
             }));
           }}
+          balances={coinBalances}
         />
       )}
       {assetType === ASSET_TYPES.NFT && (

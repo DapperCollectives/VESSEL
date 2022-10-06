@@ -1,9 +1,14 @@
-import { Link } from "react-router-dom";
-import React from "react";
-import Svg from "library/Svg";
-import { parseIdentifier } from "utils";
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { useModalContext } from 'contexts';
+import { TRANSACTION_TYPE } from 'constants/enums';
+import { parseIdentifier } from 'utils';
+import Svg from 'library/Svg';
+import DepositTokens from 'modals/DepositTokens';
 
-function SafeOverview({ allBalance, allNFTs }) {
+function SafeOverview({ allBalance, allNFTs, safeData, userAddress }) {
+  const { openModal } = useModalContext();
+
   const tokensWithPositiveBalance = allBalance
     ? Object.entries(allBalance)
         .map(([key, value]) => ({ type: key, balance: Number(value) }))
@@ -22,6 +27,20 @@ function SafeOverview({ allBalance, allNFTs }) {
         })
         .slice(0, 4)
     : [];
+
+  const onDeposit = () =>
+    openModal(
+      <DepositTokens
+        address={userAddress}
+        safeData={safeData}
+        initialState={{
+          transactionType: TRANSACTION_TYPE.DEPOSIT,
+          recipient: safeData.address,
+          recipientValid: true,
+        }}
+      />
+    );
+
   const emptyNftBlocks = new Array(4 - collectionsForDisplay.length).fill(0);
   return (
     <>
@@ -32,18 +51,18 @@ function SafeOverview({ allBalance, allNFTs }) {
         <div
           className="is-flex is-flex-direction-column flex-1 rounded-sm has-background-primary-purple has-shadow has-text-white p-5 mr-6"
           style={{
-            overflow: "hidden",
+            overflow: 'hidden',
             minHeight: 200,
             minWidth: 375,
-            position: "relative",
+            position: 'relative',
           }}
         >
           <Svg
             name="LogoV"
             style={{
-              position: "absolute",
-              top: "0px",
-              right: "-30px",
+              position: 'absolute',
+              top: '0px',
+              right: '-30px',
               zIndex: 0,
             }}
           />
@@ -60,7 +79,11 @@ function SafeOverview({ allBalance, allNFTs }) {
               <div className="p-3 mb-1">
                 <div className="is-flex is-flex-direction-column is-justify-content-center is-align-items-center">
                   <p className="has-text-white ">You don't have any tokens</p>
-                  <button className="button is-half mt-2 has-purple-background-hover-animation has-text-purple">
+                  <button
+                    type="button"
+                    className="button is-half mt-2 has-purple-background-hover-animation has-text-purple"
+                    onClick={onDeposit}
+                  >
                     Deposit Tokens
                   </button>
                 </div>
@@ -73,7 +96,7 @@ function SafeOverview({ allBalance, allNFTs }) {
                   <div
                     key={type}
                     className="has-background-secondary-purple rounded-sm p-3 m-1"
-                    style={{ flex: "2 1 auto", maxWidth: "50%" }}
+                    style={{ flex: '2 1 auto', maxWidth: '50%' }}
                   >
                     <div className="is-flex is-flex-direction-row is-justify-content-flex-start mb-5">
                       <Svg name={type} />
@@ -133,7 +156,7 @@ function SafeOverview({ allBalance, allNFTs }) {
                 >
                   <p
                     className="has-background-tertiary-purple rounded-sm p-3"
-                    style={{ height: "45px" }}
+                    style={{ height: '45px' }}
                   ></p>
                 </div>
               ))}

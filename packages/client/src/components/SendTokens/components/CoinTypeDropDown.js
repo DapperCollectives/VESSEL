@@ -1,18 +1,13 @@
-import { useContext } from "react";
+import { Dropdown } from 'library/components';
+import Svg from 'library/Svg';
 
-import { Dropdown } from "library/components";
-import { Web3Context } from "contexts/Web3";
-import Svg from "library/Svg";
-
-const CoinTypeDropDown = ({ coinType, setCoinType, address }) => {
-  const web3 = useContext(Web3Context);
-  const { balances } = web3;
-  const balanceMap = balances[address];
-  const coinTypes = Object.entries(balanceMap).map(([key, value]) => ({
+const CoinTypeDropDown = ({ coinType, setCoinType, balances }) => {
+  // const balanceMap = balances[address];
+  const coinTypes = Object.entries(balances).map(([key]) => ({
     itemValue: key,
     displayText: key,
     attr: {
-      balance: balanceMap[key] ? Number(balanceMap[key]).toFixed(2) : 0,
+      balance: balances[key] ?? Number(balances[key]).toFixed(2),
     },
   }));
   const renderOption = (itemValue, displayText, attr) => (

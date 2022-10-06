@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { NavLink, useParams } from 'react-router-dom';
 import { Web3Consumer, useModalContext } from 'contexts';
 import { createSignature } from 'contexts/Web3';
@@ -14,7 +14,7 @@ import {
 } from 'components';
 import { EmptyTableWithCTA } from 'library/components';
 import { useClipboard, useErrorMessage } from 'hooks';
-import { ACTION_TYPES } from 'constants/enums';
+import { ACTION_TYPES, TRANSACTION_TYPE } from 'constants/enums';
 import { shortenString } from 'utils';
 import Svg from 'library/Svg';
 import { DepositTokens, TransactionSuccessModal } from 'modals';
@@ -133,6 +133,7 @@ function Safe({ web3 }) {
         allNFTs={allNFTs}
         actions={actions}
         address={address}
+        userAddress={userAddress}
         onApprove={onApproveAction}
         onReject={onRejectAction}
         onExecute={onExecuteAction}
@@ -167,14 +168,28 @@ function Safe({ web3 }) {
   const BodyComponent = tabMap[currentTab];
 
   const onSend = () => {
-    openModal(<SendTokens address={address} />);
+    openModal(
+      <SendTokens
+        address={address}
+        initialState={{
+          transactionType: TRANSACTION_TYPE.SEND,
+        }}
+      />
+    );
   };
 
-  const onReceive = () => {
-    openModal(<DepositTokens address={userAddress} />, {
-      headerTitle: 'Deposit',
-    });
-  };
+  const onDeposit = () =>
+    openModal(
+      <DepositTokens
+        address={userAddress}
+        safeData={safeData}
+        initialState={{
+          transactionType: TRANSACTION_TYPE.DEPOSIT,
+          recipient: safeData.address,
+          recipientValid: true,
+        }}
+      />
+    );
 
   return (
     <section
@@ -211,7 +226,7 @@ function Safe({ web3 }) {
             <button
               type="button"
               className="button is-border mr-2 with-icon"
-              onClick={onReceive}
+              onClick={onDeposit}
             >
               Deposit
               <Svg name="ArrowDown" />

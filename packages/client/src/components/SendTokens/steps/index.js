@@ -1,15 +1,21 @@
-import { useContext } from "react";
-import { SendTokensContext } from "../sendTokensContext";
-import SendTokenForm from "./SendTokenForm";
-import SendTokenConfirmation from "./SendTokenConfirmation";
+import { useContext } from 'react';
+import ButtonGroup from '../components/ButtonGroup';
+import ModalHeader from '../components/ModalHeader';
+import { SendTokensContext } from '../sendTokensContext';
+import SendTokenConfirmation from './SendTokenConfirmation';
+import SendTokenForm from './SendTokenForm';
 
 const Steps = () => {
   const [sendModalState] = useContext(SendTokensContext);
   const { currentStep } = sendModalState;
-  if (currentStep === 1) {
-    return <SendTokenConfirmation />;
-  }
-  return <SendTokenForm />;
+
+  return (
+    <div className="has-text-black">
+      <ModalHeader title="Send" />
+      {currentStep === 1 ? <SendTokenConfirmation /> : <SendTokenForm />}
+      <ButtonGroup />
+    </div>
+  );
 };
 
 export default Steps;
