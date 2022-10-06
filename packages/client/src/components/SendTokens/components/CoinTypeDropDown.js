@@ -2,7 +2,6 @@ import { Dropdown } from 'library/components';
 import Svg from 'library/Svg';
 
 const CoinTypeDropDown = ({ coinType, setCoinType, balances }) => {
-  // const balanceMap = balances[address];
   const coinTypes = Object.entries(balances).map(([key]) => ({
     itemValue: key,
     displayText: key,

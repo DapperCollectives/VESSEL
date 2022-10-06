@@ -53,7 +53,6 @@ const ButtonGroup = () => {
             coinType
           );
         } else {
-          console.log(tokenAmount);
           await doSendTokensToTreasury(
             formatAddress(recipient),
             parseFloat(tokenAmount).toFixed(8),

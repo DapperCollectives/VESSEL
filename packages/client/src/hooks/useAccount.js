@@ -81,7 +81,28 @@ export default function useAccount() {
     return result.filter((balance) => balance.balance);
   };
 
+  const getUserVaults = async (address) => {
+    const result = COIN_TYPE_LIST.map((coinType) => ({
+      coinType,
+    }));
+    for await (const coin of result) {
+      const { coinType } = coin;
+      console.log(coinType);
+      try {
+        const { contractName } = COIN_TYPE_TO_META[coinType];
+        const vaultPath = COIN_TYPE_TO_META[coinType].publicBalancePath;
+        coin['exists'] = await getVaultExists(contractName, vaultPath, address);
+      } catch (error) {
+        console.log(`error getting vault for ${address}`, error);
+      }
+    }
+    return result
+      .filter((vault) => vault.exists)
+      .map((vault) => vault.coinType);
+  };
+
   return {
+    getUserVaults,
     getUserBalances,
     doSendTokensToTreasury,
     initDepositTokensToTreasury,

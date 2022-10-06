@@ -1,10 +1,12 @@
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import { useModalContext } from 'contexts';
 import { Web3Context } from 'contexts/Web3';
 import { SendTokens } from 'components';
 import { EmptyTableWithCTA } from 'library/components';
+import { useAccount } from 'hooks';
 import { ASSET_TYPES, TRANSACTION_TYPE } from 'constants/enums';
+import { formatAddress } from 'utils';
 import DepositTokens from 'modals/DepositTokens';
 import VaultTable from './VaultTable';
 
@@ -13,8 +15,10 @@ const SafeTokens = () => {
   const history = useHistory();
   const web3 = useContext(Web3Context);
   const { openModal } = useModalContext();
+  const { getUserVaults } = useAccount();
   const treasuryAddress = location.pathname.split('/')[2];
   const balances = web3?.balances?.[treasuryAddress] ?? {};
+  const [depositableCoinTypes, setDepositableCoinTypes] = useState([]);
 
   const vaults = Object.entries(balances).map(([coinType, balance]) => ({
     coinType,
@@ -23,6 +27,19 @@ const SafeTokens = () => {
 
   const { addr: userAddress } = web3.user;
   const safeData = web3?.treasuries?.[treasuryAddress];
+
+  const updateUserVaults = async () => {
+    try {
+      const userVaults = await getUserVaults(formatAddress(userAddress));
+
+      setDepositableCoinTypes(userVaults);
+    } catch (err) {
+      console.log(`Failed to get user vaults, error: ${err}`);
+    }
+  };
+  useEffect(() => {
+    updateUserVaults();
+  }, []);
 
   const handleSendToken = (coinType) => {
     openModal(
@@ -81,6 +98,7 @@ const SafeTokens = () => {
       {vaults.length > 0 && (
         <VaultTable
           vaults={vaults}
+          depositableCoinTypes={depositableCoinTypes}
           handleSendToken={handleSendToken}
           handleDepositToken={handleDepositToken}
         />

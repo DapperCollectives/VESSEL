@@ -1,5 +1,5 @@
-import daysjs from "dayjs";
-import { COIN_TYPE_TO_META, CONTRACT_NAME_TO_COIN_TYPE } from "constants/maps";
+import { COIN_TYPE_TO_META, CONTRACT_NAME_TO_COIN_TYPE } from 'constants/maps';
+import daysjs from 'dayjs';
 
 export const checkResponse = async (response) => {
   if (!response.ok) {
@@ -15,7 +15,7 @@ export const checkResponse = async (response) => {
 export const notifyError = (err, history, url) => {
   try {
     const response = JSON.parse(err.message);
-    if (typeof response === "object") {
+    if (typeof response === 'object') {
       history.replace(history.location.pathname, response);
     }
   } catch (error) {
@@ -37,14 +37,14 @@ export const shortenString = (string) => {
 // rudimentary address check before actually querying with bad inputs
 export const isAddr = (addr) => {
   // remove special chars
-  addr = addr.replace(/[^a-z0-9]/gi, "");
+  addr = addr.replace(/[^a-z0-9]/gi, '');
   // remove 0x prefix if exists
-  const noPrefix = addr.startsWith("0x") ? addr.replace("0x", "") : addr;
+  const noPrefix = addr.startsWith('0x') ? addr.replace('0x', '') : addr;
   // result should be 16 chars long
   return noPrefix.length === 16;
 };
 export const formatAddress = (addr) => {
-  return addr.startsWith("0x") ? addr : `0x${addr}`;
+  return addr.startsWith('0x') ? addr : `0x${addr}`;
 };
 
 export const formatActionString = (str) => {
@@ -56,13 +56,13 @@ export const formatActionString = (str) => {
   let contractName;
   let result;
   if (isTokenTransfer) {
-    contractName = str.match(vaultRegex)[0].split(".")[2];
+    contractName = str.match(vaultRegex)[0].split('.')[2];
     const tokenName = CONTRACT_NAME_TO_COIN_TYPE[contractName];
     result = str.replace(floatRegex, parseFloat(str.match(floatRegex)[0]));
     return result.replace(vaultRegex, tokenName);
   }
   if (isNFTTransfer) {
-    contractName = str.match(collectionRegex)[0].split(".")[2];
+    contractName = str.match(collectionRegex)[0].split('.')[2];
     return str.replace(collectionRegex, contractName);
   }
   return str;
@@ -74,13 +74,13 @@ export const getProgressPercentageForSignersAmount = (signersAmount) => {
 
 export const getFlowscanUrlForTransaction = (hash) => {
   return `https://${
-    process.env.REACT_APP_FLOW_ENV === "mainnet" ? "" : "testnet."
+    process.env.REACT_APP_FLOW_ENV === 'mainnet' ? '' : 'testnet.'
   }flowscan.org/transaction/${hash}`;
 };
 
 export const getFlowscanUrlForContract = (address, name) => {
   return `https://${
-    process.env.REACT_APP_FLOW_ENV === "mainnet" ? "" : "testnet."
+    process.env.REACT_APP_FLOW_ENV === 'mainnet' ? '' : 'testnet.'
   }flowscan.org/contract/A.${address}.${name}`;
 };
 
@@ -106,12 +106,12 @@ export const getVaultId = (identifiers, coinType) => {
   );
 };
 
-export const removeAddressPrefix = (address) => address.replace("0x", "");
+export const removeAddressPrefix = (address) => address.replace('0x', '');
 
 export const getTokenMeta = (vaultId) => {
   if (vaultId) {
-    const tokenName = vaultId.split(".")[2];
-    const tokenAddress = vaultId.split(".")[1];
+    const tokenName = vaultId.split('.')[2];
+    const tokenAddress = vaultId.split('.')[1];
     const tokenType = CONTRACT_NAME_TO_COIN_TYPE[tokenName];
     return {
       ...COIN_TYPE_TO_META[CONTRACT_NAME_TO_COIN_TYPE[tokenName]],
@@ -127,8 +127,8 @@ export const parseIdentifier = (identifier) => {
   if (!identifier) {
     return {};
   }
-  const contractName = identifier.split(".")[2];
-  const contractAddress = identifier.split(".")[1];
+  const contractName = identifier.split('.')[2];
+  const contractAddress = identifier.split('.')[1];
   return {
     contractName,
     contractAddress,
@@ -146,7 +146,15 @@ export const parseTimestamp = (timestamp) => {
   // Timestamp returned from cadence is in ufix64 -> so we have to make it to an integer first
   const parsedDate = daysjs(parseInt(timestamp) * 1000);
 
-  const date = parsedDate.format("M/DD/YYYY");
-  const time = parsedDate.format("HH:MM A");
+  const date = parsedDate.format('M/DD/YYYY');
+  const time = parsedDate.format('HH:MM A');
   return `${date} at ${time}`;
+};
+
+export const isVaultInTreasury = (treasuryVaults, coinType) => {
+  const vault = treasuryVaults.find((treasuryVault) => {
+    const { vaultName } = COIN_TYPE_TO_META[coinType];
+    return treasuryVault.includes(vaultName);
+  });
+  return !!vault;
 };

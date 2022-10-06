@@ -1,4 +1,5 @@
 import { useContext, useEffect, useState } from 'react';
+import { Web3Context } from 'contexts/Web3';
 import AmountInput from 'components/SendTokens/components/AmountInput';
 import AssetSelector from 'components/SendTokens/components/AssetSelector';
 import ButtonGroup from 'components/SendTokens/components/ButtonGroup';
@@ -10,7 +11,7 @@ import {
 } from 'components/SendTokens/sendTokensContext';
 import { useAccount, useContacts } from 'hooks';
 import { ASSET_TYPES } from 'constants/enums';
-import { formatAddress, getNameByAddress } from 'utils';
+import { formatAddress, getNameByAddress, isVaultInTreasury } from 'utils';
 import Svg from 'library/Svg';
 
 const DepositTokenConfirmation = () => (
@@ -28,17 +29,21 @@ const DepositTokenForm = ({ safeData, userAddress }) => {
   const { assetType } = sendModalState;
   const { address: safeAddress, name: safeName } = safeData;
   const { contacts } = useContacts(safeAddress);
-
+  const web3 = useContext(Web3Context);
   const { getUserBalances } = useAccount();
-
   const [coinBalances, setCoinBalances] = useState();
+
+  const { vaults } = web3;
 
   const updateUserBalance = async () => {
     try {
       const userBalances = await getUserBalances(formatAddress(userAddress));
       const balances = {};
       userBalances.forEach((userBalance) => {
-        balances[userBalance.coinType] = userBalance.balance;
+        const { coinType, balance } = userBalance;
+        if (isVaultInTreasury(vaults[safeAddress], coinType)) {
+          balances[userBalance.coinType] = balance;
+        }
       });
 
       setCoinBalances(balances);
