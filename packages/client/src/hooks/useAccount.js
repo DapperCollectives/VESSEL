@@ -87,7 +87,6 @@ export default function useAccount() {
     }));
     for await (const coin of result) {
       const { coinType } = coin;
-      console.log(coinType);
       try {
         const { contractName } = COIN_TYPE_TO_META[coinType];
         const vaultPath = COIN_TYPE_TO_META[coinType].publicBalancePath;
