@@ -4,25 +4,15 @@ import AmountInput from 'components/SendTokens/components/AmountInput';
 import AssetSelector from 'components/SendTokens/components/AssetSelector';
 import ButtonGroup from 'components/SendTokens/components/ButtonGroup';
 import ModalHeader from 'components/SendTokens/components/ModalHeader';
-import TransactionDetails from 'components/SendTokens/components/TransactionDetails';
 import {
   SendTokensContext,
   SendTokensContextProvider,
 } from 'components/SendTokens/sendTokensContext';
+import SendTokenConfirmation from 'components/SendTokens/steps/SendTokenConfirmation';
 import { useAccount, useContacts } from 'hooks';
 import { ASSET_TYPES } from 'constants/enums';
 import { formatAddress, getNameByAddress, isVaultInTreasury } from 'utils';
 import Svg from 'library/Svg';
-
-const DepositTokenConfirmation = () => (
-  <>
-    <TransactionDetails />
-    <p className="mt-2 px-5 has-text-grey">
-      To complete this action, you will have to confirm it with your connected
-      wallet on the next step.
-    </p>
-  </>
-);
 
 const DepositTokenForm = ({ safeData, userAddress }) => {
   const [sendModalState] = useContext(SendTokensContext);
@@ -109,7 +99,7 @@ const Steps = ({ safeData, userAddress }) => {
     <div className="has-text-black">
       <ModalHeader title="Deposit" />
       {currentStep === 1 ? (
-        <DepositTokenConfirmation />
+        <SendTokenConfirmation />
       ) : (
         <DepositTokenForm safeData={safeData} userAddress={userAddress} />
       )}

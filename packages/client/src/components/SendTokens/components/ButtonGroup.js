@@ -68,7 +68,11 @@ const ButtonGroup = () => {
       }
       await web3.refreshTreasury();
       modalContext.closeModal();
-      history.push(`/safe/${address}`);
+      history.push(
+        `/safe/${
+          transactionType === TRANSACTION_TYPE.SEND ? address : recipient
+        }`
+      );
     }
   };
   return (

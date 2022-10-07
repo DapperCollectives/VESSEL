@@ -1,4 +1,4 @@
-import { Dropdown } from 'library/components';
+import { Dropdown, Tooltip } from 'library/components';
 import Svg from 'library/Svg';
 
 const CoinTypeDropDown = ({ coinType, setCoinType, balances }) => {
@@ -26,9 +26,16 @@ const CoinTypeDropDown = ({ coinType, setCoinType, balances }) => {
 
   return (
     <div className="mb-5">
-      <p className="has-text-grey">
+      <p className="has-text-grey is-flex is-align-items-center">
         Token Vault
-        <span className="has-text-red"> *</span>
+        <span className="has-text-red mr-1"> *</span>
+        <Tooltip
+          position="top"
+          text="Only tokens supported by Vessel can be transferred to this treasury."
+          className="mt-2"
+        >
+          <Svg name="QuestionMark" />
+        </Tooltip>
       </p>
       <Dropdown
         selectedValue={coinType}
