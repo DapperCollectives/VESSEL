@@ -2,7 +2,7 @@ import { useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useModalContext } from 'contexts';
 import { Web3Context } from 'contexts/Web3';
-import { useAccount } from 'hooks';
+import { useAccount, useErrorMessage } from 'hooks';
 import { ASSET_TYPES, TRANSACTION_TYPE } from 'constants/enums';
 import { formatAddress } from 'utils';
 import { isEmpty } from 'lodash';
@@ -10,9 +10,12 @@ import { SendTokensContext } from '../sendTokensContext';
 
 const ButtonGroup = () => {
   const modalContext = useModalContext();
-  const web3 = useContext(Web3Context);
+  const { proposeTransfer, proposeNFTTransfer, refreshTreasury } =
+    useContext(Web3Context);
   const [sendModalState, setSendModalState] = useContext(SendTokensContext);
   const history = useHistory();
+  const { doSendTokensToTreasury } = useAccount();
+  const { showErrorModal } = useErrorMessage();
 
   const {
     address,
@@ -26,8 +29,6 @@ const ButtonGroup = () => {
     transactionType,
   } = sendModalState;
 
-  const { doSendTokensToTreasury } = useAccount();
-
   const continueReady =
     recipientValid &&
     (assetType === ASSET_TYPES.TOKEN ? tokenAmount > 0 : !isEmpty(selectedNFT));
@@ -37,6 +38,7 @@ const ButtonGroup = () => {
     continueReady ? '' : 'disabled',
   ];
   const { collectionName, tokenId } = selectedNFT;
+
   const onSubmit = async () => {
     if (currentStep === 0) {
       setSendModalState((prevState) => ({
@@ -45,34 +47,38 @@ const ButtonGroup = () => {
       }));
     }
     if (currentStep === 1) {
-      if (assetType === ASSET_TYPES.TOKEN) {
-        if (transactionType === TRANSACTION_TYPE.SEND) {
-          await web3.proposeTransfer(
-            formatAddress(recipient),
-            tokenAmount,
-            coinType
-          );
+      try {
+        if (assetType === ASSET_TYPES.TOKEN) {
+          if (transactionType === TRANSACTION_TYPE.SEND) {
+            await proposeTransfer(
+              formatAddress(recipient),
+              tokenAmount,
+              coinType
+            );
+          } else {
+            await doSendTokensToTreasury(
+              formatAddress(recipient),
+              parseFloat(tokenAmount).toFixed(8),
+              coinType
+            );
+          }
         } else {
-          await doSendTokensToTreasury(
+          await proposeNFTTransfer(
+            formatAddress(address),
             formatAddress(recipient),
-            parseFloat(tokenAmount).toFixed(8),
-            coinType
+            `${collectionName}-${tokenId}`
           );
         }
-      } else {
-        await web3.proposeNFTTransfer(
-          formatAddress(address),
-          formatAddress(recipient),
-          `${collectionName}-${tokenId}`
+        await refreshTreasury();
+        modalContext.closeModal();
+        history.push(
+          `/safe/${
+            transactionType === TRANSACTION_TYPE.SEND ? address : recipient
+          }`
         );
+      } catch (error) {
+        showErrorModal(error);
       }
-      await web3.refreshTreasury();
-      modalContext.closeModal();
-      history.push(
-        `/safe/${
-          transactionType === TRANSACTION_TYPE.SEND ? address : recipient
-        }`
-      );
     }
   };
   return (

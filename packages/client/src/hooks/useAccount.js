@@ -12,7 +12,7 @@ const COIN_TYPE_LIST = Object.keys(COIN_TYPE_TO_META);
 export default function useAccount() {
   const doSendTokensToTreasury = async (treasuryAddr, amount, coinType) => {
     const vaultPath = COIN_TYPE_TO_META[coinType].storageVaultPath;
-    return await mutate({
+    const res = await mutate({
       cadence: SEND_TOKENS_TO_TREASURY,
       args: (arg, t) => [
         arg(treasuryAddr, t.Address),
@@ -21,6 +21,8 @@ export default function useAccount() {
       ],
       limit: REGULAR_LIMIT,
     });
+    await tx(res).onceSealed();
+    return res;
   };
 
   //FOR TESTING UTILS ONLY, calling this method deposits tokens to treasury
