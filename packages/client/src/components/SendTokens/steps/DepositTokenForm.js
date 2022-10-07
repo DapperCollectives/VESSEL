@@ -2,13 +2,7 @@ import { useContext, useEffect, useState } from 'react';
 import { Web3Context } from 'contexts/Web3';
 import AmountInput from 'components/SendTokens/components/AmountInput';
 import AssetSelector from 'components/SendTokens/components/AssetSelector';
-import ButtonGroup from 'components/SendTokens/components/ButtonGroup';
-import ModalHeader from 'components/SendTokens/components/ModalHeader';
-import {
-  SendTokensContext,
-  SendTokensContextProvider,
-} from 'components/SendTokens/sendTokensContext';
-import SendTokenConfirmation from 'components/SendTokens/steps/SendTokenConfirmation';
+import { SendTokensContext } from 'components/SendTokens/sendTokensContext';
 import { useAccount, useContacts } from 'hooks';
 import { ASSET_TYPES } from 'constants/enums';
 import { formatAddress, getNameByAddress, isVaultInTreasury } from 'utils';
@@ -23,7 +17,11 @@ const DepositTokenForm = ({ safeData, userAddress }) => {
   const { getUserBalances } = useAccount();
   const [coinBalances, setCoinBalances] = useState();
 
-  const { vaults } = web3;
+  const { getTreasuryVaults, vaults } = web3;
+
+  const getVaults = async () => {
+    await getTreasuryVaults(safeAddress);
+  };
 
   const updateUserBalance = async () => {
     try {
@@ -41,9 +39,18 @@ const DepositTokenForm = ({ safeData, userAddress }) => {
       console.log(`Failed to get coin balances, error: ${err}`);
     }
   };
+
+  useEffect(() => {
+    if (!userAddress) {
+      return;
+    }
+    getVaults();
+    // eslint-disable-next-line
+  }, [userAddress]);
+
   useEffect(() => {
     updateUserBalance();
-  }, []);
+  }, [vaults]);
 
   return (
     <>
@@ -91,27 +98,4 @@ const DepositTokenForm = ({ safeData, userAddress }) => {
   );
 };
 
-const Steps = ({ safeData, userAddress }) => {
-  const [sendModalState] = useContext(SendTokensContext);
-  const { currentStep } = sendModalState;
-
-  return (
-    <div className="has-text-black">
-      <ModalHeader title="Deposit" />
-      {currentStep === 1 ? (
-        <SendTokenConfirmation />
-      ) : (
-        <DepositTokenForm safeData={safeData} userAddress={userAddress} />
-      )}
-      <ButtonGroup />
-    </div>
-  );
-};
-
-const DepositTokens = ({ address, safeData, initialState }) => (
-  <SendTokensContextProvider address={address} initialState={initialState}>
-    <Steps safeData={safeData} userAddress={address} />
-  </SendTokensContextProvider>
-);
-
-export default DepositTokens;
+export default DepositTokenForm;

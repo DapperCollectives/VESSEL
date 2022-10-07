@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import { useModalContext } from '../contexts';
-import { ASSET_TYPES } from 'constants/enums';
+import { SendTokens } from 'components';
+import { ASSET_TYPES, TRANSACTION_TYPE } from 'constants/enums';
 import { isEmpty } from 'lodash';
-import SendTokens from './SendTokens';
 
 function SafeNFTs({ web3, address }) {
   const assetComponents = [];
@@ -58,12 +58,14 @@ function SafeNFTs({ web3, address }) {
         </div>
         <div className="is-flex is-align-items-center mt-6">
           <button
+            type="button"
             className="button is-border flex-1 mr-2"
             onClick={() => modalContext.closeModal()}
           >
             Cancel
           </button>
           <button
+            type="button"
             className="button is-primary flex-1"
             onClick={() =>
               modalContext.openModal(
@@ -71,7 +73,7 @@ function SafeNFTs({ web3, address }) {
                   address={address}
                   initialState={{
                     assetType: ASSET_TYPES.NFT,
-                    selectedNFT: collection.key + '-' + token.tokenId,
+                    selectedNFT: `${collection.key}-${token.tokenId}`,
                     transactionType: TRANSACTION_TYPE.SEND,
                   }}
                 />

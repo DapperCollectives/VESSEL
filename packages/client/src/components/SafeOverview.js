@@ -4,7 +4,7 @@ import { useModalContext } from 'contexts';
 import { TRANSACTION_TYPE } from 'constants/enums';
 import { parseIdentifier } from 'utils';
 import Svg from 'library/Svg';
-import DepositTokens from 'modals/DepositTokens';
+import { DepositTokens } from './SendTokens';
 
 function SafeOverview({ allBalance, allNFTs, safeData, userAddress }) {
   const { openModal } = useModalContext();

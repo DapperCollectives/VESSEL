@@ -4,7 +4,7 @@ import { SIGNED_LIMIT } from "constants/constants";
 import { COIN_TYPE_TO_META } from "constants/maps";
 import { createSignature } from "contexts/Web3";
 import { ADD_VAULT, GET_TREASURY_IDENTIFIERS, REMOVE_VAULT } from "../flow";
-import vaultReducer, { VAULT_INITIAL_STATE } from "../reducers/vaultRducer";
+import vaultReducer, { VAULT_INITIAL_STATE } from "../reducers/vaultReducer";
 import { removeAddressPrefix } from "../utils";
 
 const storageKey = "vessel-vaults";

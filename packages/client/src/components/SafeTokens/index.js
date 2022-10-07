@@ -2,12 +2,11 @@ import { useContext, useEffect, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import { useModalContext } from 'contexts';
 import { Web3Context } from 'contexts/Web3';
-import { SendTokens } from 'components';
+import { DepositTokens, SendTokens } from 'components/SendTokens';
 import { EmptyTableWithCTA } from 'library/components';
 import { useAccount } from 'hooks';
 import { ASSET_TYPES, TRANSACTION_TYPE } from 'constants/enums';
 import { formatAddress } from 'utils';
-import DepositTokens from 'modals/DepositTokens';
 import VaultTable from './VaultTable';
 
 const SafeTokens = () => {

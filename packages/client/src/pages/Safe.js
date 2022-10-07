@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { NavLink, useParams } from 'react-router-dom';
 import { Web3Consumer, useModalContext } from 'contexts';
 import { createSignature } from 'contexts/Web3';
@@ -12,12 +12,13 @@ import {
   SendTokens,
   TestToolBox,
 } from 'components';
+import DepositTokens from 'components/SendTokens/DepositTokens';
 import { EmptyTableWithCTA } from 'library/components';
 import { useClipboard, useErrorMessage } from 'hooks';
 import { ACTION_TYPES, TRANSACTION_TYPE } from 'constants/enums';
 import { shortenString } from 'utils';
 import Svg from 'library/Svg';
-import { DepositTokens, TransactionSuccessModal } from 'modals';
+import { TransactionSuccessModal } from 'modals';
 
 function Safe({ web3 }) {
   const params = useParams();
@@ -43,7 +44,9 @@ function Safe({ web3 }) {
     );
   }
 
-  const showTransactionSuccessModal = (action, safeName, safeAddress) => {
+  const { address: safeAddress, name: safeName } = safeData;
+
+  const showTransactionSuccessModal = (action) => {
     const actionData = action.data.actionView;
     if (
       actionData.type === ACTION_TYPES.TRANSFER_NFT ||
@@ -120,7 +123,7 @@ function Safe({ web3 }) {
     );
     if (events) {
       const action = events.find((e) => e.type.endsWith('ActionExecuted'));
-      showTransactionSuccessModal(action, safeData.name, safeData.address);
+      showTransactionSuccessModal(action);
     }
   };
 
