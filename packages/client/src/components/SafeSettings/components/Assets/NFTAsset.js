@@ -1,11 +1,11 @@
-import React, { useEffect, forwardRef } from "react";
-import { useModalContext } from "contexts";
-import { formatAddress, parseIdentifier } from "utils";
-import { useErrorMessage } from "hooks";
-import AddCollection from "./AddCollection";
-import Svg from "library/Svg";
-import AssetTableView from "./AssetTableView";
-import RemoveAsset from "./RemoveAsset";
+import React, { forwardRef, useEffect } from 'react';
+import { useModalContext } from 'contexts';
+import { useErrorMessage } from 'hooks';
+import { formatAddress, parseIdentifier } from 'utils';
+import Svg from 'library/Svg';
+import AddCollection from './AddCollection';
+import AssetTableView from './AssetTableView';
+import RemoveAsset from './RemoveAsset';
 
 const NFTAsset = (
   {
@@ -61,7 +61,7 @@ const NFTAsset = (
         onCancel={() => closeModal()}
         onNext={onAddCollectionSubmit}
       />,
-      { headerTitle: "Add NFT Collection" }
+      { headerTitle: 'Add NFT Collection' }
     );
   };
 
@@ -71,13 +71,11 @@ const NFTAsset = (
       <RemoveAsset
         name={contractName}
         address={formatAddress(contractAddress)}
-        explanation={
-          "This is only possible if you don’t have any NFT from this collection in your treasury."
-        }
+        explanation="This is only possible if you don’t have any NFT from this collection in your treasury."
         onCancel={() => closeModal()}
         onNext={() => onRemoveCollectionSubmit(identifier)}
       />,
-      { headerTitle: "Remove NFT Collection" }
+      { headerTitle: 'Remove NFT Collection' }
     );
   };
 
@@ -86,6 +84,7 @@ const NFTAsset = (
       <div className="column p-0 mt-5 is-flex is-full is-justify-content-space-between">
         <h2>NFT Collections</h2>
         <button
+          type="button"
           className="button is-secondary is-small with-icon"
           onClick={openAddCollectionModal}
         >
@@ -93,7 +92,7 @@ const NFTAsset = (
           <Svg name="Plus" />
         </button>
       </div>
-      <div className="column p-0 mt-4 is-flex is-flex-direction-column is-full rounded-sm border-light has-shadow">
+      <div className="column p-0 mt-4 is-flex is-flex-direction-column is-full rounded-sm border-light">
         <AssetTableView
           assets={Object.keys(NFTs[address] ?? {})}
           emptyPlaceholder="You don't have any NFT Collections yet."

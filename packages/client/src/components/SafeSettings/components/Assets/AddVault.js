@@ -1,8 +1,8 @@
-import { useState } from "react";
-import { COIN_TYPE_TO_META } from "constants/maps";
-import { Dropdown } from "library/components";
-import { useVaults } from "hooks";
-import Svg from "library/Svg";
+import { useState } from 'react';
+import { Dropdown } from 'library/components';
+import { useVaults } from 'hooks';
+import { COIN_TYPE_TO_META } from 'constants/maps';
+import Svg from 'library/Svg';
 
 const AddVault = ({ address, onCancel, onNext }) => {
   const [selectedCoinType, setSelectedCoinType] = useState();
@@ -19,7 +19,7 @@ const AddVault = ({ address, onCancel, onNext }) => {
   );
   const isFormValid = vaultName && !isExistingVault;
 
-  const isDisabled = isFormValid ? "" : "disabled";
+  const isDisabled = isFormValid ? '' : 'disabled';
 
   const coinTypes = Object.entries(COIN_TYPE_TO_META).map((type) => ({
     itemValue: type[0],
@@ -32,8 +32,8 @@ const AddVault = ({ address, onCancel, onNext }) => {
     </span>
   );
   return (
-    <div className="p-5 has-text-grey">
-      <div className="flex-1 is-flex is-flex-direction-column">
+    <div className="has-text-grey">
+      <div className="p-5 flex-1 is-flex is-flex-direction-column">
         <p className="has-text-grey mb-2">Tokens</p>
         <Dropdown
           selectedValue={selectedCoinType}
@@ -48,7 +48,7 @@ const AddVault = ({ address, onCancel, onNext }) => {
           </p>
         )}
       </div>
-      <div className="is-flex is-align-items-center mt-6">
+      <div className="p-5 is-flex is-align-items-center pt-5 border-light-top">
         <button
           type="button"
           className="button flex-1 is-border mr-2"
