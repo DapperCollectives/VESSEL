@@ -40,13 +40,15 @@ const VaultTable = ({
               Deposit
             </button>
           )}
-          <button
-            type="button"
-            className="button is-transparent pl-0"
-            onClick={() => handleSendToken(coinType)}
-          >
-            Send
-          </button>
+          {balance > 0 && (
+            <button
+              type="button"
+              className="button is-transparent pl-0"
+              onClick={() => handleSendToken(coinType)}
+            >
+              Send
+            </button>
+          )}
         </div>
       </div>
     ))}
