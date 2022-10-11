@@ -4,10 +4,10 @@ import AddressDropdown from '../components/AddressDropdown';
 import AmountInput from '../components/AmountInput';
 import AssetSelector from '../components/AssetSelector';
 import { ASSET_TYPES } from 'constants/enums';
-import { SendTokensContext } from '../sendTokensContext';
+import { TransferTokensContext } from '../TransferTokensContext';
 
 const SendTokenForm = () => {
-  const [sendModalState] = useContext(SendTokensContext);
+  const [sendModalState] = useContext(TransferTokensContext);
   const { assetType, address } = sendModalState;
 
   const web3 = useContext(Web3Context);

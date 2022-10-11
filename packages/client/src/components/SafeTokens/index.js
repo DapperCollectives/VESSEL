@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import { useModalContext } from 'contexts';
 import { Web3Context } from 'contexts/Web3';
-import { DepositTokens, SendTokens } from 'components/SendTokens';
+import TransferTokens from 'components/TransferToken';
 import { EmptyTableWithCTA } from 'library/components';
 import { useAccount } from 'hooks';
 import { ASSET_TYPES, TRANSACTION_TYPE } from 'constants/enums';
@@ -25,7 +25,6 @@ const SafeTokens = () => {
   }));
 
   const { addr: userAddress } = web3.user;
-  const safeData = web3?.treasuries?.[treasuryAddress];
 
   const updateUserVaults = async () => {
     try {
@@ -42,7 +41,7 @@ const SafeTokens = () => {
 
   const handleSendToken = (coinType) => {
     openModal(
-      <SendTokens
+      <TransferTokens
         address={treasuryAddress}
         initialState={{
           assetType: ASSET_TYPES.TOKEN,
@@ -55,9 +54,8 @@ const SafeTokens = () => {
 
   const handleDepositToken = (coinType) =>
     openModal(
-      <DepositTokens
+      <TransferTokens
         address={userAddress}
-        safeData={safeData}
         initialState={{
           assetType: ASSET_TYPES.TOKEN,
           coinType,

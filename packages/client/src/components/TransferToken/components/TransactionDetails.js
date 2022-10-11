@@ -6,11 +6,11 @@ import { COIN_TYPE_TO_META } from 'constants/maps';
 import { getNameByAddress } from 'utils';
 import Svg from 'library/Svg';
 import { isEmpty } from 'lodash';
-import { SendTokensContext } from '../sendTokensContext';
+import { TransferTokensContext } from '../TransferTokensContext';
 
 const TransactionDetails = () => {
   const [transactionFee, setTransactionFee] = useState(0);
-  const [sendModalState] = useContext(SendTokensContext);
+  const [sendModalState] = useContext(TransferTokensContext);
   const {
     assetType,
     coinType,

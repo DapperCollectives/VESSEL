@@ -1,8 +1,8 @@
 import { createContext, useState } from 'react';
 import { ASSET_TYPES, TRANSACTION_TYPE } from 'constants/enums';
 
-export const SendTokensContext = createContext();
-export const SendTokensContextProvider = (props) => {
+export const TransferTokensContext = createContext();
+export const TransferTokensContextProvider = (props) => {
   const { children, address, initialState } = props;
   const INIT_STATE = {
     address,
@@ -17,8 +17,8 @@ export const SendTokensContextProvider = (props) => {
   };
   const [sendModalState, setSendModalState] = useState(INIT_STATE);
   return (
-    <SendTokensContext.Provider value={[sendModalState, setSendModalState]}>
+    <TransferTokensContext.Provider value={[sendModalState, setSendModalState]}>
       {children}
-    </SendTokensContext.Provider>
+    </TransferTokensContext.Provider>
   );
 };

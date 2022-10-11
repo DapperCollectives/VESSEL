@@ -1,23 +1,28 @@
 import { useContext, useEffect, useState } from 'react';
 import { Web3Context } from 'contexts/Web3';
-import AmountInput from 'components/SendTokens/components/AmountInput';
-import AssetSelector from 'components/SendTokens/components/AssetSelector';
-import { SendTokensContext } from 'components/SendTokens/sendTokensContext';
+import { TransferTokensContext } from 'components/TransferToken/TransferTokensContext';
+import AmountInput from 'components/TransferToken/components/AmountInput';
+import AssetSelector from 'components/TransferToken/components/AssetSelector';
 import { useAccount, useContacts } from 'hooks';
 import { ASSET_TYPES } from 'constants/enums';
 import { formatAddress, getNameByAddress, isVaultInTreasury } from 'utils';
 import Svg from 'library/Svg';
 
-const DepositTokenForm = ({ safeData, userAddress }) => {
-  const [sendModalState] = useContext(SendTokensContext);
-  const { assetType } = sendModalState;
-  const { address: safeAddress, name: safeName } = safeData;
-  const { contacts } = useContacts(safeAddress);
-  const web3 = useContext(Web3Context);
-  const { getUserBalances } = useAccount();
+const DepositTokenForm = () => {
   const [coinBalances, setCoinBalances] = useState();
+  const { getUserBalances } = useAccount();
 
+  const [sendModalState] = useContext(TransferTokensContext);
+  const {
+    assetType,
+    address: userAddress,
+    recipient: safeAddress,
+  } = sendModalState;
+
+  const web3 = useContext(Web3Context);
+  const { name: safeName } = web3?.treasuries?.[safeAddress];
   const { getTreasuryVaults, vaults } = web3;
+  const { contacts } = useContacts(safeAddress);
 
   const getVaults = async () => {
     await getTreasuryVaults(safeAddress);

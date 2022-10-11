@@ -6,13 +6,13 @@ import { useAccount, useErrorMessage } from 'hooks';
 import { ASSET_TYPES, TRANSACTION_TYPE } from 'constants/enums';
 import { formatAddress } from 'utils';
 import { isEmpty } from 'lodash';
-import { SendTokensContext } from '../sendTokensContext';
+import { TransferTokensContext } from '../TransferTokensContext';
 
 const ButtonGroup = () => {
   const modalContext = useModalContext();
   const { proposeTransfer, proposeNFTTransfer, refreshTreasury } =
     useContext(Web3Context);
-  const [sendModalState, setSendModalState] = useContext(SendTokensContext);
+  const [sendModalState, setSendModalState] = useContext(TransferTokensContext);
   const history = useHistory();
   const { doSendTokensToTreasury } = useAccount();
   const { showErrorModal } = useErrorMessage();

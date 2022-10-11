@@ -4,7 +4,7 @@ import { useModalContext } from 'contexts';
 import { TRANSACTION_TYPE } from 'constants/enums';
 import { parseIdentifier } from 'utils';
 import Svg from 'library/Svg';
-import { DepositTokens } from './SendTokens';
+import TransferTokens from './TransferToken';
 
 function SafeOverview({ allBalance, allNFTs, safeData, userAddress }) {
   const { openModal } = useModalContext();
@@ -30,9 +30,8 @@ function SafeOverview({ allBalance, allNFTs, safeData, userAddress }) {
 
   const onDeposit = () =>
     openModal(
-      <DepositTokens
+      <TransferTokens
         address={userAddress}
-        safeData={safeData}
         initialState={{
           transactionType: TRANSACTION_TYPE.DEPOSIT,
           recipient: safeData.address,

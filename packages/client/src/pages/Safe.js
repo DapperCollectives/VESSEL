@@ -9,10 +9,9 @@ import {
   SafeSettings,
   SafeTokens,
   SafeTransactions,
-  SendTokens,
   TestToolBox,
 } from 'components';
-import DepositTokens from 'components/SendTokens/DepositTokens';
+import TransferTokens from 'components/TransferToken';
 import { EmptyTableWithCTA } from 'library/components';
 import { useClipboard, useErrorMessage } from 'hooks';
 import { ACTION_TYPES, TRANSACTION_TYPE } from 'constants/enums';
@@ -172,7 +171,7 @@ function Safe({ web3 }) {
 
   const onSend = () => {
     openModal(
-      <SendTokens
+      <TransferTokens
         address={address}
         initialState={{
           transactionType: TRANSACTION_TYPE.SEND,
@@ -183,9 +182,8 @@ function Safe({ web3 }) {
 
   const onDeposit = () =>
     openModal(
-      <DepositTokens
+      <TransferTokens
         address={userAddress}
-        safeData={safeData}
         initialState={{
           transactionType: TRANSACTION_TYPE.DEPOSIT,
           recipient: safeData.address,

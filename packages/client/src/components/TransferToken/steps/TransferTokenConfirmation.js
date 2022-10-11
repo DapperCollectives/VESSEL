@@ -1,7 +1,7 @@
 import React from 'react';
 import TransactionDetails from '../components/TransactionDetails';
 
-const SendTokenConfirmation = () => (
+const TransferTokenConfirmation = () => (
   <>
     <TransactionDetails />
     <p className="mt-2 px-5 has-text-grey">
@@ -11,4 +11,4 @@ const SendTokenConfirmation = () => (
   </>
 );
 
-export default SendTokenConfirmation;
+export default TransferTokenConfirmation;

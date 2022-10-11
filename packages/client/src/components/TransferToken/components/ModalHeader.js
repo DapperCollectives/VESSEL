@@ -1,10 +1,10 @@
 import { useContext } from 'react';
 import { useModalContext } from 'contexts';
 import Svg from 'library/Svg';
-import { SendTokensContext } from '../sendTokensContext';
+import { TransferTokensContext } from '../TransferTokensContext';
 
 const ModalHeader = ({ title }) => {
-  const [sendModalState] = useContext(SendTokensContext);
+  const [sendModalState] = useContext(TransferTokensContext);
   const { closeModal } = useModalContext();
   const { currentStep } = sendModalState;
   const titleText = currentStep === 0 ? title : 'Review';
