@@ -1,4 +1,8 @@
-export const GET_TREASURY_NFT_REF = (contractName, contractAddress, collectionId) => `
+export const GET_TREASURY_NFT_REF = (
+  contractName,
+  contractAddress,
+  collectionId
+) => `
     import NonFungibleToken from 0xNonFungibleToken
     import DAOTreasuryV5 from 0xDAOTreasuryV5
     import ${contractName} from ${contractAddress}

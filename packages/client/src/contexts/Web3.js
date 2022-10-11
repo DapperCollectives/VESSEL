@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
-import * as fcl from "@onflow/fcl";
-import networks from "../networks";
-import { useRouteMatch } from "react-router-dom";
-import { useFclUserBalance, useTreasury, useNFTs, useVaults } from "../hooks";
-import { CURRENT_USER_SESSION_KEY } from "constants/constants";
-import { Buffer } from "buffer";
+import React, { useEffect, useState } from 'react';
+import { useRouteMatch } from 'react-router-dom';
+import { useFclUserBalance, useNFTs, useTreasury, useVaults } from '../hooks';
+import { CURRENT_USER_SESSION_KEY } from 'constants/constants';
+import * as fcl from '@onflow/fcl';
+import { Buffer } from 'buffer';
+import networks from '../networks';
 
 // create our app context
 export const Web3Context = React.createContext({});
@@ -12,12 +12,12 @@ export const Web3Context = React.createContext({});
 // provider Component that wraps the entire app and provides context variables
 export default function Web3Provider({
   children,
-  network = "testnet",
+  network = 'testnet',
   ...props
 }) {
   const [transactionInProgress, setTransactionInProgress] = useState(false);
   const [transactionStatus, setTransactionStatus] = useState(null);
-  const [transactionError, setTransactionError] = useState("");
+  const [transactionError, setTransactionError] = useState('');
   const [txId, setTxId] = useState(null);
 
   const executeTransaction = async (cadence, args, options = {}) => {
@@ -55,11 +55,11 @@ export default function Web3Provider({
     const { accessApi, walletDiscovery } = networks[network];
     fcl
       .config()
-      .put("accessNode.api", accessApi) // connect to Flow
-      .put("discovery.wallet", walletDiscovery); // use Blocto wallet
+      .put('accessNode.api', accessApi) // connect to Flow
+      .put('discovery.wallet', walletDiscovery); // use Blocto wallet
 
     try {
-      const contracts = require("../contracts.json");
+      const contracts = require('../contracts.json');
       Object.keys(contracts).forEach((contract) => {
         fcl.config().put(contract, contracts[contract]);
       });
@@ -73,7 +73,7 @@ export default function Web3Provider({
   };
   // if on a safe page, get safe's treasury info
   const match = useRouteMatch({
-    path: ["/safe/:address", "/safe/:address/:tab"],
+    path: ['/safe/:address', '/safe/:address/:tab'],
   });
   const treasuryAddr = match?.params?.address;
   const treasuryProps = useTreasury(treasuryAddr);
@@ -95,7 +95,7 @@ export default function Web3Provider({
       errorMessage: transactionError,
     },
     injectedProvider: fcl,
-    user: user,
+    user,
     address: user.addr,
     logOut,
     ...nftProps,
@@ -125,12 +125,12 @@ export const createSignature = async (intent, uuid = undefined) => {
   try {
     const latestBlock = await fcl.send([fcl.getBlock(true)]).then(fcl.decode);
     const { height, id } = latestBlock;
-    const intentHex = Buffer.from(intent).toString("hex");
-    const message = `${uuid ? uuid : ""}${intentHex}${id}`;
-    const messageHex = Buffer.from(message).toString("hex");
-    let sigResponse = await fcl.currentUser().signUserMessage(messageHex);
-    let keyId = sigResponse[0].keyId;
-    let signature = sigResponse[0].signature;
+    const intentHex = Buffer.from(intent).toString('hex');
+    const message = `${uuid || ''}${intentHex}${id}`;
+    const messageHex = Buffer.from(message).toString('hex');
+    const sigResponse = await fcl.currentUser().signUserMessage(messageHex);
+    const { keyId } = sigResponse[0];
+    const { signature } = sigResponse[0];
     const keyIds = [keyId];
     const signatures = [signature];
     return {
@@ -140,6 +140,6 @@ export const createSignature = async (intent, uuid = undefined) => {
       height,
     };
   } catch (error) {
-    console.log("error in creating a signature", error);
+    console.log('error in creating a signature', error);
   }
 };

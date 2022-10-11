@@ -1,13 +1,13 @@
-import { config, mutate, query, tx } from "@onflow/fcl";
-import { useEffect, useReducer } from "react";
-import { SIGNED_LIMIT } from "constants/constants";
-import { COIN_TYPE_TO_META } from "constants/maps";
-import { createSignature } from "contexts/Web3";
-import { ADD_VAULT, GET_TREASURY_IDENTIFIERS, REMOVE_VAULT } from "../flow";
-import vaultReducer, { VAULT_INITIAL_STATE } from "../reducers/vaultReducer";
-import { removeAddressPrefix } from "../utils";
+import { useEffect, useReducer } from 'react';
+import { createSignature } from 'contexts/Web3';
+import { SIGNED_LIMIT } from 'constants/constants';
+import { COIN_TYPE_TO_META } from 'constants/maps';
+import { removeAddressPrefix } from '../utils';
+import { config, mutate, query, tx } from '@onflow/fcl';
+import { ADD_VAULT, GET_TREASURY_IDENTIFIERS, REMOVE_VAULT } from '../flow';
+import vaultReducer, { VAULT_INITIAL_STATE } from '../reducers/vaultReducer';
 
-const storageKey = "vessel-vaults";
+const storageKey = 'vessel-vaults';
 
 const doAddVault = async (treasuryAddr, contractName, contractAddress) => {
   const intent = `A.${removeAddressPrefix(
@@ -51,7 +51,7 @@ export default function useVaults(treasuryAddr) {
   const [state, dispatch] = useReducer(vaultReducer, [], (initial) => ({
     ...initial,
     ...VAULT_INITIAL_STATE,
-    vaults: JSON.parse(localStorage.getItem(storageKey) || "{}"),
+    vaults: JSON.parse(localStorage.getItem(storageKey) || '{}'),
   }));
 
   useEffect(() => {
@@ -68,7 +68,7 @@ export default function useVaults(treasuryAddr) {
 
     if (vaults.length !== 0) {
       dispatch({
-        type: "SET_VAULTS",
+        type: 'SET_VAULTS',
         payload: {
           [treasuryAddr]: vaults,
         },
@@ -77,7 +77,7 @@ export default function useVaults(treasuryAddr) {
   };
 
   const addVault = async (coinType) => {
-    const contractName = COIN_TYPE_TO_META[coinType].contractName;
+    const { contractName } = COIN_TYPE_TO_META[coinType];
     const contractAddress = await config().get(`0x${contractName}`);
     const res = await doAddVault(treasuryAddr, contractName, contractAddress);
     await tx(res).onceSealed();
@@ -87,7 +87,7 @@ export default function useVaults(treasuryAddr) {
     )}.${contractName}.Vault`;
 
     dispatch({
-      type: "ADD_VAULT",
+      type: 'ADD_VAULT',
       payload: {
         [treasuryAddr]: identifier,
       },
@@ -99,7 +99,7 @@ export default function useVaults(treasuryAddr) {
     await tx(res).onceSealed();
 
     dispatch({
-      type: "REMOVE_VAULT",
+      type: 'REMOVE_VAULT',
       payload: {
         [treasuryAddr]: identifier,
       },

@@ -1,7 +1,7 @@
-import React from "react";
-import { isEmpty } from "lodash";
-import TransactionTable from "./TransactionTable";
-import { useTreasuryTransactions } from "hooks";
+import React from 'react';
+import { useTreasuryTransactions } from 'hooks';
+import { isEmpty } from 'lodash';
+import TransactionTable from './TransactionTable';
 
 function SafeTransactions({ safeData, emptyComponent, className }) {
   const { data: transactions } = useTreasuryTransactions(safeData.uuid);
@@ -9,7 +9,13 @@ function SafeTransactions({ safeData, emptyComponent, className }) {
     return emptyComponent;
   }
 
-  return <TransactionTable safeData={safeData} transactions={transactions} className={className} />;
+  return (
+    <TransactionTable
+      safeData={safeData}
+      transactions={transactions}
+      className={className}
+    />
+  );
 }
 
 export default SafeTransactions;

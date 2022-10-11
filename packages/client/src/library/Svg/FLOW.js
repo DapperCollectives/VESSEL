@@ -1,4 +1,4 @@
-export const FLOW = ({ width = "24", height = "24", className = "" }) => (
+export const FLOW = ({ width = '24', height = '24', className = '' }) => (
   <svg
     width={width}
     height={height}

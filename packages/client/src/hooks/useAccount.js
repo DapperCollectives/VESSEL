@@ -25,8 +25,8 @@ export default function useAccount() {
     return res;
   };
 
-  //FOR TESTING UTILS ONLY, calling this method deposits tokens to treasury
-  //should only be used for testing
+  // FOR TESTING UTILS ONLY, calling this method deposits tokens to treasury
+  // should only be used for testing
   const initDepositTokensToTreasury = async (treasuryAddr) => {
     for await (const coinType of COIN_TYPE_LIST) {
       try {

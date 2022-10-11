@@ -1,15 +1,27 @@
-import React, { useEffect, useContext, useState } from "react";
-import { Web3Context } from "contexts/Web3";
-import { ACTION_TYPES } from "constants/enums";
-import Svg from "library/Svg";
-import { formatAddress, getTokenMeta, parseIdentifier, getNameByAddress } from "utils";
+import React, { useContext, useEffect, useState } from 'react';
+import { Web3Context } from 'contexts/Web3';
+import { ACTION_TYPES } from 'constants/enums';
+import {
+  formatAddress,
+  getNameByAddress,
+  getTokenMeta,
+  parseIdentifier,
+} from 'utils';
+import Svg from 'library/Svg';
 
-const BannerInfo = ({ className = "", actionData = {}, contacts = {}, signers = [] }) => {
+const BannerInfo = ({
+  className = '',
+  actionData = {},
+  contacts = {},
+  signers = [],
+}) => {
   const { getAccountNFTReference } = useContext(Web3Context);
   const [nftMeta, setNFTMeta] = useState();
-  const { recipient, nftId, collectionId, vaultId, tokenAmount, signerAddr } = actionData;
+  const { recipient, nftId, collectionId, vaultId, tokenAmount, signerAddr } =
+    actionData;
   const { displayName, tokenType } = getTokenMeta(vaultId);
-  const { contractName: NFTName, contractAddress: NFTAddress } = parseIdentifier(collectionId);
+  const { contractName: NFTName, contractAddress: NFTAddress } =
+    parseIdentifier(collectionId);
   const { name: imageName, thumbnail: imageURI } = nftMeta || {};
   const actionType = actionData.type;
 
@@ -26,7 +38,14 @@ const BannerInfo = ({ className = "", actionData = {}, contacts = {}, signers = 
       };
       getNFTMeta().catch(console.error);
     }
-  }, [actionType, NFTName, NFTAddress, nftId, recipient, getAccountNFTReference]);
+  }, [
+    actionType,
+    NFTName,
+    NFTAddress,
+    nftId,
+    recipient,
+    getAccountNFTReference,
+  ]);
 
   const contactName = getNameByAddress(contacts, signerAddr);
 
@@ -55,7 +74,8 @@ const BannerInfo = ({ className = "", actionData = {}, contacts = {}, signers = 
             {Number(tokenAmount).toLocaleString()}
           </span>
           <span className="columns is-vcentered is-multiline is-mobile is-size-6 has-text-weight-bold">
-            <Svg name={tokenType} /> &nbsp; {displayName}
+            <Svg name={tokenType} /> &nbsp;
+            {displayName}
           </span>
         </>
       )}
@@ -65,17 +85,17 @@ const BannerInfo = ({ className = "", actionData = {}, contacts = {}, signers = 
           <span className="columns is-vcentered is-multiline is-mobile mr-2 mt-2 is-size-4 is-family-monospace">
             <b>{contactName}</b>
           </span>
-          {contactName !== signerAddr &&
+          {contactName !== signerAddr && (
             <span className="columns is-vcentered is-multiline is-mobile is-size-6 has-text-weight-bold">
               {signerAddr}
             </span>
-          }
+          )}
         </>
       )}
       {actionType === ACTION_TYPES.UPDATE_THRESHOLD && (
         <span className="columns is-vcentered is-multiline is-mobile mr-2 mt-2 is-size-4 is-family-monospace">
           <b>
-            {signers.length} of {newThreshold} owners
+            {signers.length} of{newThreshold} owners
           </b>
         </span>
       )}

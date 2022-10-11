@@ -1,4 +1,4 @@
-import { isAddr } from "../utils";
+import { isAddr } from '../utils';
 
 export default function useAddressValidation(provider) {
   const isAddressValid = async (address) => {

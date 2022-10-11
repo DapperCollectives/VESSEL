@@ -1,24 +1,24 @@
-import { useEffect, useReducer } from "react";
-import { mutate, query, tx } from "@onflow/fcl";
-import { REGULAR_LIMIT, SIGNED_LIMIT } from "constants/constants";
-import { createSignature } from "../contexts/Web3";
-import nftReducer, { NFT_INITIAL_STATE } from "../reducers/nftReducer";
-import { formatAddress, parseIdentifier, removeAddressPrefix } from "utils";
+import { useEffect, useReducer } from 'react';
+import { createSignature } from '../contexts/Web3';
+import { REGULAR_LIMIT, SIGNED_LIMIT } from 'constants/constants';
+import { formatAddress, parseIdentifier, removeAddressPrefix } from 'utils';
+import { mutate, query, tx } from '@onflow/fcl';
 import {
-  CHECK_TREASURY_NFT_COLLECTION,
-  PROPOSE_NFT_TRANSFER,
-  SEND_NFT_TO_TREASURY,
-  GET_TREASURY_IDENTIFIERS,
-  GET_ACCOUNT_NFT_REF,
-  GET_TREASURY_NFT_REF,
   ADD_COLLECTION,
+  CHECK_TREASURY_NFT_COLLECTION,
+  GET_ACCOUNT_NFT_REF,
+  GET_TREASURY_IDENTIFIERS,
+  GET_TREASURY_NFT_REF,
+  PROPOSE_NFT_TRANSFER,
   REMOVE_COLLECTION,
-} from "../flow";
+  SEND_NFT_TO_TREASURY,
+} from '../flow';
+import nftReducer, { NFT_INITIAL_STATE } from '../reducers/nftReducer';
 
-const storageKey = "vessel-collections";
+const storageKey = 'vessel-collections';
 
-const doSendNFTToTreasury = async (treasuryAddr, tokenId) => {
-  return await mutate({
+const doSendNFTToTreasury = async (treasuryAddr, tokenId) =>
+  await mutate({
     cadence: SEND_NFT_TO_TREASURY,
     args: (arg, t) => [
       arg(treasuryAddr, t.Address),
@@ -26,12 +26,11 @@ const doSendNFTToTreasury = async (treasuryAddr, tokenId) => {
     ],
     limit: REGULAR_LIMIT,
   });
-};
 
 const doProposeNFTTransfer = async (treasuryAddr, recipient, nft) => {
   // Example: A.f8d6e0586b0a20c7.ZeedzINO.Collection-0
   // First part will contain the collection identifier, and the second will contain the tokenId
-  const tokenInfo = nft.split("-");
+  const tokenInfo = nft.split('-');
   const { contractName, contractAddress } = parseIdentifier(nft);
   const intent = `Transfer ${tokenInfo[0]} NFT from the treasury to ${recipient}`;
   const { message, keyIds, signatures, height } = await createSignature(intent);
@@ -93,7 +92,7 @@ export default function useNFTs(treasuryAddr) {
   const [state, dispatch] = useReducer(nftReducer, [], (initial) => ({
     ...initial,
     ...NFT_INITIAL_STATE,
-    NFTs: JSON.parse(localStorage.getItem(storageKey) || "{}"),
+    NFTs: JSON.parse(localStorage.getItem(storageKey) || '{}'),
   }));
 
   useEffect(() => {
@@ -111,7 +110,7 @@ export default function useNFTs(treasuryAddr) {
         ],
       });
     } catch (e) {
-      console.log("fcl error", e);
+      console.log('fcl error', e);
     }
 
     const tokens = result?.map((res) => ({
@@ -124,7 +123,7 @@ export default function useNFTs(treasuryAddr) {
     }));
 
     dispatch({
-      type: "SET_NFTS",
+      type: 'SET_NFTS',
       payload: {
         [treasuryAddr]: {
           [identifier]: tokens,
@@ -167,7 +166,11 @@ export default function useNFTs(treasuryAddr) {
     nftId
   ) => {
     const nftRef = await query({
-      cadence: GET_TREASURY_NFT_REF(contractName, contractAddress, collectionId),
+      cadence: GET_TREASURY_NFT_REF(
+        contractName,
+        contractAddress,
+        collectionId
+      ),
       args: (arg, t) => [arg(accountAddr, t.Address), arg(nftId, t.UInt64)],
     }).catch(console.error);
     return nftRef;
@@ -197,7 +200,7 @@ export default function useNFTs(treasuryAddr) {
     )}.${contractName}.Collection`;
 
     dispatch({
-      type: "ADD_COLLECTION",
+      type: 'ADD_COLLECTION',
       payload: {
         [treasuryAddr]: { [identifier]: [] },
       },
@@ -209,7 +212,7 @@ export default function useNFTs(treasuryAddr) {
     await tx(res).onceSealed();
 
     dispatch({
-      type: "REMOVE_COLLECTION",
+      type: 'REMOVE_COLLECTION',
       payload: {
         [treasuryAddr]: identifier,
       },

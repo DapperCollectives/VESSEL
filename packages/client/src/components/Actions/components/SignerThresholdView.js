@@ -1,6 +1,6 @@
-import { useContacts } from "hooks";
-import { getNameByAddress } from "utils";
-import ProposedDateView from "./ProposedDateView";
+import { useContacts } from 'hooks';
+import { getNameByAddress } from 'utils';
+import ProposedDateView from './ProposedDateView';
 
 const SignerThresholdView = ({ actionView, safeData, isAdd }) => {
   const { signerAddr, newThreshold, timestamp } = actionView;
@@ -11,7 +11,7 @@ const SignerThresholdView = ({ actionView, safeData, isAdd }) => {
 
   return (
     <>
-      <span>{isAdd ? "New Owner" : "Remove Owner"}</span>
+      <span>{isAdd ? 'New Owner' : 'Remove Owner'}</span>
       <div className="mb-4">
         {signerName && (
           <>
@@ -38,7 +38,7 @@ const SignerThresholdView = ({ actionView, safeData, isAdd }) => {
         <span className="column pl-0 has-text-grey">Signature Threshold</span>
         <div className="column pl-0">
           <span className="has-text-weight-bold has-text-black">
-            {newThreshold} of {safeOwners.length} owner(s)
+            {newThreshold} of{safeOwners.length} owner(s)
           </span>
         </div>
       </div>

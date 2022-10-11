@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react';
-import { useModalContext } from '../contexts';
+import { useEffect } from 'react';
+import { isEmpty } from 'lodash';
 import { SendTokens } from 'components';
 import { ASSET_TYPES, TRANSACTION_TYPE } from 'constants/enums';
-import { isEmpty } from 'lodash';
+import { useModalContext } from '../contexts';
 
 function SafeNFTs({ web3, address }) {
   const assetComponents = [];

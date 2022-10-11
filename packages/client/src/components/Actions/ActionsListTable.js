@@ -1,11 +1,11 @@
-import { useContext } from "react";
-import { useErrorMessage } from "hooks";
-import { formatActionString } from "utils";
-import { useModalContext } from "contexts";
-import { Web3Context } from "contexts/Web3";
-import { SIGNER_RESPONSES } from "constants/enums";
-import Svg from "library/Svg";
-import ApprovalRequired from "./components/ApprovalRequired";
+import { useContext } from 'react';
+import { useModalContext } from 'contexts';
+import { Web3Context } from 'contexts/Web3';
+import ApprovalRequired from './components/ApprovalRequired';
+import { useErrorMessage } from 'hooks';
+import { SIGNER_RESPONSES } from 'constants/enums';
+import { formatActionString } from 'utils';
+import Svg from 'library/Svg';
 
 const Row = ({ threshold, action, displayIndex, onApprove, onSign }) => {
   const { intent } = action;
@@ -13,18 +13,18 @@ const Row = ({ threshold, action, displayIndex, onApprove, onSign }) => {
     (x) => x === SIGNER_RESPONSES.APPROVED
   ).length;
   const executionReady = totalSigned >= threshold;
-  const background = executionReady ? "has-text-danger" : "has-text-warning";
+  const background = executionReady ? 'has-text-danger' : 'has-text-warning';
   const actionPrompt = executionReady
-    ? "Pending Signature"
-    : "Pending Approval";
-  const actionSvg = executionReady ? "Quill" : "EmptyCheck";
-  const actionText = executionReady ? "Sign" : "Approve";
+    ? 'Pending Signature'
+    : 'Pending Approval';
+  const actionSvg = executionReady ? 'Quill' : 'EmptyCheck';
+  const actionText = executionReady ? 'Sign' : 'Approve';
   const actionFn = executionReady ? onSign : onApprove;
 
   return (
     <>
       <tr className="py-4 is-flex is-align-items-center">
-        <td className="p-3 flex-1">{String(displayIndex).padStart(2, "0")}</td>
+        <td className="p-3 flex-1">{String(displayIndex).padStart(2, '0')}</td>
         <td className="p-3 flex-7">{formatActionString(intent)}</td>
         <td className="p-3 flex-4 is-hidden-touch">
           <Svg key={background} name="Status" className={background} />
@@ -101,7 +101,7 @@ const ActionsListTable = ({
         onApprove={() => onApproveAction(action)}
         onReject={() => onRejectAction(action)}
       />,
-      { headerTitle: "Approval Required" }
+      { headerTitle: 'Approval Required' }
     );
   };
 

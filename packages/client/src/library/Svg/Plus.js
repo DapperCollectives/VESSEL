@@ -1,4 +1,4 @@
-const Plus = ({ width = "16", height = "16", className = "", style = {} }) => (
+const Plus = ({ width = '16', height = '16', className = '', style = {} }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     fill="none"

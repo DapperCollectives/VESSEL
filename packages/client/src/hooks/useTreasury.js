@@ -1,20 +1,26 @@
-import { useEffect, useReducer } from "react";
-import { mutate, query, tx } from "@onflow/fcl";
+import { useEffect, useReducer } from 'react';
+import { createSignature } from 'contexts/Web3';
 import {
   CREATE_TREASURY_LIMIT,
   EXECUTE_ACTION_LIMIT,
   SIGNED_LIMIT,
   SIGNER_APPROVE_LIMIT,
-} from "constants/constants";
-import { COIN_TYPE_TO_META } from "constants/maps";
-import { createSignature } from "contexts/Web3";
+} from 'constants/constants';
+import { COIN_TYPE_TO_META } from 'constants/maps';
+import {
+  formatAddress,
+  getTokenMeta,
+  getVaultId,
+  syncSafeOwnersWithSigners,
+} from '../utils';
+import { mutate, query, tx } from '@onflow/fcl';
 import {
   ADD_SIGNER_UPDATE_THRESHOLD,
   EXECUTE_ACTION,
-  GET_PROPOSED_ACTIONS,
   GET_ACTION_VIEW,
-  GET_TREASURY,
+  GET_PROPOSED_ACTIONS,
   GET_SIGNERS_FOR_ACTION,
+  GET_TREASURY,
   GET_TREASURY_IDENTIFIERS,
   GET_VAULT_BALANCE,
   INITIALIZE_TREASURY,
@@ -23,11 +29,12 @@ import {
   SIGNER_APPROVE,
   SIGNER_REJECT,
   UPDATE_THRESHOLD,
-} from "../flow";
-import treasuryReducer, { TREASURY_INITIAL_STATE } from "../reducers/treasuryReducer";
-import { getVaultId, syncSafeOwnersWithSigners, formatAddress, getTokenMeta } from "../utils";
+} from '../flow';
+import treasuryReducer, {
+  TREASURY_INITIAL_STATE,
+} from '../reducers/treasuryReducer';
 
-const storageKey = "vessel-treasuries";
+const storageKey = 'vessel-treasuries';
 
 const doQuery = async (cadence, address) => {
   const queryResp = await query({
@@ -38,15 +45,22 @@ const doQuery = async (cadence, address) => {
   return queryResp;
 };
 
-const doCreateTreasury = async (signerAddresses, threshold) => {
-  return await mutate({
+const doCreateTreasury = async (signerAddresses, threshold) =>
+  await mutate({
     cadence: INITIALIZE_TREASURY,
-    args: (arg, t) => [arg(signerAddresses, t.Array(t.Address)), arg(threshold, t.UInt)],
+    args: (arg, t) => [
+      arg(signerAddresses, t.Array(t.Address)),
+      arg(threshold, t.UInt),
+    ],
     limit: CREATE_TREASURY_LIMIT,
   });
-};
 
-const doProposeTransfer = async (treasuryAddr, recipientAddr, amount, coinType) => {
+const doProposeTransfer = async (
+  treasuryAddr,
+  recipientAddr,
+  amount,
+  coinType
+) => {
   const uFixAmount = String(parseFloat(amount).toFixed(8));
   const identifiers = await doQuery(GET_TREASURY_IDENTIFIERS, treasuryAddr);
   const recepientVault = getVaultId(identifiers, coinType);
@@ -76,8 +90,8 @@ const doSignApprove = async (
   keyIds,
   signatures,
   signatureBlock
-) => {
-  return await mutate({
+) =>
+  await mutate({
     cadence: SIGNER_APPROVE,
     args: (arg, t) => [
       arg(treasuryAddr, t.Address),
@@ -89,7 +103,6 @@ const doSignApprove = async (
     ],
     limit: SIGNER_APPROVE_LIMIT,
   });
-};
 
 const doSignReject = async (
   treasuryAddr,
@@ -98,8 +111,8 @@ const doSignReject = async (
   keyIds,
   signatures,
   signatureBlock
-) => {
-  return await mutate({
+) =>
+  await mutate({
     cadence: SIGNER_REJECT,
     args: (arg, t) => [
       arg(treasuryAddr, t.Address),
@@ -111,10 +124,11 @@ const doSignReject = async (
     ],
     limit: SIGNER_APPROVE_LIMIT,
   });
-};
 
 const doExecuteAction = async (treasuryAddr, actionUUID) => {
-  const { message, keyIds, signatures, height } = await createSignature(actionUUID.toString());
+  const { message, keyIds, signatures, height } = await createSignature(
+    actionUUID.toString()
+  );
 
   return await mutate({
     cadence: EXECUTE_ACTION,
@@ -148,7 +162,11 @@ const doUpdateThreshold = async (treasuryAddr, newThreshold) => {
   });
 };
 
-const doProposeAddSigner = async (treasuryAddr, newSignerAddress, newThreshold) => {
+const doProposeAddSigner = async (
+  treasuryAddr,
+  newSignerAddress,
+  newThreshold
+) => {
   const intent = `Add signer ${newSignerAddress}. Update the threshold of signers to ${newThreshold}.`;
   const { message, keyIds, signatures, height } = await createSignature(intent);
 
@@ -167,7 +185,11 @@ const doProposeAddSigner = async (treasuryAddr, newSignerAddress, newThreshold) 
   });
 };
 
-const doProposeRemoveSigner = async (treasuryAddr, signerToBeRemovedAddress, newThreshold) => {
+const doProposeRemoveSigner = async (
+  treasuryAddr,
+  signerToBeRemovedAddress,
+  newThreshold
+) => {
   const intent = `Remove signer ${signerToBeRemovedAddress}. Update the threshold of signers to ${newThreshold}.`;
   const { message, keyIds, signatures, height } = await createSignature(intent);
 
@@ -186,34 +208,28 @@ const doProposeRemoveSigner = async (treasuryAddr, signerToBeRemovedAddress, new
   });
 };
 
-const getTreasury = async (address) => {
-  return await doQuery(GET_TREASURY, address);
-};
+const getTreasury = async (address) => await doQuery(GET_TREASURY, address);
 
-const getProposedActions = async (address) => {
-  return await doQuery(GET_PROPOSED_ACTIONS, address);
-};
+const getProposedActions = async (address) =>
+  await doQuery(GET_PROPOSED_ACTIONS, address);
 
-const getActionView = async (address, actionUUID) => {
-  return await query({
+const getActionView = async (address, actionUUID) =>
+  await query({
     cadence: GET_ACTION_VIEW,
     args: (arg, t) => [arg(address, t.Address), arg(actionUUID, t.UInt64)],
   }).catch(console.error);
-};
 
-const getSignersForAction = async (address, actionUUID) => {
-  return await query({
+const getSignersForAction = async (address, actionUUID) =>
+  await query({
     cadence: GET_SIGNERS_FOR_ACTION,
     args: (arg, t) => [arg(address, t.Address), arg(actionUUID, t.UInt64)],
   }).catch(console.error);
-};
 
-const getVaultBalance = async (address, vaultId) => {
-  return await query({
+const getVaultBalance = async (address, vaultId) =>
+  await query({
     cadence: GET_VAULT_BALANCE,
     args: (arg, t) => [arg(address, t.Address), arg(vaultId, t.String)],
   });
-};
 
 const getAllVaultBalance = async (address) => {
   const allBalance = {};
@@ -240,12 +256,12 @@ export default function useTreasury(treasuryAddr) {
   const refreshTreasury = async () => {
     const treasuryData = await getTreasury(treasuryAddr);
     if (!treasuryData?.uuid) {
-      dispatch({ type: "SET_LOADING", payload: false });
+      dispatch({ type: 'SET_LOADING', payload: false });
       return;
     }
 
     dispatch({
-      type: "SET_TREASURY",
+      type: 'SET_TREASURY',
       payload: {
         [treasuryAddr]: {
           address: treasuryAddr,
@@ -258,7 +274,7 @@ export default function useTreasury(treasuryAddr) {
 
     if (allBalance) {
       dispatch({
-        type: "SET_BALANCE",
+        type: 'SET_BALANCE',
         payload: {
           [treasuryAddr]: allBalance,
         },
@@ -270,7 +286,10 @@ export default function useTreasury(treasuryAddr) {
 
     for (const action of Object.keys(proposedActionsResp ?? {})) {
       const uuid = parseInt(action, 10);
-      const signerResponses = await getSignersForAction(treasuryAddr, parseInt(action, 10));
+      const signerResponses = await getSignersForAction(
+        treasuryAddr,
+        parseInt(action, 10)
+      );
       proposedActions.push({
         uuid,
         intent: proposedActionsResp[action],
@@ -278,7 +297,7 @@ export default function useTreasury(treasuryAddr) {
       });
     }
     dispatch({
-      type: "SET_ACTIONS",
+      type: 'SET_ACTIONS',
       payload: {
         [treasuryAddr]: proposedActions,
       },
@@ -287,10 +306,10 @@ export default function useTreasury(treasuryAddr) {
 
   const updateOwnerList = async (treasuryAddr) => {
     const { signers } = await getTreasury(treasuryAddr);
-    const safeOwners = state.treasuries[treasuryAddr].safeOwners;
+    const { safeOwners } = state.treasuries[treasuryAddr];
     const updatedSafeOwners = syncSafeOwnersWithSigners(signers, safeOwners);
     dispatch({
-      type: "SET_TREASURY",
+      type: 'SET_TREASURY',
       payload: {
         [treasuryAddr]: {
           safeOwners: updatedSafeOwners,
@@ -302,7 +321,7 @@ export default function useTreasury(treasuryAddr) {
   useEffect(() => {
     if (!treasuryAddr) {
       if (state.loadingTreasuries) {
-        dispatch({ type: "SET_LOADING", payload: false });
+        dispatch({ type: 'SET_LOADING', payload: false });
       }
       return;
     }
@@ -324,7 +343,7 @@ export default function useTreasury(treasuryAddr) {
     const creatorAddr = signerAddresses[0];
     const res = await doCreateTreasury(signerAddresses, threshold);
     if (res) {
-      dispatch({ type: "SUBMITTED_TREASURY_TRANSACTION" });
+      dispatch({ type: 'SUBMITTED_TREASURY_TRANSACTION' });
     }
     await tx(res).onceSealed();
     setTreasury(creatorAddr, treasuryData);
@@ -332,7 +351,7 @@ export default function useTreasury(treasuryAddr) {
   };
   const setTreasury = (treasuryAddr, treasuryData) => {
     dispatch({
-      type: "SET_TREASURY",
+      type: 'SET_TREASURY',
       payload: {
         [treasuryAddr]: treasuryData,
       },
@@ -349,7 +368,13 @@ export default function useTreasury(treasuryAddr) {
     await tx(res).onceSealed();
   };
 
-  const signerApprove = async (actionUUID, message, keyIds, signatures, signatureBlock) => {
+  const signerApprove = async (
+    actionUUID,
+    message,
+    keyIds,
+    signatures,
+    signatureBlock
+  ) => {
     const res = await doSignApprove(
       treasuryAddr,
       actionUUID,
@@ -362,7 +387,13 @@ export default function useTreasury(treasuryAddr) {
     await refreshTreasury();
   };
 
-  const signerReject = async (actionUUID, message, keyIds, signatures, signatureBlock) => {
+  const signerReject = async (
+    actionUUID,
+    message,
+    keyIds,
+    signatures,
+    signatureBlock
+  ) => {
     const res = await doSignReject(
       treasuryAddr,
       actionUUID,
@@ -390,13 +421,24 @@ export default function useTreasury(treasuryAddr) {
   };
 
   const proposeAddSigner = async (newSignerAddress, newThreshold) => {
-    const res = await doProposeAddSigner(treasuryAddr, newSignerAddress, newThreshold);
+    const res = await doProposeAddSigner(
+      treasuryAddr,
+      newSignerAddress,
+      newThreshold
+    );
     await tx(res).onceSealed();
     await refreshTreasury();
   };
 
-  const proposeRemoveSigner = async (signerToBeRemovedAddress, newThreshold) => {
-    const res = await doProposeRemoveSigner(treasuryAddr, signerToBeRemovedAddress, newThreshold);
+  const proposeRemoveSigner = async (
+    signerToBeRemovedAddress,
+    newThreshold
+  ) => {
+    const res = await doProposeRemoveSigner(
+      treasuryAddr,
+      signerToBeRemovedAddress,
+      newThreshold
+    );
     await tx(res).onceSealed();
     await refreshTreasury();
   };

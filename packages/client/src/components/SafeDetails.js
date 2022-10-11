@@ -1,6 +1,6 @@
-import React from "react";
-import { Dropdown } from "library/components";
-import { SAFE_TYPES_TO_META } from "constants/maps";
+import React from 'react';
+import { Dropdown } from 'library/components';
+import { SAFE_TYPES_TO_META } from 'constants/maps';
 
 const safeTypes = Object.entries(SAFE_TYPES_TO_META).map((type) => ({
   itemValue: type[0],

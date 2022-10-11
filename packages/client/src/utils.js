@@ -44,9 +44,8 @@ export const isAddr = (addr) => {
   // result should be 16 chars long
   return noPrefix.length === 16;
 };
-export const formatAddress = (addr) => {
-  return addr.startsWith('0x') ? addr : `0x${addr}`;
-};
+export const formatAddress = (addr) =>
+  addr.startsWith('0x') ? addr : `0x${addr}`;
 
 export const formatActionString = (str) => {
   const vaultRegex = /A\..*\.Vault/g;
@@ -69,21 +68,18 @@ export const formatActionString = (str) => {
   return str;
 };
 
-export const getProgressPercentageForSignersAmount = (signersAmount) => {
-  return Math.min(60 + signersAmount * 10, 100);
-};
+export const getProgressPercentageForSignersAmount = (signersAmount) =>
+  Math.min(60 + signersAmount * 10, 100);
 
-export const getFlowscanUrlForTransaction = (hash) => {
-  return `https://${
+export const getFlowscanUrlForTransaction = (hash) =>
+  `https://${
     process.env.REACT_APP_FLOW_ENV === 'mainnet' ? '' : 'testnet.'
   }flowscan.org/transaction/${hash}`;
-};
 
-export const getFlowscanUrlForContract = (address, name) => {
-  return `https://${
+export const getFlowscanUrlForContract = (address, name) =>
+  `https://${
     process.env.REACT_APP_FLOW_ENV === 'mainnet' ? '' : 'testnet.'
   }flowscan.org/contract/A.${address}.${name}`;
-};
 
 export const syncSafeOwnersWithSigners = (signers, safeOwners) => {
   const verifiedSigners = Object.keys(signers).filter((key) => signers[key]);
@@ -94,7 +90,7 @@ export const syncSafeOwnersWithSigners = (signers, safeOwners) => {
     );
     return {
       name: owner?.name,
-      address: address,
+      address,
       verified: true,
     };
   });

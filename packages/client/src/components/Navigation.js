@@ -1,7 +1,7 @@
-import React from "react";
-import { NavLink, withRouter } from "react-router-dom";
-import Safes from "./Safes";
-import WalletConnect from "./WalletConnect";
+import React from 'react';
+import { NavLink, withRouter } from 'react-router-dom';
+import Safes from './Safes';
+import WalletConnect from './WalletConnect';
 
 const Navigation = (props) => (
   <aside className="menu flex-1 is-flex is-flex-direction-column is-justify-content-space-between">

@@ -157,7 +157,7 @@ function SafeOverview({ allBalance, allNFTs, safeData, userAddress }) {
                   <p
                     className="has-background-tertiary-purple rounded-sm p-3"
                     style={{ height: '45px' }}
-                  ></p>
+                  />
                 </div>
               ))}
             </div>

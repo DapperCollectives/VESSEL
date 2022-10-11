@@ -70,9 +70,9 @@ const TestToolBox = ({ address }) => {
                     <ul className="ml-3">
                       {userBalances.map((coin) => (
                         <li key={COIN_TYPE_TO_META[coin.coinType].displayName}>
-                          {COIN_TYPE_TO_META[coin.coinType].displayName +
-                            ': ' +
-                            coin.balance}
+                          {`${COIN_TYPE_TO_META[coin.coinType].displayName}: ${
+                            coin.balance
+                          }`}
                         </li>
                       ))}
                     </ul>
@@ -82,13 +82,22 @@ const TestToolBox = ({ address }) => {
                   <span>Treasury:</span>
                   <ul className="ml-3">
                     {treasuryBalances?.[COIN_TYPES.FLOW] && (
-                      <li>Flow: {treasuryBalances[COIN_TYPES.FLOW]}</li>
+                      <li>
+                        Flow:
+                        {treasuryBalances[COIN_TYPES.FLOW]}
+                      </li>
                     )}
                     {treasuryBalances?.[COIN_TYPES.FUSD] && (
-                      <li>FUSD: {treasuryBalances[COIN_TYPES.FUSD]}</li>
+                      <li>
+                        FUSD:
+                        {treasuryBalances[COIN_TYPES.FUSD]}
+                      </li>
                     )}
                     {treasuryBalances?.[COIN_TYPES.USDC] && (
-                      <li>USDC: {treasuryBalances[COIN_TYPES.USDC]}</li>
+                      <li>
+                        USDC:
+                        {treasuryBalances[COIN_TYPES.USDC]}
+                      </li>
                     )}
                   </ul>
                 </li>

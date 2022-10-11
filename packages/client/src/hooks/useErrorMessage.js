@@ -1,7 +1,7 @@
-import { useModalContext } from "contexts";
-import Svg from "library/Svg";
-import { ErrorModal } from "modals";
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
+import { useModalContext } from 'contexts';
+import Svg from 'library/Svg';
+import { ErrorModal } from 'modals';
 
 export default function useErrorMessage() {
   const { openModal, closeModal } = useModalContext();

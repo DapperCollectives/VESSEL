@@ -1,9 +1,9 @@
-import { query } from "@onflow/fcl";
 import {
-  EXECUTION_EFFORTS,
   DEFAULT_INCLUSION_EFFORT,
-} from "constants/constantValues";
-import { GET_FLOW_FEES_ESTIMATION } from "../flow";
+  EXECUTION_EFFORTS,
+} from 'constants/constantValues';
+import { query } from '@onflow/fcl';
+import { GET_FLOW_FEES_ESTIMATION } from '../flow';
 
 const useFlowFees = () => {
   const getProposeSendTokenEstimation = async () => {

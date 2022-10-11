@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState } from 'react';
 
 const EditSafeName = ({ name, onCancel, onSubmit }) => {
   const [currSafeName, setCurrSafeName] = useState(name);
@@ -9,8 +9,8 @@ const EditSafeName = ({ name, onCancel, onSubmit }) => {
   };
 
   const submitButtonClasses = [
-    "button flex-1 is-primary",
-    isNameValid ? "" : "disabled",
+    'button flex-1 is-primary',
+    isNameValid ? '' : 'disabled',
   ];
 
   return (
@@ -34,7 +34,7 @@ const EditSafeName = ({ name, onCancel, onSubmit }) => {
               Cancel
             </button>
             <button
-              className={submitButtonClasses.join(" ")}
+              className={submitButtonClasses.join(' ')}
               disabled={!isNameValid}
               onClick={onSubmitClick}
             >

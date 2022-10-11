@@ -5,7 +5,7 @@ export const VAULT_INITIAL_STATE = {
 
 const vaultReducer = (state = VAULT_INITIAL_STATE, action) => {
   switch (action.type) {
-    case "SET_VAULTS": {
+    case 'SET_VAULTS': {
       const address = Object.keys(action.payload)[0];
       return {
         ...state,
@@ -17,7 +17,7 @@ const vaultReducer = (state = VAULT_INITIAL_STATE, action) => {
         error: null,
       };
     }
-    case "ADD_VAULT": {
+    case 'ADD_VAULT': {
       const address = Object.keys(action.payload)[0];
       const existingVaults = state.vaults[address] || [];
 
@@ -31,7 +31,7 @@ const vaultReducer = (state = VAULT_INITIAL_STATE, action) => {
         error: null,
       };
     }
-    case "REMOVE_VAULT": {
+    case 'REMOVE_VAULT': {
       const address = Object.keys(action.payload)[0];
       const vaults = state.vaults[address];
       const vaultIdToRemove = vaults.findIndex(
@@ -50,7 +50,7 @@ const vaultReducer = (state = VAULT_INITIAL_STATE, action) => {
         error: null,
       };
     }
-    case "ERROR":
+    case 'ERROR':
       return {
         ...state,
         loadingVaults: false,
