@@ -1,4 +1,4 @@
-const Trash = ({ width = "20", height = "17", className = "" }) => (
+const Trash = ({ width = '20', height = '17', className = '' }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width={width}

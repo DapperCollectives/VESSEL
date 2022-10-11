@@ -1,9 +1,9 @@
-import React from "react";
-import { useModalContext } from "contexts";
-import { useClipboard } from "hooks";
-import Svg from "library/Svg";
-import RemoveSafeOwner from "./RemoveSafeOwner";
-import AddSafeOwner from "./AddSafeOwner";
+import React from 'react';
+import { useModalContext } from 'contexts';
+import { useClipboard } from 'hooks';
+import Svg from 'library/Svg';
+import AddSafeOwner from './AddSafeOwner';
+import RemoveSafeOwner from './RemoveSafeOwner';
 
 const Owners = ({ treasury }) => {
   const modalContext = useModalContext();
@@ -13,12 +13,9 @@ const Owners = ({ treasury }) => {
 
   const openAddOwnerModal = () => {
     modalContext.openModal(
-      <AddSafeOwner
-        treasury={treasury}
-        safeOwners={safeOwners}
-      />,
+      <AddSafeOwner treasury={treasury} safeOwners={safeOwners} />,
       {
-        headerTitle: "Add Owner"
+        headerTitle: 'Add Owner',
       }
     );
   };
@@ -31,7 +28,7 @@ const Owners = ({ treasury }) => {
         safeOwners={safeOwners}
       />,
       {
-        headerTitle: "Remove Owner"
+        headerTitle: 'Remove Owner',
       }
     );
   };
@@ -50,12 +47,9 @@ const Owners = ({ treasury }) => {
         </button>
       </div>
       <div className="column p-0 mt-4 is-flex is-flex-direction-column is-full rounded-sm border-light has-shadow table-border">
-        {Array.isArray(verifiedSafeOwners)
-          && verifiedSafeOwners.map((so, idx) => (
-            <div
-              className="is-flex column is-full p-5"
-              key={idx}
-            >
+        {Array.isArray(verifiedSafeOwners) &&
+          verifiedSafeOwners.map((so, idx) => (
+            <div className="is-flex column is-full p-5" key={idx}>
               <div className="px-2 mr-6" style={{ minWidth: 120 }}>
                 {so.name ?? `Signer #${idx + 1}`}
               </div>
@@ -67,20 +61,17 @@ const Owners = ({ treasury }) => {
                   onClick={() => ownersAddressClipboard.copy(so.address)}
                 >
                   {ownersAddressClipboard.textJustCopied === so.address
-                    ? "Copied"
-                    : "Copy Address"}
+                    ? 'Copied'
+                    : 'Copy Address'}
                 </button>
-                {
-                  verifiedSafeOwners.length > 1
-                  && (
+                {verifiedSafeOwners.length > 1 && (
                   <span
                     className="button is-transparent"
                     onClick={() => openRemoveOwnerModal(so)}
                   >
                     Remove
                   </span>
-                  )
-                }
+                )}
               </div>
             </div>
           ))}

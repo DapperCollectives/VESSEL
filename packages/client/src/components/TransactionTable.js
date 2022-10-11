@@ -1,8 +1,8 @@
-import React from "react";
-import { useModalContext } from "contexts";
-import Svg from "library/Svg";
-import { formatActionString, getStatusColor } from "utils";
-import { TransactionDetailsModal } from "modals";
+import React from 'react';
+import { useModalContext } from 'contexts';
+import { formatActionString, getStatusColor } from 'utils';
+import Svg from 'library/Svg';
+import { TransactionDetailsModal } from 'modals';
 
 const Row = ({ transaction, displayIndex, onView, className }) => {
   const date = new Date(transaction.eventDate);
@@ -13,15 +13,15 @@ const Row = ({ transaction, displayIndex, onView, className }) => {
     <tr
       className={`py-4 is-flex is-align-items-center is-justify-content-space-between ${className}`}
     >
-      <td className="p-3 flex-1">{String(displayIndex).padStart(2, "0")}</td>
+      <td className="p-3 flex-1">{String(displayIndex).padStart(2, '0')}</td>
       <td className="p-3 flex-9">{formatActionString(intent)}</td>
       <td className="p-3 flex-2 is-flex is-align-items-center is-hidden-mobile">
         <Svg name="Status" className={`has-text-${statusColor}`} />
         <span className="ml-2 is-capitalized">{transaction.status}</span>
       </td>
       <td className="p-3 flex-3 is-hidden-mobile has-text-grey">
-        {date.toLocaleDateString("en-us")}{" "}
-        {date.toLocaleTimeString("en-us", { timeStyle: "short" })}
+        {date.toLocaleDateString('en-us')}{' '}
+        {date.toLocaleTimeString('en-us', { timeStyle: 'short' })}
       </td>
       <td className="p-3 flex-2 has-text-purple">
         <span className="pointer" onClick={() => onView(transaction)}>
@@ -32,18 +32,18 @@ const Row = ({ transaction, displayIndex, onView, className }) => {
   );
 };
 
-const TransactionTable = ({ safeData, transactions = [], className = "" }) => {
+const TransactionTable = ({ safeData, transactions = [], className = '' }) => {
   const { openModal, closeModal } = useModalContext();
 
   const onViewTransaction = (transaction) => {
     const { actionView, signerResponses } = transaction.blockEventData;
     const signers = {};
     safeData.safeOwners.forEach((owner) => {
-      let signerStatus = "pending";
+      let signerStatus = 'pending';
       if (signerResponses?.[owner.address] === 0) {
-        signerStatus = "approved";
+        signerStatus = 'approved';
       } else if (signerResponses?.[owner.address] === 1) {
-        signerStatus = "rejected";
+        signerStatus = 'rejected';
       }
       signers[owner.address] = signerStatus;
     });
@@ -61,7 +61,7 @@ const TransactionTable = ({ safeData, transactions = [], className = "" }) => {
         }}
       />,
       {
-        headerTitle: "Transaction Details",
+        headerTitle: 'Transaction Details',
       }
     );
   };
@@ -72,7 +72,9 @@ const TransactionTable = ({ safeData, transactions = [], className = "" }) => {
     // add statuses based on eventId
     .map((tx) => ({
       ...tx,
-      status: tx.flowEventId.includes("ActionDestroyed") ? "rejected" : "approved",
+      status: tx.flowEventId.includes('ActionDestroyed')
+        ? 'rejected'
+        : 'approved',
     }));
 
   return (
@@ -93,7 +95,7 @@ const TransactionTable = ({ safeData, transactions = [], className = "" }) => {
             transaction={transaction}
             displayIndex={index + 1}
             onView={onViewTransaction}
-            className={index < arr.length - 1 ? "border-light-bottom" : ""}
+            className={index < arr.length - 1 ? 'border-light-bottom' : ''}
           />
         ))}
       </tbody>

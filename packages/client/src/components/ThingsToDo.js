@@ -1,5 +1,5 @@
-import React from "react";
-import ActionsList from "./Actions/ActionsList";
+import React from 'react';
+import ActionsList from './Actions/ActionsList';
 
 const EmptyActionsList = () => (
   <div className="column p-0 mt-4 is-flex is-full border-light has-shadow rounded-sm">

@@ -1,6 +1,6 @@
-import React, { useState } from "react";
-import { isString } from "lodash";
-import Svg from "library/Svg";
+import React, { useState } from 'react';
+import Svg from 'library/Svg';
+import { isString } from 'lodash';
 
 const ErrorModal = ({ error, onClose }) => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -18,14 +18,14 @@ const ErrorModal = ({ error, onClose }) => {
             <span
               className="pointer is-flex"
               onClick={() => setIsExpanded(!isExpanded)}
-              style={{ whiteSpace: "nowrap" }}
+              style={{ whiteSpace: 'nowrap' }}
             >
-              <Svg name={`${isExpanded ? "CaretDown" : "CaretRight"}`} />
+              <Svg name={`${isExpanded ? 'CaretDown' : 'CaretRight'}`} />
               <span className="ml-2">Error Details</span>
             </span>
             <div
               className={`
-                ${isExpanded ? "" : "is-hidden"}
+                ${isExpanded ? '' : 'is-hidden'}
                 p-4 mt-3 has-background-tertiary-yellow border-alert rounded-sm 
                 `}
             >

@@ -1,7 +1,8 @@
-import React from "react";
-import { useModalContext } from "contexts";
-import { useClipboard } from "hooks";
-import EditSafeName from "./EditSafeName";
+import React from 'react';
+import { useModalContext } from 'contexts';
+import { useClipboard } from 'hooks';
+import EditSafeName from './EditSafeName';
+
 const SafeDetailsSetting = ({ treasury, setTreasury }) => {
   const modalContext = useModalContext();
   const { name, address } = treasury;
@@ -46,8 +47,8 @@ const SafeDetailsSetting = ({ treasury, setTreasury }) => {
               onClick={() => safeAddressClipboard.copy(address)}
             >
               {safeAddressClipboard.textJustCopied === address
-                ? "Copied"
-                : "Copy"}
+                ? 'Copied'
+                : 'Copy'}
             </button>
           </div>
         </div>

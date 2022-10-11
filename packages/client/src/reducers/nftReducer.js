@@ -5,7 +5,7 @@ export const NFT_INITIAL_STATE = {
 
 const nftReducer = (state = NFT_INITIAL_STATE, action) => {
   switch (action.type) {
-    case "SET_NFTS": {
+    case 'SET_NFTS': {
       const address = Object.keys(action.payload)[0];
       return {
         ...state,
@@ -16,7 +16,7 @@ const nftReducer = (state = NFT_INITIAL_STATE, action) => {
         error: null,
       };
     }
-    case "ADD_COLLECTION": {
+    case 'ADD_COLLECTION': {
       const address = Object.keys(action.payload)[0];
 
       return {
@@ -32,7 +32,7 @@ const nftReducer = (state = NFT_INITIAL_STATE, action) => {
         error: null,
       };
     }
-    case "REMOVE_COLLECTION": {
+    case 'REMOVE_COLLECTION': {
       const address = Object.keys(action.payload)[0];
       const key = action.payload[address];
       const originalState = state.NFTs[address];
@@ -48,7 +48,7 @@ const nftReducer = (state = NFT_INITIAL_STATE, action) => {
         error: null,
       };
     }
-    case "ERROR":
+    case 'ERROR':
       return {
         ...state,
         loadingNFTs: false,

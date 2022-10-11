@@ -1,4 +1,4 @@
-const OpenNewTab = ({ width = "16", height = "16", className = "" }) => (
+const OpenNewTab = ({ width = '16', height = '16', className = '' }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width={width}

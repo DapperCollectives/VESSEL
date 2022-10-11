@@ -1,8 +1,8 @@
-import { mutate, query, tx } from "@onflow/fcl";
-import { GetAccountBalanceByContractName, SEND_TOKENS_TO_TREASURY } from "flow";
-import { COIN_TYPE_TO_META } from "constants/maps";
-import { COIN_TYPES } from "constants/enums";
-import { REGULAR_LIMIT } from "constants/constants";
+import { REGULAR_LIMIT } from 'constants/constants';
+import { COIN_TYPES } from 'constants/enums';
+import { COIN_TYPE_TO_META } from 'constants/maps';
+import { mutate, query, tx } from '@onflow/fcl';
+import { GetAccountBalanceByContractName, SEND_TOKENS_TO_TREASURY } from 'flow';
 
 const COIN_TYPE_LIST = [COIN_TYPES.FLOW, COIN_TYPES.FUSD, COIN_TYPES.USDC];
 
@@ -20,8 +20,8 @@ export default function useAccount() {
     });
   };
 
-  //FOR TESTING UTILS ONLY, calling this method deposits tokens to treasury
-  //should only be used for testing
+  // FOR TESTING UTILS ONLY, calling this method deposits tokens to treasury
+  // should only be used for testing
   const initDepositTokensToTreasury = async (treasuryAddr) => {
     for await (const coinType of COIN_TYPE_LIST) {
       try {
@@ -57,7 +57,7 @@ export default function useAccount() {
     for await (const coin of result) {
       try {
         const coinBalance = await getBalanceByCoinType(coin.coinType, address);
-        coin["balance"] = coinBalance;
+        coin.balance = coinBalance;
       } catch (error) {
         console.log(`error getting balance for ${coin.coinType}`, error);
       }

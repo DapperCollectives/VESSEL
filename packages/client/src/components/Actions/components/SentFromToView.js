@@ -1,6 +1,6 @@
-import Svg from "library/Svg";
-import { useClipboard, useContacts } from "hooks";
-import { getNameByAddress } from "utils";
+import { useClipboard, useContacts } from 'hooks';
+import { getNameByAddress } from 'utils';
+import Svg from 'library/Svg';
 
 const SentFromToView = ({ safeData, recipient }) => {
   const { name: safeName, address: safeAddress } = safeData;

@@ -1,15 +1,15 @@
-import React, { useState } from "react";
-import { useHistory, NavLink } from "react-router-dom";
-import { SAFE_TYPES } from "constants/enums";
+import React, { useState } from 'react';
+import { NavLink, useHistory } from 'react-router-dom';
+import { Web3Consumer } from '../contexts/Web3';
 import {
-  WalletPrompt,
   Loading,
   SafeDetails,
   SafeOwners,
   SignatureRequirements,
-} from "../components";
-import { Web3Consumer } from "../contexts/Web3";
-import { useAddressValidation } from "../hooks";
+  WalletPrompt,
+} from '../components';
+import { useAddressValidation } from '../hooks';
+import { SAFE_TYPES } from 'constants/enums';
 
 const AuthorizeTreasury = ({
   address,
@@ -36,8 +36,8 @@ const AuthorizeTreasury = ({
   }
 
   const authorizeClases = [
-    "button is-primary",
-    isAuthorizeReady ? "" : "disabled",
+    'button is-primary',
+    isAuthorizeReady ? '' : 'disabled',
   ];
 
   const onAuthorize = async () => {
@@ -49,20 +49,21 @@ const AuthorizeTreasury = ({
     });
   };
   const onCancelCreatingSafe = () => {
-    history.push("/");
+    history.push('/');
   };
-  let stepMessage = "Create a new safe";
-  if (creatingTreasury) stepMessage = "Your safe is being created...";
-  if (createdTreasury) stepMessage = "Your safe is ready.";
+  let stepMessage = 'Create a new safe';
+  if (creatingTreasury) stepMessage = 'Your safe is being created...';
+  if (createdTreasury) stepMessage = 'Your safe is ready.';
 
   let stepSubtitle =
-    "Step 1 of 2 - You can update this information anytime after it’s been deployed.";
-  if (creatingTreasury)
+    'Step 1 of 2 - You can update this information anytime after it’s been deployed.';
+  if (creatingTreasury) {
     stepSubtitle =
-      "This may take a few minutes. If the transaction fails, you can cancel or retry below";
-  if (createdTreasury) stepSubtitle = "";
+      'This may take a few minutes. If the transaction fails, you can cancel or retry below';
+  }
+  if (createdTreasury) stepSubtitle = '';
 
-  const stepBtnText = creatingTreasury ? "Retry transaction" : "Create Safe";
+  const stepBtnText = creatingTreasury ? 'Retry transaction' : 'Create Safe';
 
   return (
     <>
@@ -80,7 +81,7 @@ const AuthorizeTreasury = ({
               Cancel
             </button>
             <button
-              className={authorizeClases.join(" ")}
+              className={authorizeClases.join(' ')}
               onClick={onAuthorize}
               disabled={!isAuthorizeReady}
             >
@@ -102,7 +103,7 @@ const AuthorizeTreasury = ({
 
 function CreateSafe({ web3 }) {
   const [safeType, setSafeType] = useState(SAFE_TYPES.SOCIAL);
-  const [safeName, setSafeName] = useState("");
+  const [safeName, setSafeName] = useState('');
   const [signersAmount, setSignersAmount] = useState(1);
   const [creatingTreasury, setCreatingTreasury] = useState(false);
   const [createdTreasury, setCreatedTreasury] = useState(false);
@@ -114,7 +115,7 @@ function CreateSafe({ web3 }) {
     createTreasury,
   } = web3;
   const [safeOwners, setSafeOwners] = useState([
-    { name: "", address, verified: true },
+    { name: '', address, verified: true },
   ]);
   const [safeOwnersValidByAddress, setSafeOwnersValidByAddress] = useState({});
   const { isAddressValid } = useAddressValidation(injectedProvider);
@@ -173,7 +174,7 @@ function CreateSafe({ web3 }) {
         <div className="column is-half">
           <div
             className={`border rounded-sm p-4 ${
-              submittedTransaction ? "" : "opacity-5"
+              submittedTransaction ? '' : 'opacity-5'
             }`}
           >
             <div className="is-flex column is-full p-0">
@@ -196,7 +197,7 @@ function CreateSafe({ web3 }) {
         <div className="column is-half">
           <div
             className={`border rounded-sm p-4 ${
-              createdTreasury ? "" : "opacity-5"
+              createdTreasury ? '' : 'opacity-5'
             }`}
           >
             <div className="is-flex column is-full p-0">
@@ -217,7 +218,7 @@ function CreateSafe({ web3 }) {
         <div className="column is-half">
           <div
             className={`border rounded-sm p-4 ${
-              createdTreasury ? "" : "opacity-5"
+              createdTreasury ? '' : 'opacity-5'
             }`}
           >
             <div className="is-flex column is-full p-0">

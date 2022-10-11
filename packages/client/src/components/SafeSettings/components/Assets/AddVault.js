@@ -1,8 +1,8 @@
-import { useState } from "react";
-import { COIN_TYPE_TO_META } from "constants/maps";
-import { Dropdown } from "library/components";
-import { useVaults } from "hooks";
-import Svg from "library/Svg";
+import { useState } from 'react';
+import { Dropdown } from 'library/components';
+import { useVaults } from 'hooks';
+import { COIN_TYPE_TO_META } from 'constants/maps';
+import Svg from 'library/Svg';
 
 const AddVault = ({ address, onCancel, onNext }) => {
   const [selectedCoinType, setSelectedCoinType] = useState();
@@ -19,7 +19,7 @@ const AddVault = ({ address, onCancel, onNext }) => {
   );
   const isFormValid = vaultName && !isExistingVault;
 
-  const isDisabled = isFormValid ? "" : "disabled";
+  const isDisabled = isFormValid ? '' : 'disabled';
 
   const coinTypes = Object.entries(COIN_TYPE_TO_META).map((type) => ({
     itemValue: type[0],

@@ -1,7 +1,7 @@
-import React from "react";
-import SendModalHeader from "../components/SendModalHeader";
-import TransactionDetails from "../components/TransactionDetails";
-import ButtonGroup from "../components/ButtonGroup";
+import React from 'react';
+import ButtonGroup from '../components/ButtonGroup';
+import SendModalHeader from '../components/SendModalHeader';
+import TransactionDetails from '../components/TransactionDetails';
 
 const SendTokenConfirmation = () => (
   <div className="has-text-black">

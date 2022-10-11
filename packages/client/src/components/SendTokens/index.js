@@ -1,5 +1,5 @@
-import { SendTokensContextProvider } from "./sendTokensContext";
-import Steps from "./steps";
+import { SendTokensContextProvider } from './sendTokensContext';
+import Steps from './steps';
 
 const SendTokens = ({ address, initialState }) => (
   <SendTokensContextProvider address={address} initialState={initialState}>

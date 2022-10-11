@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 
 const WalletPrompt = () => (
   <section className="section screen-height is-flex is-align-items-center">

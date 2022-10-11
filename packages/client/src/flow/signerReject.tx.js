@@ -33,4 +33,4 @@ export const SIGNER_REJECT = `
         self.treasury.signerRejectAction(actionUUID: actionUUID, messageSignaturePayload: self.messageSignaturePayload)
     }
     }
-`
+`;

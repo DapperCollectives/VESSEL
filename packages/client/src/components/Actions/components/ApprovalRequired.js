@@ -25,7 +25,7 @@ const ApprovalRequired = ({
           <SignerThresholdView
             actionView={actionView}
             safeData={safeData}
-            isAdd={true}
+            isAdd
           />
         );
       case ACTION_TYPES.REMOVE_SIGNER_UPDATE_THRESHOLD:

@@ -1,4 +1,4 @@
-const Person = ({ width = "16", height = "32", className = "" }) => (
+const Person = ({ width = '16', height = '32', className = '' }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width={width}

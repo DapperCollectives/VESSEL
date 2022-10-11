@@ -1,5 +1,5 @@
-import { useState, createContext } from "react";
-import { ASSET_TYPES } from "constants/enums";
+import { createContext, useState } from 'react';
+import { ASSET_TYPES } from 'constants/enums';
 
 export const SendTokensContext = createContext();
 export const SendTokensContextProvider = (props) => {
@@ -8,7 +8,7 @@ export const SendTokensContextProvider = (props) => {
     address,
     currentStep: 0,
     tokenAmount: 0,
-    recipient: "",
+    recipient: '',
     recipientValid: false,
     assetType: initialState?.assetType ?? ASSET_TYPES.TOKEN,
     coinType: initialState?.coinType,

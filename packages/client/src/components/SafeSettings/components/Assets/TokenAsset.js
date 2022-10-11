@@ -1,12 +1,11 @@
-import React, { useEffect, forwardRef } from "react";
-import { useModalContext } from "contexts";
-import { formatAddress, getTokenMeta } from "utils";
-import { useErrorMessage } from "hooks";
-
-import AddVault from "./AddVault";
-import Svg from "library/Svg";
-import AssetTableView from "./AssetTableView";
-import RemoveAsset from "./RemoveAsset";
+import React, { forwardRef, useEffect } from 'react';
+import { useModalContext } from 'contexts';
+import { useErrorMessage } from 'hooks';
+import { formatAddress, getTokenMeta } from 'utils';
+import Svg from 'library/Svg';
+import AddVault from './AddVault';
+import AssetTableView from './AssetTableView';
+import RemoveAsset from './RemoveAsset';
 
 const TokenAsset = (
   {
@@ -62,7 +61,7 @@ const TokenAsset = (
         onCancel={() => closeModal()}
         onNext={onAddVaultSubmit}
       />,
-      { headerTitle: "Add Token Vault" }
+      { headerTitle: 'Add Token Vault' }
     );
   };
 
@@ -72,13 +71,11 @@ const TokenAsset = (
       <RemoveAsset
         name={displayName}
         address={formatAddress(tokenAddress)}
-        explanation={
-          "This is only possible if your balance for this token is 0."
-        }
+        explanation="This is only possible if your balance for this token is 0."
         onCancel={() => closeModal()}
         onNext={() => onRemoveVaultSubmit(identifier)}
       />,
-      { headerTitle: "Remove Token Vault" }
+      { headerTitle: 'Remove Token Vault' }
     );
   };
 

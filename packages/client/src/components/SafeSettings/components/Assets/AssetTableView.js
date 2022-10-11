@@ -1,11 +1,11 @@
-import React from "react";
-import { useClipboard } from "hooks";
+import React from 'react';
+import { useClipboard } from 'hooks';
 import {
   formatAddress,
   getFlowscanUrlForContract,
   parseIdentifier,
-} from "utils";
-import Svg from "library/Svg";
+} from 'utils';
+import Svg from 'library/Svg';
 
 const AssetTableView = ({ assets, emptyPlaceholder, onRemoveClick }) => {
   const clipboard = useClipboard();

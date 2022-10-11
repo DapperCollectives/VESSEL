@@ -1,12 +1,12 @@
-import React, { useEffect, useState, useRef } from "react";
-import Svg from "library/Svg";
+import React, { useEffect, useRef, useState } from 'react';
+import Svg from 'library/Svg';
 
 const Dropdown = ({
   selectedValue,
   options = [],
   setOption = () => {},
   renderOption = () => {},
-  defaultText = "Select one",
+  defaultText = 'Select one',
   renderCustomSearchOrInput,
   style = {},
 }) => {
@@ -43,20 +43,20 @@ const Dropdown = ({
         setIsOpen(false);
       }
     };
-    document.addEventListener("click", handleClickOutside, true);
+    document.addEventListener('click', handleClickOutside, true);
     return () => {
-      document.removeEventListener("click", handleClickOutside, true);
+      document.removeEventListener('click', handleClickOutside, true);
     };
   }, []);
 
   return (
     <div
       className={`dropdown is-right is-flex is-flex-direction-column ${
-        isOpen ? "is-active" : ""
+        isOpen ? 'is-active' : ''
       }`}
       aria-haspopup="true"
       aria-controls="dropdown-menu"
-      style={{ height: "58px", ...style }}
+      style={{ height: '58px', ...style }}
       ref={ref}
     >
       <div className="dropdown-trigger m-0 flex-1 is-flex">
@@ -77,7 +77,7 @@ const Dropdown = ({
       </div>
       <div
         className="dropdown-menu flex-1 p-0"
-        style={{ width: "100%" }}
+        style={{ width: '100%' }}
         id="dropdown-menu"
         role="menu"
       >
@@ -89,7 +89,7 @@ const Dropdown = ({
               <button
                 type="button"
                 className={`border-none dropdown-item has-text-grey${
-                  itemValue === selectedValue ? " is-active" : ""
+                  itemValue === selectedValue ? ' is-active' : ''
                 }`}
                 onMouseDown={() => {
                   setOption(itemValue);
