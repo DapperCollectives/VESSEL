@@ -1,9 +1,9 @@
-import { useState } from "react";
-import { InputAddress } from "library/components";
+import { useState } from 'react';
+import { InputAddress } from 'library/components';
 
 const AddCollection = ({ onCancel, onNext }) => {
-  const [contractName, setContractName] = useState("");
-  const [address, setAddress] = useState("");
+  const [contractName, setContractName] = useState('');
+  const [address, setAddress] = useState('');
   const [addressValid, setAddressValid] = useState(false);
   const isFormValid = contractName?.trim().length > 0 && addressValid;
 
@@ -19,7 +19,7 @@ const AddCollection = ({ onCancel, onNext }) => {
     });
   };
 
-  const isDisabled = isFormValid ? "" : "disabled";
+  const isDisabled = isFormValid ? '' : 'disabled';
 
   return (
     <div className="p-5 has-text-grey">

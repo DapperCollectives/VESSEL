@@ -1,15 +1,15 @@
-import React from "react";
-import { NavLink } from "react-router-dom";
-import { WalletPrompt } from "../components";
-import Svg from "library/Svg";
-import { Web3Consumer } from "../contexts/Web3";
+import React from 'react';
+import { NavLink } from 'react-router-dom';
+import { Web3Consumer } from '../contexts/Web3';
+import { WalletPrompt } from '../components';
+import Svg from 'library/Svg';
 
 const SafeLinks = () => (
   <section className="section screen-height is-flex is-align-items-center">
     <div className="container is-flex is-flex-direction-column is-justify-content-center is-align-items-center">
       <div
         className="safe-img mb-6"
-        style={{ height: 220, width: 280, background: "#f6f6f6" }}
+        style={{ height: 220, width: 280, background: '#f6f6f6' }}
       />
       <h1>Create or load a Safe to get started</h1>
       <p className="subtitle has-text-grey">

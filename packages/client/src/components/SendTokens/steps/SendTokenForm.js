@@ -1,11 +1,11 @@
-import { useContext } from "react";
-import { ASSET_TYPES } from "constants/enums";
-import { SendTokensContext } from "../sendTokensContext";
-import SendModalHeader from "../components/SendModalHeader";
-import AmountInput from "../components/AmountInput";
-import AddressDropdown from "../components/AddressDropdown";
-import AssetSelector from "../components/AssetSelector";
-import ButtonGroup from "../components/ButtonGroup";
+import { useContext } from 'react';
+import AddressDropdown from '../components/AddressDropdown';
+import AmountInput from '../components/AmountInput';
+import AssetSelector from '../components/AssetSelector';
+import ButtonGroup from '../components/ButtonGroup';
+import SendModalHeader from '../components/SendModalHeader';
+import { ASSET_TYPES } from 'constants/enums';
+import { SendTokensContext } from '../sendTokensContext';
 
 const SendTokenForm = () => {
   const [sendModalState] = useContext(SendTokensContext);

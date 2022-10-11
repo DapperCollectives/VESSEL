@@ -1,7 +1,7 @@
 const InvertLogo = ({
-  width = "114",
-  height = "28",
-  className = "",
+  width = '114',
+  height = '28',
+  className = '',
   style = {},
 }) => (
   <svg

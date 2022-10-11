@@ -1,4 +1,4 @@
-const REVV = ({ width = "24", height = "24", className = "" }) => (
+const REVV = ({ width = '24', height = '24', className = '' }) => (
   <svg
     width={width}
     height={height}

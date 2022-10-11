@@ -1,8 +1,7 @@
-import { useContext } from "react";
-
-import { Dropdown } from "library/components";
-import { Web3Context } from "contexts/Web3";
-import Svg from "library/Svg";
+import { useContext } from 'react';
+import { Web3Context } from 'contexts/Web3';
+import { Dropdown } from 'library/components';
+import Svg from 'library/Svg';
 
 const CoinTypeDropDown = ({ coinType, setCoinType, address }) => {
   const web3 = useContext(Web3Context);

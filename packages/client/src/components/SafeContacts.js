@@ -1,11 +1,17 @@
-import React, { useState } from "react";
-import { isEmpty } from "lodash";
-import { InputAddress, EmptyTableWithCTA } from "library/components";
-import Svg from "library/Svg";
-import { useClipboard, useContacts } from "../hooks";
-import { useModalContext } from "contexts";
+import React, { useState } from 'react';
+import { useModalContext } from 'contexts';
+import { EmptyTableWithCTA, InputAddress } from 'library/components';
+import { useClipboard, useContacts } from '../hooks';
+import Svg from 'library/Svg';
+import { isEmpty } from 'lodash';
 
-function EditContactModal({ contacts, contact, onConfirm, confirmText, closeModal }) {
+function EditContactModal({
+  contacts,
+  contact,
+  onConfirm,
+  confirmText,
+  closeModal,
+}) {
   const [currentAddr, setCurrentAddr] = useState(contact.address);
   const [currentName, setCurrentName] = useState(contact.name);
   const [addressValid, setAddressValid] = useState(Boolean(contact.address));
@@ -13,21 +19,37 @@ function EditContactModal({ contacts, contact, onConfirm, confirmText, closeModa
   const onAddressChange = ({ value, isValid }) => {
     setCurrentAddr(value);
     setAddressValid(isValid);
-    setAddressNew(isEmpty(contacts) || contacts.every((c) => c.address !== value));
+    setAddressNew(
+      isEmpty(contacts) || contacts.every((c) => c.address !== value)
+    );
   };
   const onNameChange = ({ value }) => setCurrentName(value);
   const canConfirm = addressNew && addressValid;
-  const updateBtnClasses = ["button", "flex-1", "is-primary", canConfirm ? "" : "disabled"];
+  const updateBtnClasses = [
+    'button',
+    'flex-1',
+    'is-primary',
+    canConfirm ? '' : 'disabled',
+  ];
 
   return (
     <div className="py-5 has-text-black">
       <div className="column is-flex is-flex-direction-column is-full px-5 py-0">
         <div>
           <p className="has-text-grey">
-            Address<span className="has-text-red">*</span>
+            Address
+            <span className="has-text-red">*</span>
           </p>
-          <InputAddress value={currentAddr} isValid={addressValid} onChange={onAddressChange} />
-          {!addressNew && <p className="has-text-red mt-2">This address has already been added.</p>}
+          <InputAddress
+            value={currentAddr}
+            isValid={addressValid}
+            onChange={onAddressChange}
+          />
+          {!addressNew && (
+            <p className="has-text-red mt-2">
+              This address has already been added.
+            </p>
+          )}
         </div>
         <div className="mt-5">
           <p className="has-text-grey">Name</p>
@@ -47,7 +69,7 @@ function EditContactModal({ contacts, contact, onConfirm, confirmText, closeModa
           Cancel
         </button>
         <button
-          className={updateBtnClasses.join(" ")}
+          className={updateBtnClasses.join(' ')}
           onClick={() => {
             if (canConfirm) {
               onConfirm({
@@ -71,7 +93,8 @@ function RemoveContactModal({ contact, onConfirm, confirmText, closeModal }) {
     <div className="py-5 has-text-black">
       <div className="column is-flex is-flex-direction-column is-full px-5 py-0">
         <p>
-          This action will remove {contact.address} {contact.name ? `(${contact.name}) ` : ""}
+          This action will remove {contact.address}{' '}
+          {contact.name ? `(${contact.name}) ` : ''}
           from your saved addresses.
         </p>
       </div>
@@ -104,11 +127,11 @@ function SafeContacts({ address }) {
         confirmText="Add"
         onConfirm={(newContact) => setContact(contacts.length, newContact)}
         contacts={contacts}
-        contact={{ name: "", address: "" }}
+        contact={{ name: '', address: '' }}
         closeModal={closeModal}
       />,
       {
-        headerTitle: "Add Contact",
+        headerTitle: 'Add Contact',
       }
     );
 
@@ -122,7 +145,7 @@ function SafeContacts({ address }) {
         closeModal={closeModal}
       />,
       {
-        headerTitle: "Edit Contact",
+        headerTitle: 'Edit Contact',
       }
     );
 
@@ -135,7 +158,7 @@ function SafeContacts({ address }) {
         closeModal={closeModal}
       />,
       {
-        headerTitle: "Confirm",
+        headerTitle: 'Confirm',
       }
     );
 
@@ -144,7 +167,10 @@ function SafeContacts({ address }) {
       <div className="column p-0 mt-5 is-flex is-align-items-center is-justify-content-space-between is-full">
         <h2>Saved Addresses</h2>
         {!isEmpty(contacts) && (
-          <button className="button is-secondary is-small with-icon" onClick={openAddModal}>
+          <button
+            className="button is-secondary is-small with-icon"
+            onClick={openAddModal}
+          >
             Add Contact <Svg name="Plus" />
           </button>
         )}
@@ -172,10 +198,13 @@ function SafeContacts({ address }) {
                 <span
                   className="pointer"
                   onClick={() => clipboard.copy(contact.address)}
-                  style={{ whiteSpace: "nowrap" }}
+                  style={{ whiteSpace: 'nowrap' }}
                 >
                   {contact.address}
-                  <span className="ml-2" style={{ position: "relative", top: 2 }}>
+                  <span
+                    className="ml-2"
+                    style={{ position: 'relative', top: 2 }}
+                  >
                     <Svg name="Copy" />
                   </span>
                 </span>

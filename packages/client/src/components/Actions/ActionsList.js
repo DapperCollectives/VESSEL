@@ -1,6 +1,6 @@
-import React from "react";
-import { isEmpty } from "lodash";
-import ActionsListTable from "./ActionsListTable";
+import React from 'react';
+import { isEmpty } from 'lodash';
+import ActionsListTable from './ActionsListTable';
 
 function ActionsList({
   actions = [],

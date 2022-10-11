@@ -1,7 +1,7 @@
-import Svg from "library/Svg";
-import { getTokenMeta } from "utils";
-import ProposedDateView from "./ProposedDateView";
-import SentFromToView from "./SentFromToView";
+import { getTokenMeta } from 'utils';
+import Svg from 'library/Svg';
+import ProposedDateView from './ProposedDateView';
+import SentFromToView from './SentFromToView';
 
 const TokenView = ({ actionView, safeData }) => {
   const { recipient, vaultId, tokenAmount, timestamp } = actionView;

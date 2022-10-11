@@ -1,7 +1,7 @@
 const LogoV = ({
-  width = "350",
-  height = "148",
-  className = "",
+  width = '350',
+  height = '148',
+  className = '',
   style = {},
 }) => (
   <svg

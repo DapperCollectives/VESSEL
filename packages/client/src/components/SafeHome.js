@@ -1,7 +1,7 @@
-import React from "react";
-import SafeOverview from "./SafeOverview";
-import ThingsToDo from "./ThingsToDo";
-import TransactionHistory from "./TransactionHistory";
+import React from 'react';
+import SafeOverview from './SafeOverview';
+import ThingsToDo from './ThingsToDo';
+import TransactionHistory from './TransactionHistory';
 
 const SafeHome = ({
   safeData,

@@ -1,5 +1,5 @@
-import React, { useCallback, useState } from "react";
-import Svg from "library/Svg";
+import React, { useCallback, useState } from 'react';
+import Svg from 'library/Svg';
 
 /**
  *
@@ -22,7 +22,7 @@ const ModalContext = React.createContext({});
 export const useModalContext = () => {
   const context = React.useContext(ModalContext);
   if (context === undefined) {
-    throw new Error("`useModalContext` must be used within a `ModalProvider`.");
+    throw new Error('`useModalContext` must be used within a `ModalProvider`.');
   }
   return context;
 };
@@ -32,10 +32,10 @@ const ModalProvider = ({ children }) => {
   const [content, setContent] = useState(null);
   const [modalConfig, setModalConfig] = useState({
     // more configuration can be added here
-    headerTitle: "",
+    headerTitle: '',
     closeOnBackgroundClick: true,
     showCloseButton: true,
-    classNameModalContent: "",
+    classNameModalContent: '',
     onClose: () => {},
   });
 
@@ -47,8 +47,8 @@ const ModalProvider = ({ children }) => {
         // this is when two components are using the modal with different configuration at the same time
         closeOnBackgroundClick: true,
         showCloseButton: true,
-        classNameModalContent: "",
-        headerTitle: "",
+        classNameModalContent: '',
+        headerTitle: '',
         ...(customModalConfig ?? {}),
       }));
 
@@ -77,21 +77,18 @@ const ModalProvider = ({ children }) => {
     isOpen: modal,
   };
 
-  const className = `modal${modal ? " is-active" : ""}`;
+  const className = `modal${modal ? ' is-active' : ''}`;
 
   return (
     <ModalContext.Provider value={providerProps}>
       <>
         <div className={className}>
-          <div
-            className="modal-background"
-            onClick={handleClickOnBackground}
-          ></div>
+          <div className="modal-background" onClick={handleClickOnBackground} />
           <div
             className={`modal-content rounded-sm ${
               modalConfig.backgroundColor
                 ? modalConfig.backgroundColor
-                : " has-background-white"
+                : ' has-background-white'
             } ${modalConfig.classNameModalContent}`}
           >
             {modalConfig.headerTitle && (
@@ -110,14 +107,14 @@ const ModalProvider = ({ children }) => {
                 </div>
               </div>
             )}
-            {!!content ? content : <p>Empty Modal</p>}
+            {content || <p>Empty Modal</p>}
           </div>
           {modalConfig.showCloseButton && (
             <button
               className="modal-close is-large"
               aria-label="close"
               onClick={closeModal}
-            ></button>
+            />
           )}
         </div>
         {children}

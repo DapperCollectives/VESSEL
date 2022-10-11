@@ -1,6 +1,6 @@
-import { useModalContext } from "contexts";
-import SignatureBar from "./SignatureBar";
-import EditThreshold from "./EditThreshold";
+import { useModalContext } from 'contexts';
+import EditThreshold from './EditThreshold';
+import SignatureBar from './SignatureBar';
 
 const SignatureThreshold = ({ treasury }) => {
   const { openModal, closeModal, isOpen } = useModalContext();
@@ -9,10 +9,9 @@ const SignatureThreshold = ({ treasury }) => {
 
   const openEditSignatureThresholdModal = () => {
     if (isOpen) closeModal();
-    openModal(
-      <EditThreshold treasury={treasury} />,
-      { headerTitle: "Set A New Threshold" }
-    );
+    openModal(<EditThreshold treasury={treasury} />, {
+      headerTitle: 'Set A New Threshold',
+    });
   };
   return (
     <div>
@@ -24,8 +23,8 @@ const SignatureThreshold = ({ treasury }) => {
           <SignatureBar threshold={threshold} safeOwners={verifiedSafeOwners} />
         </div>
         <div className="flex-1">
-          {threshold} out of {verifiedSafeOwners?.length} signatures are
-          required to confirm a new transaction
+          {threshold} out of{verifiedSafeOwners?.length} signatures are required
+          to confirm a new transaction
         </div>
         <div>
           <button

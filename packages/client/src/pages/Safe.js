@@ -1,24 +1,24 @@
-import React from "react";
-import { useParams, NavLink } from "react-router-dom";
-import QRCode from "react-qr-code";
-import { shortenString } from "utils";
+import React from 'react';
+import QRCode from 'react-qr-code';
+import { NavLink, useParams } from 'react-router-dom';
+import { Web3Consumer, useModalContext } from 'contexts';
+import { createSignature } from 'contexts/Web3';
 import {
-  SafeHome,
-  SafeTransactions,
-  SafeNFTs,
   SafeContacts,
+  SafeHome,
+  SafeNFTs,
   SafeSettings,
   SafeTokens,
+  SafeTransactions,
   SendTokens,
   TestToolBox,
-} from "components";
-import Svg from "library/Svg";
-import { EmptyTableWithCTA } from "library/components";
-import { Web3Consumer, useModalContext } from "contexts";
-import { createSignature } from "contexts/Web3";
-import { useClipboard, useErrorMessage } from "hooks";
-import { TransactionSuccessModal } from "modals";
-import { ACTION_TYPES } from "constants/enums";
+} from 'components';
+import { EmptyTableWithCTA } from 'library/components';
+import { useClipboard, useErrorMessage } from 'hooks';
+import { ACTION_TYPES } from 'constants/enums';
+import { shortenString } from 'utils';
+import Svg from 'library/Svg';
+import { TransactionSuccessModal } from 'modals';
 
 const ReceiveTokens = ({ name, address }) => {
   const modalContext = useModalContext();
@@ -49,8 +49,8 @@ const ReceiveTokens = ({ name, address }) => {
           onClick={() => clipboard.copy(address)}
         >
           {clipboard.textJustCopied === address
-            ? "Copied"
-            : "Copy Safe Address"}
+            ? 'Copied'
+            : 'Copy Safe Address'}
         </button>
       </div>
       <div className="is-flex is-align-items-center mt-6">
@@ -103,30 +103,30 @@ function Safe({ web3 }) {
           onClose={closeModal}
         />,
         {
-          headerTitle: "Success",
+          headerTitle: 'Success',
         }
       );
     }
   };
 
-  const currentTab = tab ?? "home";
+  const currentTab = tab ?? 'home';
   const buttons = [
-    "home",
-    "transactions",
-    "tokens",
-    "NFTs",
-    "contacts",
-    "settings",
+    'home',
+    'transactions',
+    'tokens',
+    'NFTs',
+    'contacts',
+    'settings',
   ];
-  const buttonClasses = ["button is-nav", "is-capitalized", "mr-2"];
+  const buttonClasses = ['button is-nav', 'is-capitalized', 'mr-2'];
 
   const ButtonCpts = buttons.map((btn, i) => {
-    const classes = [...buttonClasses, currentTab === btn ? "is-focused" : ""];
+    const classes = [...buttonClasses, currentTab === btn ? 'is-focused' : ''];
     const baseUrl = `/safe/${address}`;
-    const to = btn === "home" ? baseUrl : `${baseUrl}/${btn}`;
+    const to = btn === 'home' ? baseUrl : `${baseUrl}/${btn}`;
     return (
       <NavLink to={to} key={`btn-${btn}`}>
-        <button type="button" className={classes.join(" ")} key={i}>
+        <button type="button" className={classes.join(' ')} key={i}>
           {btn}
         </button>
       </NavLink>
@@ -164,7 +164,7 @@ function Safe({ web3 }) {
       showErrorModal(error)
     );
     if (events) {
-      const action = events.find((e) => e.type.endsWith("ActionExecuted"));
+      const action = events.find((e) => e.type.endsWith('ActionExecuted'));
       showTransactionSuccessModal(action, safeData.name, safeData.address);
     }
   };
@@ -227,7 +227,7 @@ function Safe({ web3 }) {
       }}
     >
       <div className="column is-full p-0 is-flex is-flex-direction-column mb-5">
-        {process.env.REACT_APP_FLOW_ENV !== "mainnet" && (
+        {process.env.REACT_APP_FLOW_ENV !== 'mainnet' && (
           <TestToolBox address={address} />
         )}
         <h1 className=" mb-2">{safeData.name}</h1>
@@ -242,7 +242,7 @@ function Safe({ web3 }) {
               onClick={() => clipboard.copy(address)}
               className="border-none has-background-white"
             >
-              {clipboard.textJustCopied === address ? "Copied" : "Copy address"}
+              {clipboard.textJustCopied === address ? 'Copied' : 'Copy address'}
             </button>
           </span>
         </p>

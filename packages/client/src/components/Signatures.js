@@ -10,8 +10,8 @@ const Signatures = ({ confirmations, safeOwners }) => {
     return `${numberApproved} out of ${Object.keys(confirmations).length}`;
   };
 
-  const getConfirmationList = () => {
-    return Object.keys(confirmations).map((key) => {
+  const getConfirmationList = () =>
+    Object.keys(confirmations).map((key) => {
       const name = getNameByAddress(safeOwners, key);
       const displayName = name?.length > 20 ? shortenString(name) : name;
       const displayAddress = name ? shortenString(key) : key;
@@ -28,7 +28,6 @@ const Signatures = ({ confirmations, safeOwners }) => {
         </div>
       );
     });
-  };
 
   return (
     <div className="p-4">

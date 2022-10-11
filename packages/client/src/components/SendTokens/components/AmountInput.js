@@ -1,6 +1,6 @@
-import { useContext } from "react";
-import { Web3Context } from "contexts/Web3";
-import { SendTokensContext } from "../sendTokensContext";
+import { useContext } from 'react';
+import { Web3Context } from 'contexts/Web3';
+import { SendTokensContext } from '../sendTokensContext';
 
 const AmountInput = () => {
   const [sendModalState, setSendModalState] = useContext(SendTokensContext);
@@ -20,7 +20,7 @@ const AmountInput = () => {
         Amount
         <span className="has-text-red"> *</span>
       </p>
-      <div className="is-flex" style={{ position: "relative" }}>
+      <div className="is-flex" style={{ position: 'relative' }}>
         <input
           type="number"
           className="flex-1 is-size-4 border-light rounded-sm p-3 mb-4 has-text-heighlight"
@@ -33,7 +33,7 @@ const AmountInput = () => {
           }
         />
 
-        <div style={{ position: "absolute", top: "6px", right: "16px" }}>
+        <div style={{ position: 'absolute', top: '6px', right: '16px' }}>
           <button
             type="button"
             className="button is-small is-primary flex-1 mt-2"

@@ -1,8 +1,8 @@
-import React from "react";
-import { useClipboard, useContacts } from "hooks";
-import Svg from "library/Svg";
-import { getFlowscanUrlForTransaction, getNameByAddress } from "utils";
-import BannerInfo from "./BannerInfo";
+import React from 'react';
+import { useClipboard, useContacts } from 'hooks';
+import { getFlowscanUrlForTransaction, getNameByAddress } from 'utils';
+import Svg from 'library/Svg';
+import BannerInfo from './BannerInfo';
 
 const Success = ({ actionData, txID, onClose, safeName, safeAddress }) => {
   const clipboard = useClipboard();
@@ -14,7 +14,11 @@ const Success = ({ actionData, txID, onClose, safeName, safeAddress }) => {
         <label className="has-background-primary-purple has-text-white px-3 py-2 rounded-lg mb-1">
           Sent <Svg name="ArrowUp" />
         </label>
-        <BannerInfo actionData={actionData} contacts={contacts} className="pl-4" />
+        <BannerInfo
+          actionData={actionData}
+          contacts={contacts}
+          className="pl-4"
+        />
       </div>
       <div className="mt-4 border-light-top">
         <div className="column is-vcentered is-multiline is-mobile border-light-bottom is-flex is-full">
@@ -23,7 +27,10 @@ const Success = ({ actionData, txID, onClose, safeName, safeAddress }) => {
             <span className="has-text-weight-bold">{safeName}</span>
             <div>
               <span className="has-text-grey">{safeAddress}</span>
-              <span className="pointer" onClick={() => clipboard.copy(safeAddress)}>
+              <span
+                className="pointer"
+                onClick={() => clipboard.copy(safeAddress)}
+              >
                 <Svg name="Copy" className="mt-1 ml-2 pointer" />
               </span>
             </div>
@@ -37,7 +44,10 @@ const Success = ({ actionData, txID, onClose, safeName, safeAddress }) => {
             </span>
             <div>
               <span className="has-text-grey">{actionData.recipient}</span>
-              <span className="pointer" onClick={() => clipboard.copy(actionData.recipient)}>
+              <span
+                className="pointer"
+                onClick={() => clipboard.copy(actionData.recipient)}
+              >
                 <Svg name="Copy" className="mt-1 ml-2 pointer" />
               </span>
             </div>

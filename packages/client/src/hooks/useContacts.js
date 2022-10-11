@@ -1,13 +1,13 @@
-import { useEffect, useReducer, useMemo } from "react";
-import contactReducer, { CONTACT_INITIAL_STATE } from "reducers/contactReducer";
+import { useEffect, useMemo, useReducer } from 'react';
+import contactReducer, { CONTACT_INITIAL_STATE } from 'reducers/contactReducer';
 
-const storageKey = "vessel-contacts";
+const storageKey = 'vessel-contacts';
 
 export default function useContacts(address) {
   const [state, dispatch] = useReducer(contactReducer, [], (initial) => ({
     ...initial,
     ...CONTACT_INITIAL_STATE,
-    contacts: JSON.parse(localStorage.getItem(storageKey) || "{}"),
+    contacts: JSON.parse(localStorage.getItem(storageKey) || '{}'),
   }));
 
   const contacts = useMemo(() => state.contacts ?? {}, [state.contacts]);
@@ -18,7 +18,7 @@ export default function useContacts(address) {
 
   const setContact = (index, newContact) => {
     dispatch({
-      type: "SET_CONTACT",
+      type: 'SET_CONTACT',
       payload: {
         [address]: { index, newContact },
       },
@@ -27,7 +27,7 @@ export default function useContacts(address) {
 
   const removeContact = (index) => {
     dispatch({
-      type: "REMOVE_CONTACT",
+      type: 'REMOVE_CONTACT',
       payload: {
         [address]: { index },
       },

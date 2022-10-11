@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 
 const NFTSelector = ({ nftsToDisplay, selectedNFT, setSelectedNFT }) => {
   const { collectionName: selectedCollectionName, tokenId: selectedTokenId } =
@@ -13,7 +13,7 @@ const NFTSelector = ({ nftsToDisplay, selectedNFT, setSelectedNFT }) => {
   return (
     <div
       className="p-1 mb-4 rounded-sm is-flex is-flex-wrap-wrap "
-      style={{ maxHeight: "200px", overflow: "scroll" }}
+      style={{ maxHeight: '200px', overflow: 'scroll' }}
     >
       {nftsToDisplay.map((nft) => {
         const { collectionName, tokenId, thumbnail } = nft;
@@ -22,8 +22,8 @@ const NFTSelector = ({ nftsToDisplay, selectedNFT, setSelectedNFT }) => {
             className={`has-background-white rounded-sm ${
               collectionName === selectedCollectionName &&
               tokenId === selectedTokenId
-                ? "border-heavy"
-                : "border-none"
+                ? 'border-heavy'
+                : 'border-none'
             }`}
             type="button"
             onClick={() => setSelectedNFT(nft)}
@@ -32,14 +32,14 @@ const NFTSelector = ({ nftsToDisplay, selectedNFT, setSelectedNFT }) => {
               key={tokenId}
               className="mr-1 mb-1"
               style={{
-                cursor: "pointer",
+                cursor: 'pointer',
                 minHeight: 66,
                 minWidth: 66,
                 width: 66,
                 height: 66,
                 backgroundImage: `url(${thumbnail.url})`,
-                backgroundSize: "contain",
-                backgroundPosition: "center",
+                backgroundSize: 'contain',
+                backgroundPosition: 'center',
               }}
             />
           </button>

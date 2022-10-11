@@ -1,12 +1,12 @@
-import { useState } from "react";
+import { useState } from 'react';
 
-const Tooltip = ({ position = "top", text, children, className = "" }) => {
+const Tooltip = ({ position = 'top', text, children, className = '' }) => {
   const [isOpen, setIsOpen] = useState(false);
   const positionConfig = {
-    left: "has-tooltip-left",
-    right: "has-tooltip-right",
-    top: "has-tooltip-top",
-    bottom: "has-tooltip-bottom",
+    left: 'has-tooltip-left',
+    right: 'has-tooltip-right',
+    top: 'has-tooltip-top',
+    bottom: 'has-tooltip-bottom',
   };
   const positionClass = positionConfig[position];
   return (

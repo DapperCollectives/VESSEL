@@ -1,8 +1,7 @@
 import Signatures from 'components/Signatures';
 import { useClipboard, useContacts } from 'hooks';
 import { ACTION_TYPES } from 'constants/enums';
-import { getStatusColor } from 'utils';
-import { getFlowscanUrlForTransaction } from 'utils';
+import { getFlowscanUrlForTransaction, getStatusColor } from 'utils';
 import Svg from 'library/Svg';
 import BannerInfo from './BannerInfo';
 
@@ -97,7 +96,7 @@ const TransactionDetails = ({ onClose, safeData = {}, transaction = {} }) => {
           <div className="border-light-top is-flex py-4">
             <div className="flex-1 has-text-grey">Signature Threshold</div>
             <div className="flex-1 has-text-weight-bold">
-              {Object.keys(signers).length} of {threshold} owners
+              {Object.keys(signers).length} of{threshold} owners
             </div>
           </div>
         )}

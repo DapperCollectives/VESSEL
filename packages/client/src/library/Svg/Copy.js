@@ -1,4 +1,4 @@
-const Copy = ({ width = "11", height = "11", className = "" }) => (
+const Copy = ({ width = '11', height = '11', className = '' }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width={width}
