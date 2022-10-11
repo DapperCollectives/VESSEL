@@ -1,3 +1,4 @@
+import { SIGNER_RESPONSES } from 'constants/enums';
 import { COIN_TYPE_TO_META, CONTRACT_NAME_TO_COIN_TYPE } from 'constants/maps';
 import daysjs from 'dayjs';
 
@@ -157,4 +158,16 @@ export const isVaultInTreasury = (treasuryVaults, coinType) => {
     return treasuryVault.includes(vaultName);
   });
   return !!vault;
+};
+
+export const getStatusColor = (confirmation) => {
+  switch (confirmation) {
+    case SIGNER_RESPONSES.APPROVED:
+      return 'success';
+    case SIGNER_RESPONSES.REJECTED:
+      return 'danger';
+    case SIGNER_RESPONSES.PENDING:
+    default:
+      return 'warning';
+  }
 };
