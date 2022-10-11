@@ -1,5 +1,7 @@
 import daysjs from "dayjs";
 import { COIN_TYPE_TO_META, CONTRACT_NAME_TO_COIN_TYPE } from "constants/maps";
+import { SIGNER_RESPONSES } from "constants/enums";
+
 
 export const checkResponse = async (response) => {
   if (!response.ok) {
@@ -139,7 +141,7 @@ export const getNameByAddress = (nameAddressArray, address) => {
   const nameAddress = nameAddressArray.find(
     (nameAddress) => nameAddress.address === address
   );
-  return nameAddress?.name;
+  return nameAddress?.name ?? address;
 };
 
 export const parseTimestamp = (timestamp) => {
@@ -149,4 +151,16 @@ export const parseTimestamp = (timestamp) => {
   const date = parsedDate.format("M/DD/YYYY");
   const time = parsedDate.format("HH:MM A");
   return `${date} at ${time}`;
+};
+
+export const getStatusColor = (confirmation) => {
+  switch (confirmation) {
+    case SIGNER_RESPONSES.APPROVED:
+      return "success";
+    case SIGNER_RESPONSES.REJECTED:
+      return "danger";
+    case SIGNER_RESPONSES.PENDING:
+    default:
+      return "warning";
+  }
 };
