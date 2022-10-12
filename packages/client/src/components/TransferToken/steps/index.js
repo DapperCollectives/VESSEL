@@ -1,6 +1,8 @@
 import { useContext } from 'react';
+import { Web3Context } from 'contexts/Web3';
 import ButtonGroup from '../components/ButtonGroup';
 import ModalHeader from '../components/ModalHeader';
+import { useAccount } from 'hooks';
 import { TRANSACTION_TYPE } from 'constants/enums';
 import { TransferTokensContext } from '../TransferTokensContext';
 import DepositTokenForm from './DepositTokenForm';
@@ -9,12 +11,19 @@ import TransferTokenConfirmation from './TransferTokenConfirmation';
 
 const Steps = () => {
   const [sendModalState] = useContext(TransferTokensContext);
-  const { currentStep, transactionType } = sendModalState;
+  const { proposeTransfer } = useContext(Web3Context);
+  const { doSendTokensToTreasury } = useAccount();
 
-  const title = transactionType === TRANSACTION_TYPE.SEND ? 'Send' : 'Deposit';
+  const { currentStep, transactionType } = sendModalState;
+  const isSendTransaction = transactionType === TRANSACTION_TYPE.SEND;
+
+  const title = isSendTransaction ? 'Send' : 'Deposit';
+  const sendOrDepositFn = isSendTransaction
+    ? proposeTransfer
+    : doSendTokensToTreasury;
 
   const renderTransferTokenForm = () => {
-    if (transactionType === TRANSACTION_TYPE.SEND) {
+    if (isSendTransaction) {
       return <SendTokenForm />;
     }
     return <DepositTokenForm />;
@@ -28,7 +37,7 @@ const Steps = () => {
       ) : (
         renderTransferTokenForm()
       )}
-      <ButtonGroup />
+      <ButtonGroup proposeTransfer={sendOrDepositFn} />
     </div>
   );
 };

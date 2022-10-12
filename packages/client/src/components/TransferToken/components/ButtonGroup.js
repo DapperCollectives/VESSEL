@@ -2,19 +2,17 @@ import { useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useModalContext } from 'contexts';
 import { Web3Context } from 'contexts/Web3';
-import { useAccount, useErrorMessage } from 'hooks';
+import { useErrorMessage } from 'hooks';
 import { ASSET_TYPES, TRANSACTION_TYPE } from 'constants/enums';
 import { formatAddress } from 'utils';
 import { isEmpty } from 'lodash';
 import { TransferTokensContext } from '../TransferTokensContext';
 
-const ButtonGroup = () => {
+const ButtonGroup = ({ proposeTransfer }) => {
   const modalContext = useModalContext();
-  const { proposeTransfer, proposeNFTTransfer, refreshTreasury } =
-    useContext(Web3Context);
+  const { proposeNFTTransfer, refreshTreasury } = useContext(Web3Context);
   const [sendModalState, setSendModalState] = useContext(TransferTokensContext);
   const history = useHistory();
-  const { doSendTokensToTreasury } = useAccount();
   const { showErrorModal } = useErrorMessage();
 
   const {
@@ -28,6 +26,9 @@ const ButtonGroup = () => {
     coinType,
     transactionType,
   } = sendModalState;
+
+  const safeAddress =
+    transactionType === TRANSACTION_TYPE.SEND ? address : recipient;
 
   const continueReady =
     recipientValid &&
@@ -49,19 +50,11 @@ const ButtonGroup = () => {
     if (currentStep === 1) {
       try {
         if (assetType === ASSET_TYPES.TOKEN) {
-          if (transactionType === TRANSACTION_TYPE.SEND) {
-            await proposeTransfer(
-              formatAddress(recipient),
-              tokenAmount,
-              coinType
-            );
-          } else {
-            await doSendTokensToTreasury(
-              formatAddress(recipient),
-              parseFloat(tokenAmount).toFixed(8),
-              coinType
-            );
-          }
+          await proposeTransfer(
+            formatAddress(recipient),
+            tokenAmount,
+            coinType
+          );
         } else {
           await proposeNFTTransfer(
             formatAddress(address),
@@ -71,11 +64,7 @@ const ButtonGroup = () => {
         }
         await refreshTreasury();
         modalContext.closeModal();
-        history.push(
-          `/safe/${
-            transactionType === TRANSACTION_TYPE.SEND ? address : recipient
-          }`
-        );
+        history.push(`/safe/${safeAddress}`);
       } catch (error) {
         showErrorModal(error);
       }

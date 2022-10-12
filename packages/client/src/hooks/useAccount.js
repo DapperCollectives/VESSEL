@@ -16,7 +16,7 @@ export default function useAccount() {
       cadence: SEND_TOKENS_TO_TREASURY,
       args: (arg, t) => [
         arg(treasuryAddr, t.Address),
-        arg(amount, t.UFix64),
+        arg(parseFloat(amount).toFixed(8), t.UFix64),
         arg(vaultPath, t.Path),
       ],
       limit: REGULAR_LIMIT,
@@ -32,7 +32,7 @@ export default function useAccount() {
       try {
         const res = await doSendTokensToTreasury(
           treasuryAddr,
-          String(parseFloat(10).toFixed(8)),
+          10,
           coinType
         );
         await tx(res).onceSealed();
