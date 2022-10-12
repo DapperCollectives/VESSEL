@@ -20,7 +20,7 @@ function EditContactModal({
     setCurrentAddr(value);
     setAddressValid(isValid);
     setAddressNew(
-      isEmpty(contacts) || contacts.every((c) => c.address !== value)
+      isEmpty(contacts) || contacts.every(({ address }) => address !== value)
     );
   };
   const onNameChange = ({ value }) => setCurrentName(value);
