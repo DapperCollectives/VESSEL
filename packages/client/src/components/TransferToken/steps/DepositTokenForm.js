@@ -55,11 +55,11 @@ const DepositTokenForm = () => {
 
   useEffect(() => {
     updateUserBalance();
-  }, [vaults]);
+  }, []);
 
   return (
     <>
-      <AssetSelector />
+      <AssetSelector coinBalances={coinBalances} />
       {assetType === ASSET_TYPES.TOKEN && (
         <AmountInput coinBalances={coinBalances} />
       )}
