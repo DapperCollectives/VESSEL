@@ -1,12 +1,12 @@
 import { Dropdown, Tooltip } from 'library/components';
 import Svg from 'library/Svg';
 
-const CoinTypeDropDown = ({ coinType, setCoinType, balances }) => {
+const CoinTypeDropDown = ({ coinType, setCoinType, balances, tooltipText }) => {
   const coinTypes = Object.entries(balances).map(([key]) => ({
     itemValue: key,
     displayText: key,
     attr: {
-      balance: balances[key] ?? Number(balances[key]).toFixed(2),
+      balance: balances[key] && Number(balances[key]).toFixed(2),
     },
   }));
   const renderOption = (itemValue, displayText, attr) => (
@@ -29,13 +29,11 @@ const CoinTypeDropDown = ({ coinType, setCoinType, balances }) => {
       <p className="has-text-grey is-flex is-align-items-center">
         Token Vault
         <span className="has-text-red mr-1"> *</span>
-        <Tooltip
-          position="top"
-          text="Only tokens supported by Vessel can be transferred to this treasury."
-          className="mt-2"
-        >
-          <Svg name="QuestionMark" />
-        </Tooltip>
+        {tooltipText && (
+          <Tooltip position="top" text={tooltipText} className="mt-2">
+            <Svg name="QuestionMark" />
+          </Tooltip>
+        )}
       </p>
       <Dropdown
         selectedValue={coinType}

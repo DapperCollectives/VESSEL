@@ -11,7 +11,9 @@ const Steps = () => {
   const [sendModalState] = useContext(TransferTokensContext);
   const { currentStep, transactionType } = sendModalState;
 
-  const renderTokenForm = () => {
+  const title = transactionType === TRANSACTION_TYPE.SEND ? 'Send' : 'Deposit';
+
+  const renderTransferTokenForm = () => {
     if (transactionType === TRANSACTION_TYPE.SEND) {
       return <SendTokenForm />;
     }
@@ -20,12 +22,12 @@ const Steps = () => {
 
   return (
     <div className="has-text-black">
-      <ModalHeader
-        title={`${
-          transactionType === TRANSACTION_TYPE.SEND ? 'Send' : 'Deposit'
-        }`}
-      />
-      {currentStep === 1 ? <TransferTokenConfirmation /> : renderTokenForm()}
+      <ModalHeader title={title} />
+      {currentStep === 1 ? (
+        <TransferTokenConfirmation />
+      ) : (
+        renderTransferTokenForm()
+      )}
       <ButtonGroup />
     </div>
   );

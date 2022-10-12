@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 import { Web3Context } from 'contexts/Web3';
-import { ASSET_TYPES } from 'constants/enums';
+import { ASSET_TYPES, TRANSACTION_TYPE } from 'constants/enums';
 import { ASSET_TYPE_TO_META } from 'constants/maps';
 import { flatten } from 'lodash';
 import { TransferTokensContext } from '../TransferTokensContext';
@@ -12,7 +12,8 @@ const AssetSelector = () => {
 
   const { balances } = web3;
   const [sendModalState, setSendModalState] = useContext(TransferTokensContext);
-  const { assetType, coinType, selectedNFT, address } = sendModalState;
+  const { assetType, coinType, selectedNFT, address, transactionType } =
+    sendModalState;
   const coinBalances = balances?.[address];
   const userAddr = web3?.user?.addr;
   const userNFTs = web3?.NFTs?.[userAddr] ?? [];
@@ -68,6 +69,11 @@ const AssetSelector = () => {
               coinType: itemValue,
             }));
           }}
+          tooltipText={
+            transactionType === TRANSACTION_TYPE.DEPOSIT
+              ? 'Only tokens supported by Vessel can be transferred to this treasury.'
+              : undefined
+          }
           balances={coinBalances}
         />
       )}
