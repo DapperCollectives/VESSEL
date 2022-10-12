@@ -55,7 +55,7 @@ const DepositTokenForm = () => {
 
   useEffect(() => {
     updateUserBalance();
-  }, []);
+  }, [vaults]);
 
   return (
     <>
