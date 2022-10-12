@@ -73,7 +73,7 @@ function SafeNFTs({ web3, address }) {
                   address={address}
                   initialState={{
                     assetType: ASSET_TYPES.NFT,
-                    selectedNFT: `${collection.key}-${token.tokenId}`,
+                    selectedNFT: token,
                     transactionType: TRANSACTION_TYPE.SEND,
                   }}
                 />

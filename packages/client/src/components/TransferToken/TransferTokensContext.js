@@ -12,7 +12,7 @@ export const TransferTokensContextProvider = (props) => {
     recipientValid: initialState.recipientValid ?? false,
     assetType: initialState?.assetType ?? ASSET_TYPES.TOKEN,
     coinType: initialState?.coinType,
-    selectedNFT: {},
+    selectedNFT: initialState?.selectedNFT ?? {},
     transactionType: initialState?.transactionType ?? TRANSACTION_TYPE.SEND,
   };
   const [sendModalState, setSendModalState] = useState(INIT_STATE);

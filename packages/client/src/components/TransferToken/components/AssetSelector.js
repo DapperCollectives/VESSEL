@@ -7,10 +7,13 @@ import { TransferTokensContext } from '../TransferTokensContext';
 import CoinTypeDropDown from './CoinTypeDropDown';
 import NFTSelector from './NFTSelector';
 
-const AssetSelector = ({ coinBalances }) => {
+const AssetSelector = () => {
   const web3 = useContext(Web3Context);
+
+  const { balances } = web3;
   const [sendModalState, setSendModalState] = useContext(TransferTokensContext);
   const { assetType, coinType, selectedNFT, address } = sendModalState;
+  const coinBalances = balances?.[address];
   const userAddr = web3?.user?.addr;
   const userNFTs = web3?.NFTs?.[userAddr] ?? [];
   const nftsToDisplay = flatten(

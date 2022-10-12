@@ -22,7 +22,7 @@ const BannerInfo = ({
   const { displayName, tokenType } = getTokenMeta(vaultId);
   const { contractName: NFTName, contractAddress: NFTAddress } =
     parseIdentifier(collectionId);
-  const { name: imageName, thumbnail: imageURI } = nftMeta || {};
+  const { name: imageName, imageURI } = nftMeta || {};
   const actionType = actionData.type;
 
   useEffect(() => {

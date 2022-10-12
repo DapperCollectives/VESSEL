@@ -17,7 +17,7 @@ const SendTokenForm = () => {
 
   return (
     <>
-      <AssetSelector coinBalances={coinBalances} />
+      <AssetSelector />
       {assetType === ASSET_TYPES.TOKEN && (
         <AmountInput coinBalances={coinBalances} />
       )}
