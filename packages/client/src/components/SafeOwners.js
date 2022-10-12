@@ -1,5 +1,5 @@
-import React from "react";
-import Svg from "library/Svg";
+import React from 'react';
+import Svg from 'library/Svg';
 
 function SafeOwners({
   address,
@@ -19,7 +19,7 @@ function SafeOwners({
     setSafeOwners([...newOwners]);
   };
 
-  let safeOwnerCpts = [
+  const safeOwnerCpts = [
     <div className="column is-flex is-full" key={address}>
       <div className="flex-1 is-flex is-flex-direction-column pr-5">
         <label className="has-text-grey mb-2">Owner Name</label>
@@ -33,7 +33,7 @@ function SafeOwners({
       </div>
       <div className="flex-1 is-flex is-flex-direction-column">
         <label className="has-text-grey mb-2">Owner Address</label>
-        <div style={{ position: "relative" }}>
+        <div style={{ position: 'relative' }}>
           <input
             className="p-4 rounded-sm column is-full"
             type="text"
@@ -41,7 +41,7 @@ function SafeOwners({
             value={address}
             disabled
           />
-          <div style={{ position: "absolute", right: 17, top: 14 }}>
+          <div style={{ position: 'absolute', right: 17, top: 14 }}>
             <Svg name="Check" />
           </div>
         </div>
@@ -66,10 +66,11 @@ function SafeOwners({
           </div>
           <div className="flex-1 is-flex is-flex-direction-column">
             <label className="has-text-grey mb-2">
-              Owner Address<span className="has-text-red">*</span>
+              Owner Address
+              <span className="has-text-red">*</span>
             </label>
             <div className="is-flex">
-              <div className="flex-1" style={{ position: "relative" }}>
+              <div className="flex-1" style={{ position: 'relative' }}>
                 <input
                   className="p-4 rounded-sm column is-full"
                   type="text"
@@ -80,7 +81,7 @@ function SafeOwners({
                   }
                 />
                 {safeOwnersValidByAddress[so.address] && (
-                  <div style={{ position: "absolute", right: 17, top: 14 }}>
+                  <div style={{ position: 'absolute', right: 17, top: 14 }}>
                     <Svg name="Check" />
                   </div>
                 )}
@@ -110,7 +111,7 @@ function SafeOwners({
         <button
           className="button is-secondary is-small"
           onClick={() => {
-            setSafeOwners(safeOwners.concat({ name: "", address: "" }));
+            setSafeOwners(safeOwners.concat({ name: '', address: '' }));
           }}
         >
           Add another owner

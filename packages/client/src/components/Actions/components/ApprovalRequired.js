@@ -1,9 +1,9 @@
-import { ACTION_TYPES } from "constants/enums";
-import NFTView from "./NFTView";
-import TokenView from "./TokenView";
-import SignerThresholdView from "./SignerThresholdView";
-import ThresholdView from "./ThresholdView";
-import Confirmations from "./Confirmations";
+import Signatures from 'components/Signatures';
+import { ACTION_TYPES } from 'constants/enums';
+import NFTView from './NFTView';
+import SignerThresholdView from './SignerThresholdView';
+import ThresholdView from './ThresholdView';
+import TokenView from './TokenView';
 
 const ApprovalRequired = ({
   safeData,
@@ -25,7 +25,7 @@ const ApprovalRequired = ({
           <SignerThresholdView
             actionView={actionView}
             safeData={safeData}
-            isAdd={true}
+            isAdd
           />
         );
       case ACTION_TYPES.REMOVE_SIGNER_UPDATE_THRESHOLD:
@@ -47,7 +47,10 @@ const ApprovalRequired = ({
     <div className="has-text-grey">
       <div className="p-5">
         {getActionView()}
-        <Confirmations confirmations={confirmations} safeData={safeData} />
+        <Signatures
+          confirmations={confirmations}
+          safeOwners={safeData.safeOwners}
+        />
       </div>
       <div className="border-light-bottom">
         <div className="px-5 pb-5">

@@ -1,10 +1,10 @@
-import { useContext, useState, useRef } from "react";
-import { useAddressValidation, useContacts } from "hooks";
-import { Web3Context } from "contexts/Web3";
-import { Dropdown, Tooltip } from "library/components";
-import { isAddr, formatAddress } from "utils";
-import Svg from "library/Svg";
-import { SendTokensContext } from "../sendTokensContext";
+import { useContext, useRef, useState } from 'react';
+import { Web3Context } from 'contexts/Web3';
+import { Dropdown, Tooltip } from 'library/components';
+import { useAddressValidation, useContacts } from 'hooks';
+import { formatAddress, isAddr } from 'utils';
+import Svg from 'library/Svg';
+import { SendTokensContext } from '../sendTokensContext';
 
 const AddressDropdown = () => {
   const [sendModalState, setSendModalState] = useContext(SendTokensContext);
@@ -38,7 +38,7 @@ const AddressDropdown = () => {
 
   const handleOptionSelect = (itemValue) => {
     onRecipientChange(itemValue);
-    searchInputRef.current.value = "";
+    searchInputRef.current.value = '';
     setFilteredOptions(dropdownOptions);
   };
 
@@ -67,14 +67,14 @@ const AddressDropdown = () => {
     <div className="is-flex is-justify-content-space-around">
       <input
         className="input mb-4 dropdown-input"
-        style={{ width: "80%", height: "58px" }}
+        style={{ width: '80%', height: '58px' }}
         type="text"
         placeholder="Search or enter address"
         onChange={handleAddressSearchEnter}
         ref={searchInputRef}
       />
       {searchInputRef?.current?.value && recipientValid && (
-        <div style={{ position: "absolute", right: 55, top: 20 }}>
+        <div style={{ position: 'absolute', right: 55, top: 20 }}>
           <Svg name="Check" />
         </div>
       )}

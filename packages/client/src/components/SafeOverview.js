@@ -1,7 +1,7 @@
-import { Link } from "react-router-dom";
-import React from "react";
-import Svg from "library/Svg";
-import { parseIdentifier } from "utils";
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { parseIdentifier } from 'utils';
+import Svg from 'library/Svg';
 
 function SafeOverview({ allBalance, allNFTs }) {
   const tokensWithPositiveBalance = allBalance
@@ -32,18 +32,18 @@ function SafeOverview({ allBalance, allNFTs }) {
         <div
           className="is-flex is-flex-direction-column flex-1 rounded-sm has-background-primary-purple has-shadow has-text-white p-5 mr-6"
           style={{
-            overflow: "hidden",
+            overflow: 'hidden',
             minHeight: 200,
             minWidth: 375,
-            position: "relative",
+            position: 'relative',
           }}
         >
           <Svg
             name="LogoV"
             style={{
-              position: "absolute",
-              top: "0px",
-              right: "-30px",
+              position: 'absolute',
+              top: '0px',
+              right: '-30px',
               zIndex: 0,
             }}
           />
@@ -73,7 +73,7 @@ function SafeOverview({ allBalance, allNFTs }) {
                   <div
                     key={type}
                     className="has-background-secondary-purple rounded-sm p-3 m-1"
-                    style={{ flex: "2 1 auto", maxWidth: "50%" }}
+                    style={{ flex: '2 1 auto', maxWidth: '50%' }}
                   >
                     <div className="is-flex is-flex-direction-row is-justify-content-flex-start mb-5">
                       <Svg name={type} />
@@ -133,8 +133,8 @@ function SafeOverview({ allBalance, allNFTs }) {
                 >
                   <p
                     className="has-background-tertiary-purple rounded-sm p-3"
-                    style={{ height: "45px" }}
-                  ></p>
+                    style={{ height: '45px' }}
+                  />
                 </div>
               ))}
             </div>

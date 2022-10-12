@@ -1,17 +1,17 @@
-import { useContext } from "react";
-import { useLocation, useHistory } from "react-router-dom";
-import { Web3Context } from "contexts/Web3";
-import { useModalContext } from "contexts";
-import { SendTokens } from "components";
-import { EmptyTableWithCTA } from "library/components";
-import { ASSET_TYPES } from "constants/enums";
-import VaultTable from "./VaultTable";
+import { useContext } from 'react';
+import { useHistory, useLocation } from 'react-router-dom';
+import { useModalContext } from 'contexts';
+import { Web3Context } from 'contexts/Web3';
+import { SendTokens } from 'components';
+import { EmptyTableWithCTA } from 'library/components';
+import { ASSET_TYPES } from 'constants/enums';
+import VaultTable from './VaultTable';
 
 const SafeTokens = () => {
   const location = useLocation();
   const history = useHistory();
   const { openModal } = useModalContext();
-  const treasuryAddress = location.pathname.split("/")[2];
+  const treasuryAddress = location.pathname.split('/')[2];
   const web3 = useContext(Web3Context);
   const balances = web3?.balances?.[treasuryAddress] ?? {};
   const vaults = Object.entries(balances).map(([coinType, balance]) => ({

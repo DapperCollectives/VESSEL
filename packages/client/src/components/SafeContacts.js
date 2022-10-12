@@ -37,7 +37,8 @@ function EditContactModal({
       <div className="column is-flex is-flex-direction-column is-full px-5 py-0">
         <div>
           <p className="has-text-grey">
-            Address<span className="has-text-red">*</span>
+            Address
+            <span className="has-text-red">*</span>
           </p>
           <InputAddress
             value={currentAddr}

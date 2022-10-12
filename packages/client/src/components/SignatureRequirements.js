@@ -1,7 +1,7 @@
-import React from "react";
-import { ProgressBar } from "library/components";
-import Svg from "library/Svg";
-import { getProgressPercentageForSignersAmount } from "../utils";
+import React from 'react';
+import { ProgressBar } from 'library/components';
+import { getProgressPercentageForSignersAmount } from '../utils';
+import Svg from 'library/Svg';
 
 function SignatureRequirements({
   safeOwners,
@@ -9,20 +9,20 @@ function SignatureRequirements({
   setSignersAmount,
 }) {
   const signerClasses = [
-    "is-flex",
-    "is-justify-content-center",
-    "is-align-items-center",
+    'is-flex',
+    'is-justify-content-center',
+    'is-align-items-center',
   ];
 
   const minusSignerClasses = [
     ...signerClasses,
-    "border-light-right",
-    signersAmount > 1 ? "pointer" : "is-disabled",
+    'border-light-right',
+    signersAmount > 1 ? 'pointer' : 'is-disabled',
   ];
 
   const plusSignerClasses = [
     ...signerClasses,
-    signersAmount < safeOwners.length ? "pointer" : "is-disabled",
+    signersAmount < safeOwners.length ? 'pointer' : 'is-disabled',
   ];
 
   const onMinusSigner = () => {
@@ -54,17 +54,17 @@ function SignatureRequirements({
               <Svg name="Person" />
             </div>
             <div className="flex-1 is-flex is-align-items-center px-5 border-light-right">
-              {signersAmount} of {Math.max(safeOwners.length, 1)} owner(s)
+              {signersAmount} of{Math.max(safeOwners.length, 1)} owner(s)
             </div>
             <div
-              className={minusSignerClasses.join(" ")}
+              className={minusSignerClasses.join(' ')}
               style={{ width: 48 }}
               onClick={onMinusSigner}
             >
               <Svg name="Minus" />
             </div>
             <div
-              className={plusSignerClasses.join(" ")}
+              className={plusSignerClasses.join(' ')}
               style={{ width: 48 }}
               onClick={onPlusSigner}
             >

@@ -1,32 +1,17 @@
-import { SIGNER_RESPONSES } from "constants/enums";
-import Svg from "library/Svg";
-import { getNameByAddress, shortenString } from "utils";
+import { getNameByAddress, getStatusColor, shortenString } from 'utils';
+import Svg from 'library/Svg';
 
-const Confirmations = ({ confirmations, safeData }) => {
-  const { safeOwners } = safeData;
-
+const Signatures = ({ confirmations, safeOwners }) => {
   const getNumberOfConfirmations = () => {
     const numberApproved = Object.keys(confirmations).filter(
-      (key) => confirmations[key] === "approved"
+      (key) => confirmations[key] === 'approved'
     ).length;
 
     return `${numberApproved} out of ${Object.keys(confirmations).length}`;
   };
 
-  const getTextColor = (confirmation) => {
-    switch (confirmation) {
-      case SIGNER_RESPONSES.APPROVED:
-        return "success";
-      case SIGNER_RESPONSES.REJECTED:
-        return "danger";
-      case SIGNER_RESPONSES.PENDING:
-      default:
-        return "warning";
-    }
-  };
-
-  const getConfirmationList = () => {
-    return Object.keys(confirmations).map((key) => {
+  const getConfirmationList = () =>
+    Object.keys(confirmations).map((key) => {
       const name = getNameByAddress(safeOwners, key);
       const displayName = name?.length > 20 ? shortenString(name) : name;
       const displayAddress = name ? shortenString(key) : key;
@@ -37,18 +22,17 @@ const Confirmations = ({ confirmations, safeData }) => {
         >
           <Svg
             name="Status"
-            className={`mt-1 has-text-${getTextColor(confirmations[key])}`}
+            className={`mt-1 has-text-${getStatusColor(confirmations[key])}`}
           />
           {name ? `${displayName}·${displayAddress}` : displayAddress}
         </div>
       );
     });
-  };
 
   return (
     <div className="p-4">
       <div className="columns">
-        <span className="column pl-0">Confirmations</span>
+        <span className="column pl-0">Signatures</span>
         <span className="column has-text-right">
           {getNumberOfConfirmations()}
         </span>
@@ -60,4 +44,4 @@ const Confirmations = ({ confirmations, safeData }) => {
   );
 };
 
-export default Confirmations;
+export default Signatures;

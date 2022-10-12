@@ -1,5 +1,5 @@
 export const TREASURY_INITIAL_STATE = {
-  loadingTreasuries: "Loading Treasuries",
+  loadingTreasuries: 'Loading Treasuries',
   error: null,
   submittedTransaction: false,
   treasuries: {},
@@ -9,13 +9,13 @@ export const TREASURY_INITIAL_STATE = {
 
 const treasuryReducer = (state, action) => {
   switch (action.type) {
-    case "CLEAR_TREASURIES": {
+    case 'CLEAR_TREASURIES': {
       return {
         ...state,
         treasuries: {},
       };
     }
-    case "SET_TREASURY": {
+    case 'SET_TREASURY': {
       const address = Object.keys(action.payload)[0];
       return {
         ...state,
@@ -30,7 +30,7 @@ const treasuryReducer = (state, action) => {
         error: null,
       };
     }
-    case "SET_ACTIONS": {
+    case 'SET_ACTIONS': {
       return {
         ...state,
         actions: {
@@ -39,7 +39,7 @@ const treasuryReducer = (state, action) => {
         },
       };
     }
-    case "SET_BALANCE": {
+    case 'SET_BALANCE': {
       return {
         ...state,
         balances: {
@@ -48,17 +48,17 @@ const treasuryReducer = (state, action) => {
         },
       };
     }
-    case "SUBMITTED_TREASURY_TRANSACTION":
+    case 'SUBMITTED_TREASURY_TRANSACTION':
       return {
         ...state,
         submittedTransaction: true,
       };
-    case "SET_LOADING":
+    case 'SET_LOADING':
       return {
         ...state,
         loadingTreasuries: action.payload,
       };
-    case "ERROR":
+    case 'ERROR':
       return {
         ...state,
         loadingTreasuries: false,

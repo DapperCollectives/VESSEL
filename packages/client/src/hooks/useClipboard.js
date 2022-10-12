@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState, useEffect } from "react";
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 function useTimedValue(initialValue) {
   const [value, setValue] = useState(initialValue);
@@ -44,7 +44,7 @@ export default function useClipboard({
           .catch(handleError);
       }
 
-      if (typeof text === "string") {
+      if (typeof text === 'string') {
         copy(text);
       }
     },

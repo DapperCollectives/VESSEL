@@ -1,7 +1,7 @@
-import { useContext } from "react";
-import { SendTokensContext } from "../sendTokensContext";
-import SendTokenForm from "./SendTokenForm";
-import SendTokenConfirmation from "./SendTokenConfirmation";
+import { useContext } from 'react';
+import { SendTokensContext } from '../sendTokensContext';
+import SendTokenConfirmation from './SendTokenConfirmation';
+import SendTokenForm from './SendTokenForm';
 
 const Steps = () => {
   const [sendModalState] = useContext(SendTokensContext);

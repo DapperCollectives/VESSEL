@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
-import { Web3Consumer } from "../contexts/Web3";
-import { getFlowscanUrlForTransaction } from "../utils";
+import React, { useEffect, useState } from 'react';
+import { Web3Consumer } from '../contexts/Web3';
+import { getFlowscanUrlForTransaction } from '../utils';
 
 function Transaction({ web3 }) {
   const { id, status, errorMessage } = web3.transaction;
@@ -14,140 +14,124 @@ function Transaction({ web3 }) {
     return null;
   }
 
-  const Approval = () => {
-    return (
-      <>
-        <div>
-          <div className="is-size-5 mb-2">
-            <code>Initializing</code>
-          </div>
-          <div className="is-size-6 mb-2">
-            Waiting for transaction approval.
-          </div>
-        </div>
-        <progress className="progress" indeterminate="true">
-          Initializing...
-        </progress>
-      </>
-    );
-  };
-
-  const Pending = () => {
-    return (
-      <>
+  const Approval = () => (
+    <>
+      <div>
         <div className="is-size-5 mb-2">
-          {id && (
-            <span className="mr-2">
-              <a href={getFlowscanUrlForTransaction(id)}>{id.slice(0, 8)}</a>
-            </span>
-          )}
-          <code>Pending</code>
+          <code>Initializing</code>
         </div>
-        <div className="is-size-6 mb-2">
-          The transaction has been received by a collector but not yet finalized
-          in a block.
-        </div>
-        <progress className="progress" indeterminate="true">
-          Executing
-        </progress>
-      </>
-    );
-  };
+        <div className="is-size-6 mb-2">Waiting for transaction approval.</div>
+      </div>
+      <progress className="progress" indeterminate="true">
+        Initializing...
+      </progress>
+    </>
+  );
 
-  const Finalized = () => {
-    return (
-      <>
-        <div className="is-size-5 mb-2">
-          {id && (
-            <span className="mr-2">
-              <a href={getFlowscanUrlForTransaction(id)}>{id.slice(0, 8)}</a>
-            </span>
-          )}
-          <code>Finalized</code>
-        </div>
-        <div className="is-size-6 mb-2">
-          The consensus nodes have finalized the block that the transaction is
-          included in.
-        </div>
-        <progress className="progress" min="0" max="100" value="80">
-          Executing...
-        </progress>
-      </>
-    );
-  };
+  const Pending = () => (
+    <>
+      <div className="is-size-5 mb-2">
+        {id && (
+          <span className="mr-2">
+            <a href={getFlowscanUrlForTransaction(id)}>{id.slice(0, 8)}</a>
+          </span>
+        )}
+        <code>Pending</code>
+      </div>
+      <div className="is-size-6 mb-2">
+        The transaction has been received by a collector but not yet finalized
+        in a block.
+      </div>
+      <progress className="progress" indeterminate="true">
+        Executing
+      </progress>
+    </>
+  );
 
-  const Executed = () => {
-    return (
-      <>
-        <div className="is-size-5 mb-2">
-          {id && (
-            <span className="mr-2">
-              <a href={getFlowscanUrlForTransaction(id)}>{id.slice(0, 8)}</a>
-            </span>
-          )}
-          <code>Executed</code>
-        </div>
-        <div className="is-size-6 mb-2">
-          The execution nodes have produced a result for the transaction.
-        </div>
-        <progress className="progress" min="0" max="100" value="80">
-          Sealing...
-        </progress>
-      </>
-    );
-  };
+  const Finalized = () => (
+    <>
+      <div className="is-size-5 mb-2">
+        {id && (
+          <span className="mr-2">
+            <a href={getFlowscanUrlForTransaction(id)}>{id.slice(0, 8)}</a>
+          </span>
+        )}
+        <code>Finalized</code>
+      </div>
+      <div className="is-size-6 mb-2">
+        The consensus nodes have finalized the block that the transaction is
+        included in.
+      </div>
+      <progress className="progress" min="0" max="100" value="80">
+        Executing...
+      </progress>
+    </>
+  );
 
-  const Sealed = () => {
-    return (
-      <>
-        <div className="is-size-5 mb-2">
-          {id && (
-            <span className="mr-2">
-              <a href={getFlowscanUrlForTransaction(id)}>{id.slice(0, 8)}</a>
-            </span>
-          )}
-          <code>✓ Sealed</code>
-        </div>
-        <div className="is-size-6 mb-2">
-          The verification nodes have verified the transaction, and the seal is
-          included in the latest block.
-        </div>
-      </>
-    );
-  };
+  const Executed = () => (
+    <>
+      <div className="is-size-5 mb-2">
+        {id && (
+          <span className="mr-2">
+            <a href={getFlowscanUrlForTransaction(id)}>{id.slice(0, 8)}</a>
+          </span>
+        )}
+        <code>Executed</code>
+      </div>
+      <div className="is-size-6 mb-2">
+        The execution nodes have produced a result for the transaction.
+      </div>
+      <progress className="progress" min="0" max="100" value="80">
+        Sealing...
+      </progress>
+    </>
+  );
 
-  const Expired = () => {
-    return (
-      <>
-        <div className="is-size-5 mb-2">
-          {id && (
-            <span className="mr-2">
-              <a href={getFlowscanUrlForTransaction(id)}>{id.slice(0, 8)}</a>
-            </span>
-          )}
-          <code>Expired</code>
-        </div>
-        <div className="is-size-6 mb-2">
-          The transaction was submitted past its expiration block height.
-        </div>
-      </>
-    );
-  };
+  const Sealed = () => (
+    <>
+      <div className="is-size-5 mb-2">
+        {id && (
+          <span className="mr-2">
+            <a href={getFlowscanUrlForTransaction(id)}>{id.slice(0, 8)}</a>
+          </span>
+        )}
+        <code>✓ Sealed</code>
+      </div>
+      <div className="is-size-6 mb-2">
+        The verification nodes have verified the transaction, and the seal is
+        included in the latest block.
+      </div>
+    </>
+  );
 
-  const Error = () => {
-    return (
-      <>
-        <div className="is-size-5 mb-2">
-          {id && (
-            <span className="mr-2">
-              <a href={getFlowscanUrlForTransaction(id)}>{id.slice(0, 8)}</a>
-            </span>
-          )}
-          <code>{errorMessage}</code>
-        </div>
-      </>
-    );
-  };
+  const Expired = () => (
+    <>
+      <div className="is-size-5 mb-2">
+        {id && (
+          <span className="mr-2">
+            <a href={getFlowscanUrlForTransaction(id)}>{id.slice(0, 8)}</a>
+          </span>
+        )}
+        <code>Expired</code>
+      </div>
+      <div className="is-size-6 mb-2">
+        The transaction was submitted past its expiration block height.
+      </div>
+    </>
+  );
+
+  const Error = () => (
+    <>
+      <div className="is-size-5 mb-2">
+        {id && (
+          <span className="mr-2">
+            <a href={getFlowscanUrlForTransaction(id)}>{id.slice(0, 8)}</a>
+          </span>
+        )}
+        <code>{errorMessage}</code>
+      </div>
+    </>
+  );
 
   let response;
 
@@ -177,11 +161,11 @@ function Transaction({ web3 }) {
         <div
           className="close py-2 px-4 is-"
           style={{
-            position: "absolute",
+            position: 'absolute',
             top: 0,
             right: 0,
-            color: "white",
-            cursor: "pointer",
+            color: 'white',
+            cursor: 'pointer',
           }}
           onClick={() => setMinimized(true)}
         >

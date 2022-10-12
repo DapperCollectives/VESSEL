@@ -1,6 +1,6 @@
-import React from "react";
-import { NavLink } from "react-router-dom";
-import Svg from "library/Svg";
+import React from 'react';
+import { NavLink } from 'react-router-dom';
+import Svg from 'library/Svg';
 
 function LogoCpt(props) {
   return (

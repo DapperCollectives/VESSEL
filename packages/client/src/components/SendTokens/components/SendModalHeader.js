@@ -1,13 +1,13 @@
-import { useContext } from "react";
-import Svg from "library/Svg";
-import { useModalContext } from "contexts";
-import { SendTokensContext } from "../sendTokensContext";
+import { useContext } from 'react';
+import { useModalContext } from 'contexts';
+import Svg from 'library/Svg';
+import { SendTokensContext } from '../sendTokensContext';
 
 const SendModalHeader = () => {
   const [sendModalState] = useContext(SendTokensContext);
   const { closeModal } = useModalContext();
   const { currentStep } = sendModalState;
-  const titleText = currentStep === 0 ? "Send" : "Review";
+  const titleText = currentStep === 0 ? 'Send' : 'Review';
   return (
     <>
       <div className="p-5 border-light-bottom">

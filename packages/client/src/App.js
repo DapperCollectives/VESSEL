@@ -1,9 +1,9 @@
-import "./App.sass";
-import React from "react";
-import { HashRouter as Router, Switch, Route } from "react-router-dom";
-import { Web3Provider, ModalProvider } from "./contexts";
-import { Home, Safe, LoadSafe, CreateSafe } from "./pages";
-import { Logo, Navigation, Transactions } from "./components";
+import React from 'react';
+import { Route, HashRouter as Router, Switch } from 'react-router-dom';
+import { ModalProvider, Web3Provider } from './contexts';
+import { Logo, Navigation, Transactions } from './components';
+import './App.sass';
+import { CreateSafe, Home, LoadSafe, Safe } from './pages';
 
 const Wrapper = ({ children }) => <div className="App">{children}</div>;
 
@@ -26,7 +26,7 @@ const Body = () => (
       <Route exact path="/create-safe">
         <CreateSafe />
       </Route>
-      <Route path={["/safe/:address/:tab", "/safe/:address"]}>
+      <Route path={['/safe/:address/:tab', '/safe/:address']}>
         <Safe />
       </Route>
     </Switch>

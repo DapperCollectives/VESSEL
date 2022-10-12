@@ -1,4 +1,4 @@
-const ArrowUp = ({ width = "12", height = "12", className = "" }) => (
+const ArrowUp = ({ width = '12', height = '12', className = '' }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width={width}
@@ -7,7 +7,7 @@ const ArrowUp = ({ width = "12", height = "12", className = "" }) => (
     fill="none"
     viewBox="0 0 12 12"
   >
-    <path stroke="currentColor" d="M11 11V1H1M11 1L1 11"></path>
+    <path stroke="currentColor" d="M11 11V1H1M11 1L1 11" />
   </svg>
 );
 export default ArrowUp;

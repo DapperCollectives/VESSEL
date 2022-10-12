@@ -1,12 +1,12 @@
-import { isEmpty } from "lodash";
-import React, { useState } from "react";
-import { NavLink, useHistory } from "react-router-dom";
-import { WalletPrompt } from "../components";
-import { isAddr, getProgressPercentageForSignersAmount } from "../utils";
-import { Web3Consumer } from "../contexts/Web3";
-import Svg from "library/Svg";
-import { ProgressBar } from "library/components";
-import { useAddressValidation } from "../hooks";
+import React, { useState } from 'react';
+import { NavLink, useHistory } from 'react-router-dom';
+import { Web3Consumer } from '../contexts/Web3';
+import { WalletPrompt } from '../components';
+import { ProgressBar } from 'library/components';
+import { useAddressValidation } from '../hooks';
+import { getProgressPercentageForSignersAmount, isAddr } from '../utils';
+import Svg from 'library/Svg';
+import { isEmpty } from 'lodash';
 
 const SafeHeader = ({
   safeName,
@@ -25,13 +25,13 @@ const SafeHeader = ({
     }
   }
 
-  const btnClasses = ["button is-primary", continueReady ? "" : "disabled"];
+  const btnClasses = ['button is-primary', continueReady ? '' : 'disabled'];
 
-  const stepMessage = "Load an existing safe";
+  const stepMessage = 'Load an existing safe';
   const stepSubtitle =
-    "P.S. Your connected wallet does not have to be the owner of this Safe";
+    'P.S. Your connected wallet does not have to be the owner of this Safe';
 
-  const stepBtnText = "Add Safe";
+  const stepBtnText = 'Add Safe';
 
   return (
     <>
@@ -44,7 +44,7 @@ const SafeHeader = ({
           <NavLink to="/">
             <button className="button is-border mr-2">Cancel</button>
           </NavLink>
-          <button className={btnClasses.join(" ")} onClick={onContinue}>
+          <button className={btnClasses.join(' ')} onClick={onContinue}>
             {stepBtnText}
           </button>
         </div>
@@ -55,8 +55,8 @@ const SafeHeader = ({
 
 function LoadSafe({ web3 }) {
   const history = useHistory();
-  const [safeAddress, setSafeAddress] = useState("");
-  const [safeName, setSafeName] = useState("");
+  const [safeAddress, setSafeAddress] = useState('');
+  const [safeName, setSafeName] = useState('');
   const [threshold, setThreshold] = useState(0);
   const [safeOwners, setSafeOwners] = useState([]);
   const [safeOwnersValidByAddress, setSafeOwnersValidByAddress] = useState({});
@@ -85,7 +85,7 @@ function LoadSafe({ web3 }) {
       const treasury = await getTreasury(e.target.value);
       const newSafeOwners = Object.keys(treasury?.signers ?? {}).map(
         (signerAddr) => ({
-          name: "",
+          name: '',
           address: signerAddr,
           verified: true,
         })
@@ -110,7 +110,7 @@ function LoadSafe({ web3 }) {
   const onSetTreasury = () => {
     setTreasury(safeAddress, {
       name: safeName,
-      type: "Social",
+      type: 'Social',
       safeOwners,
       threshold,
     });
@@ -121,8 +121,8 @@ function LoadSafe({ web3 }) {
   };
 
   const helperText = isEmpty(safeOwners)
-    ? "After we verify your safe address, we’ll pull in all safe owners below."
-    : "The name is only stored locally and will never be shared with Vessel or any third parties.";
+    ? 'After we verify your safe address, we’ll pull in all safe owners below.'
+    : 'The name is only stored locally and will never be shared with Vessel or any third parties.';
 
   const safeOwnerCpts = [];
 
@@ -142,7 +142,7 @@ function LoadSafe({ web3 }) {
           </div>
           <div className="flex-1 is-flex is-flex-direction-column">
             <label className="has-text-grey mb-2">Owner Address</label>
-            <div style={{ position: "relative" }}>
+            <div style={{ position: 'relative' }}>
               <input
                 className="p-4 rounded-sm column is-full"
                 type="text"
@@ -151,7 +151,7 @@ function LoadSafe({ web3 }) {
                 disabled
               />
               {safeOwnersValidByAddress[so.address] && (
-                <div style={{ position: "absolute", right: 17, top: 14 }}>
+                <div style={{ position: 'absolute', right: 17, top: 14 }}>
                   <Svg name="Check" />
                 </div>
               )}
@@ -178,7 +178,8 @@ function LoadSafe({ web3 }) {
       <div className="column is-flex is-full">
         <div className="flex-1 is-flex is-flex-direction-column pr-5">
           <label className="has-text-grey mb-2">
-            Safe Name<span className="has-text-red">*</span>
+            Safe Name
+            <span className="has-text-red">*</span>
           </label>
           <input
             className="p-4 rounded-sm border-light"
@@ -190,12 +191,13 @@ function LoadSafe({ web3 }) {
         </div>
         <div
           className="flex-1 is-flex is-flex-direction-column"
-          style={{ position: "relative" }}
+          style={{ position: 'relative' }}
         >
           <label className="has-text-grey mb-2">
-            Safe Address<span className="has-text-red">*</span>
+            Safe Address
+            <span className="has-text-red">*</span>
           </label>
-          <div style={{ position: "relative" }}>
+          <div style={{ position: 'relative' }}>
             <input
               className="p-4 rounded-sm column is-full"
               type="text"
@@ -204,7 +206,7 @@ function LoadSafe({ web3 }) {
               onChange={onAddressChange}
             />
             {!isEmpty(safeOwners) && (
-              <div style={{ position: "absolute", right: 17, top: 14 }}>
+              <div style={{ position: 'absolute', right: 17, top: 14 }}>
                 <Svg name="Check" />
               </div>
             )}
@@ -239,7 +241,7 @@ function LoadSafe({ web3 }) {
                   <Svg name="Person" />
                 </div>
                 <div className="flex-1 is-flex is-align-items-center px-5">
-                  {threshold} of {safeOwners.length} owner(s)
+                  {threshold} of{safeOwners.length} owner(s)
                 </div>
               </div>
             </div>

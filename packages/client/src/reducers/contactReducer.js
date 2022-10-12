@@ -12,7 +12,7 @@ const contactReducer = (state, action) => {
   const treasuryContacts = (state.contacts?.[address] ?? []).slice(0);
 
   switch (action.type) {
-    case "SET_CONTACT": {
+    case 'SET_CONTACT': {
       const { index, newContact } = body;
       treasuryContacts[index] = newContact;
 
@@ -24,7 +24,7 @@ const contactReducer = (state, action) => {
         },
       };
     }
-    case "REMOVE_CONTACT": {
+    case 'REMOVE_CONTACT': {
       const { index } = body;
       treasuryContacts.splice(index, 1);
 

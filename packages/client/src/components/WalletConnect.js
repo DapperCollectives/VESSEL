@@ -1,7 +1,7 @@
-import React from "react";
-import { Web3Consumer } from "../contexts/Web3";
-import { useHistory } from "react-router-dom";
-import { shortenString } from "utils";
+import React from 'react';
+import { useHistory } from 'react-router-dom';
+import { Web3Consumer } from '../contexts/Web3';
+import { shortenString } from 'utils';
 
 const SignInOutButton = ({ user, injectedProvider }) => {
   const history = useHistory();
@@ -9,7 +9,7 @@ const SignInOutButton = ({ user, injectedProvider }) => {
     event.preventDefault();
     if (user?.loggedIn) {
       injectedProvider.unauthenticate();
-      history.push("/");
+      history.push('/');
     } else {
       injectedProvider.authenticate();
     }
@@ -17,11 +17,14 @@ const SignInOutButton = ({ user, injectedProvider }) => {
   return (
     <>
       {user?.loggedIn && (
-        <div className="p-4">Wallet: {shortenString(user?.addr)}</div>
+        <div className="p-4">
+          Wallet:
+          {shortenString(user?.addr)}
+        </div>
       )}
       {user?.loggedIn && <hr />}
       <div onClick={signInOrOut} className="is-underlined p-4 pointer">
-        {user?.loggedIn ? "Disconnect" : "Connect"}
+        {user?.loggedIn ? 'Disconnect' : 'Connect'}
       </div>
     </>
   );

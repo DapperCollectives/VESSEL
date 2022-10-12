@@ -1,4 +1,4 @@
-export const BITCOIN = ({ width = "24", height = "24" }) => (
+export const BITCOIN = ({ width = '24', height = '24' }) => (
   <svg
     width={width}
     height={height}

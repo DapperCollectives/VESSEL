@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { InputAddress } from 'library/components';
-import Svg from 'library/Svg';
 
 const AddCollection = ({ onCancel, onNext }) => {
   const [contractName, setContractName] = useState('');

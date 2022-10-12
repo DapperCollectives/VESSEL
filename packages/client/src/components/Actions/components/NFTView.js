@@ -1,8 +1,8 @@
-import { useContext, useState, useEffect } from "react";
-import { formatAddress, parseIdentifier } from "utils";
-import { Web3Context } from "contexts/Web3";
-import ProposedDateView from "./ProposedDateView";
-import SentFromToView from "./SentFromToView";
+import { useContext, useEffect, useState } from 'react';
+import { Web3Context } from 'contexts/Web3';
+import { formatAddress, parseIdentifier } from 'utils';
+import ProposedDateView from './ProposedDateView';
+import SentFromToView from './SentFromToView';
 
 const NFTView = ({ actionView, safeData }) => {
   const { recipient, nftId, collectionId, timestamp } = actionView;
