@@ -43,7 +43,7 @@ function Safe({ web3 }) {
     );
   }
 
-  const { address: safeAddress, name: safeName } = safeData;
+  const { name: safeName } = safeData;
 
   const showTransactionSuccessModal = (action) => {
     const actionData = action.data.actionView;
@@ -54,7 +54,7 @@ function Safe({ web3 }) {
       openModal(
         <TransactionSuccessModal
           safeName={safeName}
-          safeAddress={safeAddress}
+          safeAddress={address}
           actionData={actionData}
           txID={action.transactionId}
           onClose={closeModal}
@@ -130,12 +130,10 @@ function Safe({ web3 }) {
     home: (
       <SafeHome
         key="safe-home"
-        safeData={safeData}
         allBalance={allBalance}
         allNFTs={allNFTs}
         actions={actions}
         address={address}
-        userAddress={userAddress}
         onApprove={onApproveAction}
         onReject={onRejectAction}
         onExecute={onExecuteAction}
@@ -144,7 +142,7 @@ function Safe({ web3 }) {
     transactions: (
       <SafeTransactions
         key="safe-transactions"
-        safeData={safeData}
+        address={address}
         emptyComponent={
           <EmptyTableWithCTA
             header="You don't have any transactions history."
@@ -158,7 +156,7 @@ function Safe({ web3 }) {
     NFTs: (
       <SafeNFTs
         web3={web3}
-        name={safeData.name}
+        name={safeName}
         address={address}
         key="safe-assets"
       />
@@ -186,7 +184,7 @@ function Safe({ web3 }) {
         address={userAddress}
         initialState={{
           transactionType: TRANSACTION_TYPE.DEPOSIT,
-          recipient: safeData.address,
+          recipient: address,
           recipientValid: true,
         }}
       />
@@ -203,7 +201,7 @@ function Safe({ web3 }) {
         {process.env.REACT_APP_FLOW_ENV !== 'mainnet' && (
           <TestToolBox address={address} />
         )}
-        <h1 className=" mb-2">{safeData.name}</h1>
+        <h1 className=" mb-2">{safeName}</h1>
         <p>
           <span className="has-text-grey">
             Safe address

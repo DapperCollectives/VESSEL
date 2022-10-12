@@ -4,31 +4,24 @@ import ThingsToDo from './ThingsToDo';
 import TransactionHistory from './TransactionHistory';
 
 const SafeHome = ({
-  safeData,
   allBalance,
   allNFTs,
   actions,
   address,
-  userAddress,
   onApprove,
   onReject,
   onExecute,
 }) => (
   <>
-    <SafeOverview
-      allBalance={allBalance}
-      allNFTs={allNFTs}
-      safeData={safeData}
-      userAddress={userAddress}
-    />
+    <SafeOverview allBalance={allBalance} allNFTs={allNFTs} address={address} />
     <ThingsToDo
       actions={actions}
       onApprove={onApprove}
       onReject={onReject}
       onExecute={onExecute}
-      safeData={safeData}
+      address={address}
     />
-    <TransactionHistory safeData={safeData} address={address} />
+    <TransactionHistory address={address} />
   </>
 );
 

@@ -1,13 +1,17 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { useModalContext } from 'contexts';
+import { Web3Context } from 'contexts/Web3';
 import { TRANSACTION_TYPE } from 'constants/enums';
 import { parseIdentifier } from 'utils';
 import Svg from 'library/Svg';
 import TransferTokens from './TransferToken';
 
-function SafeOverview({ allBalance, allNFTs, safeData, userAddress }) {
+function SafeOverview({ allBalance, allNFTs, address }) {
   const { openModal } = useModalContext();
+
+  const web3 = useContext(Web3Context);
+  const userAddress = web3?.user?.addr;
 
   const tokensWithPositiveBalance = allBalance
     ? Object.entries(allBalance)
@@ -34,7 +38,7 @@ function SafeOverview({ allBalance, allNFTs, safeData, userAddress }) {
         address={userAddress}
         initialState={{
           transactionType: TRANSACTION_TYPE.DEPOSIT,
-          recipient: safeData.address,
+          recipient: address,
           recipientValid: true,
         }}
       />

@@ -61,14 +61,17 @@ const Row = ({ threshold, action, displayIndex, onApprove, onSign }) => {
 };
 
 const ActionsListTable = ({
-  safeData,
+  address,
   actions,
   onApprove,
   onReject,
   onExecute,
 }) => {
-  const { address, threshold } = safeData;
-  const { getActionView } = useContext(Web3Context);
+  const web3 = useContext(Web3Context);
+  const safeData = web3?.treasuries?.[address];
+  const { getActionView } = web3;
+
+  const { threshold } = safeData;
   const { showErrorModal } = useErrorMessage();
   const { openModal, closeModal } = useModalContext();
 
