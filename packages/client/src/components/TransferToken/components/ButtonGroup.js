@@ -16,7 +16,7 @@ const ButtonGroup = ({ proposeTransfer }) => {
   const { showErrorModal } = useErrorMessage();
 
   const {
-    address,
+    sender,
     currentStep,
     assetType,
     tokenAmount,
@@ -28,7 +28,7 @@ const ButtonGroup = ({ proposeTransfer }) => {
   } = sendModalState;
 
   const safeAddress =
-    transactionType === TRANSACTION_TYPE.SEND ? address : recipient;
+    transactionType === TRANSACTION_TYPE.SEND ? sender : recipient;
 
   const continueReady =
     recipientValid &&
@@ -57,7 +57,7 @@ const ButtonGroup = ({ proposeTransfer }) => {
           );
         } else {
           await proposeNFTTransfer(
-            formatAddress(address),
+            formatAddress(sender),
             formatAddress(recipient),
             `${collectionName}-${tokenId}`
           );

@@ -8,12 +8,12 @@ import { TransferTokensContext } from '../TransferTokensContext';
 
 const SendTokenForm = () => {
   const [sendModalState] = useContext(TransferTokensContext);
-  const { assetType, address } = sendModalState;
+  const { assetType, sender } = sendModalState;
 
   const web3 = useContext(Web3Context);
 
   const { balances } = web3;
-  const coinBalances = balances?.[address];
+  const coinBalances = balances?.[sender];
 
   return (
     <>

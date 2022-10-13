@@ -11,7 +11,7 @@ const AssetSelector = ({ coinBalances }) => {
   const web3 = useContext(Web3Context);
 
   const [sendModalState, setSendModalState] = useContext(TransferTokensContext);
-  const { assetType, coinType, selectedNFT, address, transactionType } =
+  const { assetType, coinType, selectedNFT, sender, transactionType } =
     sendModalState;
   const userAddr = web3?.user?.addr;
   const userNFTs = web3?.NFTs?.[userAddr] ?? [];
@@ -59,7 +59,7 @@ const AssetSelector = ({ coinBalances }) => {
       </div>
       {assetType === ASSET_TYPES.TOKEN && coinBalances && (
         <CoinTypeDropDown
-          address={address}
+          address={sender}
           coinType={coinType}
           setCoinType={(itemValue) => {
             setSendModalState((prevState) => ({

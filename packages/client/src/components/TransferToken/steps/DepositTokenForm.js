@@ -15,7 +15,7 @@ const DepositTokenForm = () => {
   const [sendModalState] = useContext(TransferTokensContext);
   const {
     assetType,
-    address: userAddress,
+    sender: userAddress,
     recipient: safeAddress,
   } = sendModalState;
 

@@ -30,11 +30,7 @@ export default function useAccount() {
   const initDepositTokensToTreasury = async (treasuryAddr) => {
     for await (const coinType of COIN_TYPE_LIST) {
       try {
-        const res = await doSendTokensToTreasury(
-          treasuryAddr,
-          10,
-          coinType
-        );
+        const res = await doSendTokensToTreasury(treasuryAddr, 10, coinType);
         await tx(res).onceSealed();
       } catch (err) {
         console.log(`Failed to deposit ${coinType}, error: ${err}`);
@@ -80,7 +76,7 @@ export default function useAccount() {
         console.log(`error getting balance for ${coin.coinType}`, error);
       }
     }
-    return result.filter((balance) => balance.balance);
+    return result.filter(({ balance }) => balance);
   };
 
   const getUserVaults = async (address) => {
@@ -98,8 +94,8 @@ export default function useAccount() {
       }
     }
     return result
-      .filter((vault) => vault.exists)
-      .map((vault) => vault.coinType);
+      .filter(({ exists }) => exists)
+      .map(({ coinType }) => coinType);
   };
 
   return {

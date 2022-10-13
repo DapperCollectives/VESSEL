@@ -35,7 +35,7 @@ function SafeOverview({ allBalance, allNFTs, address }) {
   const onDeposit = () =>
     openModal(
       <TransferTokens
-        address={userAddress}
+        sender={userAddress}
         initialState={{
           transactionType: TRANSACTION_TYPE.DEPOSIT,
           recipient: address,

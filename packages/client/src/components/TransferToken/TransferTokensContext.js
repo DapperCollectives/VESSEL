@@ -3,9 +3,9 @@ import { ASSET_TYPES, TRANSACTION_TYPE } from 'constants/enums';
 
 export const TransferTokensContext = createContext();
 export const TransferTokensContextProvider = (props) => {
-  const { children, address, initialState } = props;
+  const { children, sender, initialState } = props;
   const INIT_STATE = {
-    address,
+    sender,
     currentStep: 0,
     tokenAmount: 0,
     recipient: initialState?.recipient ?? '',

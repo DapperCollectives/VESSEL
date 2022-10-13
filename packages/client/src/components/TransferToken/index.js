@@ -1,8 +1,8 @@
 import { TransferTokensContextProvider } from './TransferTokensContext';
 import Steps from './steps';
 
-const TransferTokens = ({ address, initialState }) => (
-  <TransferTokensContextProvider address={address} initialState={initialState}>
+const TransferTokens = ({ sender, initialState }) => (
+  <TransferTokensContextProvider sender={sender} initialState={initialState}>
     <Steps />
   </TransferTokensContextProvider>
 );

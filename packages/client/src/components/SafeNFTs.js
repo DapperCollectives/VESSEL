@@ -70,7 +70,7 @@ function SafeNFTs({ web3, address }) {
             onClick={() =>
               modalContext.openModal(
                 <TransferTokens
-                  address={address}
+                  sender={address}
                   initialState={{
                     assetType: ASSET_TYPES.NFT,
                     selectedNFT: token,

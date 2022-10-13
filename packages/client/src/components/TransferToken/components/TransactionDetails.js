@@ -17,26 +17,35 @@ const TransactionDetails = () => {
     tokenAmount,
     selectedNFT,
     recipient,
-    address,
+    sender,
     transactionType,
   } = sendModalState;
 
   const clipboard = useClipboard();
   const web3 = useContext(Web3Context);
   const safeAddress =
-    transactionType === TRANSACTION_TYPE.SEND ? address : recipient;
-  const safeName = web3?.treasuries?.[safeAddress].name;
+    transactionType === TRANSACTION_TYPE.SEND ? sender : recipient;
+
   const { contacts } = useContacts(safeAddress);
+  const safeName = web3?.treasuries?.[safeAddress].name;
 
-  const senderName =
-    transactionType === TRANSACTION_TYPE.SEND
-      ? safeName
-      : getNameByAddress(contacts, address);
-
-  const recipientName =
-    transactionType === TRANSACTION_TYPE.SEND
-      ? getNameByAddress(contacts, recipient)
-      : safeName;
+  let senderName;
+  let recipientName;
+  let label;
+  switch (transactionType) {
+    case TRANSACTION_TYPE.SEND:
+      senderName = safeName;
+      recipientName = getNameByAddress(contacts, recipient);
+      label = 'Sent';
+      break;
+    case TRANSACTION_TYPE.DEPOSIT:
+      senderName = getNameByAddress(contacts, sender);
+      recipientName = safeName;
+      label = 'Deposit';
+      break;
+    default:
+      break;
+  }
 
   const { getProposeSendTokenEstimation } = useFlowFees();
 
@@ -84,19 +93,15 @@ const TransactionDetails = () => {
       )}
       <div className="mt-5">
         <div className="border-light-top is-flex py-5">
-          <span className="has-text-grey flex-1">
-            {transactionType === TRANSACTION_TYPE.SEND
-              ? 'Sent From'
-              : 'Deposit From'}
-          </span>
+          <span className="has-text-grey flex-1">{`${label} From`}</span>
           <div className="is-flex is-flex-direction-column flex-1">
             <strong>{senderName}</strong>
             <span>
-              {address}
+              {sender}
               <button
                 type="button"
                 className="pointer border-none has-background-white"
-                onClick={() => clipboard.copy(address)}
+                onClick={() => clipboard.copy(sender)}
               >
                 <Svg name="Copy" />
               </button>
@@ -104,11 +109,7 @@ const TransactionDetails = () => {
           </div>
         </div>
         <div className="border-light-top is-flex py-5">
-          <span className="has-text-grey flex-1">
-            {transactionType === TRANSACTION_TYPE.SEND
-              ? 'Sent To'
-              : 'Deposit To'}
-          </span>
+          <span className="has-text-grey flex-1">{`${label} To`}</span>
           <div className="is-flex is-flex-direction-column flex-1">
             <strong>{recipientName}</strong>
             <span>
@@ -126,10 +127,7 @@ const TransactionDetails = () => {
         <div className="border-light-top border-light-bottom is-flex is-justify-content-space-between py-5">
           <span className="has-text-grey flex-1">Estimated Network Fee</span>
           <span className="flex-1">
-            <strong>
-              {`~${transactionFee} `}
-              FLOW
-            </strong>
+            <strong>{`~${transactionFee} FLOW`}</strong>
           </span>
         </div>
       </div>

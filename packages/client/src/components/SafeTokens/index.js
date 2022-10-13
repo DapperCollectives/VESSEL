@@ -42,7 +42,7 @@ const SafeTokens = () => {
   const handleSendToken = (coinType) => {
     openModal(
       <TransferTokens
-        address={treasuryAddress}
+        sender={treasuryAddress}
         initialState={{
           assetType: ASSET_TYPES.TOKEN,
           coinType,
@@ -55,7 +55,7 @@ const SafeTokens = () => {
   const handleDepositToken = (coinType) =>
     openModal(
       <TransferTokens
-        address={userAddress}
+        sender={userAddress}
         initialState={{
           assetType: ASSET_TYPES.TOKEN,
           coinType,

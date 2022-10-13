@@ -170,7 +170,7 @@ function Safe({ web3 }) {
   const onSend = () => {
     openModal(
       <TransferTokens
-        address={address}
+        sender={address}
         initialState={{
           transactionType: TRANSACTION_TYPE.SEND,
         }}
@@ -181,7 +181,7 @@ function Safe({ web3 }) {
   const onDeposit = () =>
     openModal(
       <TransferTokens
-        address={userAddress}
+        sender={userAddress}
         initialState={{
           transactionType: TRANSACTION_TYPE.DEPOSIT,
           recipient: address,
