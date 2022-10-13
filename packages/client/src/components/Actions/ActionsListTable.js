@@ -1,11 +1,11 @@
 import { useContext } from 'react';
 import { useModalContext } from 'contexts';
 import { Web3Context } from 'contexts/Web3';
-import ApprovalRequired from './components/ApprovalRequired';
 import { useErrorMessage } from 'hooks';
 import { SIGNER_RESPONSES } from 'constants/enums';
 import { formatActionString } from 'utils';
 import Svg from 'library/Svg';
+import ApprovalRequired from '../../modals/ApprovalRequired';
 
 const Row = ({ threshold, action, displayIndex, onApprove, onSign }) => {
   const { intent } = action;

@@ -1,9 +1,9 @@
+import NFTView from '../components/Actions/components/NFTView';
+import SignerThresholdView from '../components/Actions/components/SignerThresholdView';
+import ThresholdView from '../components/Actions/components/ThresholdView';
+import TokenView from '../components/Actions/components/TokenView';
 import Signatures from 'components/Signatures';
 import { ACTION_TYPES } from 'constants/enums';
-import NFTView from './NFTView';
-import SignerThresholdView from './SignerThresholdView';
-import ThresholdView from './ThresholdView';
-import TokenView from './TokenView';
 
 const ApprovalRequired = ({
   safeData,
@@ -59,10 +59,18 @@ const ApprovalRequired = ({
         </div>
       </div>
       <div className="p-5 is-flex">
-        <button className="button flex-1 is-border mr-2" onClick={onReject}>
+        <button
+          type="button"
+          className="button flex-1 is-border mr-2"
+          onClick={onReject}
+        >
           Reject
         </button>
-        <button className="button flex-1 is-primary" onClick={onApprove}>
+        <button
+          type="button"
+          className="button flex-1 is-primary"
+          onClick={onApprove}
+        >
           Approve
         </button>
       </div>
