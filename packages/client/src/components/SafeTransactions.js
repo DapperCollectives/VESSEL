@@ -1,18 +1,11 @@
 import React from 'react';
-import { useTreasuryTransactions } from 'hooks';
-import { isEmpty } from 'lodash';
 import TransactionTable from './TransactionTable';
 
-function SafeTransactions({ safeData, emptyComponent, className }) {
-  const { data: transactions } = useTreasuryTransactions(safeData.uuid);
-  if (isEmpty(transactions)) {
-    return emptyComponent;
-  }
-
+function SafeTransactions({ address, emptyComponent, className }) {
   return (
     <TransactionTable
-      safeData={safeData}
-      transactions={transactions}
+      address={address}
+      emptyComponent={emptyComponent}
       className={className}
     />
   );

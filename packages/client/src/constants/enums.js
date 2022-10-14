@@ -34,3 +34,8 @@ export const ACTION_TYPES = {
   REMOVE_SIGNER_UPDATE_THRESHOLD: 'RemoveSignerUpdateThreshold',
   UPDATE_THRESHOLD: 'UpdateThreshold',
 };
+
+export const TRANSACTION_TYPE = {
+  SEND: 'Send',
+  DEPOSIT: 'Deposit',
+};

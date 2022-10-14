@@ -29,7 +29,7 @@ const ErrorModal = ({ error, onClose }) => {
                 p-4 mt-3 has-background-tertiary-yellow border-alert rounded-sm 
                 `}
             >
-              <span>{error}</span>
+              <span style={{ wordWrap: 'break-word' }}>{error}</span>
             </div>
           </div>
         )}

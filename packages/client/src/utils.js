@@ -146,6 +146,14 @@ export const parseTimestamp = (timestamp) => {
   return `${date} at ${time}`;
 };
 
+export const isVaultInTreasury = (treasuryVaults, coinType) => {
+  const vault = treasuryVaults.find((treasuryVault) => {
+    const { vaultName } = COIN_TYPE_TO_META[coinType];
+    return treasuryVault.includes(vaultName);
+  });
+  return !!vault;
+};
+
 export const getStatusColor = (confirmation) => {
   switch (confirmation) {
     case SIGNER_RESPONSES.APPROVED:
