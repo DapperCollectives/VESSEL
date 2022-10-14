@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect } from 'react';
 import { TransferTokensContext } from 'contexts/TransferTokens';
 import { Web3Context } from 'contexts/Web3';
 import AmountInput from 'components/TransferToken/components/AmountInput';
@@ -7,9 +7,9 @@ import { useAccount, useContacts } from 'hooks';
 import { ASSET_TYPES } from 'constants/enums';
 import { formatAddress, getNameByAddress, isVaultInTreasury } from 'utils';
 import Svg from 'library/Svg';
+import { isEmpty } from 'lodash';
 
 const DepositTokenForm = () => {
-  const [coinBalances, setCoinBalances] = useState();
   const { getUserBalances } = useAccount();
 
   const [sendModalState, setSendModalState] = useContext(TransferTokensContext);
@@ -52,13 +52,12 @@ const DepositTokenForm = () => {
     if (!userAddress) {
       return;
     }
-    getVaults();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userAddress]);
-
-  useEffect(() => {
-    updateUserBalance();
-  }, [vaults]);
+    if (isEmpty(vaults)) {
+      getVaults();
+    } else {
+      updateUserBalance();
+    }
+  }, [userAddress, vaults]);
 
   return (
     <>
