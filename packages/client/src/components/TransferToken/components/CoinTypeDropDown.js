@@ -6,7 +6,7 @@ const CoinTypeDropDown = ({ coinType, setCoinType, balances, tooltipText }) => {
     itemValue: key,
     displayText: key,
     attr: {
-      balance: balances[key] && Number(balances[key]).toFixed(2),
+      balance: balances[key] ? Number(balances[key]).toFixed(2) : 0,
     },
   }));
   const renderOption = (itemValue, displayText, attr) => (
