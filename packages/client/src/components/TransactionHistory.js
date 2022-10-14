@@ -12,13 +12,13 @@ const EmptyTransactions = () => (
   </div>
 );
 
-const TransactionHistory = ({ safeData }) => (
+const TransactionHistory = ({ address }) => (
   <>
     <div className="column p-0 mt-5 is-flex is-full">
       <h2 className="mb-4">Transaction history</h2>
     </div>
     <SafeTransactions
-      safeData={safeData}
+      address={address}
       emptyComponent={<EmptyTransactions />}
     />
   </>

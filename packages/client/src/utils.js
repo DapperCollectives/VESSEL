@@ -133,10 +133,10 @@ export const parseIdentifier = (identifier) => {
 };
 
 export const getNameByAddress = (nameAddressArray, address) => {
-  const nameAddress = nameAddressArray.find(
-    (nameAddress) => nameAddress.address === address
-  );
-  return nameAddress?.name ?? address;
+  const { name } =
+    nameAddressArray.find((nameAddress) => nameAddress.address === address) ??
+    {};
+  return name;
 };
 
 export const parseTimestamp = (timestamp) => {
@@ -146,6 +146,14 @@ export const parseTimestamp = (timestamp) => {
   const date = parsedDate.format('M/DD/YYYY');
   const time = parsedDate.format('HH:MM A');
   return `${date} at ${time}`;
+};
+
+export const isVaultInTreasury = (treasuryVaults, coinType) => {
+  const vault = treasuryVaults.find((treasuryVault) => {
+    const { vaultName } = COIN_TYPE_TO_META[coinType];
+    return treasuryVault.includes(vaultName);
+  });
+  return !!vault;
 };
 
 export const getStatusColor = (confirmation) => {

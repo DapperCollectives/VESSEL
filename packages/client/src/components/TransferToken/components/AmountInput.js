@@ -1,14 +1,11 @@
 import { useContext } from 'react';
-import { Web3Context } from 'contexts/Web3';
-import { SendTokensContext } from '../sendTokensContext';
+import { TransferTokensContext } from '../../../contexts/TransferTokens';
 
 const AmountInput = () => {
-  const [sendModalState, setSendModalState] = useContext(SendTokensContext);
-  const web3 = useContext(Web3Context);
-  const { balances } = web3;
-  const { tokenAmount, coinType, address } = sendModalState;
+  const [sendModalState, setSendModalState] = useContext(TransferTokensContext);
+  const { tokenAmount, coinType, coinBalances } = sendModalState;
   const handleMaxButtonClick = async () => {
-    const balance = balances?.[address]?.[coinType] ?? 0;
+    const balance = coinBalances?.[coinType] ?? 0;
     setSendModalState((prevState) => ({
       ...prevState,
       tokenAmount: balance,

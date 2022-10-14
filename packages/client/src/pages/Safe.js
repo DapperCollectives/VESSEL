@@ -1,5 +1,4 @@
 import React from 'react';
-import QRCode from 'react-qr-code';
 import { NavLink, useParams } from 'react-router-dom';
 import { Web3Consumer, useModalContext } from 'contexts';
 import { createSignature } from 'contexts/Web3';
@@ -10,61 +9,15 @@ import {
   SafeSettings,
   SafeTokens,
   SafeTransactions,
-  SendTokens,
   TestToolBox,
 } from 'components';
+import TransferTokens from 'components/TransferToken';
 import { EmptyTableWithCTA } from 'library/components';
 import { useClipboard, useErrorMessage } from 'hooks';
-import { ACTION_TYPES } from 'constants/enums';
+import { ACTION_TYPES, TRANSACTION_TYPE } from 'constants/enums';
 import { shortenString } from 'utils';
 import Svg from 'library/Svg';
 import { TransactionSuccessModal } from 'modals';
-
-const ReceiveTokens = ({ name, address }) => {
-  const modalContext = useModalContext();
-  const clipboard = useClipboard();
-
-  return (
-    <div className="p-5 has-text-black has-text-centered">
-      <div>
-        <h2 className="is-size-4">Receive</h2>
-        <div>
-          <span className="border-light-right mr-2 pr-2 has-text-grey">
-            To:
-            {name}
-          </span>
-          <span className="is-underlined">{shortenString(address)}</span>
-        </div>
-      </div>
-      <div className="border-light-top mt-5 pt-6 is-flex is-flex-direction-column">
-        <div>
-          <QRCode
-            className="ml-5"
-            value={`https://flowscan.org/account/${address}`}
-          />
-        </div>
-        <button
-          type="button"
-          className="button is-transparent mt-5"
-          onClick={() => clipboard.copy(address)}
-        >
-          {clipboard.textJustCopied === address
-            ? 'Copied'
-            : 'Copy Safe Address'}
-        </button>
-      </div>
-      <div className="is-flex is-align-items-center mt-6">
-        <button
-          type="button"
-          className="button flex-1 is-border mr-2"
-          onClick={() => modalContext.closeModal()}
-        >
-          Cancel
-        </button>
-      </div>
-    </div>
-  );
-};
 
 function Safe({ web3 }) {
   const params = useParams();
@@ -78,6 +31,8 @@ function Safe({ web3 }) {
   const actions = web3?.actions?.[address];
   const allBalance = web3?.balances?.[address];
   const allNFTs = web3?.NFTs?.[address];
+  const userAddress = web3?.user?.addr;
+
   if (!safeData) {
     return (
       <section className="section screen-height is-flex is-align-items-center">
@@ -88,7 +43,9 @@ function Safe({ web3 }) {
     );
   }
 
-  const showTransactionSuccessModal = (action, safeName, safeAddress) => {
+  const { name: safeName } = safeData;
+
+  const showTransactionSuccessModal = (action) => {
     const actionData = action.data.actionView;
     if (
       actionData.type === ACTION_TYPES.TRANSFER_NFT ||
@@ -97,7 +54,7 @@ function Safe({ web3 }) {
       openModal(
         <TransactionSuccessModal
           safeName={safeName}
-          safeAddress={safeAddress}
+          safeAddress={address}
           actionData={actionData}
           txID={action.transactionId}
           onClose={closeModal}
@@ -165,7 +122,7 @@ function Safe({ web3 }) {
     );
     if (events) {
       const action = events.find((e) => e.type.endsWith('ActionExecuted'));
-      showTransactionSuccessModal(action, safeData.name, safeData.address);
+      showTransactionSuccessModal(action);
     }
   };
 
@@ -173,7 +130,6 @@ function Safe({ web3 }) {
     home: (
       <SafeHome
         key="safe-home"
-        safeData={safeData}
         allBalance={allBalance}
         allNFTs={allNFTs}
         actions={actions}
@@ -186,7 +142,7 @@ function Safe({ web3 }) {
     transactions: (
       <SafeTransactions
         key="safe-transactions"
-        safeData={safeData}
+        address={address}
         emptyComponent={
           <EmptyTableWithCTA
             header="You don't have any transactions history."
@@ -200,7 +156,7 @@ function Safe({ web3 }) {
     NFTs: (
       <SafeNFTs
         web3={web3}
-        name={safeData.name}
+        name={safeName}
         address={address}
         key="safe-assets"
       />
@@ -212,12 +168,27 @@ function Safe({ web3 }) {
   const BodyComponent = tabMap[currentTab];
 
   const onSend = () => {
-    openModal(<SendTokens address={address} />);
+    openModal(
+      <TransferTokens
+        sender={address}
+        initialState={{
+          transactionType: TRANSACTION_TYPE.SEND,
+        }}
+      />
+    );
   };
 
-  const onReceive = () => {
-    openModal(<ReceiveTokens name={safeData.name} address={address} />);
-  };
+  const onDeposit = () =>
+    openModal(
+      <TransferTokens
+        sender={userAddress}
+        initialState={{
+          transactionType: TRANSACTION_TYPE.DEPOSIT,
+          recipient: address,
+          recipientValid: true,
+        }}
+      />
+    );
 
   return (
     <section
@@ -230,7 +201,7 @@ function Safe({ web3 }) {
         {process.env.REACT_APP_FLOW_ENV !== 'mainnet' && (
           <TestToolBox address={address} />
         )}
-        <h1 className=" mb-2">{safeData.name}</h1>
+        <h1 className=" mb-2">{safeName}</h1>
         <p>
           <span className="has-text-grey">
             Safe address
@@ -254,9 +225,9 @@ function Safe({ web3 }) {
             <button
               type="button"
               className="button is-border mr-2 with-icon"
-              onClick={onReceive}
+              onClick={onDeposit}
             >
-              Receive
+              Deposit
               <Svg name="ArrowDown" />
             </button>
             <button

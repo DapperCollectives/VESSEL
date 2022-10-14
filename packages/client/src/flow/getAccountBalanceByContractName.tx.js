@@ -1,16 +1,21 @@
-export const GetAccountBalanceByContractName = (contractName) => `
+export const VAULT_EXIST_CHECK = (contractName) => `
+    import ${contractName} from 0x${contractName}
+    import FungibleToken from 0xFungibleToken
+
+    pub fun main(address: Address, vaultPath: PublicPath): Bool {
+        let vaultCap = getAccount(address).getCapability<&${contractName}.Vault{FungibleToken.Balance}>(vaultPath)
+        return vaultCap.check() 
+    }
+`;
+
+export const GET_ACCOUNT_BALANCE = (contractName) => `
     import ${contractName} from 0x${contractName}
     import FungibleToken from 0xFungibleToken
 
     pub fun main(address: Address, vaultPath: PublicPath): UFix64 {
-        let account = getAccount(address)
-
-        //this might break for contracts with configurable vault path
-        let vaultCap = getAccount(address).getCapability<&${contractName}.Vault{FungibleToken.Balance}>(vaultPath)
-        if vaultCap.check() {
-            let vaultRef: &${contractName}.Vault{FungibleToken.Balance} = vaultCap.borrow()??panic("Could not borrow Balance reference to the Vault")
-            return vaultRef.balance
-        } else{
-            return 0.00
-        }
-    }`;
+        let vaultRef: &${contractName}.Vault{FungibleToken.Balance} = getAccount(address)
+            .getCapability<&${contractName}.Vault{FungibleToken.Balance}>(vaultPath)
+            .borrow() ?? panic("Could not borrow Balance reference to the Vault")
+        return vaultRef.balance
+    }
+`;
