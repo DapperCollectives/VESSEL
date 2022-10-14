@@ -20,9 +20,7 @@ const ApprovalRequired = ({
     case ACTION_TYPES.TRANSFER_TOKEN:
       title = 'Amount';
       break;
-    case ACTION_TYPES.TRANSFER_NFT:
-      title = '';
-      break;
+
     case ACTION_TYPES.ADD_SIGNER_UPDATE_THRESHOLD:
       title = 'New Owner';
       break;
@@ -32,6 +30,7 @@ const ApprovalRequired = ({
     case ACTION_TYPES.UPDATE_THRESHOLD:
       title = 'Signature Threshold';
       break;
+    case ACTION_TYPES.TRANSFER_NFT:
     default:
       break;
   }
@@ -39,7 +38,7 @@ const ApprovalRequired = ({
   return (
     <div className="has-text-grey">
       <div className="p-5">
-        <p className="is-size-6">{title}</p>
+        <p className="pl-1 is-size-6">{title}</p>
         <BannerInfo
           actionData={actionView}
           contacts={contacts}
