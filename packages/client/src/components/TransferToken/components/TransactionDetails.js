@@ -1,4 +1,5 @@
 import { useContext, useEffect, useState } from 'react';
+import { TransferTokensContext } from '../../../contexts/TransferTokens';
 import { Web3Context } from 'contexts/Web3';
 import { useClipboard, useContacts, useFlowFees } from 'hooks';
 import { ASSET_TYPES, TRANSACTION_TYPE } from 'constants/enums';
@@ -6,7 +7,6 @@ import { COIN_TYPE_TO_META } from 'constants/maps';
 import { getNameByAddress } from 'utils';
 import Svg from 'library/Svg';
 import { isEmpty } from 'lodash';
-import { TransferTokensContext } from '../TransferTokensContext';
 
 const TransactionDetails = () => {
   const [transactionFee, setTransactionFee] = useState(0);
@@ -27,24 +27,20 @@ const TransactionDetails = () => {
     transactionType === TRANSACTION_TYPE.SEND ? sender : recipient;
 
   const { contacts } = useContacts(safeAddress);
-  const safeName = web3?.treasuries?.[safeAddress].name;
+  const safeName = web3?.treasuries?.[safeAddress]?.name;
 
   let senderName;
   let recipientName;
   let label;
-  switch (transactionType) {
-    case TRANSACTION_TYPE.SEND:
-      senderName = safeName;
-      recipientName = getNameByAddress(contacts, recipient);
-      label = 'Sent';
-      break;
-    case TRANSACTION_TYPE.DEPOSIT:
-      senderName = getNameByAddress(contacts, sender);
-      recipientName = safeName;
-      label = 'Deposit';
-      break;
-    default:
-      break;
+
+  if (transactionType === TRANSACTION_TYPE.SEND) {
+    senderName = safeName;
+    recipientName = getNameByAddress(contacts, recipient);
+    label = 'Sent';
+  } else {
+    senderName = getNameByAddress(contacts, sender);
+    recipientName = safeName;
+    label = 'Deposit';
   }
 
   const { getProposeSendTokenEstimation } = useFlowFees();

@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 import { useModalContext } from 'contexts';
 import Svg from 'library/Svg';
-import { TransferTokensContext } from '../TransferTokensContext';
+import { TransferTokensContext } from '../../../contexts/TransferTokens';
 
 const ModalHeader = ({ title }) => {
   const [sendModalState] = useContext(TransferTokensContext);

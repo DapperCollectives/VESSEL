@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from 'react';
+import { TransferTokensContext } from 'contexts/TransferTokens';
 import { Web3Context } from 'contexts/Web3';
-import { TransferTokensContext } from 'components/TransferToken/TransferTokensContext';
 import AmountInput from 'components/TransferToken/components/AmountInput';
 import AssetSelector from 'components/TransferToken/components/AssetSelector';
 import { useAccount, useContacts } from 'hooks';
@@ -12,7 +12,7 @@ const DepositTokenForm = () => {
   const [coinBalances, setCoinBalances] = useState();
   const { getUserBalances } = useAccount();
 
-  const [sendModalState] = useContext(TransferTokensContext);
+  const [sendModalState, setSendModalState] = useContext(TransferTokensContext);
   const {
     assetType,
     sender: userAddress,
@@ -39,7 +39,10 @@ const DepositTokenForm = () => {
         }
       });
 
-      setCoinBalances(balances);
+      setSendModalState((prevState) => ({
+        ...prevState,
+        coinBalances: balances,
+      }));
     } catch (err) {
       console.log(`Failed to get coin balances, error: ${err}`);
     }
@@ -50,7 +53,7 @@ const DepositTokenForm = () => {
       return;
     }
     getVaults();
-    // eslint-disable-next-line
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userAddress]);
 
   useEffect(() => {
@@ -59,10 +62,8 @@ const DepositTokenForm = () => {
 
   return (
     <>
-      <AssetSelector coinBalances={coinBalances} />
-      {assetType === ASSET_TYPES.TOKEN && (
-        <AmountInput coinBalances={coinBalances} />
-      )}
+      <AssetSelector />
+      {assetType === ASSET_TYPES.TOKEN && <AmountInput />}
       <div className="px-5 is-size-6 has-text-grey">
         <div className="m-1 columns border-light-bottom border-light-top">
           <span className="column pl-0">Deposit From</span>

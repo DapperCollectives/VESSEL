@@ -1,9 +1,9 @@
 import { useContext } from 'react';
-import { TransferTokensContext } from '../TransferTokensContext';
+import { TransferTokensContext } from '../../../contexts/TransferTokens';
 
-const AmountInput = ({ coinBalances }) => {
+const AmountInput = () => {
   const [sendModalState, setSendModalState] = useContext(TransferTokensContext);
-  const { tokenAmount, coinType } = sendModalState;
+  const { tokenAmount, coinType, coinBalances } = sendModalState;
   const handleMaxButtonClick = async () => {
     const balance = coinBalances?.[coinType] ?? 0;
     setSendModalState((prevState) => ({

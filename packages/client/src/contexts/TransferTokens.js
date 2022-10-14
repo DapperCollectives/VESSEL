@@ -2,7 +2,7 @@ import { createContext, useState } from 'react';
 import { ASSET_TYPES, TRANSACTION_TYPE } from 'constants/enums';
 
 export const TransferTokensContext = createContext();
-export const TransferTokensContextProvider = (props) => {
+const TransferTokensProvider = (props) => {
   const { children, sender, initialState } = props;
   const INIT_STATE = {
     sender,
@@ -12,6 +12,7 @@ export const TransferTokensContextProvider = (props) => {
     recipientValid: initialState.recipientValid ?? false,
     assetType: initialState?.assetType ?? ASSET_TYPES.TOKEN,
     coinType: initialState?.coinType,
+    coinBalances: initialState?.coinBalances,
     selectedNFT: initialState?.selectedNFT ?? {},
     transactionType: initialState?.transactionType ?? TRANSACTION_TYPE.SEND,
   };
@@ -22,3 +23,5 @@ export const TransferTokensContextProvider = (props) => {
     </TransferTokensContext.Provider>
   );
 };
+
+export default TransferTokensProvider;

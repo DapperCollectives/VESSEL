@@ -1,26 +1,31 @@
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
+import { TransferTokensContext } from '../../../contexts/TransferTokens';
 import { Web3Context } from 'contexts/Web3';
 import AddressDropdown from '../components/AddressDropdown';
 import AmountInput from '../components/AmountInput';
 import AssetSelector from '../components/AssetSelector';
 import { ASSET_TYPES } from 'constants/enums';
-import { TransferTokensContext } from '../TransferTokensContext';
 
 const SendTokenForm = () => {
-  const [sendModalState] = useContext(TransferTokensContext);
+  const [sendModalState, setSendModalState] = useContext(TransferTokensContext);
   const { assetType, sender } = sendModalState;
 
   const web3 = useContext(Web3Context);
 
   const { balances } = web3;
-  const coinBalances = balances?.[sender];
+
+  useEffect(() => {
+    const coinBalances = balances?.[sender];
+    setSendModalState((prevState) => ({
+      ...prevState,
+      coinBalances,
+    }));
+  }, []);
 
   return (
     <>
-      <AssetSelector coinBalances={coinBalances} />
-      {assetType === ASSET_TYPES.TOKEN && (
-        <AmountInput coinBalances={coinBalances} />
-      )}
+      <AssetSelector />
+      {assetType === ASSET_TYPES.TOKEN && <AmountInput />}
       <AddressDropdown />
     </>
   );

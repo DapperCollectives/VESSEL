@@ -88,7 +88,7 @@ export default function useAccount() {
       try {
         const { contractName } = COIN_TYPE_TO_META[coinType];
         const vaultPath = COIN_TYPE_TO_META[coinType].publicBalancePath;
-        coin['exists'] = await getVaultExists(contractName, vaultPath, address);
+        coin.exists = await getVaultExists(contractName, vaultPath, address);
       } catch (error) {
         console.log(`error getting vault for ${address}`, error);
       }

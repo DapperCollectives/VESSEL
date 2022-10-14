@@ -6,7 +6,7 @@ import { useErrorMessage } from 'hooks';
 import { ASSET_TYPES, TRANSACTION_TYPE } from 'constants/enums';
 import { formatAddress } from 'utils';
 import { isEmpty } from 'lodash';
-import { TransferTokensContext } from '../TransferTokensContext';
+import { TransferTokensContext } from '../../../contexts/TransferTokens';
 
 const ButtonGroup = ({ proposeTransfer }) => {
   const modalContext = useModalContext();

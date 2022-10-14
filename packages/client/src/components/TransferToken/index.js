@@ -1,9 +1,9 @@
-import { TransferTokensContextProvider } from './TransferTokensContext';
+import { TransferTokensProvider } from 'contexts';
 import Steps from './steps';
 
 const TransferTokens = ({ sender, initialState }) => (
-  <TransferTokensContextProvider sender={sender} initialState={initialState}>
+  <TransferTokensProvider sender={sender} initialState={initialState}>
     <Steps />
-  </TransferTokensContextProvider>
+  </TransferTokensProvider>
 );
 export default TransferTokens;

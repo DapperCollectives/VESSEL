@@ -1,18 +1,24 @@
 import { useContext } from 'react';
+import { TransferTokensContext } from '../../../contexts/TransferTokens';
 import { Web3Context } from 'contexts/Web3';
 import { ASSET_TYPES, TRANSACTION_TYPE } from 'constants/enums';
 import { ASSET_TYPE_TO_META } from 'constants/maps';
 import { flatten } from 'lodash';
-import { TransferTokensContext } from '../TransferTokensContext';
 import CoinTypeDropDown from './CoinTypeDropDown';
 import NFTSelector from './NFTSelector';
 
-const AssetSelector = ({ coinBalances }) => {
+const AssetSelector = () => {
   const web3 = useContext(Web3Context);
 
   const [sendModalState, setSendModalState] = useContext(TransferTokensContext);
-  const { assetType, coinType, selectedNFT, sender, transactionType } =
-    sendModalState;
+  const {
+    assetType,
+    coinType,
+    coinBalances,
+    selectedNFT,
+    sender,
+    transactionType,
+  } = sendModalState;
   const userAddr = web3?.user?.addr;
   const userNFTs = web3?.NFTs?.[userAddr] ?? [];
   const nftsToDisplay = flatten(

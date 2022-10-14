@@ -4,7 +4,7 @@ import ButtonGroup from '../components/ButtonGroup';
 import ModalHeader from '../components/ModalHeader';
 import { useAccount } from 'hooks';
 import { TRANSACTION_TYPE } from 'constants/enums';
-import { TransferTokensContext } from '../TransferTokensContext';
+import { TransferTokensContext } from '../../../contexts/TransferTokens';
 import DepositTokenForm from './DepositTokenForm';
 import SendTokenForm from './SendTokenForm';
 import TransferTokenConfirmation from './TransferTokenConfirmation';
@@ -22,21 +22,12 @@ const Steps = () => {
     ? proposeTransfer
     : doSendTokensToTreasury;
 
-  const renderTransferTokenForm = () => {
-    if (isSendTransaction) {
-      return <SendTokenForm />;
-    }
-    return <DepositTokenForm />;
-  };
-
   return (
     <div className="has-text-black">
       <ModalHeader title={title} />
-      {currentStep === 1 ? (
-        <TransferTokenConfirmation />
-      ) : (
-        renderTransferTokenForm()
-      )}
+      {currentStep === 1 && <TransferTokenConfirmation />}
+      {currentStep === 0 && isSendTransaction && <SendTokenForm />}
+      {currentStep === 0 && !isSendTransaction && <DepositTokenForm />}
       <ButtonGroup proposeTransfer={sendOrDepositFn} />
     </div>
   );
