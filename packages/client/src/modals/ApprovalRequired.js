@@ -13,7 +13,7 @@ const ApprovalRequired = ({
   onApprove,
 }) => {
   const { type: actionType, newThreshold } = actionView;
-  const { contacts } = useContacts();
+  const { contacts } = useContacts(safeData.address);
 
   let title;
   switch (actionType) {

@@ -66,7 +66,7 @@ const BannerInfo = ({
             <img
               className="columns is-vcentered is-multiline is-mobile mr-2 mt-2 success-modal-image"
               src={image}
-              alt={image}
+              alt={imageName}
             />
           )}
           <span className="columns is-vcentered is-multiline is-mobile mr-2 is-size-4 is-family-monospace">
@@ -79,7 +79,7 @@ const BannerInfo = ({
       )}
       {actionType === ACTION_TYPES.TRANSFER_TOKEN && (
         <>
-          <span className="columns is-vcentered is-multiline is-mobile mr-2 mt-1 is-size-2 is-family-monospace">
+          <span className="columns is-vcentered is-multiline is-mobile mr-2 mt-1 is-size-4 is-family-monospace">
             {Number(tokenAmount).toLocaleString()}
           </span>
           <span className="columns is-vcentered is-multiline is-mobile is-size-6 has-text-weight-bold">
