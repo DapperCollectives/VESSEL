@@ -37,6 +37,9 @@ function SafeNFTs({ web3, address }) {
     .filter((x) => x);
 
   const showNFTModal = (collection, token) => {
+    const { collectionName, key: collectionId } = collection;
+    const { tokenId } = token;
+
     modalContext.openModal(
       <div className="p-5 has-text-black">
         <div>
@@ -49,11 +52,11 @@ function SafeNFTs({ web3, address }) {
         <div className="column is-flex is-full p-0 mt-4">
           <div className="flex-1">
             <p className="has-text-grey">Collection</p>
-            <p className="mt-2">{collection.collectionName}</p>
+            <p className="mt-2">{collectionName}</p>
           </div>
           <div className="flex-1">
             <p className="has-text-grey">Number</p>
-            <p className="mt-2">{token.tokenId}</p>
+            <p className="mt-2">{tokenId}</p>
           </div>
         </div>
         <div className="is-flex is-align-items-center mt-6">
@@ -73,7 +76,7 @@ function SafeNFTs({ web3, address }) {
                   sender={address}
                   initialState={{
                     assetType: ASSET_TYPES.NFT,
-                    selectedNFT: token,
+                    selectedNFT: { ...token, collectionName: collectionId },
                     transactionType: TRANSACTION_TYPE.SEND,
                   }}
                 />
@@ -105,14 +108,15 @@ function SafeNFTs({ web3, address }) {
     );
   } else {
     nftsToDisplay.forEach((collection) => {
+      const { collectionName, tokens } = collection;
       assetComponents.push(
         <div
           className="is-flex is-justify-content-center is-flex-direction-column"
-          key={collection.collectionName}
+          key={collectionName}
         >
-          <h2 className="is-size-4">{collection.collectionName}</h2>
+          <h2 className="is-size-4">{collectionName}</h2>
           <div className="is-flex mt-4">
-            {collection.tokens.map((token) => (
+            {tokens.map((token) => (
               <div
                 className="p-4 border-light rounded-sm pointer"
                 key={token.tokenId}

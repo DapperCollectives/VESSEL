@@ -15,7 +15,8 @@ const BannerInfo = ({
   contacts = {},
   signers = [],
 }) => {
-  const { getTreasuryNFTReference } = useContext(Web3Context);
+  const { getAccountNFTReference, getTreasuryNFTReference } =
+    useContext(Web3Context);
   const [nftMeta, setNFTMeta] = useState();
   const {
     recipient,
@@ -25,6 +26,7 @@ const BannerInfo = ({
     tokenAmount,
     signerAddr,
     newThreshold,
+    txID,
   } = actionData;
   const { displayName, tokenType } = getTokenMeta(vaultId);
   const { contractName: NFTName, contractAddress: NFTAddress } =
@@ -36,13 +38,27 @@ const BannerInfo = ({
   useEffect(() => {
     if (actionType === ACTION_TYPES.TRANSFER_NFT) {
       const getNFTMeta = async () => {
-        const result = await getTreasuryNFTReference(
-          NFTName,
-          formatAddress(NFTAddress),
-          collectionId,
-          recipient,
-          nftId
-        );
+        let result;
+
+        // When the action needs to be approved or rejected, the NFT is in the treasury
+        // When transaction is done (txID is defined), the NFT will be located on the account
+        if (txID) {
+          result = await getAccountNFTReference(
+            NFTName,
+            formatAddress(NFTAddress),
+            recipient,
+            nftId
+          );
+        } else {
+          result = await getTreasuryNFTReference(
+            NFTName,
+            formatAddress(NFTAddress),
+            collectionId,
+            recipient,
+            nftId
+          );
+        }
+
         setNFTMeta(result ?? {});
       };
       getNFTMeta().catch(console.error);
