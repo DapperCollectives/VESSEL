@@ -1,9 +1,9 @@
-import NFTView from '../components/Actions/components/NFTView';
-import SignerThresholdView from '../components/Actions/components/SignerThresholdView';
-import ThresholdView from '../components/Actions/components/ThresholdView';
-import TokenView from '../components/Actions/components/TokenView';
+import ProposedDateView from 'components/Actions/components/ProposedDateView';
+import SentFromToView from 'components/Actions/components/SentFromToView';
 import Signatures from 'components/Signatures';
+import { useContacts } from 'hooks';
 import { ACTION_TYPES } from 'constants/enums';
+import BannerInfo from './Transaction/BannerInfo';
 
 const ApprovalRequired = ({
   safeData,
@@ -12,41 +12,61 @@ const ApprovalRequired = ({
   onReject,
   onApprove,
 }) => {
-  const { type: actionType } = actionView;
+  const { type: actionType, newThreshold } = actionView;
+  const { contacts } = useContacts();
 
-  const getActionView = () => {
-    switch (actionType) {
-      case ACTION_TYPES.TRANSFER_TOKEN:
-        return <TokenView actionView={actionView} safeData={safeData} />;
-      case ACTION_TYPES.TRANSFER_NFT:
-        return <NFTView actionView={actionView} safeData={safeData} />;
-      case ACTION_TYPES.ADD_SIGNER_UPDATE_THRESHOLD:
-        return (
-          <SignerThresholdView
-            actionView={actionView}
-            safeData={safeData}
-            isAdd
-          />
-        );
-      case ACTION_TYPES.REMOVE_SIGNER_UPDATE_THRESHOLD:
-        return (
-          <SignerThresholdView
-            actionView={actionView}
-            safeData={safeData}
-            isAdd={false}
-          />
-        );
-      case ACTION_TYPES.UPDATE_THRESHOLD:
-        return <ThresholdView actionView={actionView} safeData={safeData} />;
-      default:
-        return null;
-    }
-  };
+  let title;
+  switch (actionType) {
+    case ACTION_TYPES.TRANSFER_TOKEN:
+      title = 'Amount';
+      break;
+    case ACTION_TYPES.TRANSFER_NFT:
+      title = '';
+      break;
+    case ACTION_TYPES.ADD_SIGNER_UPDATE_THRESHOLD:
+      title = 'New Owner';
+      break;
+    case ACTION_TYPES.REMOVE_SIGNER_UPDATE_THRESHOLD:
+      title = 'Remove Owner';
+      break;
+    case ACTION_TYPES.UPDATE_THRESHOLD:
+      title = 'Signature Threshold';
+      break;
+    default:
+      break;
+  }
 
   return (
     <div className="has-text-grey">
       <div className="p-5">
-        {getActionView()}
+        <p className="is-size-6">{title}</p>
+        <BannerInfo
+          actionData={actionView}
+          contacts={contacts}
+          signers={safeData.safeOwners}
+          className="pl-4 pb-5 has-text-black"
+        />
+        <ProposedDateView timestamp={actionView.timestamp} />
+        {actionType === ACTION_TYPES.TRANSFER_NFT ||
+          (actionType === ACTION_TYPES.TRANSFER_TOKEN && (
+            <SentFromToView
+              safeData={safeData}
+              recipient={actionView.recipient}
+            />
+          ))}
+        {actionType === ACTION_TYPES.ADD_SIGNER_UPDATE_THRESHOLD ||
+          (actionType === ACTION_TYPES.REMOVE_SIGNER_UPDATE_THRESHOLD && (
+            <div className="m-1 columns is-size-6 border-light-bottom">
+              <span className="column pl-0 has-text-grey">
+                Signature Threshold
+              </span>
+              <div className="column pl-0">
+                <span className="has-text-weight-bold has-text-black">
+                  {newThreshold} of {safeData.safeOwners.length} owner(s)
+                </span>
+              </div>
+            </div>
+          ))}
         <Signatures
           confirmations={confirmations}
           safeOwners={safeData.safeOwners}

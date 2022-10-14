@@ -23,7 +23,7 @@ const SignatureThreshold = ({ treasury }) => {
           <SignatureBar threshold={threshold} safeOwners={verifiedSafeOwners} />
         </div>
         <div className="flex-1">
-          {threshold} out of{verifiedSafeOwners?.length} signatures are required
+          {threshold} out of {verifiedSafeOwners?.length} signatures are required
           to confirm a new transaction
         </div>
         <div>

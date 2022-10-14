@@ -54,7 +54,7 @@ function SignatureRequirements({
               <Svg name="Person" />
             </div>
             <div className="flex-1 is-flex is-align-items-center px-5 border-light-right">
-              {signersAmount} of{Math.max(safeOwners.length, 1)} owner(s)
+              {signersAmount} of {Math.max(safeOwners.length, 1)} owner(s)
             </div>
             <div
               className={minusSignerClasses.join(' ')}

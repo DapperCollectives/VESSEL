@@ -15,22 +15,30 @@ const BannerInfo = ({
   contacts = {},
   signers = [],
 }) => {
-  const { getAccountNFTReference } = useContext(Web3Context);
+  const { getTreasuryNFTReference } = useContext(Web3Context);
   const [nftMeta, setNFTMeta] = useState();
-  const { recipient, nftId, collectionId, vaultId, tokenAmount, signerAddr } =
-    actionData;
+  const {
+    recipient,
+    nftId,
+    collectionId,
+    vaultId,
+    tokenAmount,
+    signerAddr,
+    newThreshold,
+  } = actionData;
   const { displayName, tokenType } = getTokenMeta(vaultId);
   const { contractName: NFTName, contractAddress: NFTAddress } =
     parseIdentifier(collectionId);
-  const { name: imageName, thumbnail: imageURI } = nftMeta || {};
+  const { name: imageName, imageURI } = nftMeta || {};
   const actionType = actionData.type;
 
   useEffect(() => {
     if (actionType === ACTION_TYPES.TRANSFER_NFT) {
       const getNFTMeta = async () => {
-        const result = await getAccountNFTReference(
+        const result = await getTreasuryNFTReference(
           NFTName,
           formatAddress(NFTAddress),
+          collectionId,
           recipient,
           nftId
         );
@@ -44,7 +52,7 @@ const BannerInfo = ({
     NFTAddress,
     nftId,
     recipient,
-    getAccountNFTReference,
+    getTreasuryNFTReference,
   ]);
 
   const contactName = getNameByAddress(contacts, signerAddr);
@@ -70,7 +78,7 @@ const BannerInfo = ({
       )}
       {actionType === ACTION_TYPES.TRANSFER_TOKEN && (
         <>
-          <span className="columns is-vcentered is-multiline is-mobile mr-2 mt-2 is-size-4 is-family-monospace">
+          <span className="columns is-vcentered is-multiline is-mobile mr-2 mt-1 is-size-2 is-family-monospace">
             {Number(tokenAmount).toLocaleString()}
           </span>
           <span className="columns is-vcentered is-multiline is-mobile is-size-6 has-text-weight-bold">
@@ -95,7 +103,7 @@ const BannerInfo = ({
       {actionType === ACTION_TYPES.UPDATE_THRESHOLD && (
         <span className="columns is-vcentered is-multiline is-mobile mr-2 mt-2 is-size-4 is-family-monospace">
           <b>
-            {signers.length} of{newThreshold} owners
+            {signers.length} of {newThreshold} owners
           </b>
         </span>
       )}
