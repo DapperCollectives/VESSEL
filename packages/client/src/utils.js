@@ -132,11 +132,9 @@ export const parseIdentifier = (identifier) => {
   };
 };
 
-export const getNameByAddress = (nameAddressArray, address) => {
-  const { name } =
-    nameAddressArray.find((nameAddress) => nameAddress.address === address) ??
-    {};
-  return name;
+export const getNameByAddress = (nameAddressArray, addr) => {
+  const nameAddress = nameAddressArray.find(({ address }) => address === addr);
+  return nameAddress?.name ?? addr;
 };
 
 export const parseTimestamp = (timestamp) => {

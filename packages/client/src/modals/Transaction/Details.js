@@ -96,7 +96,7 @@ const TransactionDetails = ({ onClose, safeData = {}, transaction = {} }) => {
           <div className="border-light-top is-flex py-4">
             <div className="flex-1 has-text-grey">Signature Threshold</div>
             <div className="flex-1 has-text-weight-bold">
-              {Object.keys(signers).length} of{threshold} owners
+              {threshold} of {Object.keys(signers).length} owners
             </div>
           </div>
         )}

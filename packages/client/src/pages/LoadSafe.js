@@ -241,7 +241,7 @@ function LoadSafe({ web3 }) {
                   <Svg name="Person" />
                 </div>
                 <div className="flex-1 is-flex is-align-items-center px-5">
-                  {threshold} of{safeOwners.length} owner(s)
+                  {threshold} of {safeOwners.length} owner(s)
                 </div>
               </div>
             </div>

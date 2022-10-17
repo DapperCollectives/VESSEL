@@ -15,10 +15,19 @@ const BannerInfo = ({
   contacts = {},
   signers = [],
 }) => {
-  const { getAccountNFTReference } = useContext(Web3Context);
+  const { getAccountNFTReference, getTreasuryNFTReference } =
+    useContext(Web3Context);
   const [nftMeta, setNFTMeta] = useState();
-  const { recipient, nftId, collectionId, vaultId, tokenAmount, signerAddr } =
-    actionData;
+  const {
+    recipient,
+    nftId,
+    collectionId,
+    vaultId,
+    tokenAmount,
+    signerAddr,
+    newThreshold,
+    txID,
+  } = actionData;
   const { displayName, tokenType } = getTokenMeta(vaultId);
   const { contractName: NFTName, contractAddress: NFTAddress } =
     parseIdentifier(collectionId);
@@ -29,12 +38,27 @@ const BannerInfo = ({
   useEffect(() => {
     if (actionType === ACTION_TYPES.TRANSFER_NFT) {
       const getNFTMeta = async () => {
-        const result = await getAccountNFTReference(
-          NFTName,
-          formatAddress(NFTAddress),
-          recipient,
-          nftId
-        );
+        let result;
+
+        // When the action needs to be approved or rejected, the NFT is in the treasury
+        // When transaction is done (txID is defined), the NFT will be located on the account
+        if (txID) {
+          result = await getAccountNFTReference(
+            NFTName,
+            formatAddress(NFTAddress),
+            recipient,
+            nftId
+          );
+        } else {
+          result = await getTreasuryNFTReference(
+            NFTName,
+            formatAddress(NFTAddress),
+            collectionId,
+            recipient,
+            nftId
+          );
+        }
+
         setNFTMeta(result ?? {});
       };
       getNFTMeta().catch(console.error);
@@ -45,7 +69,7 @@ const BannerInfo = ({
     NFTAddress,
     nftId,
     recipient,
-    getAccountNFTReference,
+    getTreasuryNFTReference,
   ]);
 
   const contactName = getNameByAddress(contacts, signerAddr);
@@ -58,7 +82,7 @@ const BannerInfo = ({
             <img
               className="columns is-vcentered is-multiline is-mobile mr-2 mt-2 success-modal-image"
               src={image}
-              alt={image}
+              alt={imageName}
             />
           )}
           <span className="columns is-vcentered is-multiline is-mobile mr-2 is-size-4 is-family-monospace">
@@ -71,7 +95,7 @@ const BannerInfo = ({
       )}
       {actionType === ACTION_TYPES.TRANSFER_TOKEN && (
         <>
-          <span className="columns is-vcentered is-multiline is-mobile mr-2 mt-2 is-size-4 is-family-monospace">
+          <span className="columns is-vcentered is-multiline is-mobile mr-2 mt-1 is-size-4 is-family-monospace">
             {Number(tokenAmount).toLocaleString()}
           </span>
           <span className="columns is-vcentered is-multiline is-mobile is-size-6 has-text-weight-bold">
@@ -96,7 +120,7 @@ const BannerInfo = ({
       {actionType === ACTION_TYPES.UPDATE_THRESHOLD && (
         <span className="columns is-vcentered is-multiline is-mobile mr-2 mt-2 is-size-4 is-family-monospace">
           <b>
-            {signers.length} of{newThreshold} owners
+            {signers.length} of {newThreshold} owners
           </b>
         </span>
       )}

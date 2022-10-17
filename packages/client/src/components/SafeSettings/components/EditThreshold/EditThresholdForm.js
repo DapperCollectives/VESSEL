@@ -42,7 +42,7 @@ const EditThresholdForm = ({
             <Svg name="Person" />
           </div>
           <div className="flex-1 is-flex is-align-items-center px-5 border-light-right has-text-black">
-            {newThreshold} of{Math.max(safeOwners.length, 1)} owner(s)
+            {newThreshold} of {Math.max(safeOwners.length, 1)} owner(s)
           </div>
           <div
             className={minusSignerClasses.join(' ')}
