@@ -22,7 +22,8 @@ const treasuryReducer = (state, action) => {
         treasuries: {
           ...state.treasuries,
           [address]: {
-            ...state.treasuries[address],
+            // Only pull out the name from local storage.
+            name: state.treasuries[address]?.name,
             ...action.payload[address],
           },
         },

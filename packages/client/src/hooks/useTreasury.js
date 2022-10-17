@@ -254,6 +254,7 @@ export default function useTreasury(treasuryAddr) {
   }));
 
   const refreshTreasury = async () => {
+    console.log('REFRESH TREASURY');
     const treasuryData = await getTreasury(treasuryAddr);
     if (!treasuryData?.uuid) {
       dispatch({ type: 'SET_LOADING', payload: false });
@@ -337,6 +338,14 @@ export default function useTreasury(treasuryAddr) {
     localStorage.setItem(storageKey, JSON.stringify(state.treasuries));
   }, [state.treasuries]);
 
+  const setTreasury = (_treasuryAddr, treasuryData) => {
+    dispatch({
+      type: 'SET_TREASURY',
+      payload: {
+        [_treasuryAddr]: treasuryData,
+      },
+    });
+  };
   const createTreasury = async (treasuryData) => {
     const { safeOwners, threshold } = treasuryData;
     const signerAddresses = safeOwners.map((is) => formatAddress(is.address));
@@ -348,14 +357,6 @@ export default function useTreasury(treasuryAddr) {
     await tx(res).onceSealed();
     setTreasury(creatorAddr, treasuryData);
     return res;
-  };
-  const setTreasury = (treasuryAddr, treasuryData) => {
-    dispatch({
-      type: 'SET_TREASURY',
-      payload: {
-        [treasuryAddr]: treasuryData,
-      },
-    });
   };
 
   const proposeTransfer = async (recipientAddr, amount, coinType) => {

@@ -68,7 +68,7 @@ function Safes(props) {
                 }}
               />
               <div className="flex-1 is-flex is-align-items-center px-2">
-                {v.name}
+                {v.name || v.address}
               </div>
             </div>
           </NavLink>
