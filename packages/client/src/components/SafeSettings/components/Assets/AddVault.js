@@ -32,8 +32,8 @@ const AddVault = ({ address, onCancel, onNext }) => {
     </span>
   );
   return (
-    <div className="p-5 has-text-grey">
-      <div className="flex-1 is-flex is-flex-direction-column">
+    <div className="has-text-grey">
+      <div className="p-5 flex-1 is-flex is-flex-direction-column">
         <p className="has-text-grey mb-2">Tokens</p>
         <Dropdown
           selectedValue={selectedCoinType}
@@ -48,7 +48,7 @@ const AddVault = ({ address, onCancel, onNext }) => {
           </p>
         )}
       </div>
-      <div className="is-flex is-align-items-center mt-6">
+      <div className="p-5 is-flex is-align-items-center pt-5 border-light-top">
         <button
           type="button"
           className="button flex-1 is-border mr-2"

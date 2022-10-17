@@ -21,7 +21,6 @@ const InputAddress = ({ web3, value, isValid, onChange }) => {
     <div className="is-flex">
       <div className="flex-1" style={{ position: 'relative' }}>
         <input
-          style={{ height: 48 }}
           className="border-light rounded-sm column is-full p-2 mt-2"
           type="text"
           value={value}

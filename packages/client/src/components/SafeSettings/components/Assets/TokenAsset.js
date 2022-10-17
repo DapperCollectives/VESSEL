@@ -87,6 +87,7 @@ const TokenAsset = (
       >
         <h2>Token Vaults</h2>
         <button
+          type="button"
           className="button is-secondary is-small with-icon"
           onClick={openAddVaultModal}
         >
@@ -94,7 +95,7 @@ const TokenAsset = (
           <Svg name="Plus" />
         </button>
       </div>
-      <div className="column p-0 mt-4 is-flex is-flex-direction-column is-full rounded-sm border-light has-shadow">
+      <div className="column p-0 mt-4 is-flex is-flex-direction-column is-full rounded-sm border-light">
         <AssetTableView
           assets={vaults[address] ?? []}
           emptyPlaceholder="You don't have any Token Vaults yet."

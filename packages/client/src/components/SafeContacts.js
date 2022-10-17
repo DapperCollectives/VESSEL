@@ -20,7 +20,7 @@ function EditContactModal({
     setCurrentAddr(value);
     setAddressValid(isValid);
     setAddressNew(
-      isEmpty(contacts) || contacts.every((c) => c.address !== value)
+      isEmpty(contacts) || contacts.every(({ address }) => address !== value)
     );
   };
   const onNameChange = ({ value }) => setCurrentName(value);
@@ -55,7 +55,6 @@ function EditContactModal({
           <p className="has-text-grey">Name</p>
           <div className="is-flex">
             <input
-              style={{ height: 48 }}
               className="border-light rounded-sm column is-full p-2 mt-2"
               type="text"
               value={currentName}
@@ -64,11 +63,16 @@ function EditContactModal({
           </div>
         </div>
       </div>
-      <div className="is-flex is-align-items-center mt-5 px-5">
-        <button className="button is-border flex-1 mr-2" onClick={closeModal}>
+      <div className="is-flex is-align-items-center mt-5 px-5 pt-5 border-light-top">
+        <button
+          type="button"
+          className="button is-border flex-1 mr-2"
+          onClick={closeModal}
+        >
           Cancel
         </button>
         <button
+          type="button"
           className={updateBtnClasses.join(' ')}
           onClick={() => {
             if (canConfirm) {
@@ -98,11 +102,16 @@ function RemoveContactModal({ contact, onConfirm, confirmText, closeModal }) {
           from your saved addresses.
         </p>
       </div>
-      <div className="is-flex is-align-items-center mt-5 px-5">
-        <button className="button is-border flex-1 mr-2" onClick={closeModal}>
+      <div className="is-flex is-align-items-center mt-5 px-5 pt-5 border-light-top">
+        <button
+          type="button"
+          className="button is-border flex-1 mr-2"
+          onClick={closeModal}
+        >
           Cancel
         </button>
         <button
+          type="button"
           className="button is-primary flex-1"
           onClick={() => {
             closeModal();
@@ -168,10 +177,12 @@ function SafeContacts({ address }) {
         <h2>Saved Addresses</h2>
         {!isEmpty(contacts) && (
           <button
+            type="button"
             className="button is-secondary is-small with-icon"
             onClick={openAddModal}
           >
-            Add Contact <Svg name="Plus" />
+            Add Contact
+            <Svg name="Plus" />
           </button>
         )}
       </div>
@@ -212,12 +223,14 @@ function SafeContacts({ address }) {
               <div className="flex-1">{contact?.name}</div>
               <div className="is-flex flex-1">
                 <button
+                  type="button"
                   className="button is-transparent pl-0 pr-3"
                   onClick={() => openEditModal(index, contact)}
                 >
                   Edit
                 </button>
                 <button
+                  type="button"
                   className="button is-transparent ml-5 px-5"
                   onClick={() => openRemoveModal(index, contact)}
                 >
