@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react';
 import { useModalContext } from 'contexts';
 import { Web3Context } from 'contexts/Web3';
-import { useAddressAliases, useAddressValidation } from 'hooks';
+import { useAddressValidation } from 'hooks';
 import { formatAddress, isAddr } from 'utils';
 import Svg from 'library/Svg';
 import EditThreshold from '../EditThreshold';

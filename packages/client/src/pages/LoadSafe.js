@@ -91,13 +91,11 @@ function LoadSafe({ web3 }) {
     const maybeValid = isAddr(e.target.value);
     if (maybeValid) {
       const treasury = await getTreasury(e.target.value);
-      console.log('treasury', treasury);
       const newSafeOwners = (treasury?.safeOwners ?? []).map((owner) => ({
         name: addressAliases[owner.address],
         address: owner.address,
       }));
 
-      console.log('newSafeOwners', newSafeOwners);
       setSafeOwners(newSafeOwners);
       checkSafeOwnerAddressesValidity(newSafeOwners);
 
@@ -108,19 +106,11 @@ function LoadSafe({ web3 }) {
     }
   };
 
-  const onOwnerNameChange = (value, idx) => {
-    // console.log('onOwnerNameChange')
-    const newOwners = safeOwners.slice(0);
-    newOwners[idx].name = value;
-    // setSafeOwners([...newOwners]);
-  };
 
   const onSetTreasury = () => {
     // Set Address Aliases
-    console.log('onSetTreasury', safeOwners);
     safeOwners.forEach((so) => {
       if (so.name) {
-        console.log('set address alias', so.name, so.address);
         setAddressAlias(so.address, so.name);
       }
     });

@@ -252,7 +252,6 @@ export default function useTreasury(treasuryAddr, treasuryAliases) {
   }));
 
   const refreshTreasury = async () => {
-    console.log('REFRESH TREASURY');
     const treasuryData = await getTreasury(treasuryAddr);
     if (!treasuryData?.uuid) {
       dispatch({ type: 'SET_LOADING', payload: false });
@@ -333,11 +332,6 @@ export default function useTreasury(treasuryAddr, treasuryAliases) {
     // TODO: rewrite so doesnt trigger exhaustive deps warning
     // eslint-disable-next-line
   }, [state.loadingTreasuries, treasuryAddr]);
-
-  // useEffect(() => {
-  //   console.log(state.treasuries);
-  //   localStorage.setItem(storageKey, JSON.stringify(state.treasuries));
-  // }, [state.treasuries]);
 
   const setTreasury = (_treasuryAddr, treasuryData) => {
     dispatch({
