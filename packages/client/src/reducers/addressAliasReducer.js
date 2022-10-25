@@ -8,6 +8,7 @@ export const ADDRESS_ALIAS_INITIAL_STATE = {
 const addressAliasReducer = (state, action) => {
   switch (action.type) {
     case 'SET_ADDRESS_ALIAS': {
+      console.log('SET_ADDRESS_ALIAS TRIGGERED')
       return {
         ...state,
         addressAliases: {
@@ -22,6 +23,15 @@ const addressAliasReducer = (state, action) => {
       return {
         ...state,
         addressAliases: aliases,
+      };
+    }
+    case 'SET_TREASURY_ALIAS': {
+      return {
+        ...state,
+        treasuryAliases: {
+          ...state.treasuryAliases,
+          ...action.payload,
+        },
       };
     }
     default:

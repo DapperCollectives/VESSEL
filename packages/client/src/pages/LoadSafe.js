@@ -60,7 +60,15 @@ function LoadSafe({ web3 }) {
   const [threshold, setThreshold] = useState(0);
   const [safeOwners, setSafeOwners] = useState([]);
   const [safeOwnersValidByAddress, setSafeOwnersValidByAddress] = useState({});
-  const { injectedProvider, getTreasury, setTreasury, address } = web3;
+  const {
+    injectedProvider,
+    getTreasury,
+    setTreasury,
+    address,
+    setAddressAlias,
+    setTreasuryAlias,
+    addressAliases,
+  } = web3;
   const { isAddressValid } = useAddressValidation(injectedProvider);
   if (!address) {
     return <WalletPrompt />;
@@ -83,14 +91,13 @@ function LoadSafe({ web3 }) {
     const maybeValid = isAddr(e.target.value);
     if (maybeValid) {
       const treasury = await getTreasury(e.target.value);
-      const newSafeOwners = Object.keys(treasury?.signers ?? {}).map(
-        (signerAddr) => ({
-          name: '',
-          address: signerAddr,
-          verified: true,
-        })
-      );
+      console.log('treasury', treasury);
+      const newSafeOwners = (treasury?.safeOwners ?? []).map((owner) => ({
+        name: addressAliases[owner.address],
+        address: owner.address,
+      }));
 
+      console.log('newSafeOwners', newSafeOwners);
       setSafeOwners(newSafeOwners);
       checkSafeOwnerAddressesValidity(newSafeOwners);
 
@@ -102,12 +109,26 @@ function LoadSafe({ web3 }) {
   };
 
   const onOwnerNameChange = (value, idx) => {
+    // console.log('onOwnerNameChange')
     const newOwners = safeOwners.slice(0);
     newOwners[idx].name = value;
-    setSafeOwners([...newOwners]);
+    // setSafeOwners([...newOwners]);
   };
 
   const onSetTreasury = () => {
+    // Set Address Aliases
+    console.log('onSetTreasury', safeOwners);
+    safeOwners.forEach((so) => {
+      if (so.name) {
+        console.log('set address alias', so.name, so.address);
+        setAddressAlias(so.address, so.name);
+      }
+    });
+
+    // Set Treasury Alias
+    setTreasuryAlias(safeAddress, safeName);
+
+    // Set Treasury
     setTreasury(safeAddress, {
       name: safeName,
       type: 'Social',
@@ -241,7 +262,7 @@ function LoadSafe({ web3 }) {
                   <Svg name="Person" />
                 </div>
                 <div className="flex-1 is-flex is-align-items-center px-5">
-                  {threshold} of{safeOwners.length} owner(s)
+                  {threshold} of {safeOwners.length} owner(s)
                 </div>
               </div>
             </div>

@@ -3,6 +3,7 @@ import EditThreshold from './EditThreshold';
 import SignatureBar from './SignatureBar';
 
 const SignatureThreshold = ({ treasury }) => {
+  console.log("treasury!", treasury);
   const { openModal, closeModal, isOpen } = useModalContext();
   const { threshold, safeOwners } = treasury;
   const verifiedSafeOwners = safeOwners.filter((o) => o.verified);

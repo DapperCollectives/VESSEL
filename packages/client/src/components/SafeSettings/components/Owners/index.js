@@ -5,7 +5,7 @@ import Svg from 'library/Svg';
 import AddSafeOwner from './AddSafeOwner';
 import RemoveSafeOwner from './RemoveSafeOwner';
 
-const Owners = ({ treasury }) => {
+const Owners = ({ treasury, addressAliases, setAddressAlias }) => {
   const modalContext = useModalContext();
   const { safeOwners } = treasury;
   const verifiedSafeOwners = safeOwners.filter((o) => o.verified);
@@ -13,7 +13,12 @@ const Owners = ({ treasury }) => {
 
   const openAddOwnerModal = () => {
     modalContext.openModal(
-      <AddSafeOwner treasury={treasury} safeOwners={safeOwners} />,
+      <AddSafeOwner
+        treasury={treasury}
+        safeOwners={safeOwners}
+        addressAliases={addressAliases}
+        setAddressAlias={setAddressAlias}
+      />,
       {
         headerTitle: 'Add Owner',
       }
@@ -51,7 +56,7 @@ const Owners = ({ treasury }) => {
           verifiedSafeOwners.map((so, idx) => (
             <div className="is-flex column is-full p-5" key={idx}>
               <div className="px-2 mr-6" style={{ minWidth: 120 }}>
-                {so.name ?? `Signer #${idx + 1}`}
+                {addressAliases[so.address] ?? `Signer #${idx + 1}`}
               </div>
               <div className="flex-1">{so.address}</div>
               <div>

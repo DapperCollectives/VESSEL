@@ -96,7 +96,7 @@ const BannerInfo = ({
       {actionType === ACTION_TYPES.UPDATE_THRESHOLD && (
         <span className="columns is-vcentered is-multiline is-mobile mr-2 mt-2 is-size-4 is-family-monospace">
           <b>
-            {signers.length} of{newThreshold} owners
+            {signers.length} of {newThreshold} owners
           </b>
         </span>
       )}

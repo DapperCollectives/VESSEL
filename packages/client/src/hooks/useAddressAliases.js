@@ -4,12 +4,16 @@ import addressAliasReducer, {
 } from 'reducers/addressAliasReducer';
 
 const storageKey = 'vessel-addresses';
+const treasuryStorageKey = 'vessel-treasuries';
 
-export default function useAddressAliases(address) {
+export default function useAddressAliases() {
   const [state, dispatch] = useReducer(addressAliasReducer, [], (initial) => ({
     ...initial,
     ...ADDRESS_ALIAS_INITIAL_STATE,
-    contacts: JSON.parse(localStorage.getItem(storageKey) || '{}'),
+    addressAliases: JSON.parse(localStorage.getItem(storageKey) || '{}'),
+    treasuryAliases: JSON.parse(
+      localStorage.getItem(treasuryStorageKey) || '{}'
+    ),
   }));
 
   const addressAliases = useMemo(
@@ -17,11 +21,30 @@ export default function useAddressAliases(address) {
     [state.addressAliases]
   );
 
+  const treasuryAliases = useMemo(
+    () => state.treasuryAliases ?? {},
+    [state.treasuryAliases]
+  );
+
   useEffect(() => {
     localStorage.setItem(storageKey, JSON.stringify(addressAliases));
   }, [addressAliases]);
 
+  useEffect(() => {
+    localStorage.setItem(treasuryStorageKey, JSON.stringify(treasuryAliases));
+  }, [treasuryAliases]);
+
+  const setTreasuryAlias = (addr, name) => {
+    dispatch({
+      type: 'SET_TREASURY_ALIAS',
+      payload: {
+        [addr]: name,
+      },
+    });
+  };
+
   const setAddressAlias = (addr, name) => {
+    console.log('set address alias!', addr, name);
     dispatch({
       type: 'SET_ADDRESS_ALIAS',
       payload: {
@@ -38,8 +61,10 @@ export default function useAddressAliases(address) {
   };
 
   return {
-    contacts: state.contacts?.[address] ?? [],
+    addressAliases: JSON.parse(localStorage.getItem(storageKey)) ?? {},
+    treasuryAliases: JSON.parse(localStorage.getItem(treasuryStorageKey)) ?? {},
     setAddressAlias,
     removeAddressAlias,
+    setTreasuryAlias,
   };
 }

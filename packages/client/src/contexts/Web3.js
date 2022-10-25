@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useRouteMatch } from 'react-router-dom';
-import { useFclUserBalance, useNFTs, useTreasury, useVaults } from '../hooks';
+import { useFclUserBalance, useNFTs, useTreasury, useVaults, useAddressAliases } from '../hooks';
 import { CURRENT_USER_SESSION_KEY } from 'constants/constants';
 import * as fcl from '@onflow/fcl';
 import { Buffer } from 'buffer';
@@ -75,8 +75,12 @@ export default function Web3Provider({
   const match = useRouteMatch({
     path: ['/safe/:address', '/safe/:address/:tab'],
   });
+  const addressAliasProps = useAddressAliases();
   const treasuryAddr = match?.params?.address;
-  const treasuryProps = useTreasury(treasuryAddr);
+  const treasuryProps = useTreasury(
+    treasuryAddr,
+    addressAliasProps.treasuryAliases
+  );
   const nftProps = useNFTs(treasuryAddr);
   const vaultProps = useVaults(treasuryAddr);
 
@@ -101,6 +105,7 @@ export default function Web3Provider({
     ...nftProps,
     ...vaultProps,
     ...treasuryProps,
+    ...addressAliasProps,
     ...props,
   };
 

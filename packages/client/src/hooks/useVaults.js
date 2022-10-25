@@ -1,4 +1,4 @@
-import { useEffect, useReducer } from 'react';
+import { useReducer } from 'react';
 import { createSignature } from 'contexts/Web3';
 import { SIGNED_LIMIT } from 'constants/constants';
 import { COIN_TYPE_TO_META } from 'constants/maps';
@@ -6,8 +6,6 @@ import { removeAddressPrefix } from '../utils';
 import { config, mutate, query, tx } from '@onflow/fcl';
 import { ADD_VAULT, GET_TREASURY_IDENTIFIERS, REMOVE_VAULT } from '../flow';
 import vaultReducer, { VAULT_INITIAL_STATE } from '../reducers/vaultReducer';
-
-const storageKey = 'vessel-vaults';
 
 const doAddVault = async (treasuryAddr, contractName, contractAddress) => {
   const intent = `A.${removeAddressPrefix(
@@ -51,12 +49,8 @@ export default function useVaults(treasuryAddr) {
   const [state, dispatch] = useReducer(vaultReducer, [], (initial) => ({
     ...initial,
     ...VAULT_INITIAL_STATE,
-    vaults: JSON.parse(localStorage.getItem(storageKey) || '{}'),
   }));
 
-  useEffect(() => {
-    localStorage.setItem(storageKey, JSON.stringify(state.vaults));
-  }, [state.vaults]);
 
   const getTreasuryVaults = async (treasuryAddr) => {
     const identifiers = await query({

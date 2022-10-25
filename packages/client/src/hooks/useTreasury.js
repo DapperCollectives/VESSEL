@@ -34,8 +34,6 @@ import treasuryReducer, {
   TREASURY_INITIAL_STATE,
 } from '../reducers/treasuryReducer';
 
-const storageKey = 'vessel-treasuries';
-
 const doQuery = async (cadence, address) => {
   const queryResp = await query({
     cadence,
@@ -246,11 +244,11 @@ const getAllVaultBalance = async (address) => {
   }
   return allBalance;
 };
-export default function useTreasury(treasuryAddr) {
+export default function useTreasury(treasuryAddr, treasuryAliases) {
   const [state, dispatch] = useReducer(treasuryReducer, [], (initial) => ({
     ...initial,
     ...TREASURY_INITIAL_STATE,
-    treasuries: JSON.parse(localStorage.getItem(storageKey)) || {},
+    treasuries: {},
   }));
 
   const refreshTreasury = async () => {
@@ -260,6 +258,8 @@ export default function useTreasury(treasuryAddr) {
       dispatch({ type: 'SET_LOADING', payload: false });
       return;
     }
+
+    treasuryData.name = treasuryAliases[treasuryAddr] || '';
 
     dispatch({
       type: 'SET_TREASURY',
@@ -334,9 +334,10 @@ export default function useTreasury(treasuryAddr) {
     // eslint-disable-next-line
   }, [state.loadingTreasuries, treasuryAddr]);
 
-  useEffect(() => {
-    localStorage.setItem(storageKey, JSON.stringify(state.treasuries));
-  }, [state.treasuries]);
+  // useEffect(() => {
+  //   console.log(state.treasuries);
+  //   localStorage.setItem(storageKey, JSON.stringify(state.treasuries));
+  // }, [state.treasuries]);
 
   const setTreasury = (_treasuryAddr, treasuryData) => {
     dispatch({
