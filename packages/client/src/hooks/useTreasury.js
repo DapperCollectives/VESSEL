@@ -304,20 +304,6 @@ export default function useTreasury(treasuryAddr, treasuryAliases) {
     });
   };
 
-  const updateOwnerList = async (treasuryAddr) => {
-    const { signers } = await getTreasury(treasuryAddr);
-    const { safeOwners } = state.treasuries[treasuryAddr];
-    const updatedSafeOwners = syncSafeOwnersWithSigners(signers, safeOwners);
-    dispatch({
-      type: 'SET_TREASURY',
-      payload: {
-        [treasuryAddr]: {
-          safeOwners: updatedSafeOwners,
-        },
-      },
-    });
-  };
-
   useEffect(() => {
     if (!treasuryAddr) {
       if (state.loadingTreasuries) {
@@ -406,7 +392,6 @@ export default function useTreasury(treasuryAddr, treasuryAliases) {
     const res = await doExecuteAction(treasuryAddr, actionUUID);
     const result = await tx(res).onceSealed();
     await refreshTreasury();
-    await updateOwnerList(treasuryAddr);
     return result.events;
   };
 

@@ -106,6 +106,10 @@ function LoadSafe({ web3 }) {
     }
   };
 
+  const onOwnerNameChange = (value, idx) => {
+    const newOwners = safeOwners.slice(0);
+    newOwners[idx].name = value;
+  };
 
   const onSetTreasury = () => {
     // Set Address Aliases
