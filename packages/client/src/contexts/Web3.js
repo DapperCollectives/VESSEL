@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useRouteMatch } from 'react-router-dom';
-import { useFclUserBalance, useNFTs, useTreasury, useVaults, useAddressAliases } from '../hooks';
+import { useFclUserBalance, useNFTs, useTreasury, useVaults, useAddressAliases } from 'hooks';
 import { CURRENT_USER_SESSION_KEY } from 'constants/constants';
 import * as fcl from '@onflow/fcl';
 import { Buffer } from 'buffer';
