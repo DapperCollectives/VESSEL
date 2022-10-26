@@ -1,21 +1,29 @@
 const RemoveAsset = ({ name, address, explanation, onCancel, onNext }) => (
-  <div className="p-5">
-    <p>
+  <>
+    <p className="p-5">
       This action will&nbsp;
       <span className="has-text-weight-bold">
         remove {name} ({address})
       </span>
       &nbsp;from the treasury. {explanation}
     </p>
-    <div className="is-flex mt-5">
-      <button className="button flex-1 is-border mr-2" onClick={onCancel}>
+    <div className="is-flex p-5 border-light-top">
+      <button
+        type="button"
+        className="button flex-1 is-border mr-2"
+        onClick={onCancel}
+      >
         Cancel
       </button>
-      <button className="button flex-1 is-primary" onClick={onNext}>
+      <button
+        type="button"
+        className="button flex-1 is-primary"
+        onClick={onNext}
+      >
         Confirm
       </button>
     </div>
-  </div>
+  </>
 );
 
 export default RemoveAsset;

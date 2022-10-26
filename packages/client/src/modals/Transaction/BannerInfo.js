@@ -29,8 +29,9 @@ const BannerInfo = ({
   const { displayName, tokenType } = getTokenMeta(vaultId);
   const { contractName: NFTName, contractAddress: NFTAddress } =
     parseIdentifier(collectionId);
-  const { name: imageName, thumbnail: imageURI } = nftMeta || {};
+  const { name: imageName, imageURI, thumbnail } = nftMeta || {};
   const actionType = actionData.type;
+  const image = imageURI ?? thumbnail;
 
   useEffect(() => {
     if (actionType === ACTION_TYPES.TRANSFER_NFT) {
@@ -63,11 +64,11 @@ const BannerInfo = ({
     <div className={className}>
       {actionType === ACTION_TYPES.TRANSFER_NFT && (
         <>
-          {imageURI && (
+          {image && (
             <img
               className="columns is-vcentered is-multiline is-mobile mr-2 mt-2 success-modal-image"
-              src={imageURI}
-              alt={imageName}
+              src={image}
+              alt={image}
             />
           )}
           <span className="columns is-vcentered is-multiline is-mobile mr-2 is-size-4 is-family-monospace">

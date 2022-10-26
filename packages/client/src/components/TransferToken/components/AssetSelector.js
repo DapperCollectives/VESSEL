@@ -1,16 +1,24 @@
 import { useContext } from 'react';
+import { TransferTokensContext } from '../../../contexts/TransferTokens';
 import { Web3Context } from 'contexts/Web3';
-import { ASSET_TYPES } from 'constants/enums';
+import { ASSET_TYPES, TRANSACTION_TYPE } from 'constants/enums';
 import { ASSET_TYPE_TO_META } from 'constants/maps';
 import { flatten } from 'lodash';
-import { SendTokensContext } from '../sendTokensContext';
 import CoinTypeDropDown from './CoinTypeDropDown';
 import NFTSelector from './NFTSelector';
 
 const AssetSelector = () => {
-  const [sendModalState, setSendModalState] = useContext(SendTokensContext);
   const web3 = useContext(Web3Context);
-  const { assetType, coinType, selectedNFT, address } = sendModalState;
+
+  const [sendModalState, setSendModalState] = useContext(TransferTokensContext);
+  const {
+    assetType,
+    coinType,
+    coinBalances,
+    selectedNFT,
+    sender,
+    transactionType,
+  } = sendModalState;
   const userAddr = web3?.user?.addr;
   const userNFTs = web3?.NFTs?.[userAddr] ?? [];
   const nftsToDisplay = flatten(
@@ -55,9 +63,9 @@ const AssetSelector = () => {
           </button>
         </div>
       </div>
-      {assetType === ASSET_TYPES.TOKEN && (
+      {assetType === ASSET_TYPES.TOKEN && coinBalances && (
         <CoinTypeDropDown
-          address={address}
+          address={sender}
           coinType={coinType}
           setCoinType={(itemValue) => {
             setSendModalState((prevState) => ({
@@ -65,6 +73,12 @@ const AssetSelector = () => {
               coinType: itemValue,
             }));
           }}
+          tooltipText={
+            transactionType === TRANSACTION_TYPE.DEPOSIT
+              ? 'Only tokens supported by Vessel can be transferred to this treasury.'
+              : undefined
+          }
+          balances={coinBalances}
         />
       )}
       {assetType === ASSET_TYPES.NFT && (

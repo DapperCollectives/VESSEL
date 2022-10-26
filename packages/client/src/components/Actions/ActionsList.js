@@ -7,7 +7,7 @@ function ActionsList({
   onApprove,
   onReject,
   onExecute,
-  safeData,
+  address,
   emptyComponent,
 }) {
   if (isEmpty(actions)) {
@@ -16,7 +16,7 @@ function ActionsList({
 
   return (
     <ActionsListTable
-      safeData={safeData}
+      address={address}
       actions={actions}
       onApprove={onApprove}
       onReject={onReject}

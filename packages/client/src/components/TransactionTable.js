@@ -1,7 +1,10 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useModalContext } from 'contexts';
+import { Web3Context } from 'contexts/Web3';
+import { useTreasuryTransactions } from 'hooks';
 import { formatActionString, getStatusColor } from 'utils';
 import Svg from 'library/Svg';
+import { isEmpty } from 'lodash';
 import { TransactionDetailsModal } from 'modals';
 
 const Row = ({ transaction, displayIndex, onView, className }) => {
@@ -32,13 +35,22 @@ const Row = ({ transaction, displayIndex, onView, className }) => {
   );
 };
 
-const TransactionTable = ({ safeData, transactions = [], className = '' }) => {
+const TransactionTable = ({ address, className = '', emptyComponent }) => {
+  const web3 = useContext(Web3Context);
+  const safeData = web3?.treasuries?.[address];
+  const { uuid, safeOwners } = safeData;
+  const { data: transactions } = useTreasuryTransactions(uuid);
+
+  if (isEmpty(transactions)) {
+    return emptyComponent;
+  }
+
   const { openModal, closeModal } = useModalContext();
 
   const onViewTransaction = (transaction) => {
     const { actionView, signerResponses } = transaction.blockEventData;
     const signers = {};
-    safeData.safeOwners.forEach((owner) => {
+    safeOwners.forEach((owner) => {
       let signerStatus = 'pending';
       if (signerResponses?.[owner.address] === 0) {
         signerStatus = 'approved';

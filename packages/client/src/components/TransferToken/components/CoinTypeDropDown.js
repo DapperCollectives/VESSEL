@@ -1,17 +1,12 @@
-import { useContext } from 'react';
-import { Web3Context } from 'contexts/Web3';
-import { Dropdown } from 'library/components';
+import { Dropdown, Tooltip } from 'library/components';
 import Svg from 'library/Svg';
 
-const CoinTypeDropDown = ({ coinType, setCoinType, address }) => {
-  const web3 = useContext(Web3Context);
-  const { balances } = web3;
-  const balanceMap = balances[address];
-  const coinTypes = Object.entries(balanceMap).map(([key, value]) => ({
+const CoinTypeDropDown = ({ coinType, setCoinType, balances, tooltipText }) => {
+  const coinTypes = Object.entries(balances).map(([key]) => ({
     itemValue: key,
     displayText: key,
     attr: {
-      balance: balanceMap[key] ? Number(balanceMap[key]).toFixed(2) : 0,
+      balance: balances[key] ? Number(balances[key]).toFixed(2) : 0,
     },
   }));
   const renderOption = (itemValue, displayText, attr) => (
@@ -31,9 +26,14 @@ const CoinTypeDropDown = ({ coinType, setCoinType, address }) => {
 
   return (
     <div className="mb-5">
-      <p className="has-text-grey">
+      <p className="has-text-grey is-flex is-align-items-center">
         Token Vault
-        <span className="has-text-red"> *</span>
+        <span className="has-text-red mr-1"> *</span>
+        {tooltipText && (
+          <Tooltip position="top" text={tooltipText} className="mt-2">
+            <Svg name="QuestionMark" />
+          </Tooltip>
+        )}
       </p>
       <Dropdown
         selectedValue={coinType}

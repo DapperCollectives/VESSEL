@@ -1,9 +1,18 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
+import { useModalContext } from 'contexts';
+import { Web3Context } from 'contexts/Web3';
+import { TRANSACTION_TYPE } from 'constants/enums';
 import { parseIdentifier } from 'utils';
 import Svg from 'library/Svg';
+import TransferTokens from './TransferToken';
 
-function SafeOverview({ allBalance, allNFTs }) {
+function SafeOverview({ allBalance, allNFTs, address }) {
+  const { openModal } = useModalContext();
+
+  const web3 = useContext(Web3Context);
+  const userAddress = web3?.user?.addr;
+
   const tokensWithPositiveBalance = allBalance
     ? Object.entries(allBalance)
         .map(([key, value]) => ({ type: key, balance: Number(value) }))
@@ -22,6 +31,19 @@ function SafeOverview({ allBalance, allNFTs }) {
         })
         .slice(0, 4)
     : [];
+
+  const onDeposit = () =>
+    openModal(
+      <TransferTokens
+        sender={userAddress}
+        initialState={{
+          transactionType: TRANSACTION_TYPE.DEPOSIT,
+          recipient: address,
+          recipientValid: true,
+        }}
+      />
+    );
+
   const emptyNftBlocks = new Array(4 - collectionsForDisplay.length).fill(0);
   return (
     <>
@@ -60,7 +82,11 @@ function SafeOverview({ allBalance, allNFTs }) {
               <div className="p-3 mb-1">
                 <div className="is-flex is-flex-direction-column is-justify-content-center is-align-items-center">
                   <p className="has-text-white ">You don't have any tokens</p>
-                  <button className="button is-half mt-2 has-purple-background-hover-animation has-text-purple">
+                  <button
+                    type="button"
+                    className="button is-half mt-2 has-purple-background-hover-animation has-text-purple"
+                    onClick={onDeposit}
+                  >
                     Deposit Tokens
                   </button>
                 </div>

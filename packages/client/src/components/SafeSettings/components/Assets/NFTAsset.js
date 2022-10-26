@@ -84,6 +84,7 @@ const NFTAsset = (
       <div className="column p-0 mt-5 is-flex is-full is-justify-content-space-between">
         <h2>NFT Collections</h2>
         <button
+          type="button"
           className="button is-secondary is-small with-icon"
           onClick={openAddCollectionModal}
         >
@@ -91,7 +92,7 @@ const NFTAsset = (
           <Svg name="Plus" />
         </button>
       </div>
-      <div className="column p-0 mt-4 is-flex is-flex-direction-column is-full rounded-sm border-light has-shadow">
+      <div className="column p-0 mt-4 is-flex is-flex-direction-column is-full rounded-sm border-light">
         <AssetTableView
           assets={Object.keys(NFTs[address] ?? {})}
           emptyPlaceholder="You don't have any NFT Collections yet."

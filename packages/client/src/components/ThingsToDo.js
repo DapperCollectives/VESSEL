@@ -14,7 +14,7 @@ const ThingsToDo = ({
   onApprove,
   onReject,
   onExecute,
-  safeData,
+  address,
 }) => (
   <>
     <div className="column p-0 mt-5 is-flex is-full">
@@ -25,7 +25,7 @@ const ThingsToDo = ({
       onApprove={onApprove}
       onReject={onReject}
       onExecute={onExecute}
-      safeData={safeData}
+      address={address}
       emptyComponent={<EmptyActionsList />}
     />
   </>

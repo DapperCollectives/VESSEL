@@ -4,10 +4,10 @@ import { Dropdown, Tooltip } from 'library/components';
 import { useAddressValidation, useContacts } from 'hooks';
 import { formatAddress, isAddr } from 'utils';
 import Svg from 'library/Svg';
-import { SendTokensContext } from '../sendTokensContext';
+import { TransferTokensContext } from '../../../contexts/TransferTokens';
 
 const AddressDropdown = () => {
-  const [sendModalState, setSendModalState] = useContext(SendTokensContext);
+  const [sendModalState, setSendModalState] = useContext(TransferTokensContext);
   const {
     recipient,
     recipientValid,
