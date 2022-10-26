@@ -1,6 +1,6 @@
 import { useEffect, useReducer } from 'react';
 import { createSignature } from '../contexts/Web3';
-import { REGULAR_LIMIT, SIGNED_LIMIT } from 'constants/constants';
+import { SEND_NFT_LIMIT, SIGNED_LIMIT } from 'constants/constants';
 import { formatAddress, parseIdentifier, removeAddressPrefix } from 'utils';
 import { mutate, query, tx } from '@onflow/fcl';
 import {
@@ -24,7 +24,7 @@ const doSendNFTToTreasury = async (treasuryAddr, tokenId) =>
       arg(treasuryAddr, t.Address),
       arg(parseInt(tokenId), t.UInt64),
     ],
-    limit: REGULAR_LIMIT,
+    limit: SEND_NFT_LIMIT,
   });
 
 const doProposeNFTTransfer = async (treasuryAddr, recipient, nft) => {
@@ -118,7 +118,7 @@ export default function useNFTs(treasuryAddr) {
       name: res.name,
       description: res.description,
       thumbnail: {
-        url: res.imageURI,
+        url: res.thumbnail,
       },
     }));
 

@@ -33,6 +33,11 @@
         "testnet": "0xe223d8a629e49c68"
       }
     },
+    "ExampleNFT": {
+      "aliases": {
+        "testnet": "0x68a4fe55ec686656"
+      }
+    },
     "NonFungibleToken": {
       "source": "./contracts/core/NonFungibleToken.cdc",
       "aliases": {
@@ -43,12 +48,6 @@
       "source": "./contracts/core/MetadataViews.cdc",
       "aliases": {
         "testnet": "0x631e88ae7f1d7c20"
-      }
-    },
-    "ZeedzINO": {
-      "source": "./contracts/core/ZeedzINO.cdc",
-      "aliases": {
-        "testnet": "0x7dc7430a06f38af3"
       }
     },
     "MyMultiSigV5": {
@@ -223,7 +222,6 @@
         "BloctoToken",
         "NonFungibleToken",
         "MetadataViews",
-        "ZeedzINO",
         "MyMultiSigV5",
         "DAOTreasuryV5",
         "TreasuryActionsV5",
@@ -254,7 +252,7 @@
       "emulator-treasuryOwner": []
     },
     "testnet": {
-      "testnet-account": ["MyMultiSigV5", "DAOTreasuryV5", "TreasuryActionsV5"]
+      "testnet-account": ["MyMultiSigV5", "DAOTreasuryV5", "TreasuryActionsV5", "ExampleNFT"]
     }
   }
 }

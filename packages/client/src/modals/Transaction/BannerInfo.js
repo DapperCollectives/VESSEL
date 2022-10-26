@@ -17,8 +17,15 @@ const BannerInfo = ({
 }) => {
   const { getAccountNFTReference } = useContext(Web3Context);
   const [nftMeta, setNFTMeta] = useState();
-  const { recipient, nftId, collectionId, vaultId, tokenAmount, signerAddr } =
-    actionData;
+  const {
+    recipient,
+    nftId,
+    collectionId,
+    vaultId,
+    tokenAmount,
+    signerAddr,
+    newThreshold,
+  } = actionData;
   const { displayName, tokenType } = getTokenMeta(vaultId);
   const { contractName: NFTName, contractAddress: NFTAddress } =
     parseIdentifier(collectionId);
@@ -48,6 +55,9 @@ const BannerInfo = ({
   ]);
 
   const contactName = getNameByAddress(contacts, signerAddr);
+  const approvedSigners = Object.values(signers).filter(
+    (status) => status === 'approved'
+  ).length;
 
   return (
     <div className={className}>
@@ -95,7 +105,7 @@ const BannerInfo = ({
       {actionType === ACTION_TYPES.UPDATE_THRESHOLD && (
         <span className="columns is-vcentered is-multiline is-mobile mr-2 mt-2 is-size-4 is-family-monospace">
           <b>
-            {signers.length} of{newThreshold} owners
+            {approvedSigners} of {newThreshold} owners
           </b>
         </span>
       )}
