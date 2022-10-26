@@ -117,9 +117,7 @@ function Safe({ web3 }) {
   };
 
   const onExecuteAction = async ({ uuid }) => {
-    const events = await executeAction(uuid).catch((error) =>
-      showErrorModal(error)
-    );
+    const events = await executeAction(uuid).catch(showErrorModal);
     if (events) {
       const action = events.find((e) => e.type.endsWith('ActionExecuted'));
       showTransactionSuccessModal(action);

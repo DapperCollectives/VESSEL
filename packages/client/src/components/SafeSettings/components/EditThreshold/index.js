@@ -12,7 +12,7 @@ const EditThreshold = ({ treasury, newOwner, ownerToBeRemoved }) => {
   const { openModal, closeModal } = useModalContext();
   const history = useHistory();
   const web3 = useContext(Web3Context);
-  const { setTreasury, proposeAddSigner, proposeRemoveSigner } = web3;
+  const { setAddressAlias, proposeAddSigner, proposeRemoveSigner } = web3;
   const { address, safeOwners, threshold } = treasury;
   const verifiedSafeOwners = safeOwners.filter((o) => o.verified);
   let allSafeOwners;
@@ -36,15 +36,15 @@ const EditThreshold = ({ treasury, newOwner, ownerToBeRemoved }) => {
 
   const onChangeThreshold = (isIncrease) => {
     setNewThreshold((prevState) =>
-      isIncrease ? prevState + 1 : prevState - 1
+      (isIncrease ? prevState + 1 : prevState - 1)
     );
   };
 
   const onConfirmAddOwner = async () => {
     await proposeAddSigner(formatAddress(newOwner.address), newThreshold);
-    setTreasury(address, {
-      safeOwners: [...safeOwners, { ...newOwner, verified: false }],
-    });
+    if (newOwner.name) {
+      setAddressAlias(newOwner.address, newOwner.name)
+    }
     closeModal();
     history.push(`/safe/${address}`);
   };
@@ -110,3 +110,4 @@ const EditThreshold = ({ treasury, newOwner, ownerToBeRemoved }) => {
 };
 
 export default EditThreshold;
+ 

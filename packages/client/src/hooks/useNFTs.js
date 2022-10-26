@@ -1,4 +1,4 @@
-import { useEffect, useReducer } from 'react';
+import { useReducer } from 'react';
 import { createSignature } from '../contexts/Web3';
 import { REGULAR_LIMIT, SIGNED_LIMIT } from 'constants/constants';
 import { formatAddress, parseIdentifier, removeAddressPrefix } from 'utils';
@@ -14,8 +14,6 @@ import {
   SEND_NFT_TO_TREASURY,
 } from '../flow';
 import nftReducer, { NFT_INITIAL_STATE } from '../reducers/nftReducer';
-
-const storageKey = 'vessel-collections';
 
 const doSendNFTToTreasury = async (treasuryAddr, tokenId) =>
   await mutate({
@@ -92,12 +90,7 @@ export default function useNFTs(treasuryAddr) {
   const [state, dispatch] = useReducer(nftReducer, [], (initial) => ({
     ...initial,
     ...NFT_INITIAL_STATE,
-    NFTs: JSON.parse(localStorage.getItem(storageKey) || '{}'),
   }));
-
-  useEffect(() => {
-    localStorage.setItem(storageKey, JSON.stringify(state.NFTs));
-  }, [state.NFTs]);
 
   const checkCollection = async (treasuryAddr, identifier) => {
     let result = [];

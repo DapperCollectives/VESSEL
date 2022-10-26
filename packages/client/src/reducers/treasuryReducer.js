@@ -22,7 +22,6 @@ const treasuryReducer = (state, action) => {
         treasuries: {
           ...state.treasuries,
           [address]: {
-            ...state.treasuries[address],
             ...action.payload[address],
           },
         },

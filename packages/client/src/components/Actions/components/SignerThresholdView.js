@@ -38,7 +38,7 @@ const SignerThresholdView = ({ actionView, safeData, isAdd }) => {
         <span className="column pl-0 has-text-grey">Signature Threshold</span>
         <div className="column pl-0">
           <span className="has-text-weight-bold has-text-black">
-            {newThreshold} of{safeOwners.length} owner(s)
+            {newThreshold} of {safeOwners.length} owner(s)
           </span>
         </div>
       </div>

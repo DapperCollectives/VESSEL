@@ -4,11 +4,11 @@ import { Web3Consumer } from '../contexts/Web3';
 import { isEmpty } from 'lodash';
 
 function Safes(props) {
-  const { treasuries } = props.web3;
+  const { treasuryAliases } = props.web3;
   const params = useParams();
   const { address } = params;
 
-  if (isEmpty(treasuries)) {
+  if (isEmpty(treasuryAliases)) {
     return (
       <div className="has-background-transparent-black p-4 is-size-6">
         <h3>
@@ -24,7 +24,7 @@ function Safes(props) {
 
   return (
     <aside className="menu">
-      {Object.entries(treasuries).map(([k, v], i) => {
+      {Object.entries(treasuryAliases).map(([k, v], i) => {
         const isActive = address === v.address;
         return (
           <NavLink to={`/safe/${k}`} key={i}>
@@ -68,7 +68,7 @@ function Safes(props) {
                 }}
               />
               <div className="flex-1 is-flex is-align-items-center px-2">
-                {v.name}
+                {v || k}
               </div>
             </div>
           </NavLink>

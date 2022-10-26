@@ -34,8 +34,6 @@ import treasuryReducer, {
   TREASURY_INITIAL_STATE,
 } from '../reducers/treasuryReducer';
 
-const storageKey = 'vessel-treasuries';
-
 const doQuery = async (cadence, address) => {
   const queryResp = await query({
     cadence,
@@ -246,11 +244,11 @@ const getAllVaultBalance = async (address) => {
   }
   return allBalance;
 };
-export default function useTreasury(treasuryAddr) {
+export default function useTreasury(treasuryAddr, treasuryAliases) {
   const [state, dispatch] = useReducer(treasuryReducer, [], (initial) => ({
     ...initial,
     ...TREASURY_INITIAL_STATE,
-    treasuries: JSON.parse(localStorage.getItem(storageKey)) || {},
+    treasuries: {},
   }));
 
   const refreshTreasury = async () => {
@@ -259,6 +257,8 @@ export default function useTreasury(treasuryAddr) {
       dispatch({ type: 'SET_LOADING', payload: false });
       return;
     }
+
+    treasuryData.name = treasuryAliases[treasuryAddr] || '';
 
     dispatch({
       type: 'SET_TREASURY',
@@ -304,20 +304,6 @@ export default function useTreasury(treasuryAddr) {
     });
   };
 
-  const updateOwnerList = async (treasuryAddr) => {
-    const { signers } = await getTreasury(treasuryAddr);
-    const { safeOwners } = state.treasuries[treasuryAddr];
-    const updatedSafeOwners = syncSafeOwnersWithSigners(signers, safeOwners);
-    dispatch({
-      type: 'SET_TREASURY',
-      payload: {
-        [treasuryAddr]: {
-          safeOwners: updatedSafeOwners,
-        },
-      },
-    });
-  };
-
   useEffect(() => {
     if (!treasuryAddr) {
       if (state.loadingTreasuries) {
@@ -333,10 +319,14 @@ export default function useTreasury(treasuryAddr) {
     // eslint-disable-next-line
   }, [state.loadingTreasuries, treasuryAddr]);
 
-  useEffect(() => {
-    localStorage.setItem(storageKey, JSON.stringify(state.treasuries));
-  }, [state.treasuries]);
-
+  const setTreasury = (_treasuryAddr, treasuryData) => {
+    dispatch({
+      type: 'SET_TREASURY',
+      payload: {
+        [_treasuryAddr]: treasuryData,
+      },
+    });
+  };
   const createTreasury = async (treasuryData) => {
     const { safeOwners, threshold } = treasuryData;
     const signerAddresses = safeOwners.map((is) => formatAddress(is.address));
@@ -348,14 +338,6 @@ export default function useTreasury(treasuryAddr) {
     await tx(res).onceSealed();
     setTreasury(creatorAddr, treasuryData);
     return res;
-  };
-  const setTreasury = (treasuryAddr, treasuryData) => {
-    dispatch({
-      type: 'SET_TREASURY',
-      payload: {
-        [treasuryAddr]: treasuryData,
-      },
-    });
   };
 
   const proposeTransfer = async (recipientAddr, amount, coinType) => {
@@ -410,7 +392,6 @@ export default function useTreasury(treasuryAddr) {
     const res = await doExecuteAction(treasuryAddr, actionUUID);
     const result = await tx(res).onceSealed();
     await refreshTreasury();
-    await updateOwnerList(treasuryAddr);
     return result.events;
   };
 

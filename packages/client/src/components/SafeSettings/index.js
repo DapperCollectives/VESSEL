@@ -25,6 +25,8 @@ const SafeSettings = () => {
     addCollection,
     removeVault,
     removeCollection,
+    addressAliases,
+    setAddressAlias
   } = web3;
   useEffect(() => {
     (() => {
@@ -38,7 +40,11 @@ const SafeSettings = () => {
     <>
       <SafeDetailsSetting treasury={treasury} setTreasury={setTreasury} />
       <SignatureThreshold treasury={treasury} />
-      <Owners treasury={treasury} proposeRemoveSigner={proposeRemoveSigner} />
+      <Owners
+        treasury={treasury}
+        addressAliases={addressAliases}
+        setAddressAlias={setAddressAlias}
+      />
       <TokenAsset
         ref={scrollTo === '#tokenAsset' ? targetElementRef : null}
         userAddr={address}

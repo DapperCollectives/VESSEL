@@ -1,12 +1,18 @@
 import React from 'react';
 import { useModalContext } from 'contexts';
-import { useClipboard } from 'hooks';
+import { useClipboard, useAddressAliases } from 'hooks';
 import EditSafeName from './EditSafeName';
 
 const SafeDetailsSetting = ({ treasury, setTreasury }) => {
   const modalContext = useModalContext();
   const { name, address } = treasury;
   const safeAddressClipboard = useClipboard();
+  const { setTreasuryAlias } = useAddressAliases();
+
+  const onEditNameSubmit = (newName) => {
+    setTreasuryAlias(address, newName);
+    modalContext.closeModal();
+  };
   const openEditNameModal = () => {
     modalContext.openModal(
       <EditSafeName
@@ -16,10 +22,7 @@ const SafeDetailsSetting = ({ treasury, setTreasury }) => {
       />
     );
   };
-  const onEditNameSubmit = (newName) => {
-    setTreasury(address, { name: newName });
-    modalContext.closeModal();
-  };
+  
   return (
     <div>
       <div className="column p-0 mt-5 is-flex is-full">

@@ -6,7 +6,12 @@ import { formatAddress, isAddr } from 'utils';
 import Svg from 'library/Svg';
 import EditThreshold from '../EditThreshold';
 
-const AddSafeOwner = ({ treasury, safeOwners }) => {
+const AddSafeOwner = ({
+  treasury,
+  safeOwners,
+  addressAliases,
+  setAddressAlias,
+}) => {
   const web3 = useContext(Web3Context);
   const { openModal, closeModal } = useModalContext();
   const { isAddressValid } = useAddressValidation(web3.injectedProvider);
@@ -22,6 +27,13 @@ const AddSafeOwner = ({ treasury, safeOwners }) => {
     addressValid ? 'has-text-weight-bold' : 'disabled'
   }`;
 
+  const isAddressExisting = (_safeOwners, newAddress) => {
+    const addr = formatAddress(newAddress);
+    return (
+      _safeOwners.filter((obj) => obj.address === addr && obj.verified)
+        .length !== 0
+    );
+  };
   const onAddressChange = async (newAddress) => {
     setAddress(newAddress);
     const isValid =
@@ -29,17 +41,17 @@ const AddSafeOwner = ({ treasury, safeOwners }) => {
       (await isAddressValid(newAddress)) &&
       !isAddressExisting(safeOwners, newAddress);
     setAddressValid(isValid);
-  };
-
-  const isAddressExisting = (safeOwners, newAddress) => {
-    const address = formatAddress(newAddress);
-    return (
-      safeOwners.filter((obj) => obj.address === address && obj.verified)
-        .length !== 0
-    );
+    if (addressAliases[newAddress]) {
+      setName(addressAliases[newAddress]);
+    }
   };
 
   const onNextClick = () => {
+    // Set Address Alias
+    if (name) {
+      setAddressAlias(address, name);
+    }
+    // Open Edit Threshold Modal
     openModal(
       <EditThreshold treasury={treasury} newOwner={{ address, name }} />,
       { headerTitle: 'Set A New Threshold' }

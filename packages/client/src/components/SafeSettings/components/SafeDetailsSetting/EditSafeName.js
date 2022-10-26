@@ -1,7 +1,8 @@
 import { useState } from 'react';
 
 const EditSafeName = ({ name, onCancel, onSubmit }) => {
-  const [currSafeName, setCurrSafeName] = useState(name);
+  const [currSafeName, setCurrSafeName] = useState(name ?? '');
+
   const isNameValid = currSafeName.trim().length > 0;
 
   const onSubmitClick = () => {
