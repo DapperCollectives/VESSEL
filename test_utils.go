@@ -897,7 +897,7 @@ func (otu *OverflowTestUtils) MintFlow(account string, amount float64) *Overflow
 }
 
 func (otu *OverflowTestUtils) CreateNFTCollection(account string) *OverflowTestUtils {
-	otu.O.TransactionFromFile("create_collection").
+	otu.O.TransactionFromFile("create_example_NFT_collection").
 		SignProposeAndPayAs(account).
 		Test(otu.T).
 		AssertSuccess()
@@ -906,7 +906,7 @@ func (otu *OverflowTestUtils) CreateNFTCollection(account string) *OverflowTestU
 }
 
 func (otu *OverflowTestUtils) MintNFT(account string) *OverflowTestUtils {
-	otu.O.TransactionFromFile("mint_nft").
+	otu.O.TransactionFromFile("mint_example_NFT").
 		SignProposeAndPayAsService().
 		Args(otu.O.Arguments().
 			Account(account).
