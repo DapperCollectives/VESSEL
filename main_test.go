@@ -1,7 +1,6 @@
 package test_main
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/bjartek/overflow/overflow"
@@ -69,9 +68,9 @@ func TestTreasurySetup(t *testing.T) {
 		otu.SendNFTToTreasury("signer1", "treasuryOwner", 0)
 
 		// Assert that the NFT has been transfered into the treasury
-		// collectionIds := otu.GetTreasuryIdentifiers("treasuryOwner")
-		// ownedNFTIds := otu.GetTreasuryCollection("treasuryOwner", collectionIds[1][0])
-		// assert.Contains(otu.T, ownedNFTIds, uint64(0))
+		collectionIds := otu.GetTreasuryIdentifiers("treasuryOwner")
+		ownedNFTIds := otu.GetTreasuryCollection("treasuryOwner", collectionIds[1][0])
+		assert.Contains(otu.T, ownedNFTIds, uint64(0))
 	})
 
 	t.Run("Signer should be able to add a blocto vault to treasury", func(t *testing.T) {
@@ -124,7 +123,6 @@ func TestTransferFungibleTokensToAccountActions(t *testing.T) {
 
 		// Assert that the signatures were registered
 		signersMap := otu.GetSignerResponsesForAction("treasuryOwner", transferTokenActionUUID)
-		fmt.Printf("signers map: %v\n", signersMap)
 		for _, signer := range Signers {
 			assert.Equal(otu.T, "approved", signersMap[otu.GetAccountAddress(signer)])
 		}
@@ -292,8 +290,8 @@ func TestTransferTokensToAccountActionsWith20Signers(t *testing.T) {
 		assert.Equal(otu.T, 0, len(ownedNFTIds))
 
 		// Assert that the NFT has been received by the recipient account
-		// ownedNFTIds = otu.GetAccountCollection("account")
-		// assert.Contains(otu.T, ownedNFTIds, uint64(0))
+		ownedNFTIds = otu.GetAccountCollection("account")
+		assert.Contains(otu.T, ownedNFTIds, uint64(0))
 	})
 
 	t.Run("Destroy Treasury should be allowed if both vaults and collections are empty", func(t *testing.T) {

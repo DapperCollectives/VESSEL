@@ -990,11 +990,13 @@ func (otu *OverflowTestUtils) GetAccount(name string) *flow.Account {
 	return flowAccount
 }
 func (otu *OverflowTestUtils) GetAccountCollection(account string) []uint64 {
+	fmt.Printf("\n\n\naccount: %s\n\n\n", account)
 	val := otu.O.ScriptFromFile("get_account_collection").
 		Args(otu.O.Arguments().
 			Account(account)).
 		RunReturnsJsonString()
 
+	// fmt.Printf("INTERFACE: %v\n", val)
 	var ownedNFTIds []uint64
 	json.Unmarshal([]byte(val), &ownedNFTIds)
 
