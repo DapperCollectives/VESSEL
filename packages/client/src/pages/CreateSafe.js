@@ -7,6 +7,7 @@ import {
   SafeOwners,
   SignatureRequirements,
 } from 'components';
+import { SAFE_TYPES } from 'constants/enums';
 
 const AuthorizeTreasury = ({
   address,
@@ -26,7 +27,6 @@ const AuthorizeTreasury = ({
     );
 
     if (everyOwnerHasValidAddress) {
-      safeOwners.map((so) => (so.verified = true));
       isAuthorizeReady = true;
     }
   }
@@ -106,7 +106,7 @@ function CreateSafe({ web3 }) {
   const { address, loadingTreasuries, submittedTransaction, createTreasury } =
     web3;
   const [safeOwners, setSafeOwners] = useState([
-    { name: '', address, verified: true },
+    { name: '', address, isValid: true },
   ]);
 
   const onSafeOwnersChange = (newSafeOwners) => {
