@@ -5,7 +5,7 @@ import MyMultiSigV5 from "../contracts/MyMultiSig.cdc"
 
 // An example of proposing an action.
 //
-// Proposed ACTION: Transfer ZeedzINO with ID `id` from the DAOTreasuryV5
+// Proposed ACTION: Transfer ExampleNFT with ID `id` from the DAOTreasuryV5
 // at `treasuryAddr` to `recipientAddr`
 
 transaction(treasuryAddr: Address, recipientAddr: Address, identifier: String, id: UInt64, message: String, keyIds: [UInt64], signatures: [String], signatureBlock: UInt64) {

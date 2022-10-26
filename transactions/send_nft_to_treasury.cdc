@@ -1,5 +1,5 @@
 import NonFungibleToken from "../contracts/core/NonFungibleToken.cdc"
-import ZeedzINO from "../contracts/core/ZeedzINO.cdc"
+import ExampleNFT from "../contracts/core/ExampleNFT.cdc"
 import DAOTreasuryV5 from "../contracts/DAOTreasury.cdc"
 import MyMultiSigV5 from "../contracts/MyMultiSig.cdc"
 
@@ -10,7 +10,7 @@ transaction(treasuryAddr: Address, withdrawID: UInt64) {
     prepare(signer: AuthAccount) {
         // borrow a reference to the signer's NFT collection
         let collectionRef = signer
-            .borrow<&ZeedzINO.Collection>(from: ZeedzINO.CollectionStoragePath)
+            .borrow<&ExampleNFT.Collection>(from: ExampleNFT.CollectionStoragePath)
             ?? panic("Could not borrow a reference to the owner's collection")
 
         let treasury = getAccount(treasuryAddr).getCapability(DAOTreasuryV5.TreasuryPublicPath)
