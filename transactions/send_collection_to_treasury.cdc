@@ -1,5 +1,5 @@
 import NonFungibleToken from "../contracts/core/NonFungibleToken.cdc"
-import ZeedzINO from "../contracts/core/ZeedzINO.cdc"
+import ExampleNFT from "../contracts/core/ExampleNFT.cdc"
 import DAOTreasuryV5 from "../contracts/DAOTreasury.cdc"
 import MyMultiSigV5 from "../contracts/MyMultiSig.cdc"
 
@@ -10,7 +10,7 @@ transaction(treasuryAddr: Address, message: String, keyIds: [UInt64], signatures
                     .borrow<&DAOTreasuryV5.Treasury{DAOTreasuryV5.TreasuryPublic}>()
                     ?? panic("A DAOTreasuryV5 doesn't exist here.")
 
-        let collection <- ZeedzINO.createEmptyCollection()
+        let collection <- ExampleNFT.createEmptyCollection()
 
         var _keyIds: [Int] = []
 

@@ -174,7 +174,7 @@ func (otu *OverflowTestUtils) SendCollectionToTreasury(from string, to string) *
 	// msg {hexCollectionID}{blockID}
 	//////////////////////////////////////////////
 
-	src := []byte("A.f8d6e0586b0a20c7.ZeedzINO.Collection")
+	src := []byte("A.f8d6e0586b0a20c7.ExampleNFT.Collection")
 	hexCollectionID := make([]byte, hex.EncodedLen(len(src)))
 	hex.Encode(hexCollectionID, src)
 
@@ -456,7 +456,7 @@ func (otu *OverflowTestUtils) ProposeFungibleTokenTransferToTreasuryActionFail(t
 
 func (otu *OverflowTestUtils) ProposeNonFungibleTokenTransferAction(treasuryAcct string, proposingAcct, recipientAcct string, id uint64) *OverflowTestUtils {
 	recipient, _ := otu.O.State.Accounts().ByName(fmt.Sprintf("emulator-%s", recipientAcct))
-	src := []byte(fmt.Sprintf("Transfer A.f8d6e0586b0a20c7.ZeedzINO.Collection NFT from the treasury to 0x%s", recipient.Address()))
+	src := []byte(fmt.Sprintf("Transfer A.f8d6e0586b0a20c7.ExampleNFT.Collection NFT from the treasury to 0x%s", recipient.Address()))
 	hexCollectionID := make([]byte, hex.EncodedLen(len(src)))
 	hex.Encode(hexCollectionID, src)
 
@@ -897,7 +897,7 @@ func (otu *OverflowTestUtils) MintFlow(account string, amount float64) *Overflow
 }
 
 func (otu *OverflowTestUtils) CreateNFTCollection(account string) *OverflowTestUtils {
-	otu.O.TransactionFromFile("create_collection").
+	otu.O.TransactionFromFile("create_example_NFT_collection").
 		SignProposeAndPayAs(account).
 		Test(otu.T).
 		AssertSuccess()
@@ -906,7 +906,7 @@ func (otu *OverflowTestUtils) CreateNFTCollection(account string) *OverflowTestU
 }
 
 func (otu *OverflowTestUtils) MintNFT(account string) *OverflowTestUtils {
-	otu.O.TransactionFromFile("mint_nft").
+	otu.O.TransactionFromFile("mint_example_NFT").
 		SignProposeAndPayAsService().
 		Args(otu.O.Arguments().
 			Account(account).
@@ -990,11 +990,13 @@ func (otu *OverflowTestUtils) GetAccount(name string) *flow.Account {
 	return flowAccount
 }
 func (otu *OverflowTestUtils) GetAccountCollection(account string) []uint64 {
+	fmt.Printf("\n\n\naccount: %s\n\n\n", account)
 	val := otu.O.ScriptFromFile("get_account_collection").
 		Args(otu.O.Arguments().
 			Account(account)).
 		RunReturnsJsonString()
 
+	// fmt.Printf("INTERFACE: %v\n", val)
 	var ownedNFTIds []uint64
 	json.Unmarshal([]byte(val), &ownedNFTIds)
 

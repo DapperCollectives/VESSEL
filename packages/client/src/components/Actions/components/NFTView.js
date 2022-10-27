@@ -7,7 +7,8 @@ import SentFromToView from './SentFromToView';
 const NFTView = ({ actionView, safeData }) => {
   const { recipient, nftId, collectionId, timestamp } = actionView;
   const { address: safeAddress } = safeData;
-  const { contractName: NFTName } = parseIdentifier(collectionId);
+  const { contractName: NFTName, contractAddress } =
+    parseIdentifier(collectionId);
 
   const { getTreasuryNFTReference } = useContext(Web3Context);
   const [image, setImage] = useState({});
@@ -18,7 +19,7 @@ const NFTView = ({ actionView, safeData }) => {
     const getImageURL = async () => {
       const result = await getTreasuryNFTReference(
         NFTName,
-        formatAddress(safeAddress),
+        formatAddress(contractAddress),
         collectionId,
         recipient,
         nftId

@@ -7,8 +7,8 @@ const deployNFTCollection = () => {
   const { address } = flowJson.accounts[accountName];
 
   const basePath = "./transactions";
-  const createCollection = `${basePath}/create_collection.cdc`;
-  const mintNFT = `${basePath}/mint_nft.cdc`;
+  const createCollection = `${basePath}/create_example_NFT_collection.cdc`;
+  const mintNFT = `${basePath}/mint_example_NFT.cdc`;
   const sendNFT = `${basePath}/send_nft_to_treasury.cdc`;
 
   exec(

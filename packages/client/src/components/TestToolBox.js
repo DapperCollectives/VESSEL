@@ -18,7 +18,7 @@ const TestToolBox = ({ address }) => {
   };
 
   const onDepositNFT = async () => {
-    await sendNFTToTreasury(address, 0);
+    await sendNFTToTreasury(address, 3);
     await getTreasuryCollections(address);
   };
 
