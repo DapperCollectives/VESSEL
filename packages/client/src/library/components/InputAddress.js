@@ -4,7 +4,14 @@ import { useAddressValidation } from 'hooks';
 import { formatAddress, isAddr } from 'utils';
 import Svg from 'library/Svg';
 
-const InputAddress = ({ web3, value, isValid, onChange }) => {
+const InputAddress = ({
+  web3,
+  value,
+  isValid,
+  onChange,
+  className = '',
+  readOnly = false,
+}) => {
   const { isAddressValid } = useAddressValidation(web3.injectedProvider);
 
   const onValueChange = async (e) => {
@@ -17,17 +24,24 @@ const InputAddress = ({ web3, value, isValid, onChange }) => {
     onChange({ value: isValid ? formatAddress(value) : value, isValid });
   };
 
+  const addressValidClass = isValid ? "is-success" : "is-error";
+  const inputClassName = value.length ? addressValidClass : "";
+
   return (
-    <div className="is-flex">
+    <div className={`is-flex ${className}`}>
       <div className="flex-1" style={{ position: 'relative' }}>
         <input
-          className="border-light rounded-sm column is-full p-2 mt-2"
+          className={`border-light rounded-sm column is-full p-4 ${inputClassName}`}
           type="text"
           value={value}
           onChange={onValueChange}
+          disabled={readOnly}
         />
         {isValid && (
-          <div style={{ position: 'absolute', right: 17, top: 20 }}>
+          <div
+            className="is-flex is-align-items-center"
+            style={{ position: 'absolute', right: 15, top: 0, height: '100%' }}
+          >
             <Svg name="Check" />
           </div>
         )}

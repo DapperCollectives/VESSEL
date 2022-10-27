@@ -26,6 +26,7 @@ const AddCollection = ({ onCancel, onNext }) => {
       <div className="p-5 flex-1 is-flex is-flex-direction-column">
         <label className="has-text-grey mb-2">NFT Contract Address</label>
         <InputAddress
+          className="mt-2"
           value={address}
           isValid={addressValid}
           onChange={onAddressChange}

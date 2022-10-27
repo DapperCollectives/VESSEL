@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { NavLink, useHistory } from 'react-router-dom';
 import { Web3Consumer } from '../contexts/Web3';
 import { WalletPrompt } from '../components';
-import { ProgressBar } from 'library/components';
+import { InputAddress, ProgressBar } from 'library/components';
 import { useAddressValidation } from '../hooks';
-import { getProgressPercentageForSignersAmount, isAddr } from '../utils';
+import { getProgressPercentageForSignersAmount } from '../utils';
 import Svg from 'library/Svg';
 import { isEmpty } from 'lodash';
 
@@ -78,11 +78,10 @@ function LoadSafe({ web3 }) {
     setSafeOwnersValidByAddress(newSafeOwnersValidByAddress);
   };
 
-  const onAddressChange = async (e) => {
-    setSafeAddress(e.target.value);
-    const maybeValid = isAddr(e.target.value);
-    if (maybeValid) {
-      const treasury = await getTreasury(e.target.value);
+  const onAddressChange = async ({ value, isValid }) => {
+    setSafeAddress(value);
+    if (isValid) {
+      const treasury = await getTreasury(value);
       const newSafeOwners = Object.keys(treasury?.signers ?? {}).map(
         (signerAddr) => ({
           name: '',
@@ -142,20 +141,7 @@ function LoadSafe({ web3 }) {
           </div>
           <div className="flex-1 is-flex is-flex-direction-column">
             <label className="has-text-grey mb-2">Owner Address</label>
-            <div style={{ position: 'relative' }}>
-              <input
-                className="p-4 rounded-sm column is-full"
-                type="text"
-                placeholder="Enter user's FLOW address"
-                value={so.address}
-                disabled
-              />
-              {safeOwnersValidByAddress[so.address] && (
-                <div style={{ position: 'absolute', right: 17, top: 14 }}>
-                  <Svg name="Check" />
-                </div>
-              )}
-            </div>
+            <InputAddress value={so.address} readOnly isValid />
           </div>
         </div>
       );
@@ -197,20 +183,11 @@ function LoadSafe({ web3 }) {
             Safe Address
             <span className="has-text-red">*</span>
           </label>
-          <div style={{ position: 'relative' }}>
-            <input
-              className="p-4 rounded-sm column is-full"
-              type="text"
-              placeholder="16-character safe address"
-              value={safeAddress}
-              onChange={onAddressChange}
-            />
-            {!isEmpty(safeOwners) && (
-              <div style={{ position: 'absolute', right: 17, top: 14 }}>
-                <Svg name="Check" />
-              </div>
-            )}
-          </div>
+          <InputAddress
+            value={safeAddress}
+            onChange={onAddressChange}
+            isValid={!isEmpty(safeOwners)}
+          />
         </div>
       </div>
       <div className="column is-flex is-full">

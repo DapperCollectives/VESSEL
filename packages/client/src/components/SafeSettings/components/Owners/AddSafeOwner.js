@@ -1,34 +1,23 @@
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import { useModalContext } from 'contexts';
-import { Web3Context } from 'contexts/Web3';
-import { useAddressValidation } from 'hooks';
-import { formatAddress, isAddr } from 'utils';
+import { InputAddress } from 'library/components';
+import { formatAddress } from 'utils';
 import Svg from 'library/Svg';
 import EditThreshold from '../EditThreshold';
 
 const AddSafeOwner = ({ treasury, safeOwners }) => {
-  const web3 = useContext(Web3Context);
   const { openModal, closeModal } = useModalContext();
-  const { isAddressValid } = useAddressValidation(web3.injectedProvider);
   const [name, setName] = useState('');
   const [address, setAddress] = useState('');
   const [addressValid, setAddressValid] = useState(false);
 
-  const addressValidClass = addressValid ? 'is-success' : 'is-error';
-  const addrInputClasses = `input p-4 rounded-sm column is-full is-size-6 ${
-    address.length > 0 ? addressValidClass : ''
-  }`;
   const nextButtonClasses = `button flex-1 is-primary ${
     addressValid ? 'has-text-weight-bold' : 'disabled'
   }`;
 
-  const onAddressChange = async (newAddress) => {
-    setAddress(newAddress);
-    const isValid =
-      isAddr(newAddress) &&
-      (await isAddressValid(newAddress)) &&
-      !isAddressExisting(safeOwners, newAddress);
-    setAddressValid(isValid);
+  const onAddressChange = async ({ value, isValid }) => {
+    setAddress(value);
+    setAddressValid(isValid && !isAddressExisting(safeOwners, value));
   };
 
   const isAddressExisting = (safeOwners, newAddress) => {
@@ -57,20 +46,11 @@ const AddSafeOwner = ({ treasury, safeOwners }) => {
             <span className="has-text-red">*</span>{' '}
             <Svg name="QuestionMark" className="ml-1" />
           </label>
-          <div style={{ position: 'relative' }}>
-            <input
-              className={addrInputClasses}
-              type="text"
-              placeholder=""
-              value={address}
-              onChange={(e) => onAddressChange(e.target.value)}
-            />
-            {addressValid && (
-              <div style={{ position: 'absolute', right: 17, top: 19 }}>
-                <Svg name="Check" height="15" width="15" />
-              </div>
-            )}
-          </div>
+          <InputAddress
+            value={address}
+            onChange={onAddressChange}
+            isValid={addressValid}
+          />
         </div>
         <div className="flex-1 is-flex is-flex-direction-column">
           <label className="has-text-grey mb-2 is-flex is-align-items-center">

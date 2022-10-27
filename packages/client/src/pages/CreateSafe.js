@@ -1,14 +1,12 @@
 import React, { useState } from 'react';
 import { NavLink, useHistory } from 'react-router-dom';
-import { Web3Consumer } from '../contexts/Web3';
+import { Web3Consumer } from 'contexts/Web3';
 import {
   Loading,
   SafeDetails,
   SafeOwners,
   SignatureRequirements,
-  WalletPrompt,
-} from '../components';
-import { useAddressValidation } from '../hooks';
+} from 'components';
 import { SAFE_TYPES } from 'constants/enums';
 
 const AuthorizeTreasury = ({
@@ -16,7 +14,6 @@ const AuthorizeTreasury = ({
   safeName,
   safeType,
   safeOwners,
-  safeOwnersValidByAddress,
   createTreasury,
   creatingTreasury,
   createdTreasury,
@@ -25,12 +22,11 @@ const AuthorizeTreasury = ({
   let isAuthorizeReady = false;
   const history = useHistory();
   if (safeName.trim().length && safeType) {
-    const everyOwnerHasValidAddress = Object.values(
-      safeOwnersValidByAddress
-    ).every((isValid) => isValid);
+    const everyOwnerHasValidAddress = safeOwners.every(
+      ({ isValid }) => isValid
+    );
 
     if (everyOwnerHasValidAddress) {
-      safeOwners.map((so) => (so.verified = true));
       isAuthorizeReady = true;
     }
   }
@@ -107,40 +103,20 @@ function CreateSafe({ web3 }) {
   const [signersAmount, setSignersAmount] = useState(1);
   const [creatingTreasury, setCreatingTreasury] = useState(false);
   const [createdTreasury, setCreatedTreasury] = useState(false);
-  const {
-    injectedProvider,
-    address,
-    loadingTreasuries,
-    submittedTransaction,
-    createTreasury,
-  } = web3;
+  const { address, loadingTreasuries, submittedTransaction, createTreasury } =
+    web3;
   const [safeOwners, setSafeOwners] = useState([
-    { name: '', address, verified: true },
+    { name: '', address, isValid: true },
   ]);
-  const [safeOwnersValidByAddress, setSafeOwnersValidByAddress] = useState({});
-  const { isAddressValid } = useAddressValidation(injectedProvider);
-
-  const checkSafeOwnerAddressesValidity = async (newSafeOwners) => {
-    const newSafeOwnersValidByAddress = {};
-
-    for (const so of newSafeOwners) {
-      newSafeOwnersValidByAddress[so.address] = await isAddressValid(
-        so.address
-      );
-    }
-
-    setSafeOwnersValidByAddress(newSafeOwnersValidByAddress);
-  };
 
   const onSafeOwnersChange = (newSafeOwners) => {
     setSafeOwners(newSafeOwners);
-    // skip first safe owner since it's the connected user and won't have an address
-    checkSafeOwnerAddressesValidity(newSafeOwners.slice(1));
     // force signer amount to not exceed amount of safe owners
     if (newSafeOwners.length < signersAmount) {
       setSignersAmount(newSafeOwners.length);
     }
   };
+
   const onCreateTreasuryClick = async (treasuryData) => {
     setCreatingTreasury(true);
     await createTreasury(treasuryData);
@@ -249,7 +225,6 @@ function CreateSafe({ web3 }) {
       <SafeOwners
         address={address}
         safeOwners={safeOwners}
-        safeOwnersValidByAddress={safeOwnersValidByAddress}
         setSafeOwners={onSafeOwnersChange}
       />
       <SignatureRequirements
@@ -267,7 +242,6 @@ function CreateSafe({ web3 }) {
         safeName={safeName}
         safeType={safeType}
         safeOwners={safeOwners}
-        safeOwnersValidByAddress={safeOwnersValidByAddress}
         signersAmount={signersAmount}
         createTreasury={onCreateTreasuryClick}
         creatingTreasury={creatingTreasury}
