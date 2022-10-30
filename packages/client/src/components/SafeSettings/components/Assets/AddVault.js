@@ -25,7 +25,7 @@ const AddVault = ({ address, onCancel, onNext }) => {
     itemValue: type[0],
     displayText: type[1].displayName,
   }));
-  const renderOption = (itemValue, displayText) => (
+  const renderOption = ({ itemValue, displayText }) => (
     <span className="is-flex is-align-items-center">
       <Svg name={itemValue} className="mr-2" />
       <span className="has-text-weight-bold has-text-black">{displayText}</span>

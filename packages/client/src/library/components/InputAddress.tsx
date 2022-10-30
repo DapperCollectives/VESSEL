@@ -1,13 +1,30 @@
-import React from 'react';
+import React, { InputHTMLAttributes } from 'react';
 import { Web3Consumer } from 'contexts/Web3';
 import { useAddressValidation } from 'hooks';
 import { formatAddress, isAddr } from 'utils';
 import Svg from 'library/Svg';
 
-const InputAddress = ({ web3, value, isValid, onChange }) => {
+export type AddressValidationResult = {
+  value: string;
+  isValid: boolean;
+};
+
+export interface InputAddressProps {
+  web3: any;
+  value: string;
+  isValid: boolean;
+  onChange: (result: AddressValidationResult) => void;
+}
+
+const InputAddress: React.FC<InputAddressProps> = ({
+  web3,
+  value,
+  isValid,
+  onChange,
+}) => {
   const { isAddressValid } = useAddressValidation(web3.injectedProvider);
 
-  const onValueChange = async (e) => {
+  const onValueChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
     let isValid = isAddr(value);
     if (isValid) {

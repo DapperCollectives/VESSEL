@@ -9,7 +9,7 @@ const CoinTypeDropDown = ({ coinType, setCoinType, balances, tooltipText }) => {
       balance: balances[key] ? Number(balances[key]).toFixed(2) : 0,
     },
   }));
-  const renderOption = (itemValue, displayText, attr) => (
+  const renderOption = ({ itemValue, displayText, attr }) => (
     <div className="is-flex is-flex-grow-1 is-align-items-center is-justify-content-space-between">
       <span className="is-flex is-align-items-center">
         <Svg name={itemValue} className="mr-2" />

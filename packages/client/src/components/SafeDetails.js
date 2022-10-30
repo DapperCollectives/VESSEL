@@ -35,7 +35,7 @@ const SafeDetails = ({ safeType, setSafeType, safeName, setSafeName }) => (
           selectedValue={safeType}
           options={safeTypes}
           setOption={setSafeType}
-          renderOption={(_, displayText) => (
+          renderOption={({ displayText }) => (
             <span className="has-text-black">{displayText}</span>
           )}
         />

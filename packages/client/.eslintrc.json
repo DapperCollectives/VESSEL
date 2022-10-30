@@ -9,9 +9,10 @@
     "plugin:prettier/recommended",
     "airbnb"
   ],
-  "overrides": [],
+
   "settings": {
     "import/resolver": {
+      "typescript": {},
       "node": {
         "moduleDirectory": ["node_modules", "src"]
       }
@@ -63,5 +64,34 @@
     ],
     "import/order": [0]
   },
+  "overrides": [
+    {
+      "files": ["**/*.{ts,tsx}"],
+      "extends": ["airbnb-typescript"],
+      "env": {
+        "browser": true
+      },
+      "settings": {
+        "import/parsers": {
+          "@typescript-eslint/parser": [".ts", ".tsx"]
+        },
+        "import/resolver": {
+          "typescript": {
+            "project": "./tsconfig.json"
+          }
+        }
+      },
+      // Parser Settings
+      // =================================
+      // allow ESLint to understand TypeScript syntax
+      // https://github.com/iamturns/eslint-config-airbnb-typescript/blob/master/lib/shared.js#L10
+      "parser": "@typescript-eslint/parser",
+      "parserOptions": {
+        // Lint with Type Information
+        // https://github.com/typescript-eslint/typescript-eslint/blob/master/docs/getting-started/linting/TYPED_LINTING.md
+        "project": "./tsconfig.json"
+      }
+    }
+  ],
   "ignorePatterns": ["build/**/*", "public/**/*", "src/flow/**/*"]
 }
