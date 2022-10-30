@@ -1,4 +1,4 @@
-import React, { InputHTMLAttributes } from 'react';
+import React from 'react';
 import { Web3Consumer } from 'contexts/Web3';
 import { useAddressValidation } from 'hooks';
 import { formatAddress, isAddr } from 'utils';
@@ -25,10 +25,10 @@ const InputAddress: React.FC<InputAddressProps> = ({
   const { isAddressValid } = useAddressValidation(web3.injectedProvider);
 
   const onValueChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = e.target;
-    let isValid = isAddr(value);
-    if (isValid) {
-      isValid = await isAddressValid(formatAddress(value));
+    const { value: addressValue } = e.target;
+    let isValidAddressValue = isAddr(addressValue);
+    if (isValidAddressValue) {
+      isValidAddressValue = await isAddressValid(formatAddress(value));
     }
     // if address is valid, autoformat prefix with 0x
     onChange({ value: isValid ? formatAddress(value) : value, isValid });
