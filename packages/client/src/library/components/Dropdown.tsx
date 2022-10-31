@@ -12,7 +12,7 @@ export interface IDropdownProps {
   setOption: (itemValue: string | number) => void;
   renderOption: (option: IDropDownOption) => JSX.Element;
   defaultText?: string;
-  renderCustomSearchOrInput: () => void;
+  renderCustomSearchOrInput: () => JSX.Element;
   style?: React.CSSProperties;
 }
 const Dropdown: React.FC<IDropdownProps> = ({
