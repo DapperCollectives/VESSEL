@@ -1,12 +1,12 @@
 import { useContext } from 'react';
 import { useHistory } from 'react-router-dom';
+import { TransferTokensContext } from '../../../contexts/TransferTokens';
 import { useModalContext } from 'contexts';
 import { Web3Context } from 'contexts/Web3';
 import { useErrorMessage } from 'hooks';
 import { ASSET_TYPES, TRANSACTION_TYPE } from 'constants/enums';
 import { formatAddress } from 'utils';
 import { isEmpty } from 'lodash';
-import { TransferTokensContext } from '../../../contexts/TransferTokens';
 
 const ButtonGroup = ({ proposeTransfer }) => {
   const modalContext = useModalContext();

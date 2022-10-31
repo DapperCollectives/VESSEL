@@ -1,10 +1,10 @@
 import { useContext, useRef, useState } from 'react';
+import { TransferTokensContext } from '../../../contexts/TransferTokens';
 import { Web3Context } from 'contexts/Web3';
 import { Dropdown, Tooltip } from 'library/components';
 import { useAddressValidation, useContacts } from 'hooks';
 import { formatAddress, isAddr } from 'utils';
 import Svg from 'library/Svg';
-import { TransferTokensContext } from '../../../contexts/TransferTokens';
 
 const AddressDropdown = () => {
   const [sendModalState, setSendModalState] = useContext(TransferTokensContext);
@@ -54,7 +54,7 @@ const AddressDropdown = () => {
     onRecipientChange(entry);
   };
 
-  const renderOption = (itemValue, displayText, attr) => (
+  const renderOption = ({ itemValue, displayText, attr }) => (
     <div className="is-flex is-flex-grow-1 is-align-items-center is-justify-content-space-between">
       <span className="has-text-weight-bold has-text-black">
         {displayText ?? itemValue}

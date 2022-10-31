@@ -4,14 +4,31 @@ import { useAddressValidation } from 'hooks';
 import { formatAddress, isAddr } from 'utils';
 import Svg from 'library/Svg';
 
-const InputAddress = ({ web3, value, isValid, onChange }) => {
+export type AddressValidationResult = {
+  value: string;
+  isValid: boolean;
+};
+
+export interface InputAddressProps {
+  web3: any;
+  value: string;
+  isValid: boolean;
+  onChange: (result: AddressValidationResult) => void;
+}
+
+const InputAddress: React.FC<InputAddressProps> = ({
+  web3,
+  value,
+  isValid,
+  onChange,
+}) => {
   const { isAddressValid } = useAddressValidation(web3.injectedProvider);
 
-  const onValueChange = async (e) => {
-    const { value } = e.target;
-    let isValid = isAddr(value);
-    if (isValid) {
-      isValid = await isAddressValid(formatAddress(value));
+  const onValueChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value: addressValue } = e.target;
+    let isValidAddressValue = isAddr(addressValue);
+    if (isValidAddressValue) {
+      isValidAddressValue = await isAddressValid(formatAddress(value));
     }
     // if address is valid, autoformat prefix with 0x
     onChange({ value: isValid ? formatAddress(value) : value, isValid });

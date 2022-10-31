@@ -1,7 +1,25 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 
-const Tooltip = ({ position = 'top', text, children, className = '' }) => {
-  const [isOpen, setIsOpen] = useState(false);
+export enum ToolTipPositionEnum {
+  TOP = 'top',
+  LEFT = 'left',
+  RIGHT = 'right',
+  BOTTOM = 'bottom',
+}
+export interface ITooltipProps {
+  position: ToolTipPositionEnum;
+  text: string;
+  className?: string;
+  children: JSX.Element;
+}
+
+const Tooltip: React.FC<ITooltipProps> = ({
+  position = ToolTipPositionEnum.TOP,
+  text,
+  children,
+  className = '',
+}) => {
+  const [isOpen, setIsOpen] = useState<boolean>(false);
   const positionConfig = {
     left: 'has-tooltip-left',
     right: 'has-tooltip-right',

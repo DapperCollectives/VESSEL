@@ -1,9 +1,18 @@
-const EmptyTableWithCTA = ({
+import * as React from 'react';
+
+interface IEmptyTableWithCTAProps {
+  header?: string;
+  message?: string;
+  onButtonClick?: () => void;
+  buttonText?: string;
+  buttonIcon?: React.ReactElement;
+}
+const EmptyTableWithCTA: React.FC<IEmptyTableWithCTAProps> = ({
   header,
   message,
-  onButtonClick = () => {},
-  buttonText = '',
-  buttonIcon = undefined,
+  onButtonClick,
+  buttonText,
+  buttonIcon,
 }) => (
   <section
     className="section is-flex is-align-items-center has-background-white-ter mt-4 rounded-lg"
@@ -14,6 +23,7 @@ const EmptyTableWithCTA = ({
       {message && <p className="has-text-grey">{message}</p>}
       {buttonText && (
         <button
+          type="button"
           className={`button is-primary is-small mt-4 ${
             buttonIcon ? 'with-icon' : ''
           }`}

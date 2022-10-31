@@ -1,18 +1,33 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Svg from 'library/Svg';
 
-const Dropdown = ({
+export interface IDropDownOption {
+  itemValue: string | number;
+  displayText: string | undefined;
+  attr: { [key: string]: unknown } | undefined;
+}
+export interface IDropdownProps {
+  selectedValue: string;
+  options: IDropDownOption[];
+  setOption: (itemValue: string | number) => void;
+  renderOption: (option: IDropDownOption) => JSX.Element;
+  defaultText?: string;
+  renderCustomSearchOrInput: () => JSX.Element;
+  style?: React.CSSProperties;
+}
+const Dropdown: React.FC<IDropdownProps> = ({
   selectedValue,
   options = [],
   setOption = () => {},
-  renderOption = () => {},
+  renderOption = () => null,
   defaultText = 'Select one',
   renderCustomSearchOrInput,
-  style = {},
+  style,
 }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [selectedValueDisplay, setSelectedValueDisplay] = useState(defaultText);
-  const ref = useRef(null);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [selectedValueDisplay, setSelectedValueDisplay] =
+    useState<React.ReactNode>(defaultText);
+  const ref = useRef<HTMLDivElement>(null);
 
   const openCloseDrowdown = () => {
     setIsOpen((status) => !status);
@@ -25,11 +40,11 @@ const Dropdown = ({
           ({ itemValue }) => itemValue === selectedValue
         );
         setSelectedValueDisplay(
-          renderOption(
-            selectedValue,
-            selectedOption?.displayText,
-            selectedOption?.attr
-          )
+          renderOption({
+            itemValue: selectedValue,
+            displayText: selectedOption?.displayText,
+            attr: selectedOption?.attr,
+          })
         );
       } else {
         setSelectedValueDisplay(defaultText);
@@ -38,8 +53,8 @@ const Dropdown = ({
   }, [selectedValue, renderOption]);
 
   useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (ref.current && !ref.current.contains(e.target)) {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e?.target as Node)) {
         setIsOpen(false);
       }
     };
@@ -82,25 +97,27 @@ const Dropdown = ({
         role="menu"
       >
         <div className="dropdown-content py-0">
-          {renderCustomSearchOrInput && renderCustomSearchOrInput()}
-          {options.map((option) => {
-            const { itemValue, displayText, attr } = option;
-            return (
-              <button
-                type="button"
-                className={`border-none dropdown-item has-text-grey${
-                  itemValue === selectedValue ? ' is-active' : ''
-                }`}
-                onMouseDown={() => {
-                  setOption(itemValue);
-                  openCloseDrowdown();
-                }}
-                key={`drop-down-${itemValue}`}
-              >
-                {renderOption(itemValue, displayText, attr)}
-              </button>
-            );
-          })}
+          <>
+            {renderCustomSearchOrInput && renderCustomSearchOrInput()}
+            {options.map((option) => {
+              const { itemValue, displayText, attr } = option;
+              return (
+                <button
+                  type="button"
+                  className={`border-none dropdown-item has-text-grey${
+                    itemValue === selectedValue ? ' is-active' : ''
+                  }`}
+                  onMouseDown={() => {
+                    setOption(itemValue);
+                    openCloseDrowdown();
+                  }}
+                  key={`drop-down-${itemValue}`}
+                >
+                  {renderOption({ itemValue, displayText, attr })}
+                </button>
+              );
+            })}
+          </>
         </div>
       </div>
     </div>
